@@ -25,6 +25,8 @@ Software verwende ich ESPHome. Diese wird als erstes in der Grundkonfiguration g
               - Betriebsmodus kann verstellt werden
 
   Es werden alle relevanten Daten Abgefragt die man eigentlich benötigt.
+  Wer Abtau Probleme hat kann sich in Iobroker oder Homeassitant leicht ein kleines Script bauen, wenn Abtauen erkannt wird soll auf Sommer geschaltet werden,
+  wenn heizen wieder erkannt schaltet wieder auf Betriebsmodus heizen um.So wird max 0.7 Grad Warmwasser aus dem Sepicher verbraucht.
 
 - WEBUI vom ESP:
 ![Bildschirmfoto 2023-12-17 um 11 33 51](https://github.com/Trunks1982/Daikin-Rotex-HPSU-CAN/assets/62701386/524a204e-801a-4fe7-aacb-ac2e731a99b7)
