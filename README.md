@@ -13,4 +13,5 @@ Ansicht Homeassistant:
 
 Pinbelegung GPIO 47 und 48
 
-![IMG_7065](https://github.com/Trunks1982/Daikin-Rotex-HPSU-CAN/assets/62701386/12f4c74f-6991-453b-a4d2-9b3ef0327403)
+
+![IMG_7065](https://github.com/Trunks1982/Daikin-Rotex-HPSU-CAN/assets/62701386/3c096a3c-5b6c-49c7-8372-59d175c0f3c8)
