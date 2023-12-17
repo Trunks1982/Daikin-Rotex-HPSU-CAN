@@ -3,3 +3,9 @@ Verwendet habe ich ein FREENOVE ESP32-S3-WROOM CAM Board (es sollte jeder ab S1 
 die normalen ESP32 Wroom funktionieren nicht weil diese erst ab 50kbit funktionieren) und ein Waveshare SN65HVD230 CAN Board mit 3,3V.
 Software verwende ich ESPHome.Diese wird als erstes in der Grundkonfiguration geflasht und dann gegen meine YAML getauscht.
 
+
+
+![Bildschirmfoto 2023-12-17 um 11 33 51](https://github.com/Trunks1982/Daikin-Rotex-HPSU-CAN/assets/62701386/524a204e-801a-4fe7-aacb-ac2e731a99b7)
+
+
+![Bildschirmfoto 2023-12-17 um 11 34 51](https://github.com/Trunks1982/Daikin-Rotex-HPSU-CAN/assets/62701386/3be9654f-3fa3-48dd-ba99-37aefdf688b9)
