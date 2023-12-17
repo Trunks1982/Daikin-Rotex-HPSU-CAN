@@ -25,6 +25,7 @@ Software verwende ich ESPHome. Diese wird als erstes in der Grundkonfiguration g
               - Betriebsmodus kann verstellt werden
 
   Es werden alle relevanten Daten Abgefragt die man eigentlich benötigt.
+  
   Wer Abtau Probleme hat kann sich in Iobroker oder Homeassitant leicht ein kleines Script bauen, wenn Abtauen erkannt wird soll auf Sommer geschaltet werden,
   wenn heizen wieder erkannt schaltet wieder auf Betriebsmodus heizen um.So wird max 0.7 Grad Warmwasser aus dem Sepicher verbraucht.
 
