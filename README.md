@@ -41,6 +41,6 @@ Software verwende ich ESPHome. Diese wird als erstes in der Grundkonfiguration g
 
 
 
-Wer mir eine kleine Spende geben möchte kann es gerne hierrüber tun.Ist aber natürlich kein Zwang da Open Source!!
+"Ein Kaffee für nächste lange Nacht vor dem Rechner wäre toll" ist aber natürlich kein muss.
 
 https://www.paypal.com/donate/?hosted_button_id=H94LZRQW9PFQ4
