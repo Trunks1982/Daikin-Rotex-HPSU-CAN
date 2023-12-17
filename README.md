@@ -43,9 +43,4 @@ Software verwende ich ESPHome. Diese wird als erstes in der Grundkonfiguration g
 
 Wer mir eine kleine Spende geben möchte kann es gerne hierrüber tun.Ist aber natürlich kein Zwang da Open Source!!
 
-<form action="https://www.paypal.com/donate" method="post" target="_top">
-<input type="hidden" name="hosted_button_id" value="H94LZRQW9PFQ4" />
-<input type="image" src="https://www.paypalobjects.com/de_DE/DE/i/btn/btn_donate_LG.gif" border="0" name="submit" title="PayPal - The safer, easier way to pay online!" alt="Spenden mit dem PayPal-Button" />
-<img alt="" border="0" src="https://www.paypal.com/de_DE/i/scr/pixel.gif" width="1" height="1" />
-</form>
-
+https://www.paypal.com/donate/?hosted_button_id=H94LZRQW9PFQ4
