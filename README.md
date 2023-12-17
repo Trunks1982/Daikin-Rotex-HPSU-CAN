@@ -13,6 +13,7 @@ Software verwende ich ESPHome.Diese wird als erstes in der Grundkonfiguration ge
 - Die .bin ist zum flashen der reinen Standalone Lösung gedacht.Da fehlt der key für Homeassistant.
 
 - Feutures:
+
               - Verstellung von Raumsoll
   
               - Verstellung WW Soll
