@@ -41,7 +41,7 @@ Software verwende ich ESPHome. Diese wird als erstes in der Grundkonfiguration g
 
 
 
-[Wer mir eine kleine Spende geben möchte kann es gerne hierrüber tun.Ist aber natürlich kein Zwang da Open Source!!
+Wer mir eine kleine Spende geben möchte kann es gerne hierrüber tun.Ist aber natürlich kein Zwang da Open Source!!
   ![Donate with PayPal]
   (https://raw.githubusercontent.com/stefan-niedermann/paypal-donate-button/master/paypal-donate-button.png)
 ]
