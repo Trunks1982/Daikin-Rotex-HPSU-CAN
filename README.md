@@ -12,11 +12,15 @@ Software verwende ich ESPHome.Diese wird als erstes in der Grundkonfiguration ge
 - Der ESP Chip kann über diese Seite (https://web.esphome.io/?dashboard_install) für den ersten Gebrauch geflasht werden.
 - Die .bin ist zum flashen der reinen Standalone Lösung gedacht.Da fehlt der key für Homeassistant.
 
-- Feutures: - Verstellung von Raumsoll
-            - Verstellung WW Soll
-            - 1x Warm Wasser Taste ohne Heizstab (es wird für 10s auf 70Grad gestellt und dann wieder auf 45 Grad)
-            - Thermische Leistungsberechnung
-            - Betriebsmodus kann verstellt werden
+- Feutures:   - Verstellung von Raumsoll
+  
+              - Verstellung WW Soll
+  
+              - 1x Warm Wasser Taste ohne Heizstab (es wird für 10s auf 70Grad gestellt und dann wieder auf 45 Grad)
+  
+              - Thermische Leistungsberechnung
+  
+              - Betriebsmodus kann verstellt werden
 
   Es werden alle relevanten Daten Abgefragt die man eigentlich benötigt.
 
