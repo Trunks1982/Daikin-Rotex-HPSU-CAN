@@ -4,6 +4,9 @@ die normalen ESP32 Wroom funktionieren nicht weil diese erst ab 50kbit funktioni
 Software verwende ich ESPHome.Diese wird als erstes in der Grundkonfiguration geflasht und dann gegen meine YAML getauscht.
 
 
+der ESP Chip kann über diese Seite ![Link](https://web.esphome.io/?dashboard_install) für den ersten Gebrauch geflasht werden.
+
+
 WEBUI vom ESP:
 ![Bildschirmfoto 2023-12-17 um 11 33 51](https://github.com/Trunks1982/Daikin-Rotex-HPSU-CAN/assets/62701386/524a204e-801a-4fe7-aacb-ac2e731a99b7)
 
