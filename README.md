@@ -4,7 +4,7 @@ die normalen ESP32 Wroom funktionieren nicht weil diese erst ab 50kbit funktioni
 Software verwende ich ESPHome.Diese wird als erstes in der Grundkonfiguration geflasht und dann gegen meine YAML getauscht.
 
 
-der ESP Chip kann über diese Seite ![Link](https://web.esphome.io/?dashboard_install) für den ersten Gebrauch geflasht werden.
+der ESP Chip kann über diese Seite (https://web.esphome.io/?dashboard_install) für den ersten Gebrauch geflasht werden.
 
 
 WEBUI vom ESP:
