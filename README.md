@@ -36,4 +36,5 @@ Software verwende ich ESPHome.Diese wird als erstes in der Grundkonfiguration ge
  - Pinbelegung GPIO 47 und 48
 
 
-![IMG_7065](https://github.com/Trunks1982/Daikin-Rotex-HPSU-CAN/assets/62701386/3c096a3c-5b6c-49c7-8372-59d175c0f3c8)
+![ESP32-S3toCAN](https://github.com/Trunks1982/Daikin-Rotex-HPSU-CAN/assets/62701386/40b1881a-b7f5-40b5-a2d7-678ee19299d2)
+
