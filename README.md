@@ -16,15 +16,11 @@ Software verwende ich ESPHome. Diese wird als erstes in der Grundkonfiguration g
 
 ## - Features:
 
-              - Verstellung von Raumsoll
-  
-              - Verstellung WW Soll
-  
-              - 1x Warm Wasser Taste ohne Heizstab (es wird für 10s auf 70Grad gestellt und dann wieder auf 45 Grad)
-  
-              - Thermische Leistungsberechnung
-  
-              - Betriebsmodus kann verstellt werden
+- **Verstellung von Raumsoll
+- **Verstellung WW Soll
+- **1x Warm Wasser Taste ohne Heizstab (es wird für 10s auf 70Grad gestellt und dann wieder auf 45 Grad)
+- **Thermische Leistungsberechnung
+- **Betriebsmodus kann verstellt werden
 
   Es werden alle relevanten Daten Abgefragt die man eigentlich benötigt.
   
