@@ -1,6 +1,7 @@
+"Ein Kaffee für nächste lange Nacht vor dem Rechner wäre toll" ist aber natürlich kein muss.
 <br>[![Paypal](https://user-images.githubusercontent.com/41958506/212499642-b2fd097a-0938-4bfc-b37b-74df64592c58.png)](https://www.paypal.com/donate/?hosted_button_id=H94LZRQW9PFQ4)
 
-                                              Rotex /Daikin HPSU CAN
+# Rotex /Daikin HPSU CAN
 
 
 
@@ -13,7 +14,7 @@ Software verwende ich ESPHome. Diese wird als erstes in der Grundkonfiguration g
 - Der ESP Chip kann über diese Seite (https://web.esphome.io/?dashboard_install) für den ersten Gebrauch geflasht werden.
  - Die .bin ist zum flashen der reinen Standalone Lösung gedacht.Da fehlt der key für Homeassistant.
 
-- Features:
+## - Features:
 
               - Verstellung von Raumsoll
   
@@ -49,4 +50,4 @@ Software verwende ich ESPHome. Diese wird als erstes in der Grundkonfiguration g
 
 "Ein Kaffee für nächste lange Nacht vor dem Rechner wäre toll" ist aber natürlich kein muss.
 
-https://www.paypal.com/donate/?hosted_button_id=H94LZRQW9PFQ4
+
