@@ -14,7 +14,7 @@ Software verwende ich ESPHome. Diese wird als erstes in der Grundkonfiguration g
 - Der ESP Chip kann über diese Seite (https://web.esphome.io/?dashboard_install) für den ersten Gebrauch geflasht werden.
  - Die .bin ist zum flashen der reinen Standalone Lösung gedacht.Da fehlt der key für Homeassistant.
 
-##Features:
+## Features:
 
 - Verstellung von Raumsoll
 - Verstellung WW Soll
@@ -29,14 +29,14 @@ wenn heizen wieder erkannt schaltet wieder auf Betriebsmodus heizen um.So wird m
 
 Für Iobroker hab ich ein Blockly Script hochgeladen was ich selber nutze und super funktioniert.
 
-##WEBUI vom ESP:
+## WEBUI vom ESP:
 ![Bildschirmfoto 2023-12-17 um 11 33 51](https://github.com/Trunks1982/Daikin-Rotex-HPSU-CAN/assets/62701386/524a204e-801a-4fe7-aacb-ac2e731a99b7)
 
 
-##Ansicht Homeassistant:
+## Ansicht Homeassistant:
 ![Bildschirmfoto 2023-12-17 um 11 34 51](https://github.com/Trunks1982/Daikin-Rotex-HPSU-CAN/assets/62701386/3be9654f-3fa3-48dd-ba99-37aefdf688b9)
 
-##Pinbelegung GPIO 47 und 48
+## Pinbelegung GPIO 47 und 48
 
 
 ![ESP32-S3toCAN](https://github.com/Trunks1982/Daikin-Rotex-HPSU-CAN/assets/62701386/40b1881a-b7f5-40b5-a2d7-678ee19299d2)
