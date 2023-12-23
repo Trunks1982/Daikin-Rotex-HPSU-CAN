@@ -12,7 +12,7 @@ Software verwende ich ESPHome. Diese wird als erstes in der Grundkonfiguration g
 
 
 - Der ESP Chip kann über diese Seite (https://web.esphome.io/?dashboard_install) für den ersten Gebrauch geflasht werden.Wenn die .bin geflasht wurde, muss ca 1min gewartet werden bis der ESP ein eigenen
-  WLAN HotSpot aufbaut.Das Passwort ist:
+  WLAN HotSpot aufbaut.Das Passwort ist: G0d27OLpvpOt
 - Die .bin ist zum flashen der reinen Standalone Lösung gedacht.Da fehlt der key für Homeassistant.
 
 ## Features:
