@@ -8,6 +8,8 @@
 Hi ich möchte mein erstes kleines Projekt vorstellen, ich wollte eine flexible Lösung die Standalone, mit Homeassistant und Iobroker läuft,um meine Rotex HPSU Compact mittels CAN BUS auszulesen und zu steuern.
 Verwendet habe ich ein ESP32-S3-WROOM Board (es sollte jeder ab S1 funktionieren, weil diese die 20kbits Baudrate unterstützen,
 die normalen ESP32 Wroom funktionieren nicht weil diese erst ab 50kbit funktionieren) und ein Waveshare SN65HVD230 CAN Board mit 3,3V.
+Ein ESP32 S3 mini (Zero) funktioniert auch.Noch mal ein tick kleiner als der normale S3.
+
 Software verwende ich ESPHome. Diese wird als erstes in der Grundkonfiguration geflasht und dann gegen meine YAML getauscht.
 
 
