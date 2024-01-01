@@ -10,12 +10,8 @@ Verwendet habe ich ein ESP32-S3-WROOM Board (es sollte jeder ab S1 funktionieren
 die normalen ESP32 Wroom funktionieren nicht weil diese erst ab 50kbit funktionieren) und ein Waveshare SN65HVD230 CAN Board mit 3,3V.
 Ein ESP32 S3 mini (Zero) funktioniert auch.Noch mal ein tick kleiner als der normale S3.
 
-Software verwende ich ESPHome. Diese wird als erstes in der Grundkonfiguration geflasht und dann gegen meine YAML getauscht.
+Als Software verwende ich ESPHome. Diese wird als erstes in der Grundkonfiguration geflasht und dann gegen meine YAML getauscht.
 
-
-- Der ESP Chip kann über diese Seite (https://web.esphome.io/?dashboard_install) für den ersten Gebrauch geflasht werden.Wenn die .bin geflasht wurde, muss ca 1min gewartet werden bis der ESP ein eigenen
-  WLAN HotSpot aufbaut.Das Passwort ist: G0d27OLpvpOt
-- Die .bin ist zum flashen der reinen Standalone Lösung gedacht.Da fehlt der key für Homeassistant.
 
 ## Features:
 
