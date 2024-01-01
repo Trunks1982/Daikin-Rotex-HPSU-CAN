@@ -20,7 +20,7 @@ ota:
 web_server:  
 
 wifi:
-  ssid: !secret wifi_ssid 
+  ssid: !secret wifi_ssid
   password: !secret wifi_password
 
   # Enable fallback hotspot (captive portal) in case wifi connection fails
@@ -321,6 +321,14 @@ select:
     id: r_soll
     optimistic: true
     options:
+      - "15 °C"
+      - "15,5 °C"
+      - "16 °C"
+      - "16,5 °C"
+      - "17 °C"
+      - "17,5 °C"
+      - "18 °C"
+      - "18,5 °C"
       - "19 °C"
       - "19,5 °C"
       - "20 °C"
@@ -339,6 +347,70 @@ select:
       then:
           - delay: 500ms
           - if:
+              condition:
+                - lambda: |-
+                    return (id(r_soll).state) == "15 °C";
+              then:
+                - canbus.send: 
+                    data: [ 0x30, 0x00, 0x05, 0x00, 0x96, 0x00, 0x00 ]
+                    can_id: 0x680 
+          - if:
+              condition:
+                - lambda: |-
+                    return (id(r_soll).state) == "15,5 °C";
+              then:
+                - canbus.send: 
+                    data: [ 0x30, 0x00, 0x05, 0x00, 0x9B, 0x00, 0x00 ]
+                    can_id: 0x680 
+          - if:
+              condition:
+                - lambda: |-
+                    return (id(r_soll).state) == "16 °C";
+              then:
+                - canbus.send: 
+                    data: [ 0x30, 0x00, 0x05, 0x00, 0xA0, 0x00, 0x00 ]
+                    can_id: 0x680 
+          - if:
+              condition:
+                - lambda: |-
+                    return (id(r_soll).state) == "16,5 °C";
+              then:
+                - canbus.send: 
+                    data: [ 0x30, 0x00, 0x05, 0x00, 0xA5, 0x00, 0x00 ]
+                    can_id: 0x680 
+          - if:
+              condition:
+                - lambda: |-
+                    return (id(r_soll).state) == "17 °C";
+              then:
+                - canbus.send: 
+                    data: [ 0x30, 0x00, 0x05, 0x00, 0xAA, 0x00, 0x00 ]
+                    can_id: 0x680 
+          - if:
+              condition:
+                - lambda: |-
+                    return (id(r_soll).state) == "17,5 °C";
+              then:
+                - canbus.send: 
+                    data: [ 0x30, 0x00, 0x05, 0x00, 0xAF, 0x00, 0x00 ]
+                    can_id: 0x680 
+          - if:
+              condition:
+                - lambda: |-
+                    return (id(r_soll).state) == "18 °C";
+              then:
+                - canbus.send: 
+                    data: [ 0x30, 0x00, 0x05, 0x00, 0xB4, 0x00, 0x00 ]
+                    can_id: 0x680 
+          - if:
+              condition:
+                - lambda: |-
+                    return (id(r_soll).state) == "18,5 °C";
+              then:
+                - canbus.send: 
+                    data: [ 0x30, 0x00, 0x05, 0x00, 0xB9, 0x00, 0x00 ]
+                    can_id: 0x680 
+          - if:              
               condition:
                 - lambda: |-
                     return (id(r_soll).state) == "19 °C";
