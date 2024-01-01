@@ -1,3 +1,5 @@
+####Version 1.0####
+
 esphome:
   name: rotex
   friendly_name: Rotex
