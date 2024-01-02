@@ -1,4 +1,4 @@
-####Version 1.0####
+########. Version 1.1 ########
 
 esphome:
   name: rotex
@@ -11,7 +11,7 @@ esp32:
 
 # Enable logging
 logger:
-  level: ERROR
+  
 
 # Enable Home Assistant API
 api:
@@ -122,7 +122,15 @@ sensor:
         return ((id(TVBH).state - id(ruecklauf).state)*(4.91 * id(durchfluss).state))/3600;
       
       
-     
+  - platform: template
+    name: "Raumsoll 1"
+    id: raumsoll1
+    unit_of_measurement: "°C"
+    icon: "mdi:thermometer-lines"
+    device_class: "temperature"
+    state_class: "measurement"
+    accuracy_decimals: 1
+    internal: false # don't show on HA   
 
   - platform: template
     name: "Status Kessel"
@@ -319,7 +327,7 @@ select:
 
 
   - platform: template
-    name: "Raumsoll Einstellen"
+    name: "Raumsoll 1 Einstellen"
     id: r_soll
     optimistic: true
     options:
@@ -344,7 +352,7 @@ select:
       - "24 °C"
       - "24,5 °C"
       - "25 °C"
-    initial_option: 20,5 °C  
+    initial_option: 20 °C  
     set_action:
       then:
           - delay: 500ms
@@ -685,8 +693,13 @@ time:
     id: homeassistant_time
     on_time:
      
-      - seconds: /10
+      - seconds: /30
         then:
+#Raumsoll1
+          - canbus.send:
+              data: [0x61, 0x01, 0x05, 0x00, 0x00, 0x00, 0x00]
+              can_id: 0x680
+          - delay: 500ms
 
 #Status Kessel
           - canbus.send:
@@ -798,6 +811,15 @@ canbus:
     id: can_bus
     on_frame:
 
+#Raumsoll1
+    - can_id: 0x301
+      then:
+        - lambda: |-
+            if(x[0]==0xd2 and x[2]==0x05) {
+             float temperature =float((float((int((x[4])+( (x[3])<<8))))/10));
+             id(raumsoll1).publish_state(temperature);
+             ESP_LOGD("main", "Temperature received over can is %f", temperature);
+            }
 
 #Status Kessel
     - can_id: 0x180
@@ -954,7 +976,7 @@ canbus:
               id(temperature_outside).publish_state(temperature);
               ESP_LOGD("main", "Temperature received over can is %f", temperature);
             }
-#Betriebsmodus (Automatik bei jeglicher Änderung)
+#Betriebsmodus (Automatik bei jeglicher Änderung)0x31, 0x00, 0xFA, 0x01, 0x12, 0x00, 0x00
     - can_id: 0x180
       then:
         - lambda: |-
@@ -985,7 +1007,96 @@ canbus:
                 call.perform();}
               }
 
-
+#Raumsoll 0x30, 0x00, 0x05, 0x00, 0x00, 0x00, 0x00 (Automatik bei jeglicher Änderung)
+    - can_id: 0x301
+      then:
+        - lambda: |-
+            if(x[0]==0xd2 and x[1]==0x00 and x[2]==0x05 and x[3]==0x00 and x[5]==0x00) {
+              if (x[4]==0x96){
+                auto call = id(r_soll).make_call();
+                call.set_option("15 °C");
+                call.perform();}
+              else if (x[4]==0x9B){
+                auto call = id(r_soll).make_call();
+                call.set_option("15,5 °C");
+                call.perform();}
+              else if (x[4]==0xA0){
+                auto call = id(r_soll).make_call();
+                call.set_option("16 °C");
+                call.perform();}
+              else if (x[4]==0xA5){
+                auto call = id(r_soll).make_call();
+                call.set_option("16,5 °C");
+                call.perform();}
+              else if (x[4]==0xAA){
+                auto call = id(r_soll).make_call();
+                call.set_option("17 °C");
+                call.perform();}
+              else if (x[4]==0xAF){
+                auto call = id(r_soll).make_call();
+                call.set_option("17,5 °C");
+                call.perform();}
+              else if (x[4]==0xB4){
+                auto call = id(r_soll).make_call();
+                call.set_option("18 °C");
+                call.perform();}
+              else if (x[4]==0xB9){
+                auto call = id(r_soll).make_call();
+                call.set_option("18,5 °C");
+                call.perform();}
+              else if (x[4]==0xBE){
+                auto call = id(r_soll).make_call();
+                call.set_option("19 °C");
+                call.perform();}      
+              else if (x[4]==0xC3){
+                auto call = id(r_soll).make_call();
+                call.set_option("19,5 °C");
+                call.perform();}      
+              else if (x[4]==0xC8){
+                auto call = id(r_soll).make_call();
+                call.set_option("20 °C");
+                call.perform();}      
+              else if (x[4]==0xCD){
+                auto call = id(r_soll).make_call();
+                call.set_option("20,5 °C");
+                call.perform();}      
+              else if (x[4]==0xD2){
+                auto call = id(r_soll).make_call();
+                call.set_option("21 °C");
+                call.perform();}      
+              else if (x[4]==0xD7){
+                auto call = id(r_soll).make_call();
+                call.set_option("21,5 °C");
+                call.perform();}      
+              else if (x[4]==0xDC){
+                auto call = id(r_soll).make_call();
+                call.set_option("22 °C");
+                call.perform();}      
+              else if (x[4]==0xE1){
+                auto call = id(r_soll).make_call();
+                call.set_option("22,5 °C");
+                call.perform();}      
+              else if (x[4]==0xE6){
+                auto call = id(r_soll).make_call();
+                call.set_option("23 °C");
+                call.perform();}  
+              else if (x[4]==0xEB){
+                auto call = id(r_soll).make_call();
+                call.set_option("23,5 °C");
+                call.perform();}      
+              else if (x[4]==0xF0){
+                auto call = id(r_soll).make_call();
+                call.set_option("24 °C");
+                call.perform();}      
+              else if (x[4]==0xF5){
+                auto call = id(r_soll).make_call();
+                call.set_option("24,5 °C");
+                call.perform();}      
+              else if (x[4]==0xFA){
+                auto call = id(r_soll).make_call();
+                call.set_option("25 °C");
+                call.perform();}                                  
+              }
   
 
 #Show data in raw form as hex-values
@@ -1004,4 +1115,37 @@ canbus:
               ESP_LOGD("main", "Antwort von 180 Float: %f", wert7);
               ESP_LOGI("main", "Antwort von 180 Dez.: %i %i", wert5, wert6);
               
+    #Show data in raw form as hex-values
+    - can_id: 0x300
+      then:
+       - lambda: |-
+              int wert0 = int(x[0]);
+              int wert1 =int(x[1]);
+              int wert2 =int(x[2]);
+              int wert3 =int(x[3]);
+              int wert4 =int(x[4]);
+              int wert5 =int(x[5]);
+              int wert6 =int(x[6]);
+              float wert7 = float(int((x[6])+( (x[5])<<8)));
+              ESP_LOGD("main", "Antwort von 180 Hex: %x %x %x %x %x %x %x", wert0, wert1, wert2, wert3, wert4, wert5, wert6);
+              ESP_LOGD("main", "Antwort von 180 Float: %f", wert7);
+              ESP_LOGI("main", "Antwort von 180 Dez.: %i %i", wert5, wert6);
+              
+#Show data in raw form as hex-values
+    - can_id: 0x301
+      then:
+       - lambda: |-
+              int wert0 = int(x[0]);
+              int wert1 =int(x[1]);
+              int wert2 =int(x[2]);
+              int wert3 =int(x[3]);
+              int wert4 =int(x[4]);
+              int wert5 =int(x[5]);
+              int wert6 =int(x[6]);
+              float wert7 = float(int((x[6])+( (x[5])<<8)));
+              ESP_LOGD("main", "Antwort von 180 Hex: %x %x %x %x %x %x %x", wert0, wert1, wert2, wert3, wert4, wert5, wert6);
+              ESP_LOGD("main", "Antwort von 180 Float: %f", wert7);
+              ESP_LOGI("main", "Antwort von 180 Dez.: %i %i", wert5, wert6);
+              
+                  
     
