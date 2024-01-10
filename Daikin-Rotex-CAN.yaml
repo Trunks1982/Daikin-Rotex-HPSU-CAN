@@ -1060,7 +1060,7 @@ canbus:
       then:
         - lambda: |-
             if(x[0]==0xd2 and x[1]==0x00 and x[3]==0x00 and x[4] == 0x0c) {
-              float temperature =float(float((int((x[6])+( (x[5])<<8))))/10);
+              float temperature = float((((int(x[5] * 256 + x[6]) & 0xffff) ^ 0x8000) - 0x8000)/10);
               id(temperature_outside).publish_state(temperature);
               ESP_LOGD("main", "Temperature received over can is %f", temperature);
             }
