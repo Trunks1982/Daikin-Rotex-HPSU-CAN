@@ -114,7 +114,7 @@ sensor:
   - platform: template
     name: "Thermische Leistung"
     device_class: "power"
-    unit_of_measurement: "kwh"
+    unit_of_measurement: "kW"
     accuracy_decimals: 2
     update_interval: 10 s   
     lambda: |-
@@ -135,27 +135,23 @@ sensor:
   - platform: template
     name: "Status Kessel"
     id: status_kessel
-    unit_of_measurement: ""
     icon: "mdi:thermometer-lines"
-    device_class: "temperature"
-    state_class: "measurement"
     accuracy_decimals: 0
     internal: false # don't show on HA
-
 
   - platform: template
     name: "Wasserdruck"
     id: Wasserdruck
-    unit_of_measurement: "Bar"
+    unit_of_measurement: "bar"
     icon: "mdi:thermometer-lines"
-    device_class: "temperature"
+    device_class: "pressure"
     state_class: "measurement"
     accuracy_decimals: 2
 
   - platform: template
     name: "Erzeugte Energie Gesamt"
     id: Erzeugte_Energie_Gesamt
-    unit_of_measurement: "kwh"
+    unit_of_measurement: "kWh"
     icon: "mdi:thermometer-lines"
     device_class: "ENERGY_STORAGE"
     state_class: "measurement"
@@ -179,7 +175,6 @@ sensor:
     state_class: "measurement"
     accuracy_decimals: 0
    
-   
   - platform: template
     name: "Betriebsart"
     id: Betriebsart
@@ -189,7 +184,6 @@ sensor:
     state_class: "measurement"
     accuracy_decimals: 0
     
-
   - platform: template
     name: "T-WW-Soll1"
     id: t_ww_soll
@@ -208,7 +202,6 @@ sensor:
     state_class: "measurement"
     accuracy_decimals: 1
 
-
   - platform: template
     name: "Aussentemperatur"
     id: temperature_outside
@@ -217,7 +210,6 @@ sensor:
     device_class: "temperature"
     state_class: "measurement"
     accuracy_decimals: 1
-
 
   - platform: template
     name: "Warmwassertemperatur"
@@ -260,7 +252,6 @@ sensor:
     id: durchfluss
     unit_of_measurement: "ltr/h"
     icon: "mdi:waves-arrow-left"
-    device_class: "water"
     state_class: "measurement"
     accuracy_decimals: 0
 
@@ -269,8 +260,6 @@ sensor:
     id: BPV
     unit_of_measurement: "%"
     icon: "mdi:waves-arrow-left"
-    device_class: "battery"
-    state_class: "measurement"
     accuracy_decimals: 0
 
 
