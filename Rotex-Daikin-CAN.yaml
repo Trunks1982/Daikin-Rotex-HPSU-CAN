@@ -109,7 +109,26 @@ button:
   
 
 sensor:
-  
+
+  - platform: template
+    name: "Fehlercode"
+    id: Fehlercode
+    unit_of_measurement: ""
+    device_class: "temperature"
+    icon: "mdi:thermometer-lines"
+    state_class: "measurement"
+    accuracy_decimals: 0
+
+
+  - platform: template
+    name: "Heizkurve"
+    id: heizkurve
+    unit_of_measurement: ""
+    device_class: "temperature"
+    icon: "mdi:thermometer-lines"
+    state_class: "measurement"
+    accuracy_decimals: 2
+
 
   - platform: template
     name: "Thermische Leistung"
@@ -772,6 +791,19 @@ time:
      
       - seconds: /10
         then:
+#Fehlercode
+          - canbus.send:
+              data: [0x31, 0x00, 0xFA, 0x13, 0x88, 0x00, 0x00]
+              can_id: 0x680
+          - delay: 250ms
+
+#Heizkurve
+          - canbus.send:
+              data: [0x61, 0x01, 0xFA, 0x01, 0x0E, 0x00, 0x00]
+              can_id: 0x680
+          - delay: 250ms
+
+        
 #Raumsoll1
           - canbus.send:
               data: [0x61, 0x01, 0x05, 0x00, 0x00, 0x00, 0x00]
