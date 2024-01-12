@@ -27,6 +27,7 @@ Wer Abtau Probleme hat kann sich in Iobroker oder Homeassitant leicht ein kleine
 wenn heizen wieder erkannt schaltet wieder auf Betriebsmodus heizen um.So wird max 0.7 Grad Warmwasser aus dem Sepicher verbraucht.
 
 Für Iobroker hab ich ein Blockly Script hochgeladen was ich selber nutze und super funktioniert.
+Die Defrost.yaml ist für Home Assistant Automatisierung gedacht.Das ist die gleiche Automatisierung wie für IoBroker.
 
 Getestet mit: - Rotex HSPU Compact 508 8kw
 
