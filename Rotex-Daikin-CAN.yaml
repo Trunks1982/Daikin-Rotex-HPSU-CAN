@@ -1,4 +1,4 @@
-########. Version 1.2.1 ########
+########. Version 1.2.2 ########
 
 esphome:
   name: rotex
@@ -11,7 +11,7 @@ esp32:
 
 # Enable logging
 logger:
-  
+  level: ERROR
 
 # Enable Home Assistant API
 api:
@@ -360,7 +360,7 @@ select:
       - "24 °C"
       - "24,5 °C"
       - "25 °C"
-    initial_option: 20 °C  
+    initial_option: 19 °C  
     set_action:
       then:
           - delay: 500ms
@@ -569,7 +569,7 @@ select:
     initial_option: 45 °C  
     set_action:
       then:
-          - delay: 500ms
+          - delay: 250ms
           - if:
               condition:
                 - lambda: |-
@@ -789,7 +789,7 @@ time:
     id: homeassistant_time
     on_time:
      
-      - seconds: /10
+      - seconds: /20
         then:
 #Fehlercode
           - canbus.send:
@@ -799,90 +799,90 @@ time:
 
 #Heizkurve
           - canbus.send:
-              data: [0x61, 0x01, 0xFA, 0x01, 0x0E, 0x00, 0x00]
+              data: [0x31, 0x00, 0xFA, 0x01, 0x0E, 0x00, 0x00]
               can_id: 0x680
           - delay: 250ms
 
         
 #Raumsoll1
           - canbus.send:
-              data: [0x61, 0x01, 0x05, 0x00, 0x00, 0x00, 0x00]
+              data: [0x31, 0x00, 0x05, 0x00, 0x00, 0x00, 0x00]
               can_id: 0x680
-          - delay: 500ms
+          - delay: 250ms
 
 #Status Kessel
           - canbus.send:
               data: [0x31, 0x00, 0xFA, 0x0A, 0x8C, 0x00, 0x00]
               can_id: 0x680
-          - delay: 500ms
+          - delay: 250ms
 
 
 #Wasserdruck
           - canbus.send:
               data: [0x31, 0x00, 0x1C, 0x00, 0x00, 0x00, 0x00]
               can_id: 0x680
-          - delay: 500ms
+          - delay: 250ms
 
 
 #T-WW-Soll1
           - canbus.send:
               data: [0x31, 0x00, 0x13, 0x00, 0x00, 0x00, 0x00 ]
               can_id: 0x680
-          - delay: 500ms
+          - delay: 250ms
 
 #Erzeugte Energie gesamt
           - canbus.send:
               data: [0x31, 0x00, 0xFA, 0x09, 0x30, 0x00, 0x00 ]
               can_id: 0x680
-          - delay: 500ms
+          - delay: 250ms
 
 #Umwälzpumpe
           - canbus.send:
               data: [0x31, 0x00, 0xFA, 0xC0, 0xF7, 0x00, 0x00 ]
               can_id: 0x680
-          - delay: 500ms
+          - delay: 250ms
 
 #Betriebsmodus
           - canbus.send:
               data: [0x31, 0x00, 0xFA, 0x01, 0x12, 0x00, 0x00 ]
               can_id: 0x680
-          - delay: 500ms
+          - delay: 250ms
 
 #Betriebsart
           - canbus.send:
               data: [0x31, 0x00, 0xFA, 0xC0, 0xF6, 0x00, 0x00 ]
               can_id: 0x680
-          - delay: 500ms
+          - delay: 250ms
 
 #VL Soll  et dec value - ok /10
           - canbus.send:
               data: [0x31, 0x00, 0x02, 0x00, 0x00, 0x00, 0x00]
               can_id: 0x680
-          - delay: 500ms
+          - delay: 250ms
 
 #BPV  et dec value - ok /10
           - canbus.send:
               data: [0x31, 0x00, 0xFA, 0xC0, 0xFB, 0x00, 0x00 ]
               can_id: 0x680
-          - delay: 500ms
+          - delay: 250ms
 
 #Volumenstrom 1/10 °C et dec value - ok /10
           - canbus.send:
               data: [ 0x31, 0x00, 0xFA, 0x01, 0xDA, 0x00, 0x00 ]
               can_id: 0x680
-          - delay: 500ms
+          - delay: 250ms
 
 #Außentemperatur 1/10 °C et dec value - ok /10
           - canbus.send:
               data: [ 0x31, 0x00, 0xfa,0x00,0x0c,0x00,0x00 ]
               can_id: 0x680
-          - delay: 500ms
+          - delay: 250ms
 
 #Warmwasser Temperatur  °C et dec value - ok /10
           - canbus.send:
               data: [ 0x31, 0x00, 0x0E, 0x00, 0x00, 0x00, 0x00 ]
               can_id: 0x680
-          - delay: 500ms          
+          - delay: 250ms          
 
 #Vorlauftemperatur (TVBH) - ok 1/10
           - canbus.send:
@@ -893,19 +893,19 @@ time:
           - canbus.send:
               data: [ 0x31, 0x00, 0xFA, 0xC0, 0xFC, 0x00, 0x00 ]
               can_id: 0x680
-          - delay: 500ms 
+          - delay: 250ms 
 
 #Rücklauftemperatur Hzg - ok 1/10
           - canbus.send:
               data: [ 0x31, 0x00, 0xFA, 0xC1, 0x00, 0x00, 0x00 ]
               can_id: 0x680
-          - delay: 500ms 
+          - delay: 250ms 
 
 #WW Temperatur - ok + offset
           - canbus.send:
               data: [ 0x31, 0x00, 0xfa,0x00,0x0e,0x00,0x00 ]
               can_id: 0x680
-          - delay: 500ms 
+          - delay: 250ms 
 
 
 
@@ -920,8 +920,33 @@ canbus:
     id: can_bus
     on_frame:
 
+#Fehlercode
+    - can_id: 0x180
+      then:
+        - lambda: |-
+            if(x[0]==0xd2 and x[2]==0xFA and x[3]==0x13 and x[4] ==0x88) {
+             float temperature =float((float((int((x[6])+( (x[5])<<8))))/100));
+             id(Fehlercode).publish_state(temperature);
+             ESP_LOGD("main", "Temperature received over can is %f", temperature);
+            }
+
+
+
+#Heizkurve
+    - can_id: 0x180
+      then:
+        - lambda: |-
+            if(x[0]==0xd2 and x[2]==0xFA and x[3]==0x01 and x[4] ==0x0E) {
+             float temperature =float((float((int((x[6])+( (x[5])<<8))))/100));
+             id(heizkurve).publish_state(temperature);
+             ESP_LOGD("main", "Temperature received over can is %f", temperature);
+            }
+
+
+
+
 #Raumsoll1
-    - can_id: 0x301
+    - can_id: 0x180
       then:
         - lambda: |-
             if(x[0]==0xd2 and x[2]==0x05) {
@@ -1117,7 +1142,7 @@ canbus:
               }
 
 #Raumsoll 0x30, 0x00, 0x05, 0x00, 0x00, 0x00, 0x00 (Automatik bei jeglicher Änderung)
-    - can_id: 0x301
+    - can_id: 0x180
       then:
         - lambda: |-
             if(x[0]==0xd2 and x[1]==0x00 and x[2]==0x05 and x[3]==0x00 and x[5]==0x00) {
