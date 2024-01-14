@@ -20,6 +20,7 @@ Als Software verwende ich ESPHome. Diese wird als erstes in der Grundkonfigurati
 - 1x Warm Wasser Taste ohne Heizstab (es wird für 10s auf 70Grad gestellt und dann wieder auf 45 Grad)
 - Thermische Leistungsberechnung
 - Betriebsmodus kann verstellt werden
+- Heizkurven Verstellung in 0.01 Schritten (Standart in 0.1 Schritten)
 
 Es werden alle relevanten Daten Abgefragt die man eigentlich benötigt.
 <br>  
