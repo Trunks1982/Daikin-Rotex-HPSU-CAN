@@ -23,7 +23,7 @@ Die .bin Datei dient zum vereinfachten updaten über die WEB-UI Oberfläche.Einf
 - Thermische Leistungsberechnung
 - Betriebsmodus kann verstellt werden
 - Heizkurven Verstellung in 0.01 Schritten (Standart in 0.1 Schritten)
-- ## Neues Feature: Zwei neue Schalter angelegt um auch die Thermostat Eingänge von der Rotex / Daikin direkt anzusteuern.
+- ## Neues Feature: Zwei neue Schalter angelegt um auch die Thermostat Eingänge von der Rotex / Daikin direkt zwischen Heizen / Kühlen umzuschalten.
 
 Es werden alle relevanten Daten Abgefragt die man eigentlich benötigt.
 <br>  
