@@ -1,4 +1,4 @@
-########. Version 1.2.1 ########
+########. Version 1.2.2 ########
 
 esphome:
   name: rotex
@@ -105,6 +105,15 @@ button:
                     can_id: 0x680 
         - logger.log: CAN Nachricht wurde gesendet
 
+switch:
+  - platform: gpio
+    name: Heizen Thermostat
+    pin: GPIO36
+    
+  - platform: gpio
+    name: Kühlen Thermostat
+    pin: GPIO37
+  
 
   
 #Alle Sensoren
@@ -1185,8 +1194,7 @@ select:
 
 
 time:
-  - platform: homeassistant
-    id: homeassistant_time
+  - platform: sntp
     on_time:
      
       - seconds: /20
