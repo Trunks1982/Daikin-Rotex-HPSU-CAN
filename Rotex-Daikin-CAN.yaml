@@ -97,11 +97,11 @@ button:
     on_press:
       then:
         - canbus.send: 
-                    data: [ 0x30, 0x00, 0x13, 0x02, 0xBC, 0x00, 0x00 ] # 45 Grad Grundeinstellung
+                    data: [ 0x30, 0x00, 0x13, 0x02, 0xBC, 0x00, 0x00 ] # 70 Grad Grundeinstellung
                     can_id: 0x680
         - delay: 10s
         - canbus.send: 
-                    data: [ 0x30, 0x00, 0x13, 0x01, 0xC2, 0x00, 0x00 ] # 70 Grad 
+                    data: [ 0x30, 0x00, 0x13, 0x01, 0xC2, 0x00, 0x00 ] # 45 Grad 
                     can_id: 0x680 
         - logger.log: CAN Nachricht wurde gesendet
 
@@ -132,15 +132,13 @@ sensor:
 
   - platform: template
     name: "Thermische Leistung"
-    id: thermischeleistung
     device_class: "power"
     unit_of_measurement: "kW"
     accuracy_decimals: 2
     update_interval: 10 s   
     lambda: |-
         
-        return abs((id(TVBH).state - id(ruecklauf).state)*(4.91 * id(durchfluss).state))/3600;
-       
+        return ((id(TVBH).state - id(ruecklauf).state)*(4.91 * id(durchfluss).state))/3600;
       
       
   - platform: template
@@ -876,6 +874,17 @@ select:
       - "58 °C"
       - "59 °C"
       - "60 °C"
+      - "61 °C"
+      - "62 °C"
+      - "63 °C"
+      - "64 °C"
+      - "65 °C"
+      - "66 °C"
+      - "67 °C"
+      - "68 °C"
+      - "69 °C"
+      - "70 °C"
+
 
     initial_option: 45 °C  
     set_action:
@@ -1092,11 +1101,92 @@ select:
               then:
                 - canbus.send: 
                     data: [ 0x30, 0x00, 0x13, 0x02, 0x58, 0x00, 0x00 ]
-                    can_id: 0x680                                                                                         
+                    can_id: 0x680
+          - if:
+              condition:
+                - lambda: |-
+                    return (id(ww_soll).state) == "61 °C";
+              then:
+                - canbus.send: 
+                    data: [ 0x30, 0x00, 0x13, 0x02, 0x62, 0x00, 0x00 ]
+                    can_id: 0x680                                       
+          - if:
+              condition:
+                - lambda: |-
+                    return (id(ww_soll).state) == "62 °C";
+              then:
+                - canbus.send: 
+                    data: [ 0x30, 0x00, 0x13, 0x02, 0x6C, 0x00, 0x00 ]
+                    can_id: 0x680                                       
+          - if:
+              condition:
+                - lambda: |-
+                    return (id(ww_soll).state) == "63 °C";
+              then:
+                - canbus.send: 
+                    data: [ 0x30, 0x00, 0x13, 0x02, 0x76, 0x00, 0x00 ]
+                    can_id: 0x680                                       
+          - if:
+              condition:
+                - lambda: |-
+                    return (id(ww_soll).state) == "64 °C";
+              then:
+                - canbus.send: 
+                    data: [ 0x30, 0x00, 0x13, 0x02, 0x80, 0x00, 0x00 ]
+                    can_id: 0x680                                       
+          - if:
+              condition:
+                - lambda: |-
+                    return (id(ww_soll).state) == "65 °C";
+              then:
+                - canbus.send: 
+                    data: [ 0x30, 0x00, 0x13, 0x02, 0x8A, 0x00, 0x00 ]
+                    can_id: 0x680                                       
+          - if:
+              condition:
+                - lambda: |-
+                    return (id(ww_soll).state) == "66 °C";
+              then:
+                - canbus.send: 
+                    data: [ 0x30, 0x00, 0x13, 0x02, 0x94, 0x00, 0x00 ]
+                    can_id: 0x680  
+          - if:
+              condition:
+                - lambda: |-
+                    return (id(ww_soll).state) == "67 °C";
+              then:
+                - canbus.send: 
+                    data: [ 0x30, 0x00, 0x13, 0x02, 0x9E, 0x00, 0x00 ]
+                    can_id: 0x680                                       
+          - if:
+              condition:
+                - lambda: |-
+                    return (id(ww_soll).state) == "68 °C";
+              then:
+                - canbus.send: 
+                    data: [ 0x30, 0x00, 0x13, 0x02, 0xA8, 0x00, 0x00 ]
+                    can_id: 0x680                                       
+          - if:
+              condition:
+                - lambda: |-
+                    return (id(ww_soll).state) == "69 °C";
+              then:
+                - canbus.send: 
+                    data: [ 0x30, 0x00, 0x13, 0x02, 0xB2, 0x00, 0x00 ]
+                    can_id: 0x680   
+          - if:
+              condition:
+                - lambda: |-
+                    return (id(ww_soll).state) == "70 °C";
+              then:
+                - canbus.send: 
+                    data: [ 0x30, 0x00, 0x13, 0x02, 0xBC, 0x00, 0x00 ]
+                    can_id: 0x680                                                                                                                                                                                                                                                                                                             
 
 
 time:
-  - platform: sntp
+  - platform: homeassistant
+    id: homeassistant_time
     on_time:
      
       - seconds: /20
@@ -1651,7 +1741,47 @@ canbus:
               else if (x[4]==0x58){
                 auto call = id(ww_soll).make_call();
                 call.set_option("60 °C");
-                call.perform();}                                                             
+                call.perform();}
+              else if (x[4]==0x62){
+                auto call = id(ww_soll).make_call();
+                call.set_option("61 °C");
+                call.perform();}             
+              else if (x[4]==0x6C){
+                auto call = id(ww_soll).make_call();
+                call.set_option("62 °C");
+                call.perform();}             
+              else if (x[4]==0x76){
+                auto call = id(ww_soll).make_call();
+                call.set_option("63 °C");
+                call.perform();}             
+              else if (x[4]==0x80){
+                auto call = id(ww_soll).make_call();
+                call.set_option("64 °C");
+                call.perform();}             
+              else if (x[4]==0x8A){
+                auto call = id(ww_soll).make_call();
+                call.set_option("65 °C");
+                call.perform();}             
+              else if (x[4]==0x94){
+                auto call = id(ww_soll).make_call();
+                call.set_option("66 °C");
+                call.perform();} 
+              else if (x[4]==0x9E){
+                auto call = id(ww_soll).make_call();
+                call.set_option("67 °C");
+                call.perform();}             
+              else if (x[4]==0xA8){
+                auto call = id(ww_soll).make_call();
+                call.set_option("68 °C");
+                call.perform();}             
+              else if (x[4]==0xB2){
+                auto call = id(ww_soll).make_call();
+                call.set_option("69 °C");
+                call.perform();} 
+              else if (x[4]==0xBC){
+                auto call = id(ww_soll).make_call();
+                call.set_option("70 °C");
+                call.perform();}                                                                                                                      
               }  
 
 #Show data in raw form as hex-values
@@ -1702,5 +1832,3 @@ canbus:
               ESP_LOGD("main", "Antwort von 180 Float: %f", wert7);
               ESP_LOGI("main", "Antwort von 180 Dez.: %i %i", wert5, wert6);
               
-                  
-    
