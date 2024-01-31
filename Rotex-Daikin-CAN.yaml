@@ -1840,3 +1840,4 @@ canbus:
               ESP_LOGD("main", "Antwort von 180 Float: %f", wert7);
               ESP_LOGI("main", "Antwort von 180 Dez.: %i %i", wert5, wert6);
               
+
