@@ -11,7 +11,7 @@ esp32:
 
 # Enable logging
 logger:
-  #level: ERROR
+  #level: VERBOSE
 
 # Enable Home Assistant API
 api:
@@ -311,6 +311,8 @@ select:
       - "Absenken"
       - "Sommer"
       - "Kühlen"
+      - "Automatik 1"
+      - "Automatik 2"
     initial_option: Heizen  
     set_action:
       then:
@@ -334,6 +336,14 @@ select:
           - if:
               condition:
                 - lambda: |-
+                    return (id(betrieb).state) == "Absenken";
+              then:
+                - canbus.send: 
+                    data: [ 0x30, 0x00, 0xFA, 0x01, 0x12, 0x04, 0x00 ]
+                    can_id: 0x680          
+          - if:
+              condition:
+                - lambda: |-
                     return (id(betrieb).state) == "Sommer";
               then:
                 - canbus.send: 
@@ -342,18 +352,27 @@ select:
           - if:
               condition:
                 - lambda: |-
-                    return (id(betrieb).state) == "Absenken";
+                    return (id(betrieb).state) == "Automatik 1";
               then:
                 - canbus.send: 
-                    data: [ 0x30, 0x00, 0xFA, 0x01, 0x12, 0x04, 0x00 ]
+                    data: [ 0x30, 0x00, 0xFA, 0x01, 0x12, 0x0B, 0x00 ]
                     can_id: 0x680
+          - if:
+              condition:
+                - lambda: |-
+                    return (id(betrieb).state) == "Automatik 2";
+              then:
+                - canbus.send: 
+                    data: [ 0x30, 0x00, 0xFA, 0x01, 0x12, 0x0C, 0x00 ]
+                    can_id: 0x680          
+          
           - if:
               condition:
                 - lambda: |-
                     return (id(betrieb).state) == "Kühlen";
               then:
                 - canbus.send: 
-                    data: [ 0x30, 0x00, 0xFA, 0x01, 0x12, 0x17, 0x00 ]
+                    data: [ 0x30, 0x00, 0xFA, 0x01, 0x12, 0x11, 0x00 ]
                     can_id: 0x680          
 
 
@@ -1543,10 +1562,14 @@ canbus:
                 auto call = id(betrieb).make_call();
                 call.set_option("Kühlen");
                 call.perform();}
-              else if (x[5]==0x11){
+              else if (x[5]==0x0B){
                 auto call = id(betrieb).make_call();
                 call.set_option("Automatik 1");
                 call.perform();}
+              else if (x[5]==0x0C){
+                auto call = id(betrieb).make_call();
+                call.set_option("Automatik 2");
+                call.perform();}  
               }
 
 #Raumsoll 0x30, 0x00, 0x05, 0x00, 0x00, 0x00, 0x00 (Automatik bei jeglicher Änderung)
