@@ -1,4 +1,4 @@
-![image](https://github.com/Trunks1982/Daikin-Rotex-HPSU-CAN/assets/62701386/bcbffd19-0e3c-4b87-bbdf-de930cc71b23)
+
 "Ein Kaffee für nächste lange Nacht vor dem Rechner wäre toll" ist aber natürlich kein muss.
 <br>[![Paypal](https://user-images.githubusercontent.com/41958506/212499642-b2fd097a-0938-4bfc-b37b-74df64592c58.png)](https://www.paypal.com/donate/?hosted_button_id=H94LZRQW9PFQ4)
 
@@ -48,6 +48,8 @@ Getestet mit: - Rotex HSPU Compact 508 8kw
 
 ![ESP32-S3toCAN](https://github.com/Trunks1982/Daikin-Rotex-HPSU-CAN/assets/62701386/40b1881a-b7f5-40b5-a2d7-678ee19299d2)
 
+Pin Belegung an der Rotex HPSU
+![image](https://github.com/Trunks1982/Daikin-Rotex-HPSU-CAN/assets/62701386/bcbffd19-0e3c-4b87-bbdf-de930cc71b23)
 
 
 
