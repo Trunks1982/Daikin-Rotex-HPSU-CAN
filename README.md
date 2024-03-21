@@ -45,11 +45,12 @@ Getestet mit: - Rotex HSPU Compact 508 8kw
 
 ## Pinbelegung GPIO 47 und 48
 
-
 ![ESP32-S3toCAN](https://github.com/Trunks1982/Daikin-Rotex-HPSU-CAN/assets/62701386/40b1881a-b7f5-40b5-a2d7-678ee19299d2)
 
 ## Pin Belegung an der Rotex HPSU
-![image](https://github.com/Trunks1982/Daikin-Rotex-HPSU-CAN/assets/62701386/bcbffd19-0e3c-4b87-bbdf-de930cc71b23)
+
+![Rotex CAN Anschluss](https://github.com/Trunks1982/Daikin-Rotex-HPSU-CAN/assets/62701386/05c36ae7-ddc9-4a1e-8a73-4559c765f132)
+
 
 
 
