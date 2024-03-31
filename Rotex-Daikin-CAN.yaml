@@ -127,6 +127,7 @@ number:
     initial_value: 19
     unit_of_measurement: "°C"
     icon: "mdi:thermometer-lines"
+    device_class: "temperature"
     on_value:
       then:
         - delay: 500ms
