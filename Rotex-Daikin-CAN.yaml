@@ -114,6 +114,191 @@ switch:
     name: Kühlen Thermostat
     pin: GPIO37
   
+number:
+#Set Raumsoll1
+  - platform: template
+    name: "Raumsoll 1 Einstellen"
+    optimistic: true
+    id: r_soll
+    min_value: 15
+    max_value: 25
+    mode: slider
+    step: .5
+    initial_value: 19
+    unit_of_measurement: "°C"
+    icon: "mdi:thermometer-lines"
+    device_class: "temperature"
+    on_value:
+      then:
+        - delay: 500ms
+        - if:
+            condition:
+              - lambda: |-
+                  return (id(r_soll).state) == 15;
+            then:
+              - canbus.send: 
+                  data: [ 0x30, 0x00, 0x05, 0x00, 0x96, 0x00, 0x00 ]
+                  can_id: 0x680 
+        - if:
+            condition:
+              - lambda: |-
+                  return (id(r_soll).state) == 15.5;
+            then:
+              - canbus.send: 
+                  data: [ 0x30, 0x00, 0x05, 0x00, 0x9B, 0x00, 0x00 ]
+                  can_id: 0x680 
+        - if:
+            condition:
+              - lambda: |-
+                  return (id(r_soll).state) == 16;
+            then:
+              - canbus.send: 
+                  data: [ 0x30, 0x00, 0x05, 0x00, 0xA0, 0x00, 0x00 ]
+                  can_id: 0x680 
+        - if:
+            condition:
+              - lambda: |-
+                  return (id(r_soll).state) == 16.5;
+            then:
+              - canbus.send: 
+                  data: [ 0x30, 0x00, 0x05, 0x00, 0xA5, 0x00, 0x00 ]
+                  can_id: 0x680 
+        - if:
+            condition:
+              - lambda: |-
+                  return (id(r_soll).state) == 17;
+            then:
+              - canbus.send: 
+                  data: [ 0x30, 0x00, 0x05, 0x00, 0xAA, 0x00, 0x00 ]
+                  can_id: 0x680 
+        - if:
+            condition:
+              - lambda: |-
+                  return (id(r_soll).state) == 17.5;
+            then:
+              - canbus.send: 
+                  data: [ 0x30, 0x00, 0x05, 0x00, 0xAF, 0x00, 0x00 ]
+                  can_id: 0x680 
+        - if:
+            condition:
+              - lambda: |-
+                  return (id(r_soll).state) == 18;
+            then:
+              - canbus.send: 
+                  data: [ 0x30, 0x00, 0x05, 0x00, 0xB4, 0x00, 0x00 ]
+                  can_id: 0x680 
+        - if:
+            condition:
+              - lambda: |-
+                  return (id(r_soll).state) == 18.5;
+            then:
+              - canbus.send: 
+                  data: [ 0x30, 0x00, 0x05, 0x00, 0xB9, 0x00, 0x00 ]
+                  can_id: 0x680 
+        - if:              
+            condition:
+              - lambda: |-
+                  return (id(r_soll).state) == 19;
+            then:
+              - canbus.send: 
+                  data: [ 0x30, 0x00, 0x05, 0x00, 0xBE, 0x00, 0x00 ]
+                  can_id: 0x680
+        - if:
+            condition:
+              - lambda: |-
+                  return (id(r_soll).state) == 19.5;
+            then:
+              - canbus.send: 
+                  data: [ 0x30, 0x00, 0x05, 0x00, 0xC3, 0x00, 0x00 ]
+                  can_id: 0x680
+        - if:
+            condition:
+              - lambda: |-
+                  return (id(r_soll).state) == 20;
+            then:
+              - canbus.send: 
+                  data: [ 0x30, 0x00, 0x05, 0x00, 0xC8, 0x00, 0x00 ]
+                  can_id: 0x680
+        - if:
+            condition:
+              - lambda: |-
+                  return (id(r_soll).state) == 20.5;
+            then:
+              - canbus.send: 
+                  data: [ 0x30, 0x00, 0x05, 0x00, 0xCD, 0x00, 0x00 ]
+                  can_id: 0x680
+        - if:
+            condition:
+              - lambda: |-
+                  return (id(r_soll).state) == 21;
+            then:
+              - canbus.send: 
+                  data: [ 0x30, 0x00, 0x05, 0x00, 0xD2, 0x00, 0x00 ]
+                  can_id: 0x680
+        - if:
+            condition:
+              - lambda: |-
+                  return (id(r_soll).state) == 21.5;
+            then:
+              - canbus.send: 
+                  data: [ 0x30, 0x00, 0x05, 0x00, 0xD7, 0x00, 0x00 ]
+                  can_id: 0x680
+        - if:
+            condition:
+              - lambda: |-
+                  return (id(r_soll).state) == 22;
+            then:
+              - canbus.send: 
+                  data: [ 0x30, 0x00, 0x05, 0x00, 0xDC, 0x00, 0x00 ]
+                  can_id: 0x680
+        - if:
+            condition:
+              - lambda: |-
+                  return (id(r_soll).state) == 22.5;
+            then:
+              - canbus.send: 
+                  data: [ 0x30, 0x00, 0x05, 0x00, 0xE1, 0x00, 0x00 ]
+                  can_id: 0x680       
+        - if:
+            condition:
+              - lambda: |-
+                  return (id(r_soll).state) == 23;
+            then:
+              - canbus.send: 
+                  data: [ 0x30, 0x00, 0x05, 0x00, 0xE6, 0x00, 0x00 ]
+                  can_id: 0x680       
+        - if:
+            condition:
+              - lambda: |-
+                  return (id(r_soll).state) == 23.5;
+            then:
+              - canbus.send: 
+                  data: [ 0x30, 0x00, 0x05, 0x00, 0xEB, 0x00, 0x00 ]
+                  can_id: 0x680       
+        - if:
+            condition:
+              - lambda: |-
+                  return (id(r_soll).state) == 24;
+            then:
+              - canbus.send: 
+                  data: [ 0x30, 0x00, 0x05, 0x00, 0xF0, 0x00, 0x00 ]
+                  can_id: 0x680       
+        - if:
+            condition:
+              - lambda: |-
+                  return (id(r_soll).state) == 24.5;
+            then:
+              - canbus.send: 
+                  data: [ 0x30, 0x00, 0x05, 0x00, 0xF5, 0x00, 0x00 ]
+                  can_id: 0x680   
+        - if:
+            condition:
+              - lambda: |-
+                  return (id(r_soll).state) == 25;
+            then:
+              - canbus.send: 
+                  data: [ 0x30, 0x00, 0x05, 0x00, 0xFA, 0x00, 0x00 ]
+                  can_id: 0x680 
 
   
 #Alle Sensoren
@@ -664,212 +849,6 @@ select:
                 - canbus.send: 
                     data: [ 0x30, 0x00, 0xFA, 0x01, 0x0E, 0x0, 0x32 ]
                     can_id: 0x680                                                                                                                                                                                                             
-
-
-
-
-
-#Set Raumsoll1
-
-  - platform: template
-    name: "Raumsoll 1 Einstellen"
-    id: r_soll
-    optimistic: true
-    options:
-      - "15 °C"
-      - "15,5 °C"
-      - "16 °C"
-      - "16,5 °C"
-      - "17 °C"
-      - "17,5 °C"
-      - "18 °C"
-      - "18,5 °C"
-      - "19 °C"
-      - "19,5 °C"
-      - "20 °C"
-      - "20,5 °C"
-      - "21 °C"
-      - "21,5 °C"
-      - "22 °C"
-      - "22,5 °C"
-      - "23 °C"
-      - "23,5 °C"
-      - "24 °C"
-      - "24,5 °C"
-      - "25 °C"
-    initial_option: 19 °C  
-    set_action:
-      then:
-          - delay: 500ms
-          - if:
-              condition:
-                - lambda: |-
-                    return (id(r_soll).state) == "15 °C";
-              then:
-                - canbus.send: 
-                    data: [ 0x30, 0x00, 0x05, 0x00, 0x96, 0x00, 0x00 ]
-                    can_id: 0x680 
-          - if:
-              condition:
-                - lambda: |-
-                    return (id(r_soll).state) == "15,5 °C";
-              then:
-                - canbus.send: 
-                    data: [ 0x30, 0x00, 0x05, 0x00, 0x9B, 0x00, 0x00 ]
-                    can_id: 0x680 
-          - if:
-              condition:
-                - lambda: |-
-                    return (id(r_soll).state) == "16 °C";
-              then:
-                - canbus.send: 
-                    data: [ 0x30, 0x00, 0x05, 0x00, 0xA0, 0x00, 0x00 ]
-                    can_id: 0x680 
-          - if:
-              condition:
-                - lambda: |-
-                    return (id(r_soll).state) == "16,5 °C";
-              then:
-                - canbus.send: 
-                    data: [ 0x30, 0x00, 0x05, 0x00, 0xA5, 0x00, 0x00 ]
-                    can_id: 0x680 
-          - if:
-              condition:
-                - lambda: |-
-                    return (id(r_soll).state) == "17 °C";
-              then:
-                - canbus.send: 
-                    data: [ 0x30, 0x00, 0x05, 0x00, 0xAA, 0x00, 0x00 ]
-                    can_id: 0x680 
-          - if:
-              condition:
-                - lambda: |-
-                    return (id(r_soll).state) == "17,5 °C";
-              then:
-                - canbus.send: 
-                    data: [ 0x30, 0x00, 0x05, 0x00, 0xAF, 0x00, 0x00 ]
-                    can_id: 0x680 
-          - if:
-              condition:
-                - lambda: |-
-                    return (id(r_soll).state) == "18 °C";
-              then:
-                - canbus.send: 
-                    data: [ 0x30, 0x00, 0x05, 0x00, 0xB4, 0x00, 0x00 ]
-                    can_id: 0x680 
-          - if:
-              condition:
-                - lambda: |-
-                    return (id(r_soll).state) == "18,5 °C";
-              then:
-                - canbus.send: 
-                    data: [ 0x30, 0x00, 0x05, 0x00, 0xB9, 0x00, 0x00 ]
-                    can_id: 0x680 
-          - if:              
-              condition:
-                - lambda: |-
-                    return (id(r_soll).state) == "19 °C";
-              then:
-                - canbus.send: 
-                    data: [ 0x30, 0x00, 0x05, 0x00, 0xBE, 0x00, 0x00 ]
-                    can_id: 0x680
-          - if:
-              condition:
-                - lambda: |-
-                    return (id(r_soll).state) == "19,5 °C";
-              then:
-                - canbus.send: 
-                    data: [ 0x30, 0x00, 0x05, 0x00, 0xC3, 0x00, 0x00 ]
-                    can_id: 0x680
-          - if:
-              condition:
-                - lambda: |-
-                    return (id(r_soll).state) == "20 °C";
-              then:
-                - canbus.send: 
-                    data: [ 0x30, 0x00, 0x05, 0x00, 0xC8, 0x00, 0x00 ]
-                    can_id: 0x680
-          - if:
-              condition:
-                - lambda: |-
-                    return (id(r_soll).state) == "20,5 °C";
-              then:
-                - canbus.send: 
-                    data: [ 0x30, 0x00, 0x05, 0x00, 0xCD, 0x00, 0x00 ]
-                    can_id: 0x680
-          - if:
-              condition:
-                - lambda: |-
-                    return (id(r_soll).state) == "21 °C";
-              then:
-                - canbus.send: 
-                    data: [ 0x30, 0x00, 0x05, 0x00, 0xD2, 0x00, 0x00 ]
-                    can_id: 0x680
-          - if:
-              condition:
-                - lambda: |-
-                    return (id(r_soll).state) == "21,5 °C";
-              then:
-                - canbus.send: 
-                    data: [ 0x30, 0x00, 0x05, 0x00, 0xD7, 0x00, 0x00 ]
-                    can_id: 0x680
-          - if:
-              condition:
-                - lambda: |-
-                    return (id(r_soll).state) == "22 °C";
-              then:
-                - canbus.send: 
-                    data: [ 0x30, 0x00, 0x05, 0x00, 0xDC, 0x00, 0x00 ]
-                    can_id: 0x680
-          - if:
-              condition:
-                - lambda: |-
-                    return (id(r_soll).state) == "22,5 °C";
-              then:
-                - canbus.send: 
-                    data: [ 0x30, 0x00, 0x05, 0x00, 0xE1, 0x00, 0x00 ]
-                    can_id: 0x680       
-          - if:
-              condition:
-                - lambda: |-
-                    return (id(r_soll).state) == "23 °C";
-              then:
-                - canbus.send: 
-                    data: [ 0x30, 0x00, 0x05, 0x00, 0xE6, 0x00, 0x00 ]
-                    can_id: 0x680       
-          - if:
-              condition:
-                - lambda: |-
-                    return (id(r_soll).state) == "23,5 °C";
-              then:
-                - canbus.send: 
-                    data: [ 0x30, 0x00, 0x05, 0x00, 0xEB, 0x00, 0x00 ]
-                    can_id: 0x680       
-          - if:
-              condition:
-                - lambda: |-
-                    return (id(r_soll).state) == "24 °C";
-              then:
-                - canbus.send: 
-                    data: [ 0x30, 0x00, 0x05, 0x00, 0xF0, 0x00, 0x00 ]
-                    can_id: 0x680       
-          - if:
-              condition:
-                - lambda: |-
-                    return (id(r_soll).state) == "24,5 °C";
-              then:
-                - canbus.send: 
-                    data: [ 0x30, 0x00, 0x05, 0x00, 0xF5, 0x00, 0x00 ]
-                    can_id: 0x680   
-          - if:
-              condition:
-                - lambda: |-
-                    return (id(r_soll).state) == "25 °C";
-              then:
-                - canbus.send: 
-                    data: [ 0x30, 0x00, 0x05, 0x00, 0xFA, 0x00, 0x00 ]
-                    can_id: 0x680                     
-
 
   - platform: template
     name: "Warmwasser Einstellen"
@@ -1577,91 +1556,12 @@ canbus:
       then:
         - lambda: |-
             if(x[0]==0xd2 and x[1]==0x00 and x[2]==0x05 and x[3]==0x00 and x[5]==0x00) {
-              if (x[4]==0x96){
-                auto call = id(r_soll).make_call();
-                call.set_option("15 °C");
-                call.perform();}
-              else if (x[4]==0x9B){
-                auto call = id(r_soll).make_call();
-                call.set_option("15,5 °C");
-                call.perform();}
-              else if (x[4]==0xA0){
-                auto call = id(r_soll).make_call();
-                call.set_option("16 °C");
-                call.perform();}
-              else if (x[4]==0xA5){
-                auto call = id(r_soll).make_call();
-                call.set_option("16,5 °C");
-                call.perform();}
-              else if (x[4]==0xAA){
-                auto call = id(r_soll).make_call();
-                call.set_option("17 °C");
-                call.perform();}
-              else if (x[4]==0xAF){
-                auto call = id(r_soll).make_call();
-                call.set_option("17,5 °C");
-                call.perform();}
-              else if (x[4]==0xB4){
-                auto call = id(r_soll).make_call();
-                call.set_option("18 °C");
-                call.perform();}
-              else if (x[4]==0xB9){
-                auto call = id(r_soll).make_call();
-                call.set_option("18,5 °C");
-                call.perform();}
-              else if (x[4]==0xBE){
-                auto call = id(r_soll).make_call();
-                call.set_option("19 °C");
-                call.perform();}      
-              else if (x[4]==0xC3){
-                auto call = id(r_soll).make_call();
-                call.set_option("19,5 °C");
-                call.perform();}      
-              else if (x[4]==0xC8){
-                auto call = id(r_soll).make_call();
-                call.set_option("20 °C");
-                call.perform();}      
-              else if (x[4]==0xCD){
-                auto call = id(r_soll).make_call();
-                call.set_option("20,5 °C");
-                call.perform();}      
-              else if (x[4]==0xD2){
-                auto call = id(r_soll).make_call();
-                call.set_option("21 °C");
-                call.perform();}      
-              else if (x[4]==0xD7){
-                auto call = id(r_soll).make_call();
-                call.set_option("21,5 °C");
-                call.perform();}      
-              else if (x[4]==0xDC){
-                auto call = id(r_soll).make_call();
-                call.set_option("22 °C");
-                call.perform();}      
-              else if (x[4]==0xE1){
-                auto call = id(r_soll).make_call();
-                call.set_option("22,5 °C");
-                call.perform();}      
-              else if (x[4]==0xE6){
-                auto call = id(r_soll).make_call();
-                call.set_option("23 °C");
-                call.perform();}  
-              else if (x[4]==0xEB){
-                auto call = id(r_soll).make_call();
-                call.set_option("23,5 °C");
-                call.perform();}      
-              else if (x[4]==0xF0){
-                auto call = id(r_soll).make_call();
-                call.set_option("24 °C");
-                call.perform();}      
-              else if (x[4]==0xF5){
-                auto call = id(r_soll).make_call();
-                call.set_option("24,5 °C");
-                call.perform();}      
-              else if (x[4]==0xFA){
-                auto call = id(r_soll).make_call();
-                call.set_option("25 °C");
-                call.perform();}                                  
-              }
+              float temperature =float((float((int((x[4])+((x[3])<<8))))/10));
+              id(raumsoll1).publish_state(temperature);
+              auto call = id(r_soll).make_call();
+              call.set_value(temperature);
+              call.perform();                                    
+            }
   
 
 #WW Soll 1 0x31, 0x00, 0x13, 0x00, 0x00, 0x00, 0x00 (Automatik bei jeglicher Änderung)
