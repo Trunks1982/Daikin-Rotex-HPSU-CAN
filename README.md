@@ -41,7 +41,8 @@ Getestet mit: - Rotex HSPU Compact 508 8kw
 
 
 ## Ansicht Homeassistant:
-![Bildschirmfoto 2023-12-17 um 11 34 51](https://github.com/Trunks1982/Daikin-Rotex-HPSU-CAN/assets/62701386/3be9654f-3fa3-48dd-ba99-37aefdf688b9)
+![Bildschirmfoto 2024-04-01 um 01 37 19](https://github.com/Trunks1982/Daikin-Rotex-HPSU-CAN/assets/62701386/d9c1d703-ac4a-4466-97e3-dbd6478cbed1)
+
 
 ## Pinbelegung GPIO 47 und 48
 
