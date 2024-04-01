@@ -622,255 +622,255 @@ number:
     icon: "mdi:chart-bell-curve-cumulative"
     on_value:
       then:
-          - delay: 500ms
-          - if:
-              condition:
-                - lambda: |-
-                    return (id(set_heizkurve).state) == 0.20;
-              then:
-                - canbus.send: 
-                    data: [ 0x30, 0x00, 0xFA, 0x01, 0x0E, 0x00, 0x14 ]
-                    can_id: 0x680 
-          - if:
-              condition:
-                - lambda: |-
-                    return (id(set_heizkurve).state) == 0.21;
-              then:
-                - canbus.send: 
-                    data: [ 0x30, 0x00, 0xFA, 0x01, 0x0E, 0x00, 0x15 ]
-                    can_id: 0x680 
-          - if:
-              condition:
-                - lambda: |-
-                    return (id(set_heizkurve).state) == 0.22;
-              then:
-                - canbus.send: 
-                    data: [ 0x30, 0x00, 0xFA, 0x01, 0x0E, 0x00, 0x16 ]
-                    can_id: 0x680 
-          - if:
-              condition:
-                - lambda: |-
-                    return (id(set_heizkurve).state) == 0.23;
-              then:
-                - canbus.send: 
-                    data: [ 0x30, 0x00, 0xFA, 0x01, 0x0E, 0x00, 0x17 ]
-                    can_id: 0x680 
-          - if:
-              condition:
-                - lambda: |-
-                    return (id(set_heizkurve).state) == 0.24;
-              then:
-                - canbus.send: 
-                    data: [ 0x30, 0x00, 0xFA, 0x01, 0x0E, 0x00, 0x18 ]
-                    can_id: 0x680 
-          - if:
-              condition:
-                - lambda: |-
-                    return (id(set_heizkurve).state) == 0.25;
-              then:
-                - canbus.send: 
-                    data: [ 0x30, 0x00, 0xFA, 0x01, 0x0E, 0x00, 0x19 ]
-                    can_id: 0x680 
-          - if:              
-              condition:
-                - lambda: |-
-                    return (id(set_heizkurve).state) == 0.26;
-              then:
-                - canbus.send: 
-                    data: [ 0x30, 0x00, 0xFA, 0x01, 0x0E, 0x00, 0x1A ]
-                    can_id: 0x680
-          - if:
-              condition:
-                - lambda: |-
-                    return (id(set_heizkurve).state) == 0.27;
-              then:
-                - canbus.send: 
-                    data: [ 0x30, 0x00, 0xFA, 0x01, 0x0E, 0x00, 0x1B ]
-                    can_id: 0x680
-          - if:
-              condition:
-                - lambda: |-
-                    return (id(set_heizkurve).state) == 0.28;
-              then:
-                - canbus.send: 
-                    data: [ 0x30, 0x00, 0xFA, 0x01, 0x0E, 0x00, 0x1C ]
-                    can_id: 0x680
-          - if:
-              condition:
-                - lambda: |-
-                    return (id(set_heizkurve).state) == 0.29;
-              then:
-                - canbus.send: 
-                    data: [ 0x30, 0x00, 0xFA, 0x01, 0x0E, 0x00, 0x1D ]
-                    can_id: 0x680
-          - if:
-              condition:
-                - lambda: |-
-                    return (id(set_heizkurve).state) == 0.30;
-              then:
-                - canbus.send: 
-                    data: [ 0x30, 0x00, 0xFA, 0x01, 0x0E, 0x00, 0x1E ]
-                    can_id: 0x680
-          - if:
-              condition:
-                - lambda: |-
-                    return (id(set_heizkurve).state) == 0.31;
-              then:
-                - canbus.send: 
-                    data: [ 0x30, 0x00, 0xFA, 0x01, 0x0E, 0x00, 0x1F ]
-                    can_id: 0x680
-          - if:
-              condition:
-                - lambda: |-
-                    return (id(set_heizkurve).state) == 0.32;
-              then:
-                - canbus.send: 
-                    data: [ 0x30, 0x00, 0xFA, 0x01, 0x0E, 0x00, 0x20 ]
-                    can_id: 0x680
-          - if:
-              condition:
-                - lambda: |-
-                    return (id(set_heizkurve).state) == 0.33;
-              then:
-                - canbus.send: 
-                    data: [ 0x30, 0x00, 0xFA, 0x01, 0x0E, 0x00, 0x21 ]
-                    can_id: 0x680
-          - if:
-              condition:
-                - lambda: |-
-                    return (id(set_heizkurve).state) == 0.34;
-              then:
-                - canbus.send: 
-                    data: [ 0x30, 0x00, 0xFA, 0x01, 0x0E, 0x00, 0x22 ]
-                    can_id: 0x680       
-          - if:
-              condition:
-                - lambda: |-
-                    return (id(set_heizkurve).state) == 0.35;
-              then:
-                - canbus.send: 
-                    data: [ 0x30, 0x00, 0xFA, 0x01, 0x0E, 0x00, 0x23 ]
-                    can_id: 0x680       
-          - if:
-              condition:
-                - lambda: |-
-                    return (id(set_heizkurve).state) == 0.36;
-              then:
-                - canbus.send: 
-                    data: [ 0x30, 0x00, 0xFA, 0x01, 0x0E, 0x00, 0x24 ]
-                    can_id: 0x680       
-          - if:
-              condition:
-                - lambda: |-
-                    return (id(set_heizkurve).state) == 0.37;
-              then:
-                - canbus.send: 
-                    data: [ 0x30, 0x00, 0xFA, 0x01, 0x0E, 0x00, 0x25 ]
-                    can_id: 0x680       
-          - if:
-              condition:
-                - lambda: |-
-                    return (id(set_heizkurve).state) == 0.38;
-              then:
-                - canbus.send: 
-                    data: [ 0x30, 0x00, 0xFA, 0x01, 0x0E, 0x00, 0x26 ]
-                    can_id: 0x680   
-          - if:
-              condition:
-                - lambda: |-
-                    return (id(set_heizkurve).state) == 0.39;
-              then:
-                - canbus.send: 
-                    data: [ 0x30, 0x00, 0xFA, 0x01, 0x0E, 0x00, 0x27 ]
-                    can_id: 0x680  
-          - if:
-              condition:
-                - lambda: |-
-                    return (id(set_heizkurve).state) == 0.40;
-              then:
-                - canbus.send: 
-                    data: [ 0x30, 0x00, 0xFA, 0x01, 0x0E, 0x00, 0x28 ]
-                    can_id: 0x680                     
-          - if:
-              condition:
-                - lambda: |-
-                    return (id(set_heizkurve).state) == 0.41;
-              then:
-                - canbus.send: 
-                    data: [ 0x30, 0x00, 0xFA, 0x01, 0x0E, 0x00, 0x29 ]
-                    can_id: 0x680                     
-          - if:
-              condition:
-                - lambda: |-
-                    return (id(set_heizkurve).state) == 0.42;
-              then:
-                - canbus.send: 
-                    data: [ 0x30, 0x00, 0xFA, 0x01, 0x0E, 0x00, 0x2A ]
-                    can_id: 0x680    
-          - if:
-              condition:
-                - lambda: |-
-                    return (id(set_heizkurve).state) == 0.43;
-              then:
-                - canbus.send: 
-                    data: [ 0x30, 0x00, 0xFA, 0x01, 0x0E, 0x00, 0x2b ]
-                    can_id: 0x680                                                
-          - if:
-              condition:
-                - lambda: |-
-                    return (id(set_heizkurve).state) == 0.44;
-              then:
-                - canbus.send: 
-                    data: [ 0x30, 0x00, 0xFA, 0x01, 0x0E, 0x00, 0x2C ]
-                    can_id: 0x680                     
-          - if:
-              condition:
-                - lambda: |-
-                    return (id(set_heizkurve).state) == 0.45;
-              then:
-                - canbus.send: 
-                    data: [ 0x30, 0x00, 0xFA, 0x01, 0x0E, 0x00, 0x2D ]
-                    can_id: 0x680    
-          - if:
-              condition:
-                - lambda: |-
-                    return (id(set_heizkurve).state) == 0.46;
-              then:
-                - canbus.send: 
-                    data: [ 0x30, 0x00, 0xFA, 0x01, 0x0E, 0x00, 0x2E ]
-                    can_id: 0x680                                     
-          - if:
-              condition:
-                - lambda: |-
-                    return (id(set_heizkurve).state) == 0.47;
-              then:
-                - canbus.send: 
-                    data: [ 0x30, 0x00, 0xFA, 0x01, 0x0E, 0x00, 0x2F ]
-                    can_id: 0x680                                     
-          - if:
-              condition:
-                - lambda: |-
-                    return (id(set_heizkurve).state) == 0.48;
-              then:
-                - canbus.send: 
-                    data: [ 0x30, 0x00, 0xFA, 0x01, 0x0E, 0x00, 0x30 ]
-                    can_id: 0x680                                     
-          - if:
-              condition:
-                - lambda: |-
-                    return (id(set_heizkurve).state) == 0.49;
-              then:
-                - canbus.send: 
-                    data: [ 0x30, 0x00, 0xFA, 0x01, 0x0E, 0x00, 0x31 ]
-                    can_id: 0x680    
-          - if:
-              condition:
-                - lambda: |-
-                    return (id(set_heizkurve).state) == 0.50;
-              then:
-                - canbus.send: 
-                    data: [ 0x30, 0x00, 0xFA, 0x01, 0x0E, 0x0, 0x32 ]
-                    can_id: 0x680   
+        - delay: 500ms
+        - if:
+            condition:
+              - lambda: |-
+                  return float((id(set_heizkurve).state)) == 0.2f;
+            then:
+              - canbus.send: 
+                  data: [ 0x30, 0x00, 0xFA, 0x01, 0x0E, 0x00, 0x14 ]
+                  can_id: 0x680                  
+        - if:
+            condition:
+              - lambda: |-
+                  return float((id(set_heizkurve).state)) == 0.21f;
+            then:
+              - canbus.send: 
+                  data: [ 0x30, 0x00, 0xFA, 0x01, 0x0E, 0x00, 0x15 ]
+                  can_id: 0x680 
+        - if:
+            condition:
+              - lambda: |-
+                  return float((id(set_heizkurve).state)) == 0.22f;
+            then:
+              - canbus.send: 
+                  data: [ 0x30, 0x00, 0xFA, 0x01, 0x0E, 0x00, 0x16 ]
+                  can_id: 0x680 
+        - if:
+            condition:
+              - lambda: |-
+                  return float((id(set_heizkurve).state)) == 0.23f;
+            then:
+              - canbus.send: 
+                  data: [ 0x30, 0x00, 0xFA, 0x01, 0x0E, 0x00, 0x17 ]
+                  can_id: 0x680 
+        - if:
+            condition:
+              - lambda: |-
+                  return float((id(set_heizkurve).state)) == 0.24f;
+            then:
+              - canbus.send: 
+                  data: [ 0x30, 0x00, 0xFA, 0x01, 0x0E, 0x00, 0x18 ]
+                  can_id: 0x680 
+        - if:
+            condition:
+              - lambda: |-
+                  return float((id(set_heizkurve).state)) == 0.25f;
+            then:
+              - canbus.send: 
+                  data: [ 0x30, 0x00, 0xFA, 0x01, 0x0E, 0x00, 0x19 ]
+                  can_id: 0x680 
+        - if:              
+            condition:
+              - lambda: |-
+                  return float((id(set_heizkurve).state)) == 0.26f;
+            then:
+              - canbus.send: 
+                  data: [ 0x30, 0x00, 0xFA, 0x01, 0x0E, 0x00, 0x1A ]
+                  can_id: 0x680
+        - if:
+            condition:
+              - lambda: |-
+                  return float((id(set_heizkurve).state)) == 0.27f;
+            then:
+              - canbus.send: 
+                  data: [ 0x30, 0x00, 0xFA, 0x01, 0x0E, 0x00, 0x1B ]
+                  can_id: 0x680
+        - if:
+            condition:
+              - lambda: |-
+                  return float((id(set_heizkurve).state)) == 0.28f;
+            then:
+              - canbus.send: 
+                  data: [ 0x30, 0x00, 0xFA, 0x01, 0x0E, 0x00, 0x1C ]
+                  can_id: 0x680
+        - if:
+            condition:
+              - lambda: |-
+                  return float((id(set_heizkurve).state)) == 0.29f;
+            then:
+              - canbus.send: 
+                  data: [ 0x30, 0x00, 0xFA, 0x01, 0x0E, 0x00, 0x1D ]
+                  can_id: 0x680
+        - if:
+            condition:
+              - lambda: |-
+                  return float((id(set_heizkurve).state)) == 0.30f;
+            then:
+              - canbus.send: 
+                  data: [ 0x30, 0x00, 0xFA, 0x01, 0x0E, 0x00, 0x1E ]
+                  can_id: 0x680
+        - if:
+            condition:
+              - lambda: |-
+                  return float((id(set_heizkurve).state)) == 0.31f;
+            then:
+              - canbus.send: 
+                  data: [ 0x30, 0x00, 0xFA, 0x01, 0x0E, 0x00, 0x1F ]
+                  can_id: 0x680
+        - if:
+            condition:
+              - lambda: |-
+                  return float((id(set_heizkurve).state)) == 0.32f;
+            then:
+              - canbus.send: 
+                  data: [ 0x30, 0x00, 0xFA, 0x01, 0x0E, 0x00, 0x20 ]
+                  can_id: 0x680
+        - if:
+            condition:
+              - lambda: |-
+                  return float((id(set_heizkurve).state)) == 0.33f;
+            then:
+              - canbus.send: 
+                  data: [ 0x30, 0x00, 0xFA, 0x01, 0x0E, 0x00, 0x21 ]
+                  can_id: 0x680
+        - if:
+            condition:
+              - lambda: |-
+                  return float((id(set_heizkurve).state)) == 0.34f;
+            then:
+              - canbus.send: 
+                  data: [ 0x30, 0x00, 0xFA, 0x01, 0x0E, 0x00, 0x22 ]
+                  can_id: 0x680       
+        - if:
+            condition:
+              - lambda: |-
+                  return float((id(set_heizkurve).state)) == 0.35f;
+            then:
+              - canbus.send: 
+                  data: [ 0x30, 0x00, 0xFA, 0x01, 0x0E, 0x00, 0x23 ]
+                  can_id: 0x680       
+        - if:
+            condition:
+              - lambda: |-
+                  return float((id(set_heizkurve).state)) == 0.36f;
+            then:
+              - canbus.send: 
+                  data: [ 0x30, 0x00, 0xFA, 0x01, 0x0E, 0x00, 0x24 ]
+                  can_id: 0x680       
+        - if:
+            condition:
+              - lambda: |-
+                  return float((id(set_heizkurve).state)) == 0.37f;
+            then:
+              - canbus.send: 
+                  data: [ 0x30, 0x00, 0xFA, 0x01, 0x0E, 0x00, 0x25 ]
+                  can_id: 0x680       
+        - if:
+            condition:
+              - lambda: |-
+                  return float((id(set_heizkurve).state)) == 0.38f;
+            then:
+              - canbus.send: 
+                  data: [ 0x30, 0x00, 0xFA, 0x01, 0x0E, 0x00, 0x26 ]
+                  can_id: 0x680   
+        - if:
+            condition:
+              - lambda: |-
+                  return float((id(set_heizkurve).state)) == 0.39f;
+            then:
+              - canbus.send: 
+                  data: [ 0x30, 0x00, 0xFA, 0x01, 0x0E, 0x00, 0x27 ]
+                  can_id: 0x680  
+        - if:
+            condition:
+              - lambda: |-
+                  return float((id(set_heizkurve).state)) == 0.40f;
+            then:
+              - canbus.send: 
+                  data: [ 0x30, 0x00, 0xFA, 0x01, 0x0E, 0x00, 0x28 ]
+                  can_id: 0x680                     
+        - if:
+            condition:
+              - lambda: |-
+                  return float((id(set_heizkurve).state)) == 0.41f;
+            then:
+              - canbus.send: 
+                  data: [ 0x30, 0x00, 0xFA, 0x01, 0x0E, 0x00, 0x29 ]
+                  can_id: 0x680                     
+        - if:
+            condition:
+              - lambda: |-
+                  return float((id(set_heizkurve).state)) == 0.42f;
+            then:
+              - canbus.send: 
+                  data: [ 0x30, 0x00, 0xFA, 0x01, 0x0E, 0x00, 0x2A ]
+                  can_id: 0x680    
+        - if:
+            condition:
+              - lambda: |-
+                  return float((id(set_heizkurve).state)) == 0.43f;
+            then:
+              - canbus.send: 
+                  data: [ 0x30, 0x00, 0xFA, 0x01, 0x0E, 0x00, 0x2b ]
+                  can_id: 0x680                                                
+        - if:
+            condition:
+              - lambda: |-
+                  return float((id(set_heizkurve).state)) == 0.44f;
+            then:
+              - canbus.send: 
+                  data: [ 0x30, 0x00, 0xFA, 0x01, 0x0E, 0x00, 0x2C ]
+                  can_id: 0x680                     
+        - if:
+            condition:
+              - lambda: |-
+                  return float((id(set_heizkurve).state)) == 0.45f;
+            then:
+              - canbus.send: 
+                  data: [ 0x30, 0x00, 0xFA, 0x01, 0x0E, 0x00, 0x2D ]
+                  can_id: 0x680    
+        - if:
+            condition:
+              - lambda: |-
+                  return float((id(set_heizkurve).state)) == 0.46f;
+            then:
+              - canbus.send: 
+                  data: [ 0x30, 0x00, 0xFA, 0x01, 0x0E, 0x00, 0x2E ]
+                  can_id: 0x680                                     
+        - if:
+            condition:
+              - lambda: |-
+                  return float((id(set_heizkurve).state)) == 0.47f;
+            then:
+              - canbus.send: 
+                  data: [ 0x30, 0x00, 0xFA, 0x01, 0x0E, 0x00, 0x2F ]
+                  can_id: 0x680                                     
+        - if:
+            condition:
+              - lambda: |-
+                  return float((id(set_heizkurve).state)) == 0.48f;
+            then:
+              - canbus.send: 
+                  data: [ 0x30, 0x00, 0xFA, 0x01, 0x0E, 0x00, 0x30 ]
+                  can_id: 0x680                                     
+        - if:
+            condition:
+              - lambda: |-
+                  return float((id(set_heizkurve).state)) == 0.49f;
+            then:
+              - canbus.send: 
+                  data: [ 0x30, 0x00, 0xFA, 0x01, 0x0E, 0x00, 0x31 ]
+                  can_id: 0x680    
+        - if:
+            condition:
+              - lambda: |-
+                  return float((id(set_heizkurve).state)) == 0.50f;
+            then:
+              - canbus.send: 
+                  data: [ 0x30, 0x00, 0xFA, 0x01, 0x0E, 0x0, 0x32 ]
+                  can_id: 0x680  
 
   
 
