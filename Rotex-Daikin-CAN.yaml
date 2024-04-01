@@ -614,9 +614,10 @@ number:
     name: "Heizkurve Einstellen"
     id: set_heizkurve
     optimistic: true
+    mode: box
     min_value: 0.2
     max_value: 0.5
-    initial_value: 0.2
+    initial_value: 0.48
     step: 0.01
     icon: "mdi:chart-bell-curve-cumulative"
     on_value:
@@ -1504,7 +1505,7 @@ canbus:
               call.perform();                                    
             }
 
-#Raumsoll 0x30, 0x00, 0x05, 0x00, 0x00, 0x00, 0x00 (Automatik bei jeglicher Änderung)
+#WW_Soll_Set 0x30, 0x00, 0x13, 0x00, 0x00, 0x00, 0x00 (Automatik bei jeglicher Änderung)
     - can_id: 0x180
       then:
         - lambda: |-
@@ -1512,6 +1513,18 @@ canbus:
               float temperature =float((float((int((x[4])+((x[3])<<8))))/10));
               id(ww_soll).publish_state(temperature);
               auto call = id(ww_soll).make_call();
+              call.set_value(temperature);
+              call.perform();                                    
+            }  
+
+#Heizkurve_Set 0x30, 0x00, 0x13, 0x00, 0x00, 0x00, 0x00 (Automatik bei jeglicher Änderung)
+    - can_id: 0x180
+      then:
+        - lambda: |-
+            if(x[0]==0xd2 and x[2]==0xFA and x[3]==0x01 and x[4] ==0x0E) {
+              float temperature =float((float((int((x[6])+((x[5])<<8))))/100));
+              id(set_heizkurve).publish_state(temperature);
+              auto call = id(set_heizkurve).make_call();
               call.set_value(temperature);
               call.perform();                                    
             }  
