@@ -76,6 +76,19 @@ text_sensor:
         return {"Unknown"};
       }
 
+
+  - platform: template
+    name: "Fehlercode"
+    id: text_fehler
+    lambda: |-
+      if(id(Fehlercode).state == 0){
+        return {"kein Fehler"};
+      } else if (id(Fehlercode).state == 1){
+        return {"Fehler erkannt"};
+       } else {
+        return {"Unknown"};
+      }
+
   - platform: template
     name: "Status Kompressor"
     id: text_status2
@@ -881,6 +894,7 @@ sensor:
   - platform: template
     name: "Fehlercode"
     id: Fehlercode
+    internal: true
     unit_of_measurement: ""
     device_class: "temperature"
     icon: "mdi:thermometer-lines"
@@ -922,6 +936,7 @@ sensor:
   - platform: template
     name: "Status Kessel"
     id: status_kessel
+    internal: true
     icon: "mdi:thermometer-lines"
     accuracy_decimals: 0
     
@@ -955,6 +970,7 @@ sensor:
 
   - platform: template
     name: "Betriebsmodus"
+    internal: true
     id: Betriebsmodus
     unit_of_measurement: ""
     icon: "mdi:thermometer-lines"
@@ -965,6 +981,7 @@ sensor:
   - platform: template
     name: "Betriebsart"
     id: Betriebsart
+    internal: true
     unit_of_measurement: ""
     icon: "mdi:thermometer-lines"
     device_class: "temperature"
@@ -1140,9 +1157,10 @@ select:
 time:
   - platform: sntp
     on_time:
-     
       - seconds: /20
         then:
+
+
 #Fehlercode
           - canbus.send:
               data: [0x31, 0x00, 0xFA, 0x13, 0x88, 0x00, 0x00]
