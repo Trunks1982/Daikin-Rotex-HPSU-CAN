@@ -12,7 +12,7 @@ die normalen ESP32 Wroom funktionieren nicht weil diese erst ab 50kbit funktioni
 Ein ESP32 S3 mini (Zero) funktioniert auch.
 
 ## Installationsanleitung:
-1. Du benötigst um den ESP32 zu flashen einmal den Browser Google Chrome (Safari und Firefox werden nicht unterstützt).Dann benötigst du die Datei rotex-factory.bin.
+1. Du benötigst um den ESP32 zu flashen einmal den Browser Google Chrome (Safari und Firefox werden nicht unterstützt). Dann benötigst du die Datei rotex-factory.bin.
 2. Du öffnest dann die Website https://web.esphome.io und verbindest den ESP32 mittels USB-C mit dem PC.Nach dem verbinden klickst du auf der Website auf "Connect". Danach öffnet sich ein Fenster wo du die USB-Serial Schnitstelle auswählst.
 3. Danach öffnet sich ein neues Fenster auf der Website wo du auf "Installieren" klickst.
 4. Jetzt klickst du auf "Datei auswählen" und wählst die vorher runtergeladene rotex-factory.bin aus und klickst auf "Installieren". Dieser Vorgang benötigt ca 2min.
