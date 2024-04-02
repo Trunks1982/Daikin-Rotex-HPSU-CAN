@@ -12,16 +12,16 @@ die normalen ESP32 Wroom funktionieren nicht weil diese erst ab 50kbit funktioni
 Ein ESP32 S3 mini (Zero) funktioniert auch.
 
 ## Installationsanleitung:
-1. Wir benötigen um den ESP32 zu flashen einmal den Browser Chrome (Safari und Firefox werden nicht unterstützt).Dann benötigen wir die Datei rotex-factory.bin.
-2. Wir öffnen die Website https://web.esphome.io und verbinden den ESP32 mit dem PC.Nach dem verbinden klicken wir auf der Website auf Connect.Danach öffnet sich ein Fenster wo wir die USBSerial Schnitstelle auswahlen.
-3. Danach öffnet sich ein neues Fenster auf der Website wo wir auf Installieren klicken.
-4. Jetzt klicken wir auf Datei auswählen und suchen die vorher runtergeladene rotex-factory.bin aus und klicken auf installieren.Dieser Vorgang benötigt ca 2min.
-5. Nach erfolgreicher Installation warten wir ca 1-2 min, danach sollte sich ein Rotex Fallback Hotspot vom ESP32 aufbauen.
-6. Jetzt verbinden wir uns mit dem ESP32 mittels WLAN und geben das Passwort H3jGqANSa7aL ein.
-7. Jetzt sollte sich automatisch ein Browser Fenster öffnen wo eure WLAN SSID und das Passwort für euer WlAN abgefragt wird.Hier gebt ihr jetzt eure ugangsdaten für euer WLAN ein.
-8. Nach erfolgreicher Verbindung eures ESP32 mit dem WLAN sollte dieser über http://rotex.local erreichbar sein.Wenn nicht bitte schaut in eurem Router nach der richtigen IP Adresse um.
-9. Wer jetzt keine weitere Homeautomatsierungssoftware benutzt ist jetzt mit der Installation fertig und kann den ESP32 nach den Showbildern an die Rotex / Daikin anschliessen.
-10. Wer eine Homeautomatiesierungsoftware zb Home Assistant benutzt kann den ESP32 verbinden.Dieser sollte von Home Assistant automatisch gefunden werden.
+1. Du benötigst um den ESP32 zu flashen einmal den Browser Google Chrome (Safari und Firefox werden nicht unterstützt).Dann benötigst du die Datei rotex-factory.bin.
+2. Du öffnest dann die Website https://web.esphome.io und verbindest den ESP32 mittels USB-C mit dem PC.Nach dem verbinden klickst du auf der Website auf "Connect".Danach öffnet sich ein Fenster wo du die USB-Serial Schnitstelle auswahlen.
+3. Danach öffnet sich ein neues Fenster auf der Website wo du auf "Installieren" klickst.
+4. Jetzt klickst du auf "Datei auswählen" und wählst die vorher runtergeladene rotex-factory.bin aus und klickst auf "Installieren".Dieser Vorgang benötigt ca 2min.
+5. Nach erfolgreicher Installation wartest du ca 1-2 min, danach sollte sich ein "Rotex Fallback Hotspot" vom ESP32 aufbauen.
+6. Jetzt verbindest du dich mit dem ESP32 mittels WLAN und gibst das "Passwort H3jGqANSa7aL" ein.
+7. Jetzt sollte sich automatisch ein Browser Fenster öffnen, wo du deine WLAN SSID und das Passwort für dein WLAN abgefragt wird.Hier trägst du jetzt deine Zugangsdaten für das WLAN ein.
+8. Nach erfolgreicher Verbindung deines ESP32 mit dem WLAN sollte dieser über http://rotex.local erreichbar sein.Wenn nicht schau bitte auf deinem Router nach der richtigen IP Adresse.
+9. Wen du jetzt keine weitere Homeautomatsierungssoftware benutzt, bsit du jetzt mit der Installation fertig und kannst den ESP32 nach den Showbildern an die Rotex / Daikin anschliessen.
+10. Wenn du eine Homeautomatiesierungsoftware zb. Home Assistant benutzt, kannst du jetzt den ESP32 verbinden.Dieser sollte von Home Assistant automatisch gefunden werden.
 <br><br>
 # :sparkles: Congratulation! :sparkles:
 
