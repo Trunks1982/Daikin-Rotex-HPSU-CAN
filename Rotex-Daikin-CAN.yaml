@@ -1,4 +1,4 @@
-########. Version 1.3.0 ########
+############################### Version 1.3.0 #####################################
 
 esphome:
   name: rotex
@@ -28,14 +28,15 @@ wifi:
     ssid: "Rotex Fallback Hotspot"
     password: "H3jGqANSa7aL"
 
+
 captive_portal:
 
  
-
+############################## Text Sensoren ########################################
 text_sensor:
   - platform: template
     name: "Betriebsmodus"
-    id: text_status
+    id: text_betriebsmodus
     lambda: |-
       if(id(Betriebsmodus).state == 0){
         return {"Notbetrieb"};
@@ -59,7 +60,7 @@ text_sensor:
     
   - platform: template
     name: "Betriebart"
-    id: text_status1
+    id: text_betriebsart
     lambda: |-
       if(id(Betriebsart).state == 0){
         return {"Standby"};
@@ -87,6 +88,8 @@ text_sensor:
         return {"Unknown"};
       }
 
+################################ Button und Switch ##############################################
+
 button:
   - platform: template
     name: Warmwasser bereiten
@@ -111,7 +114,7 @@ switch:
   - platform: gpio
     name: Kühlen Thermostat
     pin: GPIO37
-  
+############################### Number (Slidermodus) ###############################################  
 number:
 #Set Raumsoll1
   - platform: template
@@ -872,7 +875,7 @@ number:
 
   
 
-#Alle Sensoren
+################################# Alle Sensoren #####################################
 sensor:
 
   - platform: template
@@ -1053,7 +1056,7 @@ sensor:
 
 
 
-
+####################### Select Tasten ###############################
 
 #Set Betriebsmodus
 select:
@@ -1130,6 +1133,9 @@ select:
                 - canbus.send: 
                     data: [ 0x30, 0x00, 0xFA, 0x01, 0x12, 0x11, 0x00 ]
                     can_id: 0x680          
+
+
+########################### CAN Nachrichten abfragen #################################################
 
 time:
   - platform: sntp
@@ -1256,7 +1262,6 @@ time:
 
 
 
-
 canbus:
   - platform: esp32_can
     tx_pin: GPIO47
@@ -1265,6 +1270,8 @@ canbus:
     bit_rate: 20kbps
     id: can_bus
     on_frame:
+
+################################# CAN Nachrichten empfangen (Auswertung) #####################################
 
 #Fehlercode
     - can_id: 0x180
@@ -1488,7 +1495,7 @@ canbus:
               else if (x[5]==0x0C){
                 auto call = id(betrieb).make_call();
                 call.set_option("Automatik 2");
-                call.perform();}  
+                call.perform();}
               }
 
 #Raumsoll 0x30, 0x00, 0x05, 0x00, 0x00, 0x00, 0x00 (Automatik bei jeglicher Änderung)
