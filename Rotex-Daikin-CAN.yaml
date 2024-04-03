@@ -1,0 +1,1716 @@
+############################### Version 1.3.0 #####################################
+
+esphome:
+  name: rotex
+  friendly_name: Rotex
+
+esp32:
+  board: esp32-s3-devkitc-1
+  framework:
+    type: arduino
+
+# Enable logging
+logger:
+  #level: VERBOSE
+
+# Enable Home Assistant API
+api:
+  
+ota:
+web_server:  
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+
+  # Enable fallback hotspot (captive portal) in case wifi connection fails
+  ap:
+    ssid: "Rotex Fallback Hotspot"
+    password: "H3jGqANSa7aL"
+
+
+captive_portal:
+
+ 
+############################## Text Sensoren ########################################
+text_sensor:
+  - platform: template
+    name: "Betriebsmodus"
+    id: text_betriebsmodus
+    lambda: |-
+      if(id(Betriebsmodus).state == 0){
+        return {"Notbetrieb"};
+      } else if (id(Betriebsmodus).state == 1){
+        return {"Bereitschaft"};
+      } else if (id(Betriebsmodus).state == 3){
+        return {"Heizen"};
+      } else if (id(Betriebsmodus).state == 4){
+        return {"Absenken"};
+      } else if (id(Betriebsmodus).state == 5){
+        return {"Sommer"}; 
+      } else if (id(Betriebsmodus).state == 11){
+        return {"Automatik 1"};
+      } else if (id(Betriebsmodus).state == 12){
+        return {"Automatik 2"};    
+      } else if (id(Betriebsmodus).state == 17){
+        return {"Kühlen"};       
+      } else {
+        return {"Unknown"};
+      }
+    
+  - platform: template
+    name: "Betriebart"
+    id: text_betriebsart
+    lambda: |-
+      if(id(Betriebsart).state == 0){
+        return {"Standby"};
+      } else if (id(Betriebsart).state == 1){
+        return {"Heizen"};
+      } else if (id(Betriebsart).state == 2){
+        return {"Kühlen"};
+      } else if (id(Betriebsart).state == 3){
+        return {"Abtauen"};
+      } else if (id(Betriebsart).state == 4){
+        return {"Warmwasserbereitung"}; 
+      } else {
+        return {"Unknown"};
+      }
+
+
+  - platform: template
+    name: "Fehlercode"
+    id: text_fehler
+    lambda: |-
+      if(id(Fehlercode).state == 0){
+        return {"kein Fehler"};
+      } else if (id(Fehlercode).state == 9001){
+        return {" Fehler E9001 Fehler Rücklauffühler Handbuch S.60"};
+      } else if (id(Fehlercode).state == 9002){
+        return {"Fehler E9002 Fehler Vorlauffühler Handbuch S.60"};
+      } else if (id(Fehlercode).state == 9003){
+        return {"Fehler E9003 Fehler Frostschutzfunktion Handbuch S.60"};
+      } else if (id(Fehlercode).state == 9004){
+        return {"Fehler E9004Fehler Durchfluss Handbuch S.61"};
+      } else if (id(Fehlercode).state == 9005){
+        return {"9005 Vorlauftemperaturfühler Handbuch S.60"};
+      } else if (id(Fehlercode).state == 9006){
+        return {"9006 Vorlauftemperaturfühler Handbuch S.60"};
+      } else if (id(Fehlercode).state == 9007){
+        return {"9007 Platine IG defekt Handbuch S.60"}; 
+      } else if (id(Fehlercode).state == 9008){
+        return {"9008 Kältemitteltemperatur außerhalb des Bereiches Handbuch S.60"};
+      } else if (id(Fehlercode).state == 9009){
+        return {"9009 STB Fehler Handbuch S.60"};
+      } else if (id(Fehlercode).state == 9010){
+        return {"9010 STB Fehler Handbuch S.60"};
+      } else if (id(Fehlercode).state == 9011){
+        return {"9011 Fehler Flowsensor Handbuch S.60"};
+      } else if (id(Fehlercode).state == 9012){
+        return {"9012 Fehler Vorlauffühler Handbuch S.60"};
+      } else if (id(Fehlercode).state == 9013){
+        return {"9013 Platine AG defekt Handbuch S.60"};
+      } else if (id(Fehlercode).state == 9014){
+        return {"9014 P-Kältemittel hoch Handbuch S.61"};
+      } else if (id(Fehlercode).state == 9015){
+        return {"9015 P-Kältemittel niedrig Handbuch S.61"};
+      } else if (id(Fehlercode).state == 9016){
+        return {"9016 Lastschutz Verdichter Handbuch S.61"};
+      } else if (id(Fehlercode).state == 9017){
+        return {"9017 Ventilator blockiert Handbuch S.61"};
+      } else if (id(Fehlercode).state == 9018){
+        return {"9018 Expansionsventil Handbuch S.61"};
+      } else if (id(Fehlercode).state == 9019){
+        return {"9019 Warmwassertemperatur > 85°C handbuch S.61"};
+      } else if (id(Fehlercode).state == 9020){
+        return {"9020 T-Verdampfer hoch Handbuch S.61"};
+      } else if (id(Fehlercode).state == 9021){
+        return {"9021 HPS-System Handbuch S.61"};
+      } else if (id(Fehlercode).state == 9022){
+        return {"9022 Fehler AT-Fühler Handbuch S.62"};     
+      } else if (id(Fehlercode).state == 9023){
+        return {"9023 Fehler WW-Fühler Handbuch S.62"};     
+      } else if (id(Fehlercode).state == 9024){
+        return {"9024 Drucksensor Handbuch S.62"};     
+      } else if (id(Fehlercode).state == 9025){
+        return {"9025 Fehler Rücklauffühler Handbuch S.62"};     
+      } else if (id(Fehlercode).state == 9026){
+        return {"9026 Drucksensor handbuch S.62"};
+      } else if (id(Fehlercode).state == 9027){
+        return {"9027 Aircoil-Fühler Defrost Handbuch S.62"};  
+      } else if (id(Fehlercode).state == 9028){
+        return {"9028 Aircoil-Fühler temp Handbuch S.62"};     
+      } else if (id(Fehlercode).state == 9029){
+        return {"9029 Fehler Kältefühler AG Handbuch S.62"};     
+      } else if (id(Fehlercode).state == 9030){
+        return {"9030 Defekt elektrisch Handbuch S.63"};     
+      } else if (id(Fehlercode).state == 9031){
+        return {"9031 Defekt elektrisch Handbuch S.63"};
+      } else if (id(Fehlercode).state == 9032){
+        return {"9032 Defekt elektrisch Handbuch S.63"};     
+      } else if (id(Fehlercode).state == 9033){
+        return {"9033 Defekt elektrisch Handbuch S.63"};     
+      } else if (id(Fehlercode).state == 9034){
+        return {"9034 Defekt elektrisch Handbuch S.63"};     
+      } else if (id(Fehlercode).state == 9035){
+        return {"9035 Platine AG defekt Handbuch S.63"};     
+      } else if (id(Fehlercode).state == 9036){
+        return {"9036 Defekt elektrisch Handbuch S.63"};     
+      } else if (id(Fehlercode).state == 9037){
+        return {"9037 Einstellung Leistung Handbich S.63"};     
+      } else if (id(Fehlercode).state == 9038){
+        return {"9038 Kältemittel Leck Handbuch S.64"}; 
+      } else if (id(Fehlercode).state == 9039){
+        return {"9039 Unter/Überspannung Handbuch S.64"};     
+      } else if (id(Fehlercode).state == 9041){
+        return {"9041 Übertragungsfehler Handbuch S.64"};     
+      } else if (id(Fehlercode).state == 9042){
+        return {"9042 Übertragungsfehler Handbuch S.64"};     
+      } else if (id(Fehlercode).state == 9043){
+        return {"9043 Übertragungsfehler Handbuch S.64"}; 
+      } else if (id(Fehlercode).state == 9044){
+        return {"9044 Übertragungsfehler Handbuch S.64"};     
+      } else if (id(Fehlercode).state == 75){
+        return {"75 Fehler Außentemperaturfühler Handbuch S.64"};     
+      } else if (id(Fehlercode).state == 76){
+        return {"76 Fehler Speichertemperaturfühler Handbuch S.64"};
+      } else if (id(Fehlercode).state == 81){
+        return {"81 Kommunikationsfehler Rocon Handbuch S.64"};     
+      } else if (id(Fehlercode).state == 88){
+        return {"88 Kommunikationsfehler Rocon Handbuch S.6"};     
+      } else if (id(Fehlercode).state == 91){
+        return {"91 Kommunikationsfehler Rocon Handbuch S.6"};     
+      } else if (id(Fehlercode).state == 128){
+        return {"128 Fehler Rücklauftemperaturfühler Handbuch S.64"};     
+      } else if (id(Fehlercode).state == 129){
+        return {"129 Fehler Drucksensor handbuch S.64"};     
+      } else if (id(Fehlercode).state == 198){
+        return {"198 Durchflussmessung nicht plausibel Handbuch S.65"};     
+      } else if (id(Fehlercode).state == 200){
+        return {"200 Kommunikationsfehler Handbuch S.65"};     
+      } else if (id(Fehlercode).state == 8005){
+        return {"8005 Wasserdruck in Heizungsanlage zu gering Handbuch S.65"}; 
+      } else if (id(Fehlercode).state == 8100){
+        return {"8100 Kommunikation Handbuch S.65"};     
+      } else if (id(Fehlercode).state == 9000){
+        return {"9000 Interne vorübergehende Meldung Handbuch S65"};     
+      } else if (id(Fehlercode).state == 8006){
+        return {"8006 Warnung Druckverlust Handbuch S.65"};     
+      } else if (id(Fehlercode).state == 8007){
+        return {"8007 wasserdruck in Anlage zu hoch Handbuch S.65"};                                                                                                                                               
+      } else {
+        return {"Unknown"};
+      }
+
+  - platform: template
+    name: "Status Kompressor"
+    id: text_status2
+    lambda: |-
+      if(id(status_kessel).state == 0){
+        return {"Aus"};
+      } else if (id(status_kessel).state == 1){
+        return {"An"};
+       } else {
+        return {"Unknown"};
+      }
+
+################################ Button und Switch ##############################################
+
+button:
+  - platform: template
+    name: Warmwasser bereiten
+    id: ww_button
+    icon: "mdi:water-boiler"
+    on_press:
+      then:
+        - canbus.send: 
+                    data: [ 0x30, 0x00, 0x13, 0x02, 0xBC, 0x00, 0x00 ] # 70 Grad Grundeinstellung
+                    can_id: 0x680
+        - delay: 10s
+        - canbus.send: 
+                    data: [ 0x30, 0x00, 0x13, 0x01, 0xC2, 0x00, 0x00 ] # 45 Grad 
+                    can_id: 0x680 
+        - logger.log: CAN Nachricht wurde gesendet
+
+switch:
+  - platform: gpio
+    name: Heizen Thermostat
+    pin: GPIO36
+    
+  - platform: gpio
+    name: Kühlen Thermostat
+    pin: GPIO37
+############################### Number (Slidermodus) ###############################################  
+number:
+#Set Raumsoll1
+  - platform: template
+    name: "Raumsoll 1 Einstellen"
+    optimistic: true
+    id: r_soll
+    min_value: 15
+    max_value: 25
+    mode: slider
+    step: .5
+    initial_value: 19
+    unit_of_measurement: "°C"
+    icon: "mdi:thermometer-lines"
+    device_class: "temperature"
+    on_value:
+      then:
+        - delay: 500ms
+        - if:
+            condition:
+              - lambda: |-
+                  return (id(r_soll).state) == 15;
+            then:
+              - canbus.send: 
+                  data: [ 0x30, 0x00, 0x05, 0x00, 0x96, 0x00, 0x00 ]
+                  can_id: 0x680 
+        - if:
+            condition:
+              - lambda: |-
+                  return (id(r_soll).state) == 15.5;
+            then:
+              - canbus.send: 
+                  data: [ 0x30, 0x00, 0x05, 0x00, 0x9B, 0x00, 0x00 ]
+                  can_id: 0x680 
+        - if:
+            condition:
+              - lambda: |-
+                  return (id(r_soll).state) == 16;
+            then:
+              - canbus.send: 
+                  data: [ 0x30, 0x00, 0x05, 0x00, 0xA0, 0x00, 0x00 ]
+                  can_id: 0x680 
+        - if:
+            condition:
+              - lambda: |-
+                  return (id(r_soll).state) == 16.5;
+            then:
+              - canbus.send: 
+                  data: [ 0x30, 0x00, 0x05, 0x00, 0xA5, 0x00, 0x00 ]
+                  can_id: 0x680 
+        - if:
+            condition:
+              - lambda: |-
+                  return (id(r_soll).state) == 17;
+            then:
+              - canbus.send: 
+                  data: [ 0x30, 0x00, 0x05, 0x00, 0xAA, 0x00, 0x00 ]
+                  can_id: 0x680 
+        - if:
+            condition:
+              - lambda: |-
+                  return (id(r_soll).state) == 17.5;
+            then:
+              - canbus.send: 
+                  data: [ 0x30, 0x00, 0x05, 0x00, 0xAF, 0x00, 0x00 ]
+                  can_id: 0x680 
+        - if:
+            condition:
+              - lambda: |-
+                  return (id(r_soll).state) == 18;
+            then:
+              - canbus.send: 
+                  data: [ 0x30, 0x00, 0x05, 0x00, 0xB4, 0x00, 0x00 ]
+                  can_id: 0x680 
+        - if:
+            condition:
+              - lambda: |-
+                  return (id(r_soll).state) == 18.5;
+            then:
+              - canbus.send: 
+                  data: [ 0x30, 0x00, 0x05, 0x00, 0xB9, 0x00, 0x00 ]
+                  can_id: 0x680 
+        - if:              
+            condition:
+              - lambda: |-
+                  return (id(r_soll).state) == 19;
+            then:
+              - canbus.send: 
+                  data: [ 0x30, 0x00, 0x05, 0x00, 0xBE, 0x00, 0x00 ]
+                  can_id: 0x680
+        - if:
+            condition:
+              - lambda: |-
+                  return (id(r_soll).state) == 19.5;
+            then:
+              - canbus.send: 
+                  data: [ 0x30, 0x00, 0x05, 0x00, 0xC3, 0x00, 0x00 ]
+                  can_id: 0x680
+        - if:
+            condition:
+              - lambda: |-
+                  return (id(r_soll).state) == 20;
+            then:
+              - canbus.send: 
+                  data: [ 0x30, 0x00, 0x05, 0x00, 0xC8, 0x00, 0x00 ]
+                  can_id: 0x680
+        - if:
+            condition:
+              - lambda: |-
+                  return (id(r_soll).state) == 20.5;
+            then:
+              - canbus.send: 
+                  data: [ 0x30, 0x00, 0x05, 0x00, 0xCD, 0x00, 0x00 ]
+                  can_id: 0x680
+        - if:
+            condition:
+              - lambda: |-
+                  return (id(r_soll).state) == 21;
+            then:
+              - canbus.send: 
+                  data: [ 0x30, 0x00, 0x05, 0x00, 0xD2, 0x00, 0x00 ]
+                  can_id: 0x680
+        - if:
+            condition:
+              - lambda: |-
+                  return (id(r_soll).state) == 21.5;
+            then:
+              - canbus.send: 
+                  data: [ 0x30, 0x00, 0x05, 0x00, 0xD7, 0x00, 0x00 ]
+                  can_id: 0x680
+        - if:
+            condition:
+              - lambda: |-
+                  return (id(r_soll).state) == 22;
+            then:
+              - canbus.send: 
+                  data: [ 0x30, 0x00, 0x05, 0x00, 0xDC, 0x00, 0x00 ]
+                  can_id: 0x680
+        - if:
+            condition:
+              - lambda: |-
+                  return (id(r_soll).state) == 22.5;
+            then:
+              - canbus.send: 
+                  data: [ 0x30, 0x00, 0x05, 0x00, 0xE1, 0x00, 0x00 ]
+                  can_id: 0x680       
+        - if:
+            condition:
+              - lambda: |-
+                  return (id(r_soll).state) == 23;
+            then:
+              - canbus.send: 
+                  data: [ 0x30, 0x00, 0x05, 0x00, 0xE6, 0x00, 0x00 ]
+                  can_id: 0x680       
+        - if:
+            condition:
+              - lambda: |-
+                  return (id(r_soll).state) == 23.5;
+            then:
+              - canbus.send: 
+                  data: [ 0x30, 0x00, 0x05, 0x00, 0xEB, 0x00, 0x00 ]
+                  can_id: 0x680       
+        - if:
+            condition:
+              - lambda: |-
+                  return (id(r_soll).state) == 24;
+            then:
+              - canbus.send: 
+                  data: [ 0x30, 0x00, 0x05, 0x00, 0xF0, 0x00, 0x00 ]
+                  can_id: 0x680       
+        - if:
+            condition:
+              - lambda: |-
+                  return (id(r_soll).state) == 24.5;
+            then:
+              - canbus.send: 
+                  data: [ 0x30, 0x00, 0x05, 0x00, 0xF5, 0x00, 0x00 ]
+                  can_id: 0x680   
+        - if:
+            condition:
+              - lambda: |-
+                  return (id(r_soll).state) == 25;
+            then:
+              - canbus.send: 
+                  data: [ 0x30, 0x00, 0x05, 0x00, 0xFA, 0x00, 0x00 ]
+                  can_id: 0x680 
+
+#WW Einstellen
+  - platform: template
+    name: "Warmwasser Einstellen"
+    id: ww_soll
+    optimistic: true
+    min_value: 35
+    max_value: 70
+    mode: slider
+    step: 1
+    initial_value: 45
+    unit_of_measurement: "°C"
+    icon: "mdi:thermometer-lines"
+    device_class: "temperature"
+    on_value:
+      then:
+        - delay: 500ms
+        - if:
+            condition:
+              - lambda: |-
+                  return (id(ww_soll).state) == 35;
+            then:
+              - canbus.send: 
+                  data: [ 0x30, 0x00, 0x13, 0x01, 0x5E, 0x00, 0x00 ]
+                  can_id: 0x680
+        - if:
+            condition:
+              - lambda: |-
+                  return (id(ww_soll).state) == 36;
+            then:
+              - canbus.send: 
+                  data: [ 0x30, 0x00, 0x13, 0x01, 0x68, 0x00, 0x00 ]
+                  can_id: 0x680
+        - if:
+            condition:
+              - lambda: |-
+                  return (id(ww_soll).state) == 37;
+            then:
+              - canbus.send: 
+                  data: [ 0x30, 0x00, 0x13, 0x01, 0x72, 0x00, 0x00 ]
+                  can_id: 0x680
+        - if:
+            condition:
+              - lambda: |-
+                  return (id(ww_soll).state) == 38;
+            then:
+              - canbus.send: 
+                  data: [ 0x30, 0x00, 0x13, 0x01, 0x7C, 0x00, 0x00 ]
+                  can_id: 0x680
+        - if:
+            condition:
+              - lambda: |-
+                  return (id(ww_soll).state) == 39;
+            then:
+              - canbus.send: 
+                  data: [ 0x30, 0x00, 0x13, 0x01, 0x86, 0x00, 0x00 ]
+                  can_id: 0x680
+        - if:
+            condition:
+              - lambda: |-
+                  return (id(ww_soll).state) == 40;
+            then:
+              - canbus.send: 
+                  data: [ 0x30, 0x00, 0x13, 0x01, 0x90, 0x00, 0x00 ]
+                  can_id: 0x680
+        - if:
+            condition:
+              - lambda: |-
+                  return (id(ww_soll).state) == 41;
+            then:
+              - canbus.send: 
+                  data: [ 0x30, 0x00, 0x13, 0x01, 0x9A, 0x00, 0x00 ]
+                  can_id: 0x680
+        - if:
+            condition:
+              - lambda: |-
+                  return (id(ww_soll).state) == 42;
+            then:
+              - canbus.send: 
+                  data: [ 0x30, 0x00, 0x13, 0x01, 0xA4, 0x00, 0x00 ]
+                  can_id: 0x680
+        - if:
+            condition:
+                - lambda: |-
+                    return (id(ww_soll).state) == 43;
+            then:
+              - canbus.send: 
+                  data: [ 0x30, 0x00, 0x13, 0x01, 0xAE, 0x00, 0x00]
+                  can_id: 0x680
+        - if:
+            condition:
+              - lambda: |-
+                  return (id(ww_soll).state) == 44;
+            then:
+              - canbus.send: 
+                  data: [ 0x30, 0x00, 0x13, 0x01, 0xB8, 0x00, 0x00 ]
+                  can_id: 0x680
+        - if:
+            condition:
+              - lambda: |-
+                  return (id(ww_soll).state) == 45;
+            then:
+              - canbus.send: 
+                  data: [ 0x30, 0x00, 0x13, 0x01, 0xC2, 0x00, 0x00 ]
+                  can_id: 0x680
+        - if:
+            condition:
+              - lambda: |-
+                  return (id(ww_soll).state) == 46;
+            then:
+              - canbus.send: 
+                  data: [ 0x30, 0x00, 0x13, 0x01, 0xCC, 0x00, 0x00 ]
+                  can_id: 0x680
+        - if:
+            condition:
+              - lambda: |-
+                  return (id(ww_soll).state) == 47;
+            then:
+              - canbus.send: 
+                  data: [ 0x30, 0x00, 0x13, 0x01, 0xD6, 0x00, 0x00 ]
+                  can_id: 0x680       
+        - if:
+            condition:
+              - lambda: |-
+                  return (id(ww_soll).state) == 48;
+            then:
+              - canbus.send: 
+                  data: [ 0x30, 0x00, 0x13, 0x01, 0xE0, 0x00, 0x00 ]
+                  can_id: 0x680       
+        - if:
+            condition:
+              - lambda: |-
+                  return (id(ww_soll).state) == 49;
+            then:
+              - canbus.send: 
+                  data: [ 0x30, 0x00, 0x13, 0x01, 0xEA, 0x00, 0x00 ]
+                  can_id: 0x680       
+        - if:
+            condition:
+              - lambda: |-
+                  return (id(ww_soll).state) == 50;
+            then:
+              - canbus.send: 
+                  data: [ 0x30, 0x00, 0x13, 0x01, 0xF4, 0x00, 0x00 ]
+                  can_id: 0x680       
+        - if:
+            condition:
+              - lambda: |-
+                  return (id(ww_soll).state) == 51;
+            then:
+              - canbus.send: 
+                  data: [ 0x30, 0x00, 0x13, 0x01, 0xFE, 0x00, 0x00 ]
+                  can_id: 0x680   
+          
+        - if:
+            condition:
+                - lambda: |-
+                    return (id(ww_soll).state) == 52;
+            then:
+                - canbus.send: 
+                    data: [ 0x30, 0x00, 0x13, 0x02, 0x08, 0x00, 0x00 ]
+                    can_id: 0x680   
+
+        - if:
+            condition:
+              - lambda: |-
+                    return (id(ww_soll).state) == 53;
+            then:
+              - canbus.send: 
+                  data: [ 0x30, 0x00, 0x13, 0x02, 0x12, 0x00, 0x00 ]
+                  can_id: 0x680                                                 
+
+        - if:
+            condition:
+              - lambda: |-
+                  return (id(ww_soll).state) == 54;
+            then:
+              - canbus.send: 
+                  data: [ 0x30, 0x00, 0x13, 0x02, 0x1C, 0x00, 0x00 ]
+                  can_id: 0x680       
+
+        - if:
+            condition:
+              - lambda: |-
+                  return (id(ww_soll).state) == 55;
+            then:
+              - canbus.send: 
+                  data: [ 0x30, 0x00, 0x13, 0x02, 0x26, 0x00, 0x00 ]
+                  can_id: 0x680  
+        - if:
+            condition:
+              - lambda: |-
+                  return (id(ww_soll).state) == 56;
+            then:
+              - canbus.send: 
+                  data: [ 0x30, 0x00, 0x13, 0x02, 0x30, 0x00, 0x00 ]
+                  can_id: 0x680  
+        - if:
+            condition:
+              - lambda: |-
+                  return (id(ww_soll).state) == 57;
+            then:
+              - canbus.send: 
+                  data: [ 0x30, 0x00, 0x13, 0x02, 0x3A, 0x00, 0x00 ]
+                  can_id: 0x680                                                                                                                                            
+        - if:
+              condition:
+                - lambda: |-
+                    return (id(ww_soll).state) == 58;
+              then:
+                - canbus.send: 
+                    data: [ 0x30, 0x00, 0x13, 0x02, 0x44, 0x00, 0x00 ]
+                    can_id: 0x680                                        
+        - if:
+              condition:
+                - lambda: |-
+                    return (id(ww_soll).state) == 59;
+              then:
+                - canbus.send: 
+                    data: [ 0x30, 0x00, 0x13, 0x02, 0x4E, 0x00, 0x00 ]
+                    can_id: 0x680 
+        - if:
+              condition:
+                - lambda: |-
+                    return (id(ww_soll).state) == 60;
+              then:
+                - canbus.send: 
+                    data: [ 0x30, 0x00, 0x13, 0x02, 0x58, 0x00, 0x00 ]
+                    can_id: 0x680
+        - if:
+              condition:
+                - lambda: |-
+                    return (id(ww_soll).state) == 61;
+              then:
+                - canbus.send: 
+                    data: [ 0x30, 0x00, 0x13, 0x02, 0x62, 0x00, 0x00 ]
+                    can_id: 0x680                                       
+        - if:
+              condition:
+                - lambda: |-
+                    return (id(ww_soll).state) == 62;
+              then:
+                - canbus.send: 
+                    data: [ 0x30, 0x00, 0x13, 0x02, 0x6C, 0x00, 0x00 ]
+                    can_id: 0x680                                       
+        - if:
+              condition:
+                - lambda: |-
+                    return (id(ww_soll).state) == 63;
+              then:
+                - canbus.send: 
+                    data: [ 0x30, 0x00, 0x13, 0x02, 0x76, 0x00, 0x00 ]
+                    can_id: 0x680                                       
+        - if:
+              condition:
+                - lambda: |-
+                    return (id(ww_soll).state) == 64;
+              then:
+                - canbus.send: 
+                    data: [ 0x30, 0x00, 0x13, 0x02, 0x80, 0x00, 0x00 ]
+                    can_id: 0x680                                       
+        - if:
+              condition:
+                - lambda: |-
+                    return (id(ww_soll).state) == 65;
+              then:
+                - canbus.send: 
+                    data: [ 0x30, 0x00, 0x13, 0x02, 0x8A, 0x00, 0x00 ]
+                    can_id: 0x680                                       
+        - if:
+              condition:
+                - lambda: |-
+                    return (id(ww_soll).state) == 66;
+              then:
+                - canbus.send: 
+                    data: [ 0x30, 0x00, 0x13, 0x02, 0x94, 0x00, 0x00 ]
+                    can_id: 0x680  
+        - if:
+              condition:
+                - lambda: |-
+                    return (id(ww_soll).state) == 67;
+              then:
+                - canbus.send: 
+                    data: [ 0x30, 0x00, 0x13, 0x02, 0x9E, 0x00, 0x00 ]
+                    can_id: 0x680                                       
+        - if:
+              condition:
+                - lambda: |-
+                    return (id(ww_soll).state) == 68;
+              then:
+                - canbus.send: 
+                    data: [ 0x30, 0x00, 0x13, 0x02, 0xA8, 0x00, 0x00 ]
+                    can_id: 0x680                                       
+        - if:
+              condition:
+                - lambda: |-
+                    return (id(ww_soll).state) == 69;
+              then:
+                - canbus.send: 
+                    data: [ 0x30, 0x00, 0x13, 0x02, 0xB2, 0x00, 0x00 ]
+                    can_id: 0x680   
+        - if:
+              condition:
+                - lambda: |-
+                    return (id(ww_soll).state) == 70;
+              then:
+                - canbus.send: 
+                    data: [ 0x30, 0x00, 0x13, 0x02, 0xBC, 0x00, 0x00 ]
+                    can_id: 0x680                                                                                                                                                                                                                                                                                                             
+
+#Set Heizkurve
+  - platform: template
+    name: "Heizkurve Einstellen"
+    id: set_heizkurve
+    optimistic: true
+    mode: box
+    min_value: 0.2
+    max_value: 0.5
+    initial_value: 0.48
+    step: 0.01
+    icon: "mdi:chart-bell-curve-cumulative"
+    on_value:
+      then:
+        - delay: 500ms
+        - if:
+            condition:
+              - lambda: |-
+                  return float((id(set_heizkurve).state)) == 0.2f;
+            then:
+              - canbus.send: 
+                  data: [ 0x30, 0x00, 0xFA, 0x01, 0x0E, 0x00, 0x14 ]
+                  can_id: 0x680                  
+        - if:
+            condition:
+              - lambda: |-
+                  return float((id(set_heizkurve).state)) == 0.21f;
+            then:
+              - canbus.send: 
+                  data: [ 0x30, 0x00, 0xFA, 0x01, 0x0E, 0x00, 0x15 ]
+                  can_id: 0x680 
+        - if:
+            condition:
+              - lambda: |-
+                  return float((id(set_heizkurve).state)) == 0.22f;
+            then:
+              - canbus.send: 
+                  data: [ 0x30, 0x00, 0xFA, 0x01, 0x0E, 0x00, 0x16 ]
+                  can_id: 0x680 
+        - if:
+            condition:
+              - lambda: |-
+                  return float((id(set_heizkurve).state)) == 0.23f;
+            then:
+              - canbus.send: 
+                  data: [ 0x30, 0x00, 0xFA, 0x01, 0x0E, 0x00, 0x17 ]
+                  can_id: 0x680 
+        - if:
+            condition:
+              - lambda: |-
+                  return float((id(set_heizkurve).state)) == 0.24f;
+            then:
+              - canbus.send: 
+                  data: [ 0x30, 0x00, 0xFA, 0x01, 0x0E, 0x00, 0x18 ]
+                  can_id: 0x680 
+        - if:
+            condition:
+              - lambda: |-
+                  return float((id(set_heizkurve).state)) == 0.25f;
+            then:
+              - canbus.send: 
+                  data: [ 0x30, 0x00, 0xFA, 0x01, 0x0E, 0x00, 0x19 ]
+                  can_id: 0x680 
+        - if:              
+            condition:
+              - lambda: |-
+                  return float((id(set_heizkurve).state)) == 0.26f;
+            then:
+              - canbus.send: 
+                  data: [ 0x30, 0x00, 0xFA, 0x01, 0x0E, 0x00, 0x1A ]
+                  can_id: 0x680
+        - if:
+            condition:
+              - lambda: |-
+                  return float((id(set_heizkurve).state)) == 0.27f;
+            then:
+              - canbus.send: 
+                  data: [ 0x30, 0x00, 0xFA, 0x01, 0x0E, 0x00, 0x1B ]
+                  can_id: 0x680
+        - if:
+            condition:
+              - lambda: |-
+                  return float((id(set_heizkurve).state)) == 0.28f;
+            then:
+              - canbus.send: 
+                  data: [ 0x30, 0x00, 0xFA, 0x01, 0x0E, 0x00, 0x1C ]
+                  can_id: 0x680
+        - if:
+            condition:
+              - lambda: |-
+                  return float((id(set_heizkurve).state)) == 0.29f;
+            then:
+              - canbus.send: 
+                  data: [ 0x30, 0x00, 0xFA, 0x01, 0x0E, 0x00, 0x1D ]
+                  can_id: 0x680
+        - if:
+            condition:
+              - lambda: |-
+                  return float((id(set_heizkurve).state)) == 0.30f;
+            then:
+              - canbus.send: 
+                  data: [ 0x30, 0x00, 0xFA, 0x01, 0x0E, 0x00, 0x1E ]
+                  can_id: 0x680
+        - if:
+            condition:
+              - lambda: |-
+                  return float((id(set_heizkurve).state)) == 0.31f;
+            then:
+              - canbus.send: 
+                  data: [ 0x30, 0x00, 0xFA, 0x01, 0x0E, 0x00, 0x1F ]
+                  can_id: 0x680
+        - if:
+            condition:
+              - lambda: |-
+                  return float((id(set_heizkurve).state)) == 0.32f;
+            then:
+              - canbus.send: 
+                  data: [ 0x30, 0x00, 0xFA, 0x01, 0x0E, 0x00, 0x20 ]
+                  can_id: 0x680
+        - if:
+            condition:
+              - lambda: |-
+                  return float((id(set_heizkurve).state)) == 0.33f;
+            then:
+              - canbus.send: 
+                  data: [ 0x30, 0x00, 0xFA, 0x01, 0x0E, 0x00, 0x21 ]
+                  can_id: 0x680
+        - if:
+            condition:
+              - lambda: |-
+                  return float((id(set_heizkurve).state)) == 0.34f;
+            then:
+              - canbus.send: 
+                  data: [ 0x30, 0x00, 0xFA, 0x01, 0x0E, 0x00, 0x22 ]
+                  can_id: 0x680       
+        - if:
+            condition:
+              - lambda: |-
+                  return float((id(set_heizkurve).state)) == 0.35f;
+            then:
+              - canbus.send: 
+                  data: [ 0x30, 0x00, 0xFA, 0x01, 0x0E, 0x00, 0x23 ]
+                  can_id: 0x680       
+        - if:
+            condition:
+              - lambda: |-
+                  return float((id(set_heizkurve).state)) == 0.36f;
+            then:
+              - canbus.send: 
+                  data: [ 0x30, 0x00, 0xFA, 0x01, 0x0E, 0x00, 0x24 ]
+                  can_id: 0x680       
+        - if:
+            condition:
+              - lambda: |-
+                  return float((id(set_heizkurve).state)) == 0.37f;
+            then:
+              - canbus.send: 
+                  data: [ 0x30, 0x00, 0xFA, 0x01, 0x0E, 0x00, 0x25 ]
+                  can_id: 0x680       
+        - if:
+            condition:
+              - lambda: |-
+                  return float((id(set_heizkurve).state)) == 0.38f;
+            then:
+              - canbus.send: 
+                  data: [ 0x30, 0x00, 0xFA, 0x01, 0x0E, 0x00, 0x26 ]
+                  can_id: 0x680   
+        - if:
+            condition:
+              - lambda: |-
+                  return float((id(set_heizkurve).state)) == 0.39f;
+            then:
+              - canbus.send: 
+                  data: [ 0x30, 0x00, 0xFA, 0x01, 0x0E, 0x00, 0x27 ]
+                  can_id: 0x680  
+        - if:
+            condition:
+              - lambda: |-
+                  return float((id(set_heizkurve).state)) == 0.40f;
+            then:
+              - canbus.send: 
+                  data: [ 0x30, 0x00, 0xFA, 0x01, 0x0E, 0x00, 0x28 ]
+                  can_id: 0x680                     
+        - if:
+            condition:
+              - lambda: |-
+                  return float((id(set_heizkurve).state)) == 0.41f;
+            then:
+              - canbus.send: 
+                  data: [ 0x30, 0x00, 0xFA, 0x01, 0x0E, 0x00, 0x29 ]
+                  can_id: 0x680                     
+        - if:
+            condition:
+              - lambda: |-
+                  return float((id(set_heizkurve).state)) == 0.42f;
+            then:
+              - canbus.send: 
+                  data: [ 0x30, 0x00, 0xFA, 0x01, 0x0E, 0x00, 0x2A ]
+                  can_id: 0x680    
+        - if:
+            condition:
+              - lambda: |-
+                  return float((id(set_heizkurve).state)) == 0.43f;
+            then:
+              - canbus.send: 
+                  data: [ 0x30, 0x00, 0xFA, 0x01, 0x0E, 0x00, 0x2b ]
+                  can_id: 0x680                                                
+        - if:
+            condition:
+              - lambda: |-
+                  return float((id(set_heizkurve).state)) == 0.44f;
+            then:
+              - canbus.send: 
+                  data: [ 0x30, 0x00, 0xFA, 0x01, 0x0E, 0x00, 0x2C ]
+                  can_id: 0x680                     
+        - if:
+            condition:
+              - lambda: |-
+                  return float((id(set_heizkurve).state)) == 0.45f;
+            then:
+              - canbus.send: 
+                  data: [ 0x30, 0x00, 0xFA, 0x01, 0x0E, 0x00, 0x2D ]
+                  can_id: 0x680    
+        - if:
+            condition:
+              - lambda: |-
+                  return float((id(set_heizkurve).state)) == 0.46f;
+            then:
+              - canbus.send: 
+                  data: [ 0x30, 0x00, 0xFA, 0x01, 0x0E, 0x00, 0x2E ]
+                  can_id: 0x680                                     
+        - if:
+            condition:
+              - lambda: |-
+                  return float((id(set_heizkurve).state)) == 0.47f;
+            then:
+              - canbus.send: 
+                  data: [ 0x30, 0x00, 0xFA, 0x01, 0x0E, 0x00, 0x2F ]
+                  can_id: 0x680                                     
+        - if:
+            condition:
+              - lambda: |-
+                  return float((id(set_heizkurve).state)) == 0.48f;
+            then:
+              - canbus.send: 
+                  data: [ 0x30, 0x00, 0xFA, 0x01, 0x0E, 0x00, 0x30 ]
+                  can_id: 0x680                                     
+        - if:
+            condition:
+              - lambda: |-
+                  return float((id(set_heizkurve).state)) == 0.49f;
+            then:
+              - canbus.send: 
+                  data: [ 0x30, 0x00, 0xFA, 0x01, 0x0E, 0x00, 0x31 ]
+                  can_id: 0x680    
+        - if:
+            condition:
+              - lambda: |-
+                  return float((id(set_heizkurve).state)) == 0.50f;
+            then:
+              - canbus.send: 
+                  data: [ 0x30, 0x00, 0xFA, 0x01, 0x0E, 0x0, 0x32 ]
+                  can_id: 0x680  
+
+  
+
+################################# Alle Sensoren #####################################
+sensor:
+
+  - platform: template
+    name: "Fehlercode"
+    id: Fehlercode
+    internal: true
+    unit_of_measurement: ""
+    device_class: "temperature"
+    icon: "mdi:thermometer-lines"
+    state_class: "measurement"
+    accuracy_decimals: 0
+
+
+  - platform: template
+    name: "Heizkurve"
+    id: heizkurve
+    unit_of_measurement: ""
+    device_class: "temperature"
+    icon: "mdi:thermometer-lines"
+    state_class: "measurement"
+    accuracy_decimals: 2
+
+
+  - platform: template
+    name: "Thermische Leistung"
+    device_class: "power"
+    unit_of_measurement: "kW"
+    accuracy_decimals: 2
+    update_interval: 10 s   
+    lambda: |-
+        
+        return ((id(TVBH).state - id(ruecklauf).state)*(4.91 * id(durchfluss).state))/3600;
+      
+      
+  - platform: template
+    name: "Raumsoll 1"
+    id: raumsoll1
+    unit_of_measurement: "°C"
+    icon: "mdi:thermometer-lines"
+    device_class: "temperature"
+    state_class: "measurement"
+    accuracy_decimals: 1
+      
+
+  - platform: template
+    name: "Status Kessel"
+    id: status_kessel
+    internal: true
+    icon: "mdi:thermometer-lines"
+    accuracy_decimals: 0
+    
+
+  - platform: template
+    name: "Wasserdruck"
+    id: Wasserdruck
+    unit_of_measurement: "bar"
+    icon: "mdi:thermometer-lines"
+    device_class: "pressure"
+    state_class: "measurement"
+    accuracy_decimals: 2
+
+  - platform: template
+    name: "Erzeugte Energie Gesamt"
+    id: Erzeugte_Energie_Gesamt
+    unit_of_measurement: "kWh"
+    icon: "mdi:thermometer-lines"
+    device_class: "ENERGY_STORAGE"
+    state_class: "measurement"
+    accuracy_decimals: 0
+
+  - platform: template
+    name: "Umwaelzpumpe"
+    id: Umwaelzpumpe
+    unit_of_measurement: "%"
+    icon: "mdi:thermometer-lines"
+    device_class: "battery"
+    state_class: "measurement"
+    accuracy_decimals: 0
+
+  - platform: template
+    name: "Betriebsmodus"
+    internal: true
+    id: Betriebsmodus
+    unit_of_measurement: ""
+    icon: "mdi:thermometer-lines"
+    device_class: "temperature"
+    state_class: "measurement"
+    accuracy_decimals: 0
+   
+  - platform: template
+    name: "Betriebsart"
+    id: Betriebsart
+    internal: true
+    unit_of_measurement: ""
+    icon: "mdi:thermometer-lines"
+    device_class: "temperature"
+    state_class: "measurement"
+    accuracy_decimals: 0
+    
+  - platform: template
+    name: "T-WW-Soll1"
+    id: t_ww_soll
+    unit_of_measurement: "°C"
+    icon: "mdi:thermometer-lines"
+    device_class: "temperature"
+    state_class: "measurement"
+    accuracy_decimals: 0
+
+  - platform: template
+    name: "Vorlauf Soll"
+    id: vl_soll
+    unit_of_measurement: "°C"
+    icon: "mdi:thermometer-lines"
+    device_class: "temperature"
+    state_class: "measurement"
+    accuracy_decimals: 1
+
+  - platform: template
+    name: "Aussentemperatur"
+    id: temperature_outside
+    unit_of_measurement: "°C"
+    icon: "mdi:thermometer-lines"
+    device_class: "temperature"
+    state_class: "measurement"
+    accuracy_decimals: 1
+
+  - platform: template
+    name: "Warmwassertemperatur"
+    id: temperature_water
+    unit_of_measurement: "°C"
+    icon: "mdi:thermometer-lines"
+    device_class: "temperature"
+    state_class: "measurement"
+    accuracy_decimals: 1
+
+  - platform: template
+    name: "Vorlauftemperatur Heizung (TVBH)"
+    id: TVBH
+    unit_of_measurement: "°C"
+    icon: "mdi:waves-arrow-right"
+    device_class: "temperature"
+    state_class: "measurement"
+    accuracy_decimals: 1
+
+  - platform: template
+    name: "Heizkreis Vorlauf (TV)"
+    id: TV
+    unit_of_measurement: "°C"
+    icon: "mdi:waves-arrow-right"
+    device_class: "temperature"
+    state_class: "measurement"
+    accuracy_decimals: 1
+  
+  - platform: template
+    name: "Ruecklauftemperatur Heizung"
+    id: ruecklauf
+    unit_of_measurement: "°C"
+    icon: "mdi:waves-arrow-left"
+    device_class: "temperature"
+    state_class: "measurement"
+    accuracy_decimals: 1
+
+  - platform: template
+    name: "Durchfluss"
+    id: durchfluss
+    unit_of_measurement: "ltr/h"
+    icon: "mdi:waves-arrow-left"
+    state_class: "measurement"
+    accuracy_decimals: 0
+
+  - platform: template
+    name: "BPV"
+    id: BPV
+    unit_of_measurement: "%"
+    icon: "mdi:waves-arrow-left"
+    accuracy_decimals: 0
+
+
+
+  
+  
+
+
+
+####################### Select Tasten ###############################
+
+#Set Betriebsmodus
+select:
+  - platform: template
+    name: "Betriebsmodus setzen"
+    id: betrieb
+    optimistic: true
+    options:
+      - "Bereitschaft"
+      - "Heizen"
+      - "Absenken"
+      - "Sommer"
+      - "Kühlen"
+      - "Automatik 1"
+      - "Automatik 2"
+    initial_option: Heizen  
+    set_action:
+      then:
+          - delay: 500ms
+          - if:
+              condition:
+                - lambda: |-
+                    return (id(betrieb).state) == "Bereitschaft";
+              then:
+                - canbus.send: 
+                    data: [ 0x30, 0x00, 0xFA, 0x01, 0x12, 0x01, 0x00 ]
+                    can_id: 0x680
+          - if:
+              condition:
+                - lambda: |-
+                    return (id(betrieb).state) == "Heizen";
+              then:
+                - canbus.send: 
+                    data: [ 0x30, 0x00, 0xFA, 0x01, 0x12, 0x03, 0x00 ]
+                    can_id: 0x680
+          - if:
+              condition:
+                - lambda: |-
+                    return (id(betrieb).state) == "Absenken";
+              then:
+                - canbus.send: 
+                    data: [ 0x30, 0x00, 0xFA, 0x01, 0x12, 0x04, 0x00 ]
+                    can_id: 0x680          
+          - if:
+              condition:
+                - lambda: |-
+                    return (id(betrieb).state) == "Sommer";
+              then:
+                - canbus.send: 
+                    data: [ 0x30, 0x00, 0xFA, 0x01, 0x12, 0x05, 0x00 ]
+                    can_id: 0x680
+          - if:
+              condition:
+                - lambda: |-
+                    return (id(betrieb).state) == "Automatik 1";
+              then:
+                - canbus.send: 
+                    data: [ 0x30, 0x00, 0xFA, 0x01, 0x12, 0x0B, 0x00 ]
+                    can_id: 0x680
+          - if:
+              condition:
+                - lambda: |-
+                    return (id(betrieb).state) == "Automatik 2";
+              then:
+                - canbus.send: 
+                    data: [ 0x30, 0x00, 0xFA, 0x01, 0x12, 0x0C, 0x00 ]
+                    can_id: 0x680          
+          
+          - if:
+              condition:
+                - lambda: |-
+                    return (id(betrieb).state) == "Kühlen";
+              then:
+                - canbus.send: 
+                    data: [ 0x30, 0x00, 0xFA, 0x01, 0x12, 0x11, 0x00 ]
+                    can_id: 0x680          
+
+
+########################### CAN Nachrichten abfragen #################################################
+
+time:
+  - platform: sntp
+    on_time:
+      - seconds: /20
+        then:
+
+
+#Fehlercode
+          - canbus.send:
+              data: [0x31, 0x00, 0xFA, 0x13, 0x88, 0x00, 0x00]
+              can_id: 0x680
+          - delay: 250ms
+
+#Heizkurve
+          - canbus.send:
+              data: [0x31, 0x00, 0xFA, 0x01, 0x0E, 0x00, 0x00]
+              can_id: 0x680
+          - delay: 250ms
+
+        
+#Raumsoll1
+          - canbus.send:
+              data: [0x31, 0x00, 0x05, 0x00, 0x00, 0x00, 0x00]
+              can_id: 0x680
+          - delay: 250ms
+
+#Status Kessel
+          - canbus.send:
+              data: [0x31, 0x00, 0xFA, 0x0A, 0x8C, 0x00, 0x00]
+              can_id: 0x680
+          - delay: 250ms
+
+
+#Wasserdruck
+          - canbus.send:
+              data: [0x31, 0x00, 0x1C, 0x00, 0x00, 0x00, 0x00]
+              can_id: 0x680
+          - delay: 250ms
+
+
+#T-WW-Soll1
+          - canbus.send:
+              data: [0x31, 0x00, 0x13, 0x00, 0x00, 0x00, 0x00 ]
+              can_id: 0x680
+          - delay: 250ms
+
+#Erzeugte Energie gesamt
+          - canbus.send:
+              data: [0x31, 0x00, 0xFA, 0x09, 0x30, 0x00, 0x00 ]
+              can_id: 0x680
+          - delay: 250ms
+
+#Umwälzpumpe
+          - canbus.send:
+              data: [0x31, 0x00, 0xFA, 0xC0, 0xF7, 0x00, 0x00 ]
+              can_id: 0x680
+          - delay: 250ms
+
+#Betriebsmodus
+          - canbus.send:
+              data: [0x31, 0x00, 0xFA, 0x01, 0x12, 0x00, 0x00 ]
+              can_id: 0x680
+          - delay: 250ms
+
+#Betriebsart
+          - canbus.send:
+              data: [0x31, 0x00, 0xFA, 0xC0, 0xF6, 0x00, 0x00 ]
+              can_id: 0x680
+          - delay: 250ms
+
+#VL Soll  et dec value - ok /10
+          - canbus.send:
+              data: [0x31, 0x00, 0x02, 0x00, 0x00, 0x00, 0x00]
+              can_id: 0x680
+          - delay: 250ms
+
+#BPV  et dec value - ok /10
+          - canbus.send:
+              data: [0x31, 0x00, 0xFA, 0xC0, 0xFB, 0x00, 0x00 ]
+              can_id: 0x680
+          - delay: 250ms
+
+#Volumenstrom 1/10 °C et dec value - ok /10
+          - canbus.send:
+              data: [ 0x31, 0x00, 0xFA, 0x01, 0xDA, 0x00, 0x00 ]
+              can_id: 0x680
+          - delay: 250ms
+
+#Außentemperatur 1/10 °C et dec value - ok /10
+          - canbus.send:
+              data: [ 0x31, 0x00, 0xfa,0x00,0x0c,0x00,0x00 ]
+              can_id: 0x680
+          - delay: 250ms
+
+#Warmwasser Temperatur  °C et dec value - ok /10
+          - canbus.send:
+              data: [ 0x31, 0x00, 0x0E, 0x00, 0x00, 0x00, 0x00 ]
+              can_id: 0x680
+          - delay: 250ms          
+
+#Vorlauftemperatur (TVBH) - ok 1/10
+          - canbus.send:
+              data: [ 0x31, 0x00, 0xFA, 0xC1, 0x02, 0x00, 0x00 ]
+              can_id: 0x680
+          - delay: 500ms 
+#Vorlauftemperatur Hzg (TV) - ok 1/10
+          - canbus.send:
+              data: [ 0x31, 0x00, 0xFA, 0xC0, 0xFC, 0x00, 0x00 ]
+              can_id: 0x680
+          - delay: 250ms 
+
+#Rücklauftemperatur Hzg - ok 1/10
+          - canbus.send:
+              data: [ 0x31, 0x00, 0xFA, 0xC1, 0x00, 0x00, 0x00 ]
+              can_id: 0x680
+          - delay: 250ms 
+
+#WW Temperatur - ok + offset
+          - canbus.send:
+              data: [ 0x31, 0x00, 0xfa,0x00,0x0e,0x00,0x00 ]
+              can_id: 0x680
+          - delay: 250ms 
+
+
+
+
+canbus:
+  - platform: esp32_can
+    tx_pin: GPIO47
+    rx_pin: GPIO48
+    can_id: 0x680
+    bit_rate: 20kbps
+    id: can_bus
+    on_frame:
+
+################################# CAN Nachrichten empfangen (Auswertung) #####################################
+
+#Fehlercode
+    - can_id: 0x180
+      then:
+        - lambda: |-
+            if(x[0]==0xd2 and x[2]==0xFA and x[3]==0x13 and x[4] ==0x88) {
+             float temperature =float((float((int((x[6])+( (x[5])<<8))))/100));
+             id(Fehlercode).publish_state(temperature);
+             ESP_LOGD("main", "Temperature received over can is %f", temperature);
+            }
+
+
+
+#Heizkurve
+    - can_id: 0x180
+      then:
+        - lambda: |-
+            if(x[0]==0xd2 and x[2]==0xFA and x[3]==0x01 and x[4] ==0x0E) {
+             float temperature =float((float((int((x[6])+( (x[5])<<8))))/100));
+             id(heizkurve).publish_state(temperature);
+             ESP_LOGD("main", "Temperature received over can is %f", temperature);
+            }
+
+
+
+
+#Raumsoll1
+    - can_id: 0x180
+      then:
+        - lambda: |-
+            if(x[0]==0xd2 and x[2]==0x05) {
+             float temperature =float((float((int((x[4])+( (x[3])<<8))))/10));
+             id(raumsoll1).publish_state(temperature);
+             ESP_LOGD("main", "Temperature received over can is %f", temperature);
+            }
+
+#Status Kessel
+    - can_id: 0x180
+      then:
+        - lambda: |-
+            if(x[0]==0xd2 and x[2]==0xFA and x[3]==0x0A and x[4] ==0x8C) {
+             float temperature =float((float((int((x[6])+( (x[5])<<8))))));
+             id(status_kessel).publish_state(temperature);
+             ESP_LOGD("main", "Temperature received over can is %f", temperature);
+            }
+
+#Wasserdruck
+    - can_id: 0x180
+      then:
+        - lambda: |-
+            if(x[0]==0xd2 and x[2]==0x1C) {
+             float temperature =float((float((int((x[4])+( (x[3])<<8))))/1000));
+             id(Wasserdruck).publish_state(temperature);
+             ESP_LOGD("main", "Temperature received over can is %f", temperature);
+            }
+
+
+
+#Erzeugte Energie gesamt
+    - can_id: 0x180
+      then:
+        - lambda: |-
+            if(x[0]==0xd2 and x[2]==0xFA and x[3]==0x09 and x[4] ==0x30) {
+             float temperature =float((float((int((x[6])+( (x[5])<<8))))));
+             id(Erzeugte_Energie_Gesamt).publish_state(temperature);
+             ESP_LOGD("main", "Temperature received over can is %f", temperature);
+            }
+
+
+#Umwälzpumpe
+    - can_id: 0x180
+      then:
+        - lambda: |-
+            if(x[0]==0xd2 and x[2]==0xFA and x[3]==0xC0 and x[4] ==0xF7) {
+             float temperature =float((float((int((x[6])+( (x[5])))))));
+             id(Umwaelzpumpe).publish_state(temperature);
+             ESP_LOGD("main", "Temperature received over can is %f", temperature);
+            }
+
+#Betriebsart
+    - can_id: 0x180
+      then:
+        - lambda: |-
+           if(x[0]==0xd2 and x[2]==0xFA and x[3]==0xC0 and x[4] == 0xF6) {
+             float temperature =float((float((int((x[6])+( (x[5])))))));
+              id(Betriebsart).publish_state(temperature);
+              ESP_LOGD("main", "Temperature received over can is %f", temperature);
+            }
+
+
+#Betriebsmodus
+    - can_id: 0x180
+      then:
+       - lambda: |-
+           if(x[0]==0xd2 and x[2]==0xFA and x[3]==0x01 and x[4] ==0x12) {
+            float temperature =float((float((int((x[6])+( (x[5])))))));
+             id(Betriebsmodus).publish_state(temperature);
+             ESP_LOGD("main", "Temperature received over can is %f", temperature);
+            }
+
+
+
+#T-WW-Soll1
+    - can_id: 0x180
+      then:
+       - lambda: |-
+          if(x[0]==0xd2 and x[2]== 0x13 ) {
+            float temperature =float((float((int((x[4])+( (x[3])<<8))))/10));
+             id(t_ww_soll).publish_state(temperature);
+             ESP_LOGD("main", "Temperature received over can is %f", temperature);
+           }
+
+#VL Soll
+    - can_id: 0x180
+      then:
+       - lambda: |-
+          if(x[0]==0xd2 and x[2]==0x02) {
+             float temperature =float((float((int((x[4])+( (x[3])<<8))))/10));
+             id(vl_soll).publish_state(temperature);
+             ESP_LOGD("main", "Temperature received over can is %f", temperature);
+           }
+
+#BPV
+    - can_id: 0x180
+      then:
+        - lambda: |-
+            if(x[0]==0xd2 and x[2]==0xFA and x[3]==0xC0 and x[4]==0xFB) {
+             float temperature =float((float((int((x[6])+( (x[5])<<8))))));
+              id(BPV).publish_state(temperature);
+              ESP_LOGD("main", "Temperature received over can is %f", temperature);
+            }
+
+#Volumenstrom 
+    - can_id: 0x180
+      then:
+        - lambda: |-
+            if(x[0]==0xd2 and x[2]==0xFA and x[3]==0x01 and x[4] ==0xDA) {
+             float temperature =float((float((int((x[6])+( (x[5])<<8))))));
+              id(durchfluss).publish_state(temperature);
+              ESP_LOGD("main", "Temperature received over can is %f", temperature);
+            }
+
+#Warmwasser-Temperaturabfrage 
+    - can_id: 0x180
+      then:
+        - lambda: |-
+            if(x[0]==0xd2 and x[1]==0x00 and x[3]==0x00 and x[4] == 0x0e) {
+              float temperature =float((float((int((x[6])+( (x[5])<<8))))/10));
+              id(temperature_water).publish_state(temperature);
+              ESP_LOGD("main", "Temperature received over can is %f", temperature);
+            }
+
+#Vorlauftemperaturabfrage (TVBH)
+    - can_id: 0x180
+      then:
+        - lambda: |-
+            if(x[0]==0xd2 and x[2]==0xFA and x[3]==0xC1 and x[4] == 0x02) {
+              float temperature =float(float((int((x[6])+( (x[5])<<8))))/10);
+              id(TVBH).publish_state(temperature);
+              ESP_LOGD("main", "Temperature received over can is %f", temperature);
+            } 
+            
+#Vorlauftemperaturabfrage Heizkreis (TV)
+    - can_id: 0x180
+      then:
+        - lambda: |-
+            if(x[0]==0xd2 and x[2]==0xFA and x[3]==0xC0 and x[4] == 0xFC) {
+              float temperature =float(float((int((x[6])+( (x[5])<<8))))/10);
+              id(TV).publish_state(temperature);
+              ESP_LOGD("main", "Temperature received over can is %f", temperature);
+            }
+#Rücklauftemperaturabfrage
+    - can_id: 0x180
+      then:
+        - lambda: |-
+            if(x[0]==0xd2 and x[1]==0x00 and x[3]==0xC1 and x[4] == 0x00) {
+              float temperature =float(float((int((x[6])+( (x[5])<<8))))/10);
+              id(ruecklauf).publish_state(temperature);
+              ESP_LOGD("main", "Temperature received over can is %f", temperature);
+            }
+
+
+#Außentemperaturabfrage
+    - can_id: 0x180
+      then:
+        - lambda: |-
+            if(x[0]==0xd2 and x[1]==0x00 and x[3]==0x00 and x[4] == 0x0c) {
+              float temperature = float(((int((x[6])+( (x[5])<<8))) ^ 0x8000) - 0x8000)/10;
+              id(temperature_outside).publish_state(temperature);
+              ESP_LOGD("main", "Temperature received over can is %f", temperature);
+            }
+#Betriebsmodus (Automatik bei jeglicher Änderung)0x31, 0x00, 0xFA, 0x01, 0x12, 0x00, 0x00
+    - can_id: 0x180
+      then:
+        - lambda: |-
+            if(x[0]==0xd2 and x[1]==0x00 and x[2]==0xfa and x[3]==0x01 and x[4]==0x12) {
+              if (x[5]==0x01){
+                auto call = id(betrieb).make_call();
+                call.set_option("Bereitschaft");
+                call.perform();}
+              else if (x[5]==0x03){
+                auto call = id(betrieb).make_call();
+                call.set_option("Heizen");
+                call.perform();}
+              else if (x[5]==0x04){
+                auto call = id(betrieb).make_call();
+                call.set_option("Absenken");
+                call.perform();}
+              else if (x[5]==0x05){
+                auto call = id(betrieb).make_call();
+                call.set_option("Sommer");
+                call.perform();}
+              else if (x[5]==0x17){
+                auto call = id(betrieb).make_call();
+                call.set_option("Kühlen");
+                call.perform();}
+              else if (x[5]==0x0B){
+                auto call = id(betrieb).make_call();
+                call.set_option("Automatik 1");
+                call.perform();}
+              else if (x[5]==0x0C){
+                auto call = id(betrieb).make_call();
+                call.set_option("Automatik 2");
+                call.perform();}
+              }
+
+#Raumsoll 0x30, 0x00, 0x05, 0x00, 0x00, 0x00, 0x00 (Automatik bei jeglicher Änderung)
+    - can_id: 0x180
+      then:
+        - lambda: |-
+            if(x[0]==0xd2 and x[1]==0x00 and x[2]==0x05 and x[3]==0x00 and x[5]==0x00) {
+              float temperature =float((float((int((x[4])+((x[3])<<8))))/10));
+              id(raumsoll1).publish_state(temperature);
+              auto call = id(r_soll).make_call();
+              call.set_value(temperature);
+              call.perform();                                    
+            }
+
+#WW_Soll_Set 0x30, 0x00, 0x13, 0x00, 0x00, 0x00, 0x00 (Automatik bei jeglicher Änderung)
+    - can_id: 0x180
+      then:
+        - lambda: |-
+            if(x[0]==0xd2 and x[1]==0x00 and x[2]==0x13 and x[3]==0x01 and x[5]==0x00) {
+              float temperature =float((float((int((x[4])+((x[3])<<8))))/10));
+              id(ww_soll).publish_state(temperature);
+              auto call = id(ww_soll).make_call();
+              call.set_value(temperature);
+              call.perform();                                    
+            }  
+
+#Heizkurve_Set 0x30, 0x00, 0x13, 0x00, 0x00, 0x00, 0x00 (Automatik bei jeglicher Änderung)
+    - can_id: 0x180
+      then:
+        - lambda: |-
+            if(x[0]==0xd2 and x[2]==0xFA and x[3]==0x01 and x[4] ==0x0E) {
+              float temperature =float((float((int((x[6])+((x[5])<<8))))/100));
+              id(set_heizkurve).publish_state(temperature);
+              auto call = id(set_heizkurve).make_call();
+              call.set_value(temperature);
+              call.perform();                                    
+            }  
+
+
+
+#Show data in raw form as hex-values
+    - can_id: 0x180
+      then:
+       - lambda: |-
+              int wert0 = int(x[0]);
+              int wert1 =int(x[1]);
+              int wert2 =int(x[2]);
+              int wert3 =int(x[3]);
+              int wert4 =int(x[4]);
+              int wert5 =int(x[5]);
+              int wert6 =int(x[6]);
+              float wert7 = float(int((x[6])+( (x[5])<<8)));
+              ESP_LOGD("main", "Antwort von 180 Hex: %x %x %x %x %x %x %x", wert0, wert1, wert2, wert3, wert4, wert5, wert6);
+              ESP_LOGD("main", "Antwort von 180 Float: %f", wert7);
+              ESP_LOGI("main", "Antwort von 180 Dez.: %i %i", wert5, wert6);
+              
+    #Show data in raw form as hex-values
+    - can_id: 0x300
+      then:
+       - lambda: |-
+              int wert0 = int(x[0]);
+              int wert1 =int(x[1]);
+              int wert2 =int(x[2]);
+              int wert3 =int(x[3]);
+              int wert4 =int(x[4]);
+              int wert5 =int(x[5]);
+              int wert6 =int(x[6]);
+              float wert7 = float(int((x[6])+( (x[5])<<8)));
+              ESP_LOGD("main", "Antwort von 180 Hex: %x %x %x %x %x %x %x", wert0, wert1, wert2, wert3, wert4, wert5, wert6);
+              ESP_LOGD("main", "Antwort von 180 Float: %f", wert7);
+              ESP_LOGI("main", "Antwort von 180 Dez.: %i %i", wert5, wert6);
+              
+#Show data in raw form as hex-values
+    - can_id: 0x301
+      then:
+       - lambda: |-
+              int wert0 = int(x[0]);
+              int wert1 =int(x[1]);
+              int wert2 =int(x[2]);
+              int wert3 =int(x[3]);
+              int wert4 =int(x[4]);
+              int wert5 =int(x[5]);
+              int wert6 =int(x[6]);
+              float wert7 = float(int((x[6])+( (x[5])<<8)));
+              ESP_LOGD("main", "Antwort von 180 Hex: %x %x %x %x %x %x %x", wert0, wert1, wert2, wert3, wert4, wert5, wert6);
+              ESP_LOGD("main", "Antwort von 180 Float: %f", wert7);
+              ESP_LOGI("main", "Antwort von 180 Dez.: %i %i", wert5, wert6);
+              
