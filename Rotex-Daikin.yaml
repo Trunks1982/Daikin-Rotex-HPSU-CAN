@@ -106,9 +106,9 @@ text_sensor:
       } else if (id(Fehlercode).state == 9011){
         return {"9011 Fehler Flowsensor Handbuch S.60"};
       } else if (id(Fehlercode).state == 9012){
-        return {"9012 Fehler Vorlauffühler handbuch S.60"};
+        return {"9012 Fehler Vorlauffühler Handbuch S.60"};
       } else if (id(Fehlercode).state == 9013){
-        return {"9013 Platine AG defekt Handbuc S.60"};
+        return {"9013 Platine AG defekt Handbuch S.60"};
       } else if (id(Fehlercode).state == 9014){
         return {"9014 P-Kältemittel hoch Handbuch S.61"};
       } else if (id(Fehlercode).state == 9015){
@@ -116,7 +116,7 @@ text_sensor:
       } else if (id(Fehlercode).state == 9016){
         return {"9016 Lastschutz Verdichter Handbuch S.61"};
       } else if (id(Fehlercode).state == 9017){
-        return {"9017 Ventilator blockiert handbuch S.61"};
+        return {"9017 Ventilator blockiert Handbuch S.61"};
       } else if (id(Fehlercode).state == 9018){
         return {"9018 Expansionsventil Handbuch S.61"};
       } else if (id(Fehlercode).state == 9019){
@@ -132,7 +132,7 @@ text_sensor:
       } else if (id(Fehlercode).state == 9024){
         return {"9024 Drucksensor Handbuch S.62"};     
       } else if (id(Fehlercode).state == 9025){
-        return {"9025 Fehler Rücklauffühler handbuch S.62"};     
+        return {"9025 Fehler Rücklauffühler Handbuch S.62"};     
       } else if (id(Fehlercode).state == 9026){
         return {"9026 Drucksensor handbuch S.62"};
       } else if (id(Fehlercode).state == 9027){
@@ -140,7 +140,7 @@ text_sensor:
       } else if (id(Fehlercode).state == 9028){
         return {"9028 Aircoil-Fühler temp Handbuch S.62"};     
       } else if (id(Fehlercode).state == 9029){
-        return {"9029 Fehler Kältefühler AG handbuch S.62"};     
+        return {"9029 Fehler Kältefühler AG Handbuch S.62"};     
       } else if (id(Fehlercode).state == 9030){
         return {"9030 Defekt elektrisch Handbuch S.63"};     
       } else if (id(Fehlercode).state == 9031){
@@ -172,7 +172,7 @@ text_sensor:
       } else if (id(Fehlercode).state == 75){
         return {"75 Fehler Außentemperaturfühler Handbuch S.64"};     
       } else if (id(Fehlercode).state == 76){
-        return {"76 Fehler Speichertemperaturfühler handbuch S.64"};
+        return {"76 Fehler Speichertemperaturfühler Handbuch S.64"};
       } else if (id(Fehlercode).state == 81){
         return {"81 Kommunikationsfehler Rocon Handbuch S.64"};     
       } else if (id(Fehlercode).state == 88){
