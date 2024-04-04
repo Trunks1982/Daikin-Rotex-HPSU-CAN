@@ -1,6 +1,7 @@
 #### Language Selection:
-[![en](https://img.shields.io/badge/lang-en-red.svg)](README.en.md) 
 [![de](https://img.shields.io/badge/lang-de-blue.svg)](README.md)
+[![en](https://img.shields.io/badge/lang-en-red.svg)](README.en.md) 
+
 
 <br><br>
 "Ein Kaffee für nächste lange Nacht vor dem Rechner wäre toll" ist aber natürlich kein muss.
