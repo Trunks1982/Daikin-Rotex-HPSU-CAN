@@ -1,4 +1,4 @@
-############################### Version 1.3.0 #####################################
+############################### Version 1.3.1 #####################################
 
 esphome:
   name: rotex
@@ -213,6 +213,12 @@ text_sensor:
         return {"Unknown"};
       }
 
+
+  
+  
+  
+
+
 ################################ Button und Switch ##############################################
 
 button:
@@ -242,15 +248,15 @@ switch:
 ############################### Number (Slidermodus) ###############################################  
 number:
 
-##### Warmwasser
+##### Raumsoll 1
   - platform: template
     name: "Raumsoll 1 Einstellen"
     id: r_soll
     optimistic: true
-    mode: slider
+    mode: box
     min_value: 15
     max_value: 25
-    step: 0.5
+    step: 0.1
     initial_value: 19
     unit_of_measurement: "°C"
     icon: "mdi:thermometer-lines"
@@ -300,7 +306,44 @@ number:
           can_id: 0x680
           data: !lambda
             return { 0x30, 0x00, 0xFA, 0x01, 0x0E, 0x00, (uint8_t) (x*100) };
+
+
+####################### Select Tasten ###############################
+
   
+
+#Set Betriebsmodus
+select:
+  - platform: template
+    name: "Betriebsmodus setzen"
+    id: betrieb
+    optimistic: true
+    options:
+      - "Heizen"
+      - "Bereitschaft"
+      - "Absenken"
+      - "Sommer"
+      - "Kühlen"
+      - "Automatik 1"
+      - "Automatik 2"
+    initial_option: Heizen
+    set_action:
+      then:
+        - canbus.send:
+            can_id: 0x680
+            data: !lambda |-
+              static const std::map<std::string, uint8_t> mode_map = {
+                {"Heizen", 3},
+                {"Bereitschaft", 1},
+                {"Absenken", 4},
+                {"Sommer", 5},
+                {"Kühlen", 17},
+                {"Automatik 1", 11},
+                {"Automatik 2", 12}
+              };
+              return {0x30, 0x00, 0xFA, 0x01, 0x12, mode_map.at(x), 0x00};
+
+
 
 ################################# Alle Sensoren #####################################
 sensor:
@@ -480,100 +523,12 @@ sensor:
     icon: "mdi:waves-arrow-left"
     accuracy_decimals: 0
 
-
-
-  
-  
-
-
-
-####################### Select Tasten ###############################
-
-  
-
-#Set Betriebsmodus
-select:
-  - platform: template
-    name: "Betriebsmodus setzen"
-    id: betrieb
-    optimistic: true
-    options:
-      - "Bereitschaft"
-      - "Heizen"
-      - "Absenken"
-      - "Sommer"
-      - "Kühlen"
-      - "Automatik 1"
-      - "Automatik 2"
-    initial_option: Heizen  
-    set_action:
-      then:
-          - delay: 500ms
-          - if:
-              condition:
-                - lambda: |-
-                    return (id(betrieb).state) == "Bereitschaft";
-              then:
-                - canbus.send: 
-                    data: [ 0x30, 0x00, 0xFA, 0x01, 0x12, 0x01, 0x00 ]
-                    can_id: 0x680
-          - if:
-              condition:
-                - lambda: |-
-                    return (id(betrieb).state) == "Heizen";
-              then:
-                - canbus.send: 
-                    data: [ 0x30, 0x00, 0xFA, 0x01, 0x12, 0x03, 0x00 ]
-                    can_id: 0x680
-          - if:
-              condition:
-                - lambda: |-
-                    return (id(betrieb).state) == "Absenken";
-              then:
-                - canbus.send: 
-                    data: [ 0x30, 0x00, 0xFA, 0x01, 0x12, 0x04, 0x00 ]
-                    can_id: 0x680          
-          - if:
-              condition:
-                - lambda: |-
-                    return (id(betrieb).state) == "Sommer";
-              then:
-                - canbus.send: 
-                    data: [ 0x30, 0x00, 0xFA, 0x01, 0x12, 0x05, 0x00 ]
-                    can_id: 0x680
-          - if:
-              condition:
-                - lambda: |-
-                    return (id(betrieb).state) == "Automatik 1";
-              then:
-                - canbus.send: 
-                    data: [ 0x30, 0x00, 0xFA, 0x01, 0x12, 0x0B, 0x00 ]
-                    can_id: 0x680
-          - if:
-              condition:
-                - lambda: |-
-                    return (id(betrieb).state) == "Automatik 2";
-              then:
-                - canbus.send: 
-                    data: [ 0x30, 0x00, 0xFA, 0x01, 0x12, 0x0C, 0x00 ]
-                    can_id: 0x680          
-          
-          - if:
-              condition:
-                - lambda: |-
-                    return (id(betrieb).state) == "Kühlen";
-              then:
-                - canbus.send: 
-                    data: [ 0x30, 0x00, 0xFA, 0x01, 0x12, 0x11, 0x00 ]
-                    can_id: 0x680          
-
-
 ########################### CAN Nachrichten abfragen #################################################
 
 time:
   - platform: sntp
     on_time:
-      - seconds: /20
+      - seconds: /15
         then:
 
 
