@@ -106,9 +106,9 @@ text_sensor:
       } else if (id(Fehlercode).state == 9011){
         return {"9011 Fehler Flowsensor Handbuch S.60"};
       } else if (id(Fehlercode).state == 9012){
-        return {"9012 Fehler Vorlauffühler handbuch S.60"};
+        return {"9012 Fehler Vorlauffühler Handbuch S.60"};
       } else if (id(Fehlercode).state == 9013){
-        return {"9013 Platine AG defekt Handbuc S.60"};
+        return {"9013 Platine AG defekt Handbuch S.60"};
       } else if (id(Fehlercode).state == 9014){
         return {"9014 P-Kältemittel hoch Handbuch S.61"};
       } else if (id(Fehlercode).state == 9015){
@@ -116,11 +116,11 @@ text_sensor:
       } else if (id(Fehlercode).state == 9016){
         return {"9016 Lastschutz Verdichter Handbuch S.61"};
       } else if (id(Fehlercode).state == 9017){
-        return {"9017 Ventilator blockiert handbuch S.61"};
+        return {"9017 Ventilator blockiert Handbuch S.61"};
       } else if (id(Fehlercode).state == 9018){
         return {"9018 Expansionsventil Handbuch S.61"};
       } else if (id(Fehlercode).state == 9019){
-        return {"9019 Warmwassertemperatur > 85°C handbuch S.61"};
+        return {"9019 Warmwassertemperatur > 85°C Handbuch S.61"};
       } else if (id(Fehlercode).state == 9020){
         return {"9020 T-Verdampfer hoch Handbuch S.61"};
       } else if (id(Fehlercode).state == 9021){
@@ -132,9 +132,9 @@ text_sensor:
       } else if (id(Fehlercode).state == 9024){
         return {"9024 Drucksensor Handbuch S.62"};     
       } else if (id(Fehlercode).state == 9025){
-        return {"9025 Fehler Rücklauffühler handbuch S.62"};     
+        return {"9025 Fehler Rücklauffühler Handbuch S.62"};     
       } else if (id(Fehlercode).state == 9026){
-        return {"9026 Drucksensor handbuch S.62"};
+        return {"9026 Drucksensor Handbuch S.62"};
       } else if (id(Fehlercode).state == 9027){
         return {"9027 Aircoil-Fühler Defrost Handbuch S.62"};  
       } else if (id(Fehlercode).state == 9028){
@@ -156,7 +156,7 @@ text_sensor:
       } else if (id(Fehlercode).state == 9036){
         return {"9036 Defekt elektrisch Handbuch S.63"};     
       } else if (id(Fehlercode).state == 9037){
-        return {"9037 Einstellung Leistung Handbich S.63"};     
+        return {"9037 Einstellung Leistung Handbuch S.63"};     
       } else if (id(Fehlercode).state == 9038){
         return {"9038 Kältemittel Leck Handbuch S.64"}; 
       } else if (id(Fehlercode).state == 9039){
@@ -172,7 +172,7 @@ text_sensor:
       } else if (id(Fehlercode).state == 75){
         return {"75 Fehler Außentemperaturfühler Handbuch S.64"};     
       } else if (id(Fehlercode).state == 76){
-        return {"76 Fehler Speichertemperaturfühler handbuch S.64"};
+        return {"76 Fehler Speichertemperaturfühler Handbuch S.64"};
       } else if (id(Fehlercode).state == 81){
         return {"81 Kommunikationsfehler Rocon Handbuch S.64"};     
       } else if (id(Fehlercode).state == 88){
@@ -182,7 +182,7 @@ text_sensor:
       } else if (id(Fehlercode).state == 128){
         return {"128 Fehler Rücklauftemperaturfühler Handbuch S.64"};     
       } else if (id(Fehlercode).state == 129){
-        return {"129 Fehler Drucksensor handbuch S.64"};     
+        return {"129 Fehler Drucksensor Handbuch S.64"};     
       } else if (id(Fehlercode).state == 198){
         return {"198 Durchflussmessung nicht plausibel Handbuch S.65"};     
       } else if (id(Fehlercode).state == 200){
@@ -265,30 +265,7 @@ number:
       - canbus.send:
           can_id: 0x680
           data: !lambda
-            return { 0x30, 0x00, 0x05, 0x00, (uint8_t) (x*10), 0x00, 0x00 };
-
-
-
-##### Warmwasser
-  - platform: template
-    name: "Warmwasser Einstellen"
-    id: ww_soll
-    optimistic: true
-    mode: slider
-    min_value: 35
-    max_value: 70
-    step: 1
-    initial_value: 45
-    unit_of_measurement: "°C"
-    icon: "mdi:thermometer-lines"
-    device_class: "temperature"
-    set_action:
-      - canbus.send:
-          can_id: 0x680
-          data: !lambda
-            return { 0x30, 0x00, 0x13, 0x01, (uint8_t) (x*10), 0x00, 0x00 };
-  
-
+            return { 0x30, 0x00, 0x05, (uint8_t) (x*10), 0x00, 0x00, 0x00 };
 
 #### Heizkurve                                                                                                                                                                                                                                                           
 
@@ -302,11 +279,36 @@ number:
     step: 0.01
     initial_value: 0.48
     set_action:
+      - delay: 250ms
       - canbus.send:
           can_id: 0x680
           data: !lambda
             return { 0x30, 0x00, 0xFA, 0x01, 0x0E, 0x00, (uint8_t) (x*100) };
 
+
+##### Warmwasser
+  - platform: template
+    name: "WW Einstellen"
+    id: ww_soll
+    optimistic: true
+    mode: box
+    min_value: 35
+    max_value: 70
+    step: 1
+    initial_value: 45
+    unit_of_measurement: "°C"
+    icon: "mdi:thermometer-lines"
+    device_class: "temperature"
+    set_action:
+      - delay: 250ms
+      - canbus.send:
+          can_id: 0x680
+          data: !lambda |-
+            uint16_t temperature = (uint16_t)(x * 10); // Convert to int16be
+            uint8_t high_byte = temperature >> 8;
+            uint8_t low_byte = temperature & 0xFF;
+            return { 0x30, 0x00, 0x13, high_byte, low_byte, 0x00, 0x00 };
+            
 
 ####################### Select Tasten ###############################
 
@@ -329,6 +331,7 @@ select:
     initial_option: Heizen
     set_action:
       then:
+        - delay: 250ms
         - canbus.send:
             can_id: 0x680
             data: !lambda |-
@@ -452,7 +455,7 @@ sensor:
     icon: "mdi:thermometer-lines"
     device_class: "temperature"
     state_class: "measurement"
-    accuracy_decimals: 0
+    accuracy_decimals: 1
 
   - platform: template
     name: "Vorlauf Soll"
@@ -686,17 +689,6 @@ canbus:
 
 
 
-
-#Raumsoll1
-    - can_id: 0x180
-      then:
-        - lambda: |-
-            if(x[0]==0xd2 and x[2]==0x05) {
-             float temperature =float((float((int((x[4])+( (x[3])<<8))))/10));
-             id(raumsoll1).publish_state(temperature);
-             ESP_LOGD("main", "Temperature received over can is %f", temperature);
-            }
-
 #Status Kessel
     - can_id: 0x180
       then:
@@ -760,18 +752,6 @@ canbus:
              id(Betriebsmodus).publish_state(temperature);
              ESP_LOGD("main", "Temperature received over can is %f", temperature);
             }
-
-
-
-#T-WW-Soll1
-    - can_id: 0x180
-      then:
-       - lambda: |-
-          if(x[0]==0xd2 and x[2]== 0x13 ) {
-            float temperature =float((float((int((x[4])+( (x[3])<<8))))/10));
-             id(t_ww_soll).publish_state(temperature);
-             ESP_LOGD("main", "Temperature received over can is %f", temperature);
-           }
 
 #VL Soll
     - can_id: 0x180
@@ -849,7 +829,7 @@ canbus:
         - lambda: |-
             if(x[0]==0xd2 and x[1]==0x00 and x[3]==0x00 and x[4] == 0x0c) {
               float temperature = float(((int((x[6])+( (x[5])<<8))) ^ 0x8000) - 0x8000)/10;
-              id(temperature_outside).publish_state(temperature);
+              id(temperature_outside).publish_state(temperature); 
               ESP_LOGD("main", "Temperature received over can is %f", temperature);
             }
 #Betriebsmodus (Automatik bei jeglicher Änderung)0x31, 0x00, 0xFA, 0x01, 0x12, 0x00, 0x00
@@ -903,13 +883,17 @@ canbus:
     - can_id: 0x180
       then:
         - lambda: |-
-            if(x[0]==0xd2 and x[1]==0x00 and x[2]==0x13 and x[3]==0x01 and x[5]==0x00) {
-              float temperature =float((float((int((x[4])+((x[3])<<8))))/10));
+            if(x[0] == 0xd2 && x[1] == 0x00 && x[2] == 0x13 && x[5] == 0x00 && x[6] == 0x00) {
+              uint16_t temperature_raw = (x[3] << 8) | x[4]; // Convert to int16be
+              float temperature = static_cast<float>(temperature_raw) / 10.0;
               id(ww_soll).publish_state(temperature);
+              id(t_ww_soll).publish_state(temperature);
               auto call = id(ww_soll).make_call();
               call.set_value(temperature);
-              call.perform();                                    
-            }  
+              call.perform();
+            }
+
+
 
 #Heizkurve_Set 0x30, 0x00, 0x13, 0x00, 0x00, 0x00, 0x00 (Automatik bei jeglicher Änderung)
     - can_id: 0x180
