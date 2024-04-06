@@ -285,8 +285,11 @@ number:
       - delay: 250ms
       - canbus.send:
           can_id: 0x680
-          data: !lambda
-            return { 0x30, 0x00, 0xFA, 0x01, 0x0E, 0x00, (uint8_t) (x*100) };
+          data: !lambda |-
+            uint16_t hk = (uint16_t)(x * 100); // Convert to int16be
+            uint8_t high_byte = hk >> 8;
+            uint8_t low_byte = hk & 0xFF;
+            return { 0x30, 0x00, 0xFA, 0x01, 0x0E, high_byte, low_byte };
 
 
 ##### Warmwasser
