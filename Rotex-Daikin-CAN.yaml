@@ -264,8 +264,11 @@ number:
     set_action:
       - canbus.send:
           can_id: 0x680
-          data: !lambda
-            return { 0x30, 0x00, 0x05, (uint8_t) (x*10), 0x00, 0x00, 0x00 };
+          data: !lambda |-
+            uint16_t temperature = (uint16_t)(x * 10); // Convert to int16be
+            uint8_t high_byte = temperature >> 8;
+            uint8_t low_byte = temperature & 0xFF;
+            return { 0x30, 0x00, 0x05, high_byte, low_byte, 0x00, 0x00 };
 
 #### Heizkurve                                                                                                                                                                                                                                                           
 
