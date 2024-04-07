@@ -469,7 +469,7 @@ sensor:
     accuracy_decimals: 0
 
   - platform: template
-    name: "Erzeugte Energie boh"
+    name: "EHS fuer DHW"
     id: Qboh
     unit_of_measurement: "kWh"
     icon: "mdi:thermometer-lines"
