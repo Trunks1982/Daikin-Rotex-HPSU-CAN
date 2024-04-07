@@ -569,6 +569,22 @@ sensor:
     accuracy_decimals: 0
 
   - platform: template
+    name: "Laufzeit Compressor"
+    id: rt_compressor
+    unit_of_measurement: "h"
+    icon: "mdi:icon-time"
+    state_class: "measurement"
+    accuracy_decimals: 0
+
+  - platform: template
+    name: "Laufzeit Pump"
+    id: rt_pump
+    unit_of_measurement: "h"
+    icon: "mdi:icon-time"
+    state_class: "measurement"
+    accuracy_decimals: 0
+
+  - platform: template
     name: "BPV"
     id: BPV
     unit_of_measurement: "%"
@@ -690,6 +706,18 @@ time:
 #Volumenstrom 1/10 °C et dec value - ok /10
           - canbus.send:
               data: [ 0x31, 0x00, 0xFA, 0x01, 0xDA, 0x00, 0x00 ]
+              can_id: 0x680
+          - delay: 250ms
+
+#rt_pump
+          - canbus.send:
+              data: [ 0x31, 0x00, 0xFA, 0x06, 0xA4, 0x00, 0x00 ]
+              can_id: 0x680
+          - delay: 250ms
+
+#rt_compressor
+          - canbus.send:
+              data: [ 0x31, 0x00, 0xFA, 0x06, 0xA5, 0x00, 0x00 ]
               can_id: 0x680
           - delay: 250ms
 
@@ -875,6 +903,26 @@ canbus:
             if(x[0]==0xd2 and x[2]==0xFA and x[3]==0x01 and x[4] ==0xDA) {
              float temperature =float((float((int((x[6])+( (x[5])<<8))))));
               id(durchfluss).publish_state(temperature);
+              ESP_LOGD("main", "Temperature received over can is %f", temperature);
+            }
+
+#rt_pump
+    - can_id: 0x180
+      then:
+        - lambda: |-
+            if(x[0]==0xd2 and x[2]==0xFA and x[3]==0x06 and x[4] ==0xA4) {
+              float temperature =float((float((int((x[6])+((x[5])<<8))))));
+              id(rt_pump).publish_state(temperature);
+              ESP_LOGD("main", "Temperature received over can is %f", temperature);
+            }
+
+#rt_compressor
+    - can_id: 0x180
+      then:
+        - lambda: |-
+            if(x[0]==0xd2 and x[2]==0xFA and x[3]==0x06 and x[4] ==0xA5) {
+              float temperature =float((float((int((x[6])+((x[5])<<8))))));
+              id(rt_compressor).publish_state(temperature);
               ESP_LOGD("main", "Temperature received over can is %f", temperature);
             }
 
