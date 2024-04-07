@@ -469,6 +469,15 @@ sensor:
     accuracy_decimals: 0
 
   - platform: template
+    name: "EHS fuer CH"
+    id: Qchhp
+    unit_of_measurement: "kWh"
+    icon: "mdi:thermometer-lines"
+    device_class: "ENERGY_STORAGE"
+    state_class: "measurement"
+    accuracy_decimals: 0
+
+  - platform: template
     name: "Umwaelzpumpe"
     id: Umwaelzpumpe
     unit_of_measurement: "%"
@@ -666,12 +675,18 @@ time:
               can_id: 0x680
           - delay: 250ms
 
+#Qchhp
+          - canbus.send:
+              data: [0x31, 0x00, 0xFA, 0x09, 0x20, 0x00, 0x00 ]
+              can_id: 0x680
+          - delay: 250ms
+
 #Erzeugte Energie gesamt
           - canbus.send:
               data: [0x31, 0x00, 0xFA, 0x09, 0x30, 0x00, 0x00 ]
               can_id: 0x680
           - delay: 250ms
-          
+
 
 #Umwälzpumpe
           - canbus.send:
@@ -830,7 +845,15 @@ canbus:
              ESP_LOGD("main", "Temperature received over can is %f", temperature);
             }
 
-
+#Qchhp
+    - can_id: 0x180
+      then:
+        - lambda: |-
+            if(x[0]==0xd2 and x[2]==0xFA and x[3]==0x09 and x[4] ==0x20) {
+             float temperature =float((float((int((x[6])+( (x[5])<<8))))));
+             id(Qchhp).publish_state(temperature);
+             ESP_LOGD("main", "Temperature received over can is %f", temperature);
+            }
 
 #Erzeugte Energie gesamt
     - can_id: 0x180
@@ -841,8 +864,6 @@ canbus:
              id(Erzeugte_Energie_Gesamt).publish_state(temperature);
              ESP_LOGD("main", "Temperature received over can is %f", temperature);
             }
-
-    
 
 
 #Umwälzpumpe
@@ -1147,4 +1168,4 @@ canbus:
               ESP_LOGD("main", "Antwort von 180 Hex: %x %x %x %x %x %x %x", wert0, wert1, wert2, wert3, wert4, wert5, wert6);
               ESP_LOGD("main", "Antwort von 180 Float: %f", wert7);
               ESP_LOGI("main", "Antwort von 180 Dez.: %i %i", wert5, wert6);
-              
+
