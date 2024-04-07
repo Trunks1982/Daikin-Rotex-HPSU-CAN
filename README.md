@@ -56,7 +56,7 @@ wenn heizen wieder erkannt schaltet wieder auf Betriebsmodus heizen um.So wird m
 Für Iobroker hab ich ein Blockly Script hochgeladen was ich selber nutze und super funktioniert.<br>  
 Die Defrost.yaml ist für Home Assistant Automatisierung gedacht.Das ist die gleiche Automatisierung wie für IoBroker.
 
-Getestet mit: - Rotex HSPU Compact 508 8kw
+Getestet mit: - Rotex HSPU Compact 508 8kw, ROTEX HPSU compact Ultra
 
 ## WEBUI vom ESP:
 ![Bildschirmfoto 2023-12-17 um 11 33 51](https://github.com/Trunks1982/Daikin-Rotex-HPSU-CAN/assets/62701386/524a204e-801a-4fe7-aacb-ac2e731a99b7)
