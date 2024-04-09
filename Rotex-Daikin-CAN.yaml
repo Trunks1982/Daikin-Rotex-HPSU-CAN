@@ -421,7 +421,7 @@ sensor:
           const float ruecklauf_state = id(ruecklauf).state;
           const float durchfluss_state = id(durchfluss).state;
 
-          return ((TVBH_state - ruecklauf_state) * (4.91 * durchfluss_state)) / 3600;
+          return ((TVBH_state - ruecklauf_state) * (4.19 * durchfluss_state)) / 3600;
       } else {
           return 0.0; // oder einen anderen Wert, wenn der Kompressor nicht aktiv ist
       }
@@ -627,6 +627,24 @@ sensor:
     state_class: "measurement"
     accuracy_decimals: 0      
 
+  - platform: template
+    name: "Spreizung MOD HZ"
+    internal: false
+    id: spreizung_mod_hz
+    unit_of_measurement: "K"
+    icon: "mdi:waves-arrow-left"
+    state_class: "measurement"
+    accuracy_decimals: 0  
+
+  - platform: template
+    name: "Spreizung MOD WW"
+    internal: false
+    id: spreizung_mod_ww
+    unit_of_measurement: "K"
+    icon: "mdi:waves-arrow-left"
+    state_class: "measurement"
+    accuracy_decimals: 0        
+
 ########################### CAN Nachrichten abfragen #################################################
 
 time:
@@ -789,6 +807,17 @@ time:
               can_id: 0x680
           - delay: 250ms 
 
+#Spreizung Mod HZ
+          - canbus.send:
+              data: [ 0x31, 0x00, 0xFA, 0x06, 0x83, 0x00, 0x00 ]
+              can_id: 0x680
+          - delay: 250ms 
+
+#Spreizung Mod WW
+          - canbus.send:
+              data: [ 0x31, 0x00, 0xFA, 0x06, 0x84, 0x00, 0x00 ]
+              can_id: 0x680
+          - delay: 250ms 
 
 canbus:
   - platform: esp32_can
@@ -1026,6 +1055,26 @@ canbus:
              id(hk_funktion).publish_state(temperature);
              ESP_LOGD("main", "Temperature received over can is %f", temperature);
            }
+
+#Spreizung MOD HZ
+    - can_id: 0x180
+      then:
+       - lambda: |-
+          if(x[0]==0xd2 and x[2]==0xFA and x[3]==0x06 and x[4]==0x83) {
+             float temperature =float((float((int((x[6])+( (x[5])<<8))))/10));
+             id(spreizung_mod_hz).publish_state(temperature);
+             ESP_LOGD("main", "Temperature received over can is %f", temperature);
+           }           
+
+#Spreizung MOD WW
+    - can_id: 0x180
+      then:
+       - lambda: |-
+          if(x[0]==0xd2 and x[2]==0xFA and x[3]==0x06 and x[4]==0x84) {
+             float temperature =float((float((int((x[6])+( (x[5])<<8))))/10));
+             id(spreizung_mod_ww).publish_state(temperature);
+             ESP_LOGD("main", "Temperature received over can is %f", temperature);
+           }                      
 
 #HK Funktion (Automatik bei jeglicher Änderung)0x31, 0x00, 0xFA, 0x01, 0x41, 0x00, 0x00
     - can_id: 0x180
