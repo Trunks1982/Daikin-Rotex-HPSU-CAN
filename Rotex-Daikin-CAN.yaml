@@ -15,9 +15,9 @@ logger:
 
 # Enable Home Assistant API
 api:
-  
+
 ota:
-web_server:  
+web_server:
 
 wifi:
   ssid: !secret wifi_ssid
@@ -28,10 +28,8 @@ wifi:
     ssid: "Rotex Fallback Hotspot"
     password: "H3jGqANSa7aL"
 
-
 captive_portal:
 
- 
 ############################## Text Sensoren ########################################
 text_sensor:
   - platform: template
@@ -47,17 +45,17 @@ text_sensor:
       } else if (id(Betriebsmodus).state == 4){
         return {"Absenken"};
       } else if (id(Betriebsmodus).state == 5){
-        return {"Sommer"}; 
+        return {"Sommer"};
       } else if (id(Betriebsmodus).state == 11){
         return {"Automatik 1"};
       } else if (id(Betriebsmodus).state == 12){
-        return {"Automatik 2"};    
+        return {"Automatik 2"};
       } else if (id(Betriebsmodus).state == 17){
-        return {"Kühlen"};       
+        return {"Kühlen"};
       } else {
         return {"Unknown"};
       }
-    
+
   - platform: template
     name: "Betriebart"
     id: text_betriebsart
@@ -71,11 +69,10 @@ text_sensor:
       } else if (id(Betriebsart).state == 3){
         return {"Abtauen"};
       } else if (id(Betriebsart).state == 4){
-        return {"Warmwasserbereitung"}; 
+        return {"Warmwasserbereitung"};
       } else {
         return {"Unknown"};
       }
-
 
   - platform: template
     name: "Fehlercode"
@@ -96,7 +93,7 @@ text_sensor:
       } else if (id(Fehlercode).state == 9006){
         return {"9006 Vorlauftemperaturfühler Handbuch S.60"};
       } else if (id(Fehlercode).state == 9007){
-        return {"9007 Platine IG defekt Handbuch S.60"}; 
+        return {"9007 Platine IG defekt Handbuch S.60"};
       } else if (id(Fehlercode).state == 9008){
         return {"9008 Kältemitteltemperatur außerhalb des Bereiches Handbuch S.60"};
       } else if (id(Fehlercode).state == 9009){
@@ -126,77 +123,77 @@ text_sensor:
       } else if (id(Fehlercode).state == 9021){
         return {"9021 HPS-System Handbuch S.61"};
       } else if (id(Fehlercode).state == 9022){
-        return {"9022 Fehler AT-Fühler Handbuch S.62"};     
+        return {"9022 Fehler AT-Fühler Handbuch S.62"};
       } else if (id(Fehlercode).state == 9023){
-        return {"9023 Fehler WW-Fühler Handbuch S.62"};     
+        return {"9023 Fehler WW-Fühler Handbuch S.62"};
       } else if (id(Fehlercode).state == 9024){
-        return {"9024 Drucksensor Handbuch S.62"};     
+        return {"9024 Drucksensor Handbuch S.62"};
       } else if (id(Fehlercode).state == 9025){
-        return {"9025 Fehler Rücklauffühler Handbuch S.62"};     
+        return {"9025 Fehler Rücklauffühler Handbuch S.62"};
       } else if (id(Fehlercode).state == 9026){
         return {"9026 Drucksensor Handbuch S.62"};
       } else if (id(Fehlercode).state == 9027){
-        return {"9027 Aircoil-Fühler Defrost Handbuch S.62"};  
+        return {"9027 Aircoil-Fühler Defrost Handbuch S.62"};
       } else if (id(Fehlercode).state == 9028){
-        return {"9028 Aircoil-Fühler temp Handbuch S.62"};     
+        return {"9028 Aircoil-Fühler temp Handbuch S.62"};
       } else if (id(Fehlercode).state == 9029){
-        return {"9029 Fehler Kältefühler AG handbuch S.62"};     
+        return {"9029 Fehler Kältefühler AG handbuch S.62"};
       } else if (id(Fehlercode).state == 9030){
-        return {"9030 Defekt elektrisch Handbuch S.63"};     
+        return {"9030 Defekt elektrisch Handbuch S.63"};
       } else if (id(Fehlercode).state == 9031){
         return {"9031 Defekt elektrisch Handbuch S.63"};
       } else if (id(Fehlercode).state == 9032){
-        return {"9032 Defekt elektrisch Handbuch S.63"};     
+        return {"9032 Defekt elektrisch Handbuch S.63"};
       } else if (id(Fehlercode).state == 9033){
-        return {"9033 Defekt elektrisch Handbuch S.63"};     
+        return {"9033 Defekt elektrisch Handbuch S.63"};
       } else if (id(Fehlercode).state == 9034){
-        return {"9034 Defekt elektrisch Handbuch S.63"};     
+        return {"9034 Defekt elektrisch Handbuch S.63"};
       } else if (id(Fehlercode).state == 9035){
-        return {"9035 Platine AG defekt Handbuch S.63"};     
+        return {"9035 Platine AG defekt Handbuch S.63"};
       } else if (id(Fehlercode).state == 9036){
-        return {"9036 Defekt elektrisch Handbuch S.63"};     
+        return {"9036 Defekt elektrisch Handbuch S.63"};
       } else if (id(Fehlercode).state == 9037){
-        return {"9037 Einstellung Leistung Handbuch S.63"};     
+        return {"9037 Einstellung Leistung Handbuch S.63"};
       } else if (id(Fehlercode).state == 9038){
-        return {"9038 Kältemittel Leck Handbuch S.64"}; 
+        return {"9038 Kältemittel Leck Handbuch S.64"};
       } else if (id(Fehlercode).state == 9039){
-        return {"9039 Unter/Überspannung Handbuch S.64"};     
+        return {"9039 Unter/Überspannung Handbuch S.64"};
       } else if (id(Fehlercode).state == 9041){
-        return {"9041 Übertragungsfehler Handbuch S.64"};     
+        return {"9041 Übertragungsfehler Handbuch S.64"};
       } else if (id(Fehlercode).state == 9042){
-        return {"9042 Übertragungsfehler Handbuch S.64"};     
+        return {"9042 Übertragungsfehler Handbuch S.64"};
       } else if (id(Fehlercode).state == 9043){
-        return {"9043 Übertragungsfehler Handbuch S.64"}; 
+        return {"9043 Übertragungsfehler Handbuch S.64"};
       } else if (id(Fehlercode).state == 9044){
-        return {"9044 Übertragungsfehler Handbuch S.64"};     
+        return {"9044 Übertragungsfehler Handbuch S.64"};
       } else if (id(Fehlercode).state == 75){
-        return {"75 Fehler Außentemperaturfühler Handbuch S.64"};     
+        return {"75 Fehler Außentemperaturfühler Handbuch S.64"};
       } else if (id(Fehlercode).state == 76){
         return {"76 Fehler Speichertemperaturfühler Handbuch S.64"};
       } else if (id(Fehlercode).state == 81){
-        return {"81 Kommunikationsfehler Rocon Handbuch S.64"};     
+        return {"81 Kommunikationsfehler Rocon Handbuch S.64"};
       } else if (id(Fehlercode).state == 88){
-        return {"88 Kommunikationsfehler Rocon Handbuch S.6"};     
+        return {"88 Kommunikationsfehler Rocon Handbuch S.6"};
       } else if (id(Fehlercode).state == 91){
-        return {"91 Kommunikationsfehler Rocon Handbuch S.6"};     
+        return {"91 Kommunikationsfehler Rocon Handbuch S.6"};
       } else if (id(Fehlercode).state == 128){
-        return {"128 Fehler Rücklauftemperaturfühler Handbuch S.64"};     
+        return {"128 Fehler Rücklauftemperaturfühler Handbuch S.64"};
       } else if (id(Fehlercode).state == 129){
-        return {"129 Fehler Drucksensor Handbuch S.64"};     
+        return {"129 Fehler Drucksensor Handbuch S.64"};
       } else if (id(Fehlercode).state == 198){
-        return {"198 Durchflussmessung nicht plausibel Handbuch S.65"};     
+        return {"198 Durchflussmessung nicht plausibel Handbuch S.65"};
       } else if (id(Fehlercode).state == 200){
-        return {"200 Kommunikationsfehler Handbuch S.65"};     
+        return {"200 Kommunikationsfehler Handbuch S.65"};
       } else if (id(Fehlercode).state == 8005){
-        return {"8005 Wasserdruck in Heizungsanlage zu gering Handbuch S.65"}; 
+        return {"8005 Wasserdruck in Heizungsanlage zu gering Handbuch S.65"};
       } else if (id(Fehlercode).state == 8100){
-        return {"8100 Kommunikation Handbuch S.65"};     
+        return {"8100 Kommunikation Handbuch S.65"};
       } else if (id(Fehlercode).state == 9000){
-        return {"9000 Interne vorübergehende Meldung Handbuch S65"};     
+        return {"9000 Interne vorübergehende Meldung Handbuch S65"};
       } else if (id(Fehlercode).state == 8006){
-        return {"8006 Warnung Druckverlust Handbuch S.65"};     
+        return {"8006 Warnung Druckverlust Handbuch S.65"};
       } else if (id(Fehlercode).state == 8007){
-        return {"8007 wasserdruck in Anlage zu hoch Handbuch S.65"};                                                                                                                                               
+        return {"8007 wasserdruck in Anlage zu hoch Handbuch S.65"};
       } else {
         return {"Unknown"};
       }
@@ -224,10 +221,6 @@ text_sensor:
        } else {
         return {"Unknown"};
       }
-  
-  
-  
-
 
 ################################ Button und Switch ##############################################
 
@@ -238,13 +231,13 @@ button:
     icon: "mdi:water-boiler"
     on_press:
       then:
-        - canbus.send: 
+        - canbus.send:
                     data: [ 0x30, 0x00, 0x13, 0x02, 0xBC, 0x00, 0x00 ] # 70 Grad Grundeinstellung
                     can_id: 0x680
         - delay: 10s
-        - canbus.send: 
-                    data: [ 0x30, 0x00, 0x13, 0x01, 0xC2, 0x00, 0x00 ] # 45 Grad 
-                    can_id: 0x680 
+        - canbus.send:
+                    data: [ 0x30, 0x00, 0x13, 0x01, 0xC2, 0x00, 0x00 ] # 45 Grad
+                    can_id: 0x680
         - logger.log: CAN Nachricht wurde gesendet
   
 
@@ -252,11 +245,11 @@ switch:
   - platform: gpio
     name: Heizen Thermostat
     pin: GPIO36
-    
+
   - platform: gpio
     name: Kühlen Thermostat
     pin: GPIO37
-############################### Number (Slidermodus) ###############################################  
+############################### Number (Box) ###############################################
 number:
 
 ##### Raumsoll 1
@@ -281,8 +274,7 @@ number:
             uint8_t low_byte = temperature & 0xFF;
             return { 0x30, 0x00, 0x05, high_byte, low_byte, 0x00, 0x00 };
 
-#### Heizkurve                                                                                                                                                                                                                                                           
-
+#### Heizkurve
   - platform: template
     name: "Heizkurve Einstellen"
     id: set_heizkurve
@@ -301,7 +293,6 @@ number:
             uint8_t high_byte = hk >> 8;
             uint8_t low_byte = hk & 0xFF;
             return { 0x30, 0x00, 0xFA, 0x01, 0x0E, high_byte, low_byte };
-
 
 ##### Warmwasser
   - platform: template
@@ -325,11 +316,8 @@ number:
             uint8_t high_byte = temperature >> 8;
             uint8_t low_byte = temperature & 0xFF;
             return { 0x30, 0x00, 0x13, high_byte, low_byte, 0x00, 0x00 };
-            
 
 ####################### Select Tasten ###############################
-
-  
 
 #Set Betriebsmodus
 select:
@@ -364,7 +352,6 @@ select:
               return {0x30, 0x00, 0xFA, 0x01, 0x12, mode_map.at(x), 0x00};
 
 #Set HK Funktion
-
   - platform: template
     name: "HK Funktion"
     id: hk
@@ -398,7 +385,6 @@ sensor:
     state_class: "measurement"
     accuracy_decimals: 0
 
-
   - platform: template
     name: "Heizkurve"
     id: heizkurve
@@ -407,7 +393,6 @@ sensor:
     icon: "mdi:thermometer-lines"
     state_class: "measurement"
     accuracy_decimals: 2
-
 
   - platform: template
     name: "Thermische Leistung"
@@ -440,7 +425,6 @@ sensor:
     device_class: "temperature"
     state_class: "measurement"
     accuracy_decimals: 1
-      
 
   - platform: template
     name: "Status Kessel"
@@ -448,7 +432,6 @@ sensor:
     internal: true
     icon: "mdi:thermometer-lines"
     accuracy_decimals: 0
-    
 
   - platform: template
     name: "Wasserdruck"
@@ -469,7 +452,16 @@ sensor:
     accuracy_decimals: 0
 
   - platform: template
-    name: "EHS fuer CH"
+    name: "EHS fuer DHW (Qboh)"
+    id: Qboh
+    unit_of_measurement: "kWh"
+    icon: "mdi:thermometer-lines"
+    device_class: "ENERGY_STORAGE"
+    state_class: "measurement"
+    accuracy_decimals: 0
+
+  - platform: template
+    name: "EHS fuer CH (Qchhp)"
     id: Qchhp
     unit_of_measurement: "kWh"
     icon: "mdi:thermometer-lines"
@@ -495,7 +487,7 @@ sensor:
     device_class: "temperature"
     state_class: "measurement"
     accuracy_decimals: 0
-   
+
   - platform: template
     name: "Betriebsart"
     id: Betriebsart
@@ -505,7 +497,7 @@ sensor:
     device_class: "temperature"
     state_class: "measurement"
     accuracy_decimals: 0
-    
+
   - platform: template
     name: "T-WW-Soll1"
     id: t_ww_soll
@@ -559,7 +551,7 @@ sensor:
     device_class: "temperature"
     state_class: "measurement"
     accuracy_decimals: 1
-  
+
   - platform: template
     name: "Ruecklauftemperatur Heizung"
     id: ruecklauf
@@ -607,7 +599,7 @@ sensor:
     unit_of_measurement: "°C"
     icon: "mdi:waves-arrow-left"
     state_class: "measurement"
-    accuracy_decimals: 0  
+    accuracy_decimals: 0
 
   - platform: template
     name: "Max VL Soll"
@@ -616,7 +608,7 @@ sensor:
     unit_of_measurement: "°C"
     icon: "mdi:waves-arrow-left"
     state_class: "measurement"
-    accuracy_decimals: 0    
+    accuracy_decimals: 0
 
   - platform: template
     name: "HK Funktion"
@@ -625,7 +617,7 @@ sensor:
     unit_of_measurement: ""
     icon: "mdi:waves-arrow-left"
     state_class: "measurement"
-    accuracy_decimals: 0      
+    accuracy_decimals: 0
 
   - platform: template
     name: "Spreizung MOD HZ"
@@ -634,7 +626,7 @@ sensor:
     unit_of_measurement: "K"
     icon: "mdi:waves-arrow-left"
     state_class: "measurement"
-    accuracy_decimals: 0  
+    accuracy_decimals: 0
 
   - platform: template
     name: "Spreizung MOD WW"
@@ -643,7 +635,7 @@ sensor:
     unit_of_measurement: "K"
     icon: "mdi:waves-arrow-left"
     state_class: "measurement"
-    accuracy_decimals: 0        
+    accuracy_decimals: 0
 
 ########################### CAN Nachrichten abfragen #################################################
 
@@ -652,7 +644,6 @@ time:
     on_time:
       - seconds: /15
         then:
-
 
 #Fehlercode
           - canbus.send:
@@ -666,7 +657,6 @@ time:
               can_id: 0x680
           - delay: 250ms
 
-        
 #Raumsoll1
           - canbus.send:
               data: [0x31, 0x00, 0x05, 0x00, 0x00, 0x00, 0x00]
@@ -705,7 +695,6 @@ time:
               can_id: 0x680
           - delay: 250ms
 
-
 #Umwälzpumpe
           - canbus.send:
               data: [0x31, 0x00, 0xFA, 0xC0, 0xF7, 0x00, 0x00 ]
@@ -742,6 +731,74 @@ time:
               can_id: 0x680
           - delay: 250ms
 
+#Außentemperatur 1/10 °C et dec value - ok /10
+          - canbus.send:
+              data: [ 0x31, 0x00, 0xfa,0x00,0x0c,0x00,0x00 ]
+              can_id: 0x680
+          - delay: 250ms
+
+#Warmwasser Temperatur  °C et dec value - ok /10
+          - canbus.send:
+              data: [ 0x31, 0x00, 0x0E, 0x00, 0x00, 0x00, 0x00 ]
+              can_id: 0x680
+          - delay: 250ms
+
+#Vorlauftemperatur (TVBH) - ok 1/10
+          - canbus.send:
+              data: [ 0x31, 0x00, 0xFA, 0xC1, 0x02, 0x00, 0x00 ]
+              can_id: 0x680
+          - delay: 500ms
+#Vorlauftemperatur Hzg (TV) - ok 1/10
+          - canbus.send:
+              data: [ 0x31, 0x00, 0xFA, 0xC0, 0xFC, 0x00, 0x00 ]
+              can_id: 0x680
+          - delay: 250ms
+
+#Rücklauftemperatur Hzg - ok 1/10
+          - canbus.send:
+              data: [ 0x31, 0x00, 0xFA, 0xC1, 0x00, 0x00, 0x00 ]
+              can_id: 0x680
+          - delay: 250ms
+
+#WW Temperatur - ok + offset
+          - canbus.send:
+              data: [ 0x31, 0x00, 0xfa, 0x00, 0x0e, 0x00, 0x00 ]
+              can_id: 0x680
+          - delay: 250ms
+
+#Min. VL Temp
+          - canbus.send:
+              data: [ 0x31, 0x00, 0xfa, 0x01, 0x2B, 0x00, 0x00 ]
+              can_id: 0x680
+          - delay: 250ms
+
+#Max. VL Temp
+          - canbus.send:
+              data: [ 0x31, 0x00, 0x28, 0x00, 0x00, 0x00, 0x00 ]
+              can_id: 0x680
+          - delay: 250ms
+
+#HK Funktion
+          - canbus.send:
+              data: [ 0x31, 0x00, 0xFA, 0x01, 0x41, 0x00, 0x00 ]
+              can_id: 0x680
+          - delay: 250ms
+
+#Spreizung Mod HZ
+          - canbus.send:
+              data: [ 0x31, 0x00, 0xFA, 0x06, 0x83, 0x00, 0x00 ]
+              can_id: 0x680
+          - delay: 250ms
+
+#Spreizung Mod WW
+          - canbus.send:
+              data: [ 0x31, 0x00, 0xFA, 0x06, 0x84, 0x00, 0x00 ]
+              can_id: 0x680
+          - delay: 250ms
+
+      - seconds: /900
+        then:
+
 #rt_pump
           - canbus.send:
               data: [ 0x31, 0x00, 0xFA, 0x06, 0xA4, 0x00, 0x00 ]
@@ -753,72 +810,6 @@ time:
               data: [ 0x31, 0x00, 0xFA, 0x06, 0xA5, 0x00, 0x00 ]
               can_id: 0x680
           - delay: 250ms
-
-#Außentemperatur 1/10 °C et dec value - ok /10
-          - canbus.send:
-              data: [ 0x31, 0x00, 0xfa,0x00,0x0c,0x00,0x00 ]
-              can_id: 0x680
-          - delay: 250ms
-
-#Warmwasser Temperatur  °C et dec value - ok /10
-          - canbus.send:
-              data: [ 0x31, 0x00, 0x0E, 0x00, 0x00, 0x00, 0x00 ]
-              can_id: 0x680
-          - delay: 250ms          
-
-#Vorlauftemperatur (TVBH) - ok 1/10
-          - canbus.send:
-              data: [ 0x31, 0x00, 0xFA, 0xC1, 0x02, 0x00, 0x00 ]
-              can_id: 0x680
-          - delay: 500ms 
-#Vorlauftemperatur Hzg (TV) - ok 1/10
-          - canbus.send:
-              data: [ 0x31, 0x00, 0xFA, 0xC0, 0xFC, 0x00, 0x00 ]
-              can_id: 0x680
-          - delay: 250ms 
-
-#Rücklauftemperatur Hzg - ok 1/10
-          - canbus.send:
-              data: [ 0x31, 0x00, 0xFA, 0xC1, 0x00, 0x00, 0x00 ]
-              can_id: 0x680
-          - delay: 250ms 
-
-#WW Temperatur - ok + offset
-          - canbus.send:
-              data: [ 0x31, 0x00, 0xfa, 0x00, 0x0e, 0x00, 0x00 ]
-              can_id: 0x680
-          - delay: 250ms 
-
-#Min. VL Temp
-          - canbus.send:
-              data: [ 0x31, 0x00, 0xfa, 0x01, 0x2B, 0x00, 0x00 ]
-              can_id: 0x680
-          - delay: 250ms 
-
-#Max. VL Temp
-          - canbus.send:
-              data: [ 0x31, 0x00, 0x28, 0x00, 0x00, 0x00, 0x00 ]
-              can_id: 0x680
-          - delay: 250ms 
-
-#HK Funktion
-          - canbus.send:
-              data: [ 0x31, 0x00, 0xFA, 0x01, 0x41, 0x00, 0x00 ]
-              can_id: 0x680
-          - delay: 250ms 
-
-#Spreizung Mod HZ
-          - canbus.send:
-              data: [ 0x31, 0x00, 0xFA, 0x06, 0x83, 0x00, 0x00 ]
-              can_id: 0x680
-          - delay: 250ms 
-
-#Spreizung Mod WW
-          - canbus.send:
-              data: [ 0x31, 0x00, 0xFA, 0x06, 0x84, 0x00, 0x00 ]
-              can_id: 0x680
-          - delay: 250ms 
-
 canbus:
   - platform: esp32_can
     tx_pin: GPIO47
@@ -840,8 +831,6 @@ canbus:
              ESP_LOGD("main", "Temperature received over can is %f", temperature);
             }
 
-
-
 #Heizkurve
     - can_id: 0x180
       then:
@@ -851,8 +840,6 @@ canbus:
              id(heizkurve).publish_state(temperature);
              ESP_LOGD("main", "Temperature received over can is %f", temperature);
             }
-
-
 
 #Status Kessel
     - can_id: 0x180
@@ -915,7 +902,6 @@ canbus:
               ESP_LOGD("main", "Temperature received over can is %f", temperature);
             }
 
-
 #Betriebsmodus
     - can_id: 0x180
       then:
@@ -946,7 +932,7 @@ canbus:
               ESP_LOGD("main", "Temperature received over can is %f", temperature);
             }
 
-#Volumenstrom 
+#Volumenstrom
     - can_id: 0x180
       then:
         - lambda: |-
@@ -976,7 +962,7 @@ canbus:
               ESP_LOGD("main", "Temperature received over can is %f", temperature);
             }
 
-#Warmwasser-Temperaturabfrage 
+#Warmwasser-Temperaturabfrage
     - can_id: 0x180
       then:
         - lambda: |-
@@ -994,8 +980,8 @@ canbus:
               float temperature =float(float((int((x[6])+( (x[5])<<8))))/10);
               id(TVBH).publish_state(temperature);
               ESP_LOGD("main", "Temperature received over can is %f", temperature);
-            } 
-            
+            }
+
 #Vorlauftemperaturabfrage Heizkreis (TV)
     - can_id: 0x180
       then:
@@ -1022,7 +1008,7 @@ canbus:
         - lambda: |-
             if(x[0]==0xd2 and x[1]==0x00 and x[3]==0x00 and x[4] == 0x0c) {
               float temperature = float(((int((x[6])+( (x[5])<<8))) ^ 0x8000) - 0x8000)/10;
-              id(temperature_outside).publish_state(temperature); 
+              id(temperature_outside).publish_state(temperature);
               ESP_LOGD("main", "Temperature received over can is %f", temperature);
             }
 
@@ -1064,7 +1050,7 @@ canbus:
              float temperature =float((float((int((x[6])+( (x[5])<<8))))/10));
              id(spreizung_mod_hz).publish_state(temperature);
              ESP_LOGD("main", "Temperature received over can is %f", temperature);
-           }           
+           }
 
 #Spreizung MOD WW
     - can_id: 0x180
@@ -1074,7 +1060,7 @@ canbus:
              float temperature =float((float((int((x[6])+( (x[5])<<8))))/10));
              id(spreizung_mod_ww).publish_state(temperature);
              ESP_LOGD("main", "Temperature received over can is %f", temperature);
-           }                      
+           }
 
 #HK Funktion (Automatik bei jeglicher Änderung)0x31, 0x00, 0xFA, 0x01, 0x41, 0x00, 0x00
     - can_id: 0x180
@@ -1137,7 +1123,7 @@ canbus:
               id(raumsoll1).publish_state(temperature);
               auto call = id(r_soll).make_call();
               call.set_value(temperature);
-              call.perform();                                    
+              call.perform();
             }
 
 #WW_Soll_Set 0x30, 0x00, 0x13, 0x00, 0x00, 0x00, 0x00 (Automatik bei jeglicher Änderung)
@@ -1165,10 +1151,8 @@ canbus:
               id(set_heizkurve).publish_state(temperature);
               auto call = id(set_heizkurve).make_call();
               call.set_value(temperature);
-              call.perform();                                    
-            }  
-
-
+              call.perform();
+            }
 
 #Show data in raw form as hex-values
     - can_id: 0x180
@@ -1185,7 +1169,7 @@ canbus:
               ESP_LOGD("main", "Antwort von 180 Hex: %x %x %x %x %x %x %x", wert0, wert1, wert2, wert3, wert4, wert5, wert6);
               ESP_LOGD("main", "Antwort von 180 Float: %f", wert7);
               ESP_LOGI("main", "Antwort von 180 Dez.: %i %i", wert5, wert6);
-              
+
     #Show data in raw form as hex-values
     - can_id: 0x300
       then:
@@ -1201,7 +1185,7 @@ canbus:
               ESP_LOGD("main", "Antwort von 180 Hex: %x %x %x %x %x %x %x", wert0, wert1, wert2, wert3, wert4, wert5, wert6);
               ESP_LOGD("main", "Antwort von 180 Float: %f", wert7);
               ESP_LOGI("main", "Antwort von 180 Dez.: %i %i", wert5, wert6);
-              
+
 #Show data in raw form as hex-values
     - can_id: 0x301
       then:
