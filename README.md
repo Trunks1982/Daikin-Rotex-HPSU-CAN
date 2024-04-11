@@ -44,8 +44,8 @@ Die Rotex.bin Datei dient zum vereinfachten updaten über die WEB-UI Oberfläche
 - Thermische Leistungsberechnung
 - Betriebsmodus kann verstellt werden
 - Heizkurven Verstellung in 0.01 Schritten (Standard in 0.1 Schritten)
-- Neues Feature: Zwei neue Schalter angelegt um auch die Thermostat Eingänge von der Rotex / Daikin direkt zwischen Heizen / Kühlen umzuschalten.
-- ### Neues Feature Fehlercode Anzeige mit Beschreibung des Fehlers mit Hanbuch Seitenangabe!! 
+- Zwei neue Schalter angelegt um auch die Thermostat Eingänge von der Rotex / Daikin direkt zwischen Heizen / Kühlen umzuschalten.
+- Neues Feature Fehlercode Anzeige mit Beschreibung des Fehlers mit Handbuch Seitenangabe!! 
 Es werden alle relevanten Daten Abgefragt die man eigentlich benötigt.
 <br>  
 ## weitere .YAML Dateien:
