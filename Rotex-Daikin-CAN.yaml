@@ -1,4 +1,4 @@
-############################### Version 1.3.1 #####################################
+############################### Version 1.3.2 #####################################
 
 esphome:
   name: rotex
@@ -226,27 +226,40 @@ text_sensor:
       }
   
   
-  
+globals:
+  - id: backup_dhw
+    type: int
+    
 
 
 ################################ Button und Switch ##############################################
 
+
 button:
+
   - platform: template
     name: Warmwasser bereiten
     id: ww_button
     icon: "mdi:water-boiler"
     on_press:
       then:
-        - canbus.send: 
-                    data: [ 0x30, 0x00, 0x13, 0x02, 0xBC, 0x00, 0x00 ] # 70 Grad Grundeinstellung
-                    can_id: 0x680
+        - globals.set:
+            id: backup_dhw
+            value: !lambda return int(id(t_ww_soll).state * 10);
+        - canbus.send:
+            can_id: 0x680
+            data: [0x30, 0x00, 0x13, 0x02, 0xBC, 0x00, 0x00] # 70 Grad Grundeinstellung
         - delay: 10s
-        - canbus.send: 
-                    data: [ 0x30, 0x00, 0x13, 0x01, 0xC2, 0x00, 0x00 ] # 45 Grad 
-                    can_id: 0x680 
+        - canbus.send:
+            can_id: 0x680
+            data: !lambda |-
+              uint16_t temperature = (uint16_t)id(backup_dhw); // Convert to int16be
+              uint8_t high_byte = temperature >> 8;
+              uint8_t low_byte = temperature & 0xFF;
+              return {0x30, 0x00, 0x13, high_byte, low_byte, 0x00, 0x00};
         - logger.log: CAN Nachricht wurde gesendet
-  
+
+
 
 switch:
   - platform: gpio
@@ -326,6 +339,53 @@ number:
             uint8_t low_byte = temperature & 0xFF;
             return { 0x30, 0x00, 0x13, high_byte, low_byte, 0x00, 0x00 };
             
+##### Min VL
+  - platform: template
+    name: "Min VL Einstellen"
+    id: min_vl_set
+    optimistic: true
+    mode: box
+    min_value: 25
+    max_value: 40
+    step: 1
+    initial_value: 25
+    unit_of_measurement: "°C"
+    icon: "mdi:thermometer-lines"
+    device_class: "temperature"
+    set_action:
+      - delay: 250ms
+      - canbus.send:
+          can_id: 0x680
+          data: !lambda |-
+            uint16_t temperature = (uint16_t)(x * 10); // Convert to int16be
+            uint8_t high_byte = temperature >> 8;
+            uint8_t low_byte = temperature & 0xFF;
+            return { 0x30, 0x00, 0xFA, 0x01, 0x2B, high_byte, low_byte };
+
+##### Max VL
+  - platform: template
+    name: "Max VL Einstellen"
+    id: max_vl_set
+    optimistic: true
+    mode: box
+    min_value: 25
+    max_value: 60
+    step: 1
+    initial_value: 35
+    unit_of_measurement: "°C"
+    icon: "mdi:thermometer-lines"
+    device_class: "temperature"
+    set_action:
+      - delay: 250ms
+      - canbus.send:
+          can_id: 0x680
+          data: !lambda |-
+            uint16_t temperature = (uint16_t)(x * 10); // Convert to int16be
+            uint8_t high_byte = temperature >> 8;
+            uint8_t low_byte = temperature & 0xFF;
+            return { 0x30, 0x00, 0x28, high_byte, low_byte, 0x00, 0x00, };
+
+
 
 ####################### Select Tasten ###############################
 
@@ -1026,25 +1086,6 @@ canbus:
               ESP_LOGD("main", "Temperature received over can is %f", temperature);
             }
 
-#Min. VL Soll
-    - can_id: 0x180
-      then:
-        - lambda: |-
-            if(x[0]==0xd2 and x[2]==0xFA and x[3]==0x01 and x[4]==0x2B) {
-              float temperature =float(float((int((x[6])+( (x[5])<<8))))/10);
-              id(min_vl_soll).publish_state(temperature);
-              ESP_LOGD("main", "Temperature received over can is %f", temperature);
-            }
-
-#Max. VL Soll
-    - can_id: 0x180
-      then:
-       - lambda: |-
-          if(x[0]==0xd2 and x[2]==0x28) {
-             float temperature =float((float((int((x[4])+( (x[3])<<8))))/10));
-             id(max_vl_soll).publish_state(temperature);
-             ESP_LOGD("main", "Temperature received over can is %f", temperature);
-           }
 
 #HK Funktion
     - can_id: 0x180
@@ -1127,6 +1168,33 @@ canbus:
                 call.set_option("Automatik 2");
                 call.perform();}
               }
+
+
+#Min. VL Soll
+    - can_id: 0x180
+      then:
+        - lambda: |-
+            if(x[0]==0xd2 and x[2]==0xFA and x[3]==0x01 and x[4]==0x2B) {
+              float temperature =float(float((int((x[6])+( (x[5])<<8))))/10);
+              id(min_vl_soll).publish_state(temperature);
+              auto call = id(min_vl_set).make_call();
+              call.set_value(temperature);
+              call.perform();     
+              ESP_LOGD("main", "Temperature received over can is %f", temperature);
+            }
+
+#Max. VL Soll
+    - can_id: 0x180
+      then:
+       - lambda: |-
+          if(x[0]==0xd2 and x[2]==0x28) {
+             float temperature =float((float((int((x[4])+( (x[3])<<8))))/10));
+             id(max_vl_soll).publish_state(temperature);
+             auto call = id(max_vl_set).make_call();
+             call.set_value(temperature);
+             call.perform();     
+             ESP_LOGD("main", "Temperature received over can is %f", temperature);
+           }
 
 #Raumsoll 0x30, 0x00, 0x05, 0x00, 0x00, 0x00, 0x00 (Automatik bei jeglicher Änderung)
     - can_id: 0x180
