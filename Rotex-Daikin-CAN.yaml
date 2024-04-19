@@ -11,7 +11,7 @@ esp32:
 
 # Enable logging
 logger:
- # level: DEBUG
+ # level: VERBOSE
 
 # Enable Home Assistant API
 api:
@@ -362,7 +362,7 @@ number:
             uint8_t low_byte = temperature & 0xFF;
             return { 0x30, 0x00, 0xFA, 0x01, 0x2B, high_byte, low_byte };
 
-##### Max VL
+##### Max VL Set
   - platform: template
     name: "Max VL Einstellen"
     id: max_vl_set
@@ -385,7 +385,28 @@ number:
             uint8_t low_byte = temperature & 0xFF;
             return { 0x30, 0x00, 0x28, high_byte, low_byte, 0x00, 0x00, };
 
-
+##### T Vorlauf Tag Set
+  - platform: template
+    name: "T Vorlauf Tag Einstellen"
+    id: t_vorlauf_tag_set
+    optimistic: true
+    mode: box
+    min_value: 25
+    max_value: 60
+    step: 1
+    initial_value: 35
+    unit_of_measurement: "°C"
+    icon: "mdi:thermometer-lines"
+    device_class: "temperature"
+    set_action:
+      - delay: 250ms
+      - canbus.send:
+          can_id: 0x680
+          data: !lambda |-
+            uint16_t temperature = (uint16_t)(x * 10); // Convert to int16be
+            uint8_t high_byte = temperature >> 8;
+            uint8_t low_byte = temperature & 0xFF;
+            return { 0x30, 0x00, 0xFA,  0x01, 0x29, high_byte, low_byte, };
 
 ####################### Select Tasten ###############################
 
@@ -444,6 +465,8 @@ select:
                 {"Fest", 1}
               };
               return {0x30, 0x00, 0xFA, 0x01, 0x41, 0x00, mode_map.at(x)};
+
+
 
 
 ################################# Alle Sensoren #####################################
@@ -705,6 +728,24 @@ sensor:
     state_class: "measurement"
     accuracy_decimals: 0        
 
+
+  - platform: template
+    name: "T Vorlauf Tag"
+    internal: false
+    id: t_vorlauf_tag
+    unit_of_measurement: "°C"
+    icon: "mdi:waves-arrow-left"
+    state_class: "measurement"
+    accuracy_decimals: 0 
+
+  - platform: template
+    name: "Rocon U1"
+    internal: false
+    id: rocon_u1
+    unit_of_measurement: "°C"
+    icon: "mdi:waves-arrow-left"
+    state_class: "measurement"
+    accuracy_decimals: 0  
 ########################### CAN Nachrichten abfragen #################################################
 
 time:
@@ -879,6 +920,17 @@ time:
               can_id: 0x680
           - delay: 250ms 
 
+#T Vorlauf Tag
+          - canbus.send:
+              data: [ 0x31, 0x00, 0xFA, 0x01, 0x29, 0x00, 0x00 ]
+              can_id: 0x680
+          - delay: 250ms 
+
+#Rocon U1
+          - canbus.send:
+              data: [ 0x81, 0x00, 0xFA, 0x00, 0x11, 0x00, 0x00 ]
+              can_id: 0x680
+          - delay: 250ms 
 canbus:
   - platform: esp32_can
     tx_pin: GPIO47
@@ -889,6 +941,18 @@ canbus:
     on_frame:
 
 ################################# CAN Nachrichten empfangen (Auswertung) #####################################
+
+
+#Rocon u1
+    - can_id: 0x180
+      then:
+        - lambda: |-
+            if(x[0]==0xd2 and x[2]==0xFA and x[3]==0x00 and x[4] ==0x11) {
+             float temperature =float((float((int((x[6])+( (x[5])<<8))))/100));
+             id(Fehlercode).publish_state(temperature);
+             ESP_LOGD("main", "Temperature received over can is %f", temperature);
+            }
+
 
 #Fehlercode
     - can_id: 0x180
@@ -1117,6 +1181,16 @@ canbus:
              ESP_LOGD("main", "Temperature received over can is %f", temperature);
            }                      
 
+#Spreizung MOD WW
+    - can_id: 0x180
+      then:
+       - lambda: |-
+          if(x[0]==0xd2 and x[2]==0xFA and x[3]==0x01 and x[4]==0x29) {
+             float temperature =float((float((int((x[6])+( (x[5])<<8))))/10));
+             id(t_vorlauf_tag).publish_state(temperature);
+             ESP_LOGD("main", "Temperature received over can is %f", temperature);
+           }                      
+
 #HK Funktion (Automatik bei jeglicher Änderung)0x31, 0x00, 0xFA, 0x01, 0x41, 0x00, 0x00
     - can_id: 0x180
       then:
@@ -1169,6 +1243,19 @@ canbus:
                 call.perform();}
               }
 
+
+#T Vorlauf Tag
+    - can_id: 0x180
+      then:
+        - lambda: |-
+            if(x[0]==0xd2 and x[2]==0xFA and x[3]==0x01 and x[4]==0x29) {
+              float temperature =float(float((int((x[6])+( (x[5])<<8))))/10);
+              id(t_vorlauf_tag).publish_state(temperature);
+              auto call = id(t_vorlauf_tag_set).make_call();
+              call.set_value(temperature);
+              call.perform();     
+              ESP_LOGD("main", "Temperature received over can is %f", temperature);
+            }
 
 #Min. VL Soll
     - can_id: 0x180
