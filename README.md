@@ -59,7 +59,8 @@ Die Defrost.yaml ist für Home Assistant Automatisierung gedacht.Das ist die gle
 Getestet mit: - Rotex HSPU Compact 508 8kw mit Rocon BM1, ROTEX HPSU compact Ultra
 
 ## WEBUI vom ESP:
-![Bildschirmfoto 2023-12-17 um 11 33 51](https://github.com/Trunks1982/Daikin-Rotex-HPSU-CAN/assets/62701386/524a204e-801a-4fe7-aacb-ac2e731a99b7)
+![Bildschirmfoto 2024-04-19 um 12 24 08](https://github.com/Trunks1982/Daikin-Rotex-HPSU-CAN/assets/62701386/cf6346a0-e183-4680-b032-b11090d8a67a)
+
 
 
 ## Ansicht Homeassistant:
