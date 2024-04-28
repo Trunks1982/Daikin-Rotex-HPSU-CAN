@@ -1,4 +1,4 @@
-############################### Version 1.3.2 #####################################
+############################### Version 1.3.4 #####################################
 
 esphome:
   name: rotex
@@ -744,37 +744,15 @@ sensor:
 time:
   - platform: sntp
     on_time:
-      - seconds: /15
+      - seconds: /10
         then:
 
 
 
 
-        
-#Raumsoll1
-          - canbus.send:
-              data: [0x31, 0x00, 0x05, 0x00, 0x00, 0x00, 0x00]
-              can_id: 0x680
-          - delay: 250ms
-
 #Status Kessel
           - canbus.send:
               data: [0x31, 0x00, 0xFA, 0x0A, 0x8C, 0x00, 0x00]
-              can_id: 0x680
-          - delay: 250ms
-
-
-
-
-#T-WW-Soll1
-          - canbus.send:
-              data: [0x31, 0x00, 0x13, 0x00, 0x00, 0x00, 0x00 ]
-              can_id: 0x680
-          - delay: 250ms
-
-#Qchhp
-          - canbus.send:
-              data: [0x31, 0x00, 0xFA, 0x09, 0x20, 0x00, 0x00 ]
               can_id: 0x680
           - delay: 250ms
 
@@ -821,25 +799,13 @@ time:
               can_id: 0x680
           - delay: 250ms
 
-#rt_compressor
-          - canbus.send:
-              data: [ 0x31, 0x00, 0xFA, 0x06, 0xA5, 0x00, 0x00 ]
-              can_id: 0x680
-          - delay: 250ms
-
-
-
-#Warmwasser Temperatur  °C et dec value - ok /10
-          - canbus.send:
-              data: [ 0x31, 0x00, 0x0E, 0x00, 0x00, 0x00, 0x00 ]
-              can_id: 0x680
-          - delay: 250ms          
 
 #Vorlauftemperatur (TVBH) - ok 1/10
           - canbus.send:
               data: [ 0x31, 0x00, 0xFA, 0xC1, 0x02, 0x00, 0x00 ]
               can_id: 0x680
           - delay: 500ms 
+
 #Vorlauftemperatur Hzg (TV) - ok 1/10
           - canbus.send:
               data: [ 0x31, 0x00, 0xFA, 0xC0, 0xFC, 0x00, 0x00 ]
@@ -863,21 +829,30 @@ time:
       - seconds: /120
         then:
 
-
-#Wasserdruck
+#T-WW-Soll1
           - canbus.send:
-              data: [0x31, 0x00, 0x1C, 0x00, 0x00, 0x00, 0x00]
+              data: [0x31, 0x00, 0x13, 0x00, 0x00, 0x00, 0x00 ]
               can_id: 0x680
           - delay: 250ms
 
-
-#Erzeugte Energie gesamt
+#Warmwasser Temperatur  °C et dec value - ok /10
           - canbus.send:
-              data: [0x31, 0x00, 0xFA, 0x09, 0x30, 0x00, 0x00 ]
+              data: [ 0x31, 0x00, 0x0E, 0x00, 0x00, 0x00, 0x00 ]
+              can_id: 0x680
+          - delay: 250ms          
+
+
+#Raumsoll1
+          - canbus.send:
+              data: [0x31, 0x00, 0x05, 0x00, 0x00, 0x00, 0x00]
               can_id: 0x680
           - delay: 250ms
 
-
+#rt_compressor
+          - canbus.send:
+              data: [ 0x31, 0x00, 0xFA, 0x06, 0xA5, 0x00, 0x00 ]
+              can_id: 0x680
+          - delay: 250ms
 
 #Min. VL Temp
           - canbus.send:
@@ -927,9 +902,34 @@ time:
               can_id: 0x680
           - delay: 250ms
 
+
+
+
+      - seconds: /600
+        then:
+
+#Qchhp
+          - canbus.send:
+              data: [0x31, 0x00, 0xFA, 0x09, 0x20, 0x00, 0x00 ]
+              can_id: 0x680
+          - delay: 250ms          
+
 #Außentemperatur 1/10 °C et dec value - ok /10
           - canbus.send:
               data: [ 0x31, 0x00, 0xfa,0x00,0x0c,0x00,0x00 ]
+              can_id: 0x680
+          - delay: 250ms
+
+#Wasserdruck
+          - canbus.send:
+              data: [0x31, 0x00, 0x1C, 0x00, 0x00, 0x00, 0x00]
+              can_id: 0x680
+          - delay: 250ms
+
+
+#Erzeugte Energie gesamt
+          - canbus.send:
+              data: [0x31, 0x00, 0xFA, 0x09, 0x30, 0x00, 0x00 ]
               can_id: 0x680
           - delay: 250ms
 
