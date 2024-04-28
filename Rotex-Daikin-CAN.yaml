@@ -738,14 +738,7 @@ sensor:
     state_class: "measurement"
     accuracy_decimals: 0 
 
-  - platform: template
-    name: "Rocon U1"
-    internal: false
-    id: rocon_u1
-    unit_of_measurement: "°C"
-    icon: "mdi:waves-arrow-left"
-    state_class: "measurement"
-    accuracy_decimals: 0  
+  
 ########################### CAN Nachrichten abfragen #################################################
 
 time:
@@ -755,17 +748,7 @@ time:
         then:
 
 
-#Fehlercode
-          - canbus.send:
-              data: [0x31, 0x00, 0xFA, 0x13, 0x88, 0x00, 0x00]
-              can_id: 0x680
-          - delay: 250ms
 
-#Heizkurve
-          - canbus.send:
-              data: [0x31, 0x00, 0xFA, 0x01, 0x0E, 0x00, 0x00]
-              can_id: 0x680
-          - delay: 250ms
 
         
 #Raumsoll1
@@ -781,11 +764,6 @@ time:
           - delay: 250ms
 
 
-#Wasserdruck
-          - canbus.send:
-              data: [0x31, 0x00, 0x1C, 0x00, 0x00, 0x00, 0x00]
-              can_id: 0x680
-          - delay: 250ms
 
 
 #T-WW-Soll1
@@ -797,12 +775,6 @@ time:
 #Qchhp
           - canbus.send:
               data: [0x31, 0x00, 0xFA, 0x09, 0x20, 0x00, 0x00 ]
-              can_id: 0x680
-          - delay: 250ms
-
-#Erzeugte Energie gesamt
-          - canbus.send:
-              data: [0x31, 0x00, 0xFA, 0x09, 0x30, 0x00, 0x00 ]
               can_id: 0x680
           - delay: 250ms
 
@@ -855,11 +827,7 @@ time:
               can_id: 0x680
           - delay: 250ms
 
-#Außentemperatur 1/10 °C et dec value - ok /10
-          - canbus.send:
-              data: [ 0x31, 0x00, 0xfa,0x00,0x0c,0x00,0x00 ]
-              can_id: 0x680
-          - delay: 250ms
+
 
 #Warmwasser Temperatur  °C et dec value - ok /10
           - canbus.send:
@@ -889,6 +857,27 @@ time:
               data: [ 0x31, 0x00, 0xfa, 0x00, 0x0e, 0x00, 0x00 ]
               can_id: 0x680
           - delay: 250ms 
+
+
+
+      - seconds: /120
+        then:
+
+
+#Wasserdruck
+          - canbus.send:
+              data: [0x31, 0x00, 0x1C, 0x00, 0x00, 0x00, 0x00]
+              can_id: 0x680
+          - delay: 250ms
+
+
+#Erzeugte Energie gesamt
+          - canbus.send:
+              data: [0x31, 0x00, 0xFA, 0x09, 0x30, 0x00, 0x00 ]
+              can_id: 0x680
+          - delay: 250ms
+
+
 
 #Min. VL Temp
           - canbus.send:
@@ -926,11 +915,25 @@ time:
               can_id: 0x680
           - delay: 250ms 
 
-#Rocon U1
+#Fehlercode
           - canbus.send:
-              data: [ 0x81, 0x00, 0xFA, 0x00, 0x11, 0x00, 0x00 ]
+              data: [0x31, 0x00, 0xFA, 0x13, 0x88, 0x00, 0x00]
               can_id: 0x680
-          - delay: 250ms 
+          - delay: 250ms
+
+#Heizkurve
+          - canbus.send:
+              data: [0x31, 0x00, 0xFA, 0x01, 0x0E, 0x00, 0x00]
+              can_id: 0x680
+          - delay: 250ms
+
+#Außentemperatur 1/10 °C et dec value - ok /10
+          - canbus.send:
+              data: [ 0x31, 0x00, 0xfa,0x00,0x0c,0x00,0x00 ]
+              can_id: 0x680
+          - delay: 250ms
+
+
 canbus:
   - platform: esp32_can
     tx_pin: GPIO47
@@ -1372,4 +1375,3 @@ canbus:
               ESP_LOGD("main", "Antwort von 180 Hex: %x %x %x %x %x %x %x", wert0, wert1, wert2, wert3, wert4, wert5, wert6);
               ESP_LOGD("main", "Antwort von 180 Float: %f", wert7);
               ESP_LOGI("main", "Antwort von 180 Dez.: %i %i", wert5, wert6);
-
