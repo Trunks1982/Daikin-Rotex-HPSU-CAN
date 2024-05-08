@@ -741,11 +741,11 @@ sensor:
   
 ########################### CAN Nachrichten abfragen #################################################
 
-time:
-  - platform: sntp
-    on_time:
-      - seconds: /10
-        then:
+interval:
+  - interval: 10s
+    then:
+    
+    
 
 
 
@@ -754,50 +754,50 @@ time:
           - canbus.send:
               data: [0x31, 0x00, 0xFA, 0x0A, 0x8C, 0x00, 0x00]
               can_id: 0x680
-          - delay: 250ms
+          - delay: 500ms
 
 
 #Umwälzpumpe
           - canbus.send:
               data: [0x31, 0x00, 0xFA, 0xC0, 0xF7, 0x00, 0x00 ]
               can_id: 0x680
-          - delay: 250ms
+          - delay: 500ms
 
 #Betriebsmodus
           - canbus.send:
               data: [0x31, 0x00, 0xFA, 0x01, 0x12, 0x00, 0x00 ]
               can_id: 0x680
-          - delay: 250ms
+          - delay: 500ms
 
 #Betriebsart
           - canbus.send:
               data: [0x31, 0x00, 0xFA, 0xC0, 0xF6, 0x00, 0x00 ]
               can_id: 0x680
-          - delay: 250ms
+          - delay: 500ms
 
 #VL Soll  et dec value - ok /10
           - canbus.send:
               data: [0x31, 0x00, 0x02, 0x00, 0x00, 0x00, 0x00]
               can_id: 0x680
-          - delay: 250ms
+          - delay: 500ms
 
 #BPV  et dec value - ok /10
           - canbus.send:
               data: [0x31, 0x00, 0xFA, 0xC0, 0xFB, 0x00, 0x00 ]
               can_id: 0x680
-          - delay: 250ms
+          - delay: 500ms
 
 #Volumenstrom 1/10 °C et dec value - ok /10
           - canbus.send:
               data: [ 0x31, 0x00, 0xFA, 0x01, 0xDA, 0x00, 0x00 ]
               can_id: 0x680
-          - delay: 250ms
+          - delay: 500ms
 
 #rt_pump
           - canbus.send:
               data: [ 0x31, 0x00, 0xFA, 0x06, 0xA4, 0x00, 0x00 ]
               can_id: 0x680
-          - delay: 250ms
+          - delay: 500ms
 
 
 #Vorlauftemperatur (TVBH) - ok 1/10
@@ -810,128 +810,118 @@ time:
           - canbus.send:
               data: [ 0x31, 0x00, 0xFA, 0xC0, 0xFC, 0x00, 0x00 ]
               can_id: 0x680
-          - delay: 250ms 
+          - delay: 500ms 
 
 #Rücklauftemperatur Hzg - ok 1/10
           - canbus.send:
               data: [ 0x31, 0x00, 0xFA, 0xC1, 0x00, 0x00, 0x00 ]
               can_id: 0x680
-          - delay: 250ms 
+          - delay: 500ms
 
 #WW Temperatur - ok + offset
           - canbus.send:
               data: [ 0x31, 0x00, 0xfa, 0x00, 0x0e, 0x00, 0x00 ]
               can_id: 0x680
-          - delay: 250ms 
+          - delay: 500ms 
 
-
-
-      - seconds: /120
-        then:
 
 #T-WW-Soll1
           - canbus.send:
               data: [0x31, 0x00, 0x13, 0x00, 0x00, 0x00, 0x00 ]
               can_id: 0x680
-          - delay: 250ms
+          - delay: 500ms
 
 #Warmwasser Temperatur  °C et dec value - ok /10
           - canbus.send:
               data: [ 0x31, 0x00, 0x0E, 0x00, 0x00, 0x00, 0x00 ]
               can_id: 0x680
-          - delay: 250ms          
+          - delay: 500ms          
 
 
 #Raumsoll1
           - canbus.send:
               data: [0x31, 0x00, 0x05, 0x00, 0x00, 0x00, 0x00]
               can_id: 0x680
-          - delay: 250ms
+          - delay: 500ms
 
 #rt_compressor
           - canbus.send:
               data: [ 0x31, 0x00, 0xFA, 0x06, 0xA5, 0x00, 0x00 ]
               can_id: 0x680
-          - delay: 250ms
+          - delay: 500ms
 
 #Min. VL Temp
           - canbus.send:
               data: [ 0x31, 0x00, 0xfa, 0x01, 0x2B, 0x00, 0x00 ]
               can_id: 0x680
-          - delay: 250ms 
+          - delay: 500ms
 
 #Max. VL Temp
           - canbus.send:
               data: [ 0x31, 0x00, 0x28, 0x00, 0x00, 0x00, 0x00 ]
               can_id: 0x680
-          - delay: 250ms 
+          - delay: 500ms 
 
 #HK Funktion
           - canbus.send:
               data: [ 0x31, 0x00, 0xFA, 0x01, 0x41, 0x00, 0x00 ]
               can_id: 0x680
-          - delay: 250ms 
+          - delay: 500ms 
 
 #Spreizung Mod HZ
           - canbus.send:
               data: [ 0x31, 0x00, 0xFA, 0x06, 0x83, 0x00, 0x00 ]
               can_id: 0x680
-          - delay: 250ms 
+          - delay: 500ms 
 
 #Spreizung Mod WW
           - canbus.send:
               data: [ 0x31, 0x00, 0xFA, 0x06, 0x84, 0x00, 0x00 ]
               can_id: 0x680
-          - delay: 250ms 
+          - delay: 500ms
 
 #T Vorlauf Tag
           - canbus.send:
               data: [ 0x31, 0x00, 0xFA, 0x01, 0x29, 0x00, 0x00 ]
               can_id: 0x680
-          - delay: 250ms 
+          - delay: 500ms 
 
 #Fehlercode
           - canbus.send:
               data: [0x31, 0x00, 0xFA, 0x13, 0x88, 0x00, 0x00]
               can_id: 0x680
-          - delay: 250ms
+          - delay: 500ms
 
 #Heizkurve
           - canbus.send:
               data: [0x31, 0x00, 0xFA, 0x01, 0x0E, 0x00, 0x00]
               can_id: 0x680
-          - delay: 250ms
-
-
-
-
-      - seconds: /600
-        then:
+          - delay: 500ms
 
 #Qchhp
           - canbus.send:
               data: [0x31, 0x00, 0xFA, 0x09, 0x20, 0x00, 0x00 ]
               can_id: 0x680
-          - delay: 250ms          
+          - delay: 500ms          
 
 #Außentemperatur 1/10 °C et dec value - ok /10
           - canbus.send:
               data: [ 0x31, 0x00, 0xfa,0x00,0x0c,0x00,0x00 ]
               can_id: 0x680
-          - delay: 250ms
+          - delay: 500ms
 
 #Wasserdruck
           - canbus.send:
               data: [0x31, 0x00, 0x1C, 0x00, 0x00, 0x00, 0x00]
               can_id: 0x680
-          - delay: 250ms
+          - delay: 500ms
 
 
 #Erzeugte Energie gesamt
           - canbus.send:
               data: [0x31, 0x00, 0xFA, 0x09, 0x30, 0x00, 0x00 ]
               can_id: 0x680
-          - delay: 250ms
+          - delay: 500ms
 
 
 canbus:
@@ -946,15 +936,7 @@ canbus:
 ################################# CAN Nachrichten empfangen (Auswertung) #####################################
 
 
-#Rocon u1
-    - can_id: 0x180
-      then:
-        - lambda: |-
-            if(x[0]==0xd2 and x[2]==0xFA and x[3]==0x00 and x[4] ==0x11) {
-             float temperature =float((float((int((x[6])+( (x[5])<<8))))/100));
-             id(Fehlercode).publish_state(temperature);
-             ESP_LOGD("main", "Temperature received over can is %f", temperature);
-            }
+
 
 
 #Fehlercode
