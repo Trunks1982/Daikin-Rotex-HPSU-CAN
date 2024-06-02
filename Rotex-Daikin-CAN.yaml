@@ -1,4 +1,4 @@
-############################### Version 1.3.4 #####################################
+############################### Version 1.3.5 #####################################
 
 esphome:
   name: rotex
@@ -225,7 +225,15 @@ text_sensor:
         return {"Unknown"};
       }
   
-  
+  - platform: wifi_info
+    ip_address:
+      name: ESP IP Address
+    ssid:
+      name: ESP Connected SSID
+
+
+
+
 globals:
   - id: backup_dhw
     type: int
@@ -259,7 +267,8 @@ button:
               return {0x30, 0x00, 0x13, high_byte, low_byte, 0x00, 0x00};
         - logger.log: CAN Nachricht wurde gesendet
 
-
+  - platform: restart
+    name: "Rotex ESP Restart"
 
 switch:
   - platform: gpio
@@ -471,6 +480,13 @@ select:
 
 ################################# Alle Sensoren #####################################
 sensor:
+
+
+
+  - platform: wifi_signal
+    name: "WiFi Signal Sensor"
+    update_interval: 60s
+
 
   - platform: template
     name: "Fehlercode"
@@ -742,7 +758,7 @@ sensor:
 ########################### CAN Nachrichten abfragen #################################################
 
 interval:
-  - interval: 30s
+  - interval: 15s
     then:
     
     
@@ -868,17 +884,6 @@ interval:
               can_id: 0x680
           - delay: 500ms 
 
-#Spreizung Mod HZ
-          - canbus.send:
-              data: [ 0x31, 0x00, 0xFA, 0x06, 0x83, 0x00, 0x00 ]
-              can_id: 0x680
-          - delay: 500ms 
-
-#Spreizung Mod WW
-          - canbus.send:
-              data: [ 0x31, 0x00, 0xFA, 0x06, 0x84, 0x00, 0x00 ]
-              can_id: 0x680
-          - delay: 500ms
 
 #T Vorlauf Tag
           - canbus.send:
@@ -892,23 +897,25 @@ interval:
               can_id: 0x680
           - delay: 500ms
 
-#Heizkurve
+
+
+
+
+
+
+
+
+
+  - interval: 300s
+    then:
+
+
+#Erzeugte Energie gesamt
           - canbus.send:
-              data: [0x31, 0x00, 0xFA, 0x01, 0x0E, 0x00, 0x00]
+              data: [0x31, 0x00, 0xFA, 0x09, 0x30, 0x00, 0x00 ]
               can_id: 0x680
           - delay: 500ms
 
-#Qchhp
-         # - canbus.send:
-          #    data: [0x31, 0x00, 0xFA, 0x09, 0x20, 0x00, 0x00 ]
-           #   can_id: 0x680
-          #- delay: 500ms          
-
-#Außentemperatur 1/10 °C et dec value - ok /10
-          - canbus.send:
-              data: [ 0x31, 0x00, 0xfa,0x00,0x0c,0x00,0x00 ]
-              can_id: 0x680
-          - delay: 500ms
 
 #Wasserdruck
           - canbus.send:
@@ -917,12 +924,35 @@ interval:
           - delay: 500ms
 
 
-#Erzeugte Energie gesamt
-          #- canbus.send:
-           #   data: [0x31, 0x00, 0xFA, 0x09, 0x30, 0x00, 0x00 ]
-            #  can_id: 0x680
-         # - delay: 500ms
+#Qchhp
+          - canbus.send:
+              data: [0x31, 0x00, 0xFA, 0x09, 0x20, 0x00, 0x00 ]
+              can_id: 0x680
+          - delay: 500ms          
 
+#Außentemperatur 1/10 °C et dec value - ok /10
+          - canbus.send:
+              data: [ 0x31, 0x00, 0xfa,0x00,0x0c,0x00,0x00 ]
+              can_id: 0x680
+          - delay: 500ms
+
+#Heizkurve
+          - canbus.send:
+              data: [0x31, 0x00, 0xFA, 0x01, 0x0E, 0x00, 0x00]
+              can_id: 0x680
+          - delay: 500ms
+
+#Spreizung Mod HZ
+          - canbus.send:
+              data: [ 0x31, 0x00, 0xFA, 0x06, 0x83, 0x00, 0x00 ]
+              can_id: 0x680
+          - delay: 500ms 
+
+#Spreizung Mod WW
+          - canbus.send:
+              data: [ 0x31, 0x00, 0xFA, 0x06, 0x84, 0x00, 0x00 ]
+              can_id: 0x680
+          - delay: 500ms          
 
 canbus:
   - platform: esp32_can
