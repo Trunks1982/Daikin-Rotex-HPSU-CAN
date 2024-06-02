@@ -1,4 +1,4 @@
-############################### Version 1.3.5 #####################################
+############################### Version 1.3.6 #####################################
 
 esphome:
   name: rotex
@@ -57,7 +57,34 @@ text_sensor:
       } else {
         return {"Unknown"};
       }
-    
+
+
+  - platform: template
+    name: "SG Modus"
+    id: text_sg_modus
+    lambda: |-
+      if(id(SGModus).state == 0){
+        return {"Aus"};
+      } else if (id(SGModus).state == 1){
+        return {"SG Modus 1"};
+      } else if (id(SGModus).state == 2){
+        return {"SG Modus 2"};
+      } else {
+        return {"Unknown"};
+      }
+
+  - platform: template
+    name: "Smart Grid"
+    id: text_smartgrid
+    lambda: |-
+      if(id(Smartgrid).state == 0){
+        return {"Aus"};
+      } else if (id(Smartgrid).state == 1){
+        return {"An"};
+      } else {
+        return {"Unknown"};
+      }
+
   - platform: template
     name: "Betriebart"
     id: text_betriebsart
@@ -270,14 +297,14 @@ button:
   - platform: restart
     name: "Rotex ESP Restart"
 
-switch:
-  - platform: gpio
-    name: Heizen Thermostat
-    pin: GPIO36
+#switch:
+ # - platform: gpio
+  #  name: Heizen Thermostat
+   # pin: GPIO36
     
-  - platform: gpio
-    name: Kühlen Thermostat
-    pin: GPIO37
+ # - platform: gpio
+  #  name: Kühlen Thermostat
+   # pin: GPIO37
 ############################### Number (Slidermodus) ###############################################  
 number:
 
@@ -475,7 +502,52 @@ select:
               };
               return {0x30, 0x00, 0xFA, 0x01, 0x41, 0x00, mode_map.at(x)};
 
+#Set SG Funktion
 
+  - platform: template
+    name: "SG Modus"
+    id: sg
+    optimistic: true
+    options:
+      - "Aus"
+      - "SG Modus 1"
+      - "SG Modus 2"
+    initial_option: Aus
+    set_action:
+      then:
+        - delay: 250ms
+        - canbus.send:
+            can_id: 0x680
+            data: !lambda |-
+              static const std::map<std::string, uint8_t> mode_map = {
+                {"Aus", 0},
+                {"SG Modus 1", 1},
+                {"SG Modus 2", 2}
+              };
+              return {0x30, 0x00, 0xFA, 0x06, 0x94, 0x00, mode_map.at(x)};
+
+
+#Set Smart Grid
+
+  - platform: template
+    name: "Smart Grid"
+    id: smartgrid
+    optimistic: true
+    options:
+      - "Aus"
+      - "An"
+    initial_option: Aus
+    set_action:
+      then:
+        - delay: 250ms
+        - canbus.send:
+            can_id: 0x680
+            data: !lambda |-
+              static const std::map<std::string, uint8_t> mode_map = {
+                {"Aus", 0},
+                {"An", 1}
+              };
+              return {0x30, 0x00, 0xFA, 0x06, 0x93, 0x00, mode_map.at(x)};
 
 
 ################################# Alle Sensoren #####################################
@@ -497,6 +569,23 @@ sensor:
     state_class: "measurement"
     accuracy_decimals: 0
 
+  - platform: template
+    name: "SG Modus"
+    id: SGModus
+    internal: true
+    unit_of_measurement: ""
+    icon: "mdi:thermometer-lines"
+    state_class: "measurement"
+    accuracy_decimals: 0
+  
+  - platform: template
+    name: "Smart Grid"
+    id: Smartgrid
+    internal: true
+    unit_of_measurement: ""
+    icon: "mdi:thermometer-lines"
+    state_class: "measurement"
+    accuracy_decimals: 0
 
   - platform: template
     name: "Heizkurve"
@@ -954,6 +1043,18 @@ interval:
               can_id: 0x680
           - delay: 500ms          
 
+#SG Modus
+          - canbus.send:
+              data: [ 0x31, 0x00, 0xFA, 0x06, 0x94, 0x00, 0x00 ]
+              can_id: 0x680
+          - delay: 500ms          
+
+#SG Modus
+          - canbus.send:
+              data: [ 0x31, 0x00, 0xFA, 0x06, 0x93, 0x00, 0x00 ]
+              can_id: 0x680
+          - delay: 500ms          
+
 canbus:
   - platform: esp32_can
     tx_pin: GPIO47
@@ -1205,6 +1306,63 @@ canbus:
              id(t_vorlauf_tag).publish_state(temperature);
              ESP_LOGD("main", "Temperature received over can is %f", temperature);
            }                      
+
+
+#SG Modus
+    - can_id: 0x180
+      then:
+       - lambda: |-
+          if(x[2]==0xFA and x[3]==0x06 and x[4]==0x94) {
+             float temperature =float((float((int((x[6])+( (x[5])<<8))))));
+             id(SGModus).publish_state(temperature);
+             ESP_LOGD("main", "Temperature received over can is %f", temperature);
+           }                                 
+
+
+#Smart Grid
+    - can_id: 0x180
+      then:
+       - lambda: |-
+          if(x[2]==0xFA and x[3]==0x06 and x[4]==0x93) {
+             float temperature =float((float((int((x[6])+( (x[5])<<8))))));
+             id(Smartgrid).publish_state(temperature);
+             ESP_LOGD("main", "Temperature received over can is %f", temperature);
+           }                                 
+
+
+#SG Funktion (Automatik bei jeglicher Änderung)0x31, 0x00, 0xFA, 0x06, 0x94, 0x00, 0x00
+    - can_id: 0x180
+      then:
+        - lambda: |-
+            if(x[2]==0xfa and x[3]==0x06 and x[4]==0x94 and x[5]==0x00) {
+              if (x[6]==0x00){
+                auto call = id(sg).make_call();
+                call.set_option("Aus");
+                call.perform();}
+              else if (x[6]==0x01){
+                auto call = id(sg).make_call();
+                call.set_option("SG Modus 1");
+                call.perform();}
+              else if (x[6]==0x02){
+                auto call = id(sg).make_call();
+                call.set_option("SG Modus 2");
+                call.perform();}  
+              }
+
+#Smart Grid (Automatik bei jeglicher Änderung)0x31, 0x00, 0xFA, 0x06, 0x93, 0x00, 0x00
+    - can_id: 0x180
+      then:
+        - lambda: |-
+            if(x[2]==0xfa and x[3]==0x06 and x[4]==0x93 and x[5]==0x00) {
+              if (x[6]==0x00){
+                auto call = id(smartgrid).make_call();
+                call.set_option("Aus");
+                call.perform();}
+              else if (x[6]==0x01){
+                auto call = id(smartgrid).make_call();
+                call.set_option("An");
+                call.perform();}
+              }
 
 #HK Funktion (Automatik bei jeglicher Änderung)0x31, 0x00, 0xFA, 0x01, 0x41, 0x00, 0x00
     - can_id: 0x180
