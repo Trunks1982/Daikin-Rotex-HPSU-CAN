@@ -61,7 +61,8 @@ Die Rotex.bin Datei dient zum vereinfachten updaten über die WEB-UI Oberfläche
 - Betriebsmodus kann verstellt werden
 - Heizkurven Verstellung in 0.01 Schritten (Standard in 0.1 Schritten)
 - Zwei neue Schalter angelegt um auch die Thermostat Eingänge von der Rotex / Daikin direkt zwischen Heizen / Kühlen umzuschalten.
-- Neues Feature Fehlercode Anzeige mit Beschreibung des Fehlers mit Handbuch Seitenangabe!! 
+- Neues Feature Fehlercode Anzeige mit Beschreibung des Fehlers mit Handbuch Seitenangabe!!
+- Abfrage Intervall kann jetzt per Schalter abgeschaltet werden. Bitte beachten nach dem Neustart des ESP bleibt die Abfrage aus.
 Es werden alle relevanten Daten Abgefragt die man eigentlich benötigt.
 <br>  
 ## weitere .YAML Dateien:
