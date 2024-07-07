@@ -7,6 +7,16 @@
 "Ein Kaffee für nächste lange Nacht vor dem Rechner wäre toll" ist aber natürlich kein muss.
 <br>[![Paypal](https://user-images.githubusercontent.com/41958506/212499642-b2fd097a-0938-4bfc-b37b-74df64592c58.png)](https://www.paypal.com/donate/?hosted_button_id=H94LZRQW9PFQ4)
 
+# Warning!!
+Die Verwendung von Daikin-Rotex-HPSU-Can kann das Heizsystem beschädigen. Die Verwendung von Daikin-Rotex-HPSU-Can erfolgt auf eigene Gefahr. Der Schöpfer kann nicht für Schäden verantwortlich gemacht werden.
+
+Sie können einen Verlust der Garantie und Unterstützung durch den Hersteller riskieren!!!!
+
+Diese Software wird vom Hersteller nicht unterstützt!!!!
+
+
+
+
 # Rotex /Daikin HPSU CAN
 
 
