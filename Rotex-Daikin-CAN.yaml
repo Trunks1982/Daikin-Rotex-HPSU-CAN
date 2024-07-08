@@ -986,7 +986,7 @@ interval:
               can_id: 0x680
           - delay: 500ms
           - canbus.send:
-              data: [0x61, 0x00, 0xFA, 0x09, 0x20, 0x00, 0x00]
+              data: [0x31, 0x00, 0xFA, 0x09, 0x20, 0x00, 0x00]
               can_id: 0x680
           - delay: 500ms
           - canbus.send:
