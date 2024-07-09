@@ -1,4 +1,4 @@
-############################### Version 1.3.8 #####################################
+############################### Version 1.3.7 #####################################
 substitutions:
   rx_pin: GPIO48
   tx_pin: GPIO47
@@ -79,7 +79,7 @@ text_sensor:
 
 
   - platform: template
-    name: "SG Modus"
+    name: "SG-Modus"
     id: text_sg_modus
     lambda: |-
       if(id(SGModus).state == 0){
@@ -93,7 +93,7 @@ text_sensor:
       }
 
   - platform: template
-    name: "Smart Grid"
+    name: "Smart-Grid"
     id: text_smartgrid
     lambda: |-
       if(id(Smartgrid).state == 0){
@@ -260,7 +260,7 @@ text_sensor:
       }
 
   - platform: template
-    name: "HK Funktion"
+    name: "HK-Funktion"
     id: text_hk_funktion
     lambda: |-
       if(id(hk_funktion).state == 0){
@@ -837,7 +837,7 @@ sensor:
     accuracy_decimals: 0    
 
   - platform: template
-    name: "HK Funktion"
+    name: "HK-Funktion"
     internal: true
     id: hk_funktion
     unit_of_measurement: ""
@@ -985,6 +985,7 @@ interval:
               data: [0x31, 0x00, 0x1C, 0x00, 0x00, 0x00, 0x00]
               can_id: 0x680
           - delay: 500ms
+          #Qchhp
           - canbus.send:
               data: [0x31, 0x00, 0xFA, 0x09, 0x20, 0x00, 0x00]
               can_id: 0x680
@@ -1041,7 +1042,7 @@ canbus:
       then:
         - lambda: |-
             if(x[2]==0xFA and x[3]==0x13 and x[4] ==0x88) {
-             float temperature =float((float((int((x[6])+( (x[5])<<8))))/100));
+             float temperature =float((float((int((x[6])+( (x[5])<<8))))));
              id(Fehlercode).publish_state(temperature);
              ESP_LOGD("main", "Temperature received over can is %f", temperature);
             }
