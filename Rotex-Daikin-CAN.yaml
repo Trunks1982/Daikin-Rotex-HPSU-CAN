@@ -1,7 +1,8 @@
-############################### Version 1.3.7 #####################################
+############################### Version 1.3.8 #####################################
 substitutions:
   rx_pin: GPIO48
   tx_pin: GPIO47
+  interval_time: 20s
 
 esphome:
   name: rotex
@@ -876,7 +877,7 @@ sensor:
   
 ########################### CAN Nachrichten abfragen #################################################
 interval:
-  - interval: 20s
+  - interval:  ${interval_time}
     then:
       if:
         condition:
