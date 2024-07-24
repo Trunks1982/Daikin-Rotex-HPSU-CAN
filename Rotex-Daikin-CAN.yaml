@@ -1,4 +1,4 @@
-############################### Version 1.3.8 #####################################
+############################### Version 1.4.0 #####################################
 substitutions:
   rx_pin: GPIO48
   tx_pin: GPIO47
@@ -249,7 +249,7 @@ text_sensor:
       }
 
   - platform: template
-    name: "Status Kompressor"
+    name: "Status Kesselpumpe"
     id: text_status2
     lambda: |-
       if(id(status_kessel).state == 0){
@@ -259,6 +259,19 @@ text_sensor:
        } else {
         return {"Unknown"};
       }
+
+  - platform: template
+    name: "Status Kompressor"
+    id: text_status3
+    lambda: |-
+      if(id(status_kompressor).state == 0){
+        return {"Aus"};
+      } else if (id(status_kessel).state == 1){
+        return {"An"};
+       } else {
+        return {"Unknown"};
+      }
+
 
   - platform: template
     name: "HK-Funktion"
@@ -592,6 +605,14 @@ sensor:
     name: "WiFi Signal Sensor"
     update_interval: 60s
 
+  - platform: template
+    name: "DHW Mischer Position"
+    id: dhw_mischer_postion
+    internal: false
+    unit_of_measurement: "%"
+    icon: "mdi:thermometer-lines"
+    state_class: "measurement"
+    accuracy_decimals: 0
 
   - platform: template
     name: "Fehlercode"
@@ -668,6 +689,12 @@ sensor:
     icon: "mdi:thermometer-lines"
     accuracy_decimals: 0
     
+  - platform: template
+    name: "Status Kompressor"
+    id: status_kompressor
+    internal: true
+    icon: "mdi:thermometer-lines"
+    accuracy_decimals: 0  
 
   - platform: template
     name: "Wasserdruck"
@@ -1018,10 +1045,17 @@ interval:
               data: [ 0x31, 0x00, 0xFA, 0x06, 0x93, 0x00, 0x00 ]
               can_id: 0x680
           - delay: 500ms          
+#Status Kompressor
+          - canbus.send:
+              data: [ 0xA1, 0x00, 0x61, 0x00, 0x00, 0x00, 0x00 ]
+              can_id: 0x680
+          - delay: 500ms       
 
-
-
- 
+#Status Mischer DHW
+          - canbus.send:
+              data: [ 0x31, 0x00, 0xFA, 0x06, 0x9B, 0x00, 0x00 ]
+              can_id: 0x680
+          - delay: 500ms     
 
 canbus:
   - platform: esp32_can
@@ -1036,7 +1070,15 @@ canbus:
 
 
 
-
+#Mischer DHW Position
+    - can_id: 0x180
+      then:
+        - lambda: |-
+            if(x[2]==0xFA and x[3]==0x06 and x[4] ==0x9B) {
+             float temperature =float((float((int((x[6])+( (x[5])<<8))))));
+             id(dhw_mischer_postion).publish_state(temperature);
+             ESP_LOGD("main", "Temperature received over can is %f", temperature);
+            }
 
 #Fehlercode
     - can_id: 0x180
@@ -1062,13 +1104,23 @@ canbus:
 
 
 
-#Status Kessel
+#Status Kesselpumpe
     - can_id: 0x180
       then:
         - lambda: |-
             if(x[2]==0xFA and x[3]==0x0A and x[4] ==0x8C) {
              float temperature =float((float((int((x[6])+( (x[5])<<8))))));
              id(status_kessel).publish_state(temperature);
+             ESP_LOGD("main", "Temperature received over can is %f", temperature);
+            }
+
+# Status Kompressor
+    - can_id: 0x500
+      then:
+        - lambda: |-
+            if(x[2]==0x61) {
+             float temperature =float((float((int((x[3])+( (x[4])<<8))))));
+             id(status_kompressor).publish_state(temperature);
              ESP_LOGD("main", "Temperature received over can is %f", temperature);
             }
 
