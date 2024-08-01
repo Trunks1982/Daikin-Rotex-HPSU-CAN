@@ -106,7 +106,7 @@ text_sensor:
       }
 
   - platform: template
-    name: "Betriebart"
+    name: "Betriebsart"
     id: text_betriebsart
     lambda: |-
       if(id(Betriebsart).state == 0){
