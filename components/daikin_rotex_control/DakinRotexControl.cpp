@@ -31,6 +31,16 @@ const std::vector<TRequest> entity_config = {
         }
     },
     {
+        "tdhw1",
+        {0x31, 0x00, 0xFA, 0x00, 0x0E, 0x00, 0x00},
+        {  DC,   DC, 0xFA, 0x00, 0x0E,   DC,   DC},
+        [](auto const& data, auto& accessor) -> DataType {
+            float temp = float((float((int((data[6]) + ((data[5]) << 8))))/10));
+            accessor.get_tdhw1()->publish_state(temp);
+            return temp;
+        }
+    },
+    {
         "Betriebsmodus",
         {0x31, 0x00, 0xFA, 0x01, 0x12, 0x00, 0x00},
         {  DC,   DC, 0xFA, 0x01, 0x12,   DC,   DC},
@@ -60,7 +70,6 @@ void DakinRotexControl::setup() {
 
 void DakinRotexControl::set_operation_mode(std::string const& mode) {
     m_data_requests.sendSet("Betriebsmodus setzen", map_betriebsmodus.getKey(mode));
-    //m_data_requests.sendGet("Betriebsmodus");
 }
 
 void DakinRotexControl::loop() {

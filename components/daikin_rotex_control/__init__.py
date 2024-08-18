@@ -18,9 +18,9 @@ AUTO_LOAD = ['sensor', 'select', 'text_sensor', 'binary_sensor']
 
 CONF_CAN_ID = "canbus_id"
 CONF_LOG_FILTER_TEXT = "log_filter_text"
-CONF_T_SENSORS = ["temperature_outside", "operation_mode"]
 
-CONF_TEMPERATURE_OUTSIDE = "temperature_outside"
+CONF_TEMPERATURE_OUTSIDE = "temperature_outside"    # External temperature
+CONF_TDHW1 = "tdhw1"
 CONF_OPERATION_MODE = "operation_mode"
 CONF_OPERATION_MODE_SELECT = "operation_mode_select"
 
@@ -37,6 +37,12 @@ CONFIG_SCHEMA = cv.Schema(
             }
         ),
         cv.Optional(CONF_TEMPERATURE_OUTSIDE): sensor.sensor_schema(
+            device_class=DEVICE_CLASS_TEMPERATURE,
+            unit_of_measurement=UNIT_CELSIUS,
+            accuracy_decimals=1,
+            state_class=STATE_CLASS_MEASUREMENT
+        ).extend(),
+        cv.Optional(CONF_TDHW1): sensor.sensor_schema(
             device_class=DEVICE_CLASS_TEMPERATURE,
             unit_of_measurement=UNIT_CELSIUS,
             accuracy_decimals=1,
@@ -62,13 +68,23 @@ def to_code(config):
         canbus = yield cg.get_variable(config[CONF_CAN_ID])
         cg.add(var.set_canbus(canbus))
 
+    ########## Sensors ##########
+
     if temperature_outside := config.get(CONF_TEMPERATURE_OUTSIDE):
         sens = yield sensor.new_sensor(temperature_outside)
         cg.add(var.getAccessor().set_temperature_outside_sensor(sens))
 
+    if tdhw1 := config.get(CONF_TDHW1):
+        sens = yield sensor.new_sensor(tdhw1)
+        cg.add(var.getAccessor().set_tdhw1(sens))
+
+    ######## Text Sensors ########
+
     if operation_mode := config.get(CONF_OPERATION_MODE):
         sens = yield text_sensor.new_text_sensor(operation_mode)
         cg.add(var.getAccessor().set_operation_mode_sensor(sens))
+
+    ########## Selects ##########
 
     operation_mode_options = ["Bereitschaft", "Heizen", "Absenken", "Sommer", "Kühlen", "Automatik 1", "Automatik 2"]
 
