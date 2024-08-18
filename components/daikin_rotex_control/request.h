@@ -1,7 +1,6 @@
 #pragma once
 
 #include "esphome/components/daikin_rotex_control/types.h"
-#include "esphome/components/daikin_rotex_control/IPublisher.h"
 #include "esphome/components/daikin_rotex_control/utils.h"
 #include "esphome/components/daikin_rotex_control/Accessor.h"   //?
 #include "esphome/components/esp32_can/esp32_can.h"
@@ -68,10 +67,6 @@ public:
     {
     }
 
-    void setPublisher(IPublisher* pPublisher) {
-        m_pPublisher = pPublisher;
-    }
-
     std::string const& getName() const {
         return m_name;
     }
@@ -93,7 +88,6 @@ public:
     bool inProgress() const;
 
 private:
-    IPublisher* m_pPublisher;
     std::string m_name;
     std::array<uint8_t, 7> m_data;
     uint32_t m_response_can_id;

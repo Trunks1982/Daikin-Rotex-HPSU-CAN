@@ -6,12 +6,11 @@
 namespace esphome {
 namespace dakin_rotex_control {
 
-class IPublisher;
 class Accessor;
 
 class TRequests {
 public:
-    TRequests(IPublisher* pPublisher, std::vector<esphome::dakin_rotex_control::TRequest> const& requests);
+    TRequests(std::vector<esphome::dakin_rotex_control::TRequest> const& requests);
 
     void setCanbus(esphome::esp32_can::ESP32Can* pCanBus);
 

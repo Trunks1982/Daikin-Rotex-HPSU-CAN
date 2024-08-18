@@ -40,8 +40,6 @@ bool TRequest::handle(uint32_t can_id, std::vector<uint8_t> const& responseData,
         Utils::log("request.cpp", "handled: %s<%s> can_id<%s> data<%s>",
             m_name.c_str(), value.c_str(), Utils::to_hex(can_id).c_str(), Utils::to_hex(responseData).c_str());
 
-        m_pPublisher->onPublish(getName(), variant);
-
         m_last_update = timestamp;
         return true;
     }

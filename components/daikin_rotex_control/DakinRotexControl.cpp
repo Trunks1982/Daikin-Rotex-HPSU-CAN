@@ -50,15 +50,12 @@ const std::vector<TRequest> entity_config = {
 };
 
 DakinRotexControl::DakinRotexControl()
-: m_data_requests(this, std::move(entity_config))
+: m_data_requests(std::move(entity_config))
 {
 }
 
 void DakinRotexControl::setup() {
     //ESP_LOGI(TAG, "setup");
-}
-
-void DakinRotexControl::onPublish(std::string const& request_name, DataType const& variant) {
 }
 
 void DakinRotexControl::set_operation_mode(std::string const& mode) {

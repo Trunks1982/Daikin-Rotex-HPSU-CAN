@@ -4,13 +4,10 @@
 namespace esphome {
 namespace dakin_rotex_control {
 
-TRequests::TRequests(IPublisher* pPublisher, std::vector<esphome::dakin_rotex_control::TRequest> const& requests)
+TRequests::TRequests(std::vector<esphome::dakin_rotex_control::TRequest> const& requests)
 : m_requests(requests)
 , m_pCanBus(nullptr)
 {
-    for (auto& request : m_requests) {
-        request.setPublisher(pPublisher);
-    }
 }
 
 bool TRequests::sendNextPendingGet() {
