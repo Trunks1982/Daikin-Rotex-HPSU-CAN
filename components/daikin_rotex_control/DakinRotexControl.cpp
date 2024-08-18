@@ -11,11 +11,12 @@ namespace dakin_rotex_control {
 static const char *TAG = "dakin_rotex_control";
 
 void DakinRotexControl::setup() {
-  // nothing to do here
+    ESP_LOGI(TAG, "setup");
 }
 
 void DakinRotexControl::loop() {
     ESP_LOGI(TAG, "loop");
+    m_pTemperatureOutsideSensor->publish_state(45.2);
 }
 
 void DakinRotexControl::dump_config() {

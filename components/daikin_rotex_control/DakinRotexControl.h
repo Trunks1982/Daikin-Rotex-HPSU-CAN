@@ -12,7 +12,7 @@ namespace esp32_can {
 
 namespace dakin_rotex_control {
 
-class DakinRotexControl : public esp32_can::ESP32Can {
+class DakinRotexControl: public Component {
 public:
 
     void setup() override;
@@ -20,10 +20,12 @@ public:
     void dump_config() override;
 
     void set_canbus(esphome::esp32_can::ESP32Can* pCanbus) { m_pCanbus = pCanbus; }
+    void set_temperature_outside_sensor(sensor::Sensor* pSensor) { m_pTemperatureOutsideSensor = pSensor; }
 
 protected:
 
     esphome::esp32_can::ESP32Can* m_pCanbus;
+    sensor::Sensor* m_pTemperatureOutsideSensor;
 };
 
 } // namespace dakin_rotex_control
