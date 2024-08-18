@@ -4,6 +4,7 @@
 #include "esphome/components/daikin_rotex_control/requests.h"
 #include "esphome/components/esp32_can/esp32_can.h"
 #include "esphome/components/sensor/sensor.h"
+#include "esphome/components/text_sensor/text_sensor.h"
 #include "esphome/core/component.h"
 
 namespace esphome {
@@ -19,12 +20,14 @@ public:
 
     void set_canbus(esphome::esp32_can::ESP32Can* pCanbus);
     void set_temperature_outside_sensor(sensor::Sensor* pSensor);
+    void set_operation_mode_sensor(text_sensor::TextSensor* pSensor);
 
     void handle(uint32_t can_id, std::vector<uint8_t> const& data);
 
 protected:
 
     sensor::Sensor* m_pTemperatureOutsideSensor;
+    text_sensor::TextSensor* m_pOperationModeSensor;
 
     TRequests m_data_requests;
 private:
@@ -60,6 +63,10 @@ inline void DakinRotexControl::set_canbus(esphome::esp32_can::ESP32Can* pCanbus)
 
 inline void DakinRotexControl::set_temperature_outside_sensor(sensor::Sensor* pSensor) {
     m_pTemperatureOutsideSensor = pSensor;
+}
+
+inline void DakinRotexControl::set_operation_mode_sensor(text_sensor::TextSensor* pSensor) {
+    m_pOperationModeSensor = pSensor;
 }
 
 } // namespace dakin_rotex_control

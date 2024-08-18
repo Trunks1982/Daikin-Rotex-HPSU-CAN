@@ -13,12 +13,14 @@ public:
     TRequests(IPublisher* pPublisher, std::vector<esphome::dakin_rotex_control::TRequest> const& requests);
 
     void setCanbus(esphome::esp32_can::ESP32Can* pCanBus);
+
     uint32_t size() const;
     TRequest const& get(uint32_t index) const;
-    void handle(uint32_t can_id, std::vector<uint8_t> const& responseData, uint32_t timestamp);
+
     bool sendNextPendingGet();
     void sendGet(std::string const& request_name);
     void sendSet(std::string const& request_name, float value);
+    void handle(uint32_t can_id, std::vector<uint8_t> const& responseData, uint32_t timestamp);
 
 private:
     TRequest* getNextRequestToSend();

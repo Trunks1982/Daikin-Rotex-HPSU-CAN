@@ -27,6 +27,8 @@ bool TRequest::handle(uint32_t can_id, std::vector<uint8_t> const& responseData,
         std::string value;
         if (std::holds_alternative<uint32_t>(variant)) {
             value = std::to_string(std::get<uint32_t>(variant));
+        } else if (std::holds_alternative<uint8_t>(variant)) {
+            value = std::to_string(std::get<uint8_t>(variant));
         } else if (std::holds_alternative<float>(variant)) {
             value = std::to_string(std::get<float>(variant));
         } else if (std::holds_alternative<std::string>(variant)) {
