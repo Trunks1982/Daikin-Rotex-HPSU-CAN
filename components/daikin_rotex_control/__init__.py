@@ -29,6 +29,7 @@ CONF_WATER_PRESSURE = "water_pressure"
 CONF_WATER_FLOW = "water_flow"
 
 CONF_OPERATION_MODE = "operation_mode"
+CONF_ERROR_CODE = "error_code"
 
 CONF_OPERATION_MODE_SELECT = "operation_mode_select"
 
@@ -77,6 +78,9 @@ CONFIG_SCHEMA = cv.Schema(
         cv.Optional(CONF_OPERATION_MODE): text_sensor.text_sensor_schema(
             icon=ICON_SUN_SNOWFLAKE_VARIANT
         ).extend(),
+        cv.Optional(CONF_ERROR_CODE): text_sensor.text_sensor_schema(
+            icon="mdi:alert"
+        ).extend(),
 
         ########## Selects ##########
 
@@ -120,6 +124,10 @@ def to_code(config):
     if operation_mode := config.get(CONF_OPERATION_MODE):
         sens = yield text_sensor.new_text_sensor(operation_mode)
         cg.add(var.getAccessor().set_operation_mode_sensor(sens))
+
+    if error_code := config.get(CONF_ERROR_CODE):
+        sens = yield text_sensor.new_text_sensor(error_code)
+        cg.add(var.getAccessor().set_error_code_sensor(sens))
 
     ########## Selects ##########
 

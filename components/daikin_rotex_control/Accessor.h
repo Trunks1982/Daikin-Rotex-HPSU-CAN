@@ -29,6 +29,9 @@ public:
     text_sensor::TextSensor* get_operation_mode_sensor() const { return m_pOperationModeSensor; }
     void set_operation_mode_sensor(text_sensor::TextSensor* pSensor) { m_pOperationModeSensor = pSensor; }
 
+    text_sensor::TextSensor* get_error_code_sensor() const { return m_error_code; }
+    void set_error_code_sensor(text_sensor::TextSensor* pSensor) { m_error_code = pSensor; }
+
     // Selects
 
     select::Select* get_operation_mode_select() const { return m_pOperationModeSelect; }
@@ -41,6 +44,7 @@ private:
     sensor::Sensor* m_water_flow;
 
     text_sensor::TextSensor* m_pOperationModeSensor;
+    text_sensor::TextSensor* m_error_code;
 
     select::Select* m_pOperationModeSelect;
 };
