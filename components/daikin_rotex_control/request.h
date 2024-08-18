@@ -3,6 +3,7 @@
 #include "esphome/components/daikin_rotex_control/types.h"
 #include "esphome/components/daikin_rotex_control/IPublisher.h"
 #include "esphome/components/daikin_rotex_control/utils.h"
+#include "esphome/components/daikin_rotex_control/Accessor.h"   //?
 #include "esphome/components/esp32_can/esp32_can.h"
 #include <functional>
 
@@ -11,9 +12,11 @@ namespace dakin_rotex_control {
 
 const uint16_t DC = 0xFFFF; // Don't care
 
+//class Accessor;
+
 class TRequest
 {
-    using TGetLambda = std::function<DataType(std::vector<uint8_t> const&)>;
+    using TGetLambda = std::function<DataType(std::vector<uint8_t> const&, Accessor&)>;
     using TSetLambda = std::function<std::vector<uint8_t>(float const&)>;
 public:
     TRequest(std::string const& name,
@@ -61,7 +64,7 @@ public:
 
     TRequest(std::string const& name,
         TSetLambda setLambda)
-    : TRequest(name, {}, 0x00, {}, [](auto const&) -> DataType { return 0u; }, setLambda)
+    : TRequest(name, {}, 0x00, {}, [](auto const&, Accessor&) -> DataType { return 0u; }, setLambda)
     {
     }
 
@@ -82,7 +85,7 @@ public:
     }
 
     bool isMatch(uint32_t can_id, std::vector<uint8_t> const& responseData) const;
-    bool handle(uint32_t can_id, std::vector<uint8_t> const& responseData, uint32_t timestamp);
+    bool handle(uint32_t can_id, std::vector<uint8_t> const& responseData, uint32_t timestamp, Accessor&);
 
     void sendGet(esphome::esp32_can::ESP32Can* pCanBus);
     void sendSet(esphome::esp32_can::ESP32Can* pCanBus, float value);

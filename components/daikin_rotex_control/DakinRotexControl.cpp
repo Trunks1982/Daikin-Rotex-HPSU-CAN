@@ -24,18 +24,27 @@ const std::vector<TRequest> entity_config = {
         "Aussentemperatur",
         {0x31, 0x00, 0xFA, 0xC0, 0xFF, 0x00, 0x00},
         {  DC,   DC, 0xFA, 0xC0, 0xFF,   DC,   DC},
-        [](auto const& data) -> DataType {
-            return float(((int((data[6]) + ((data[5]) << 8))) ^ 0x8000) - 0x8000)/10;
+        [](auto const& data, auto& accessor) -> DataType {
+            const float temp = float(((int((data[6]) + ((data[5]) << 8))) ^ 0x8000) - 0x8000) / 10;
+            accessor.get_temperature_outside_sensor()->publish_state(temp);
+            return temp;
         }
     },
     {
         "Betriebsmodus",
         {0x31, 0x00, 0xFA, 0x01, 0x12, 0x00, 0x00},
         {  DC,   DC, 0xFA, 0x01, 0x12,   DC,   DC},
-        [](auto const& data) -> DataType {
-            return map_betriebsmodus.getValue(data[5]);
-            //id(Betriebsmodus).publish_state(data[5]);
-            //return Utils::setSelectOption(id(select_betriebsmodus), map_betriebsmodus, data[5]);
+        [](auto const& data, auto& accessor) -> DataType {
+            const std::string mode = map_betriebsmodus.getValue(data[5]);
+            accessor.get_operation_mode_sensor()->publish_state(mode);
+            accessor.get_operation_mode_select()->publish_state(mode);
+            return mode;
+        }
+    },
+    {
+        "Betriebsmodus setzen",
+        [](auto const& value) -> std::vector<uint8_t> {
+            return {0x30, 0x00, 0xFA, 0x01, 0x12, static_cast<uint8_t>(value), 0x00};
         }
     }
 };
@@ -50,14 +59,11 @@ void DakinRotexControl::setup() {
 }
 
 void DakinRotexControl::onPublish(std::string const& request_name, DataType const& variant) {
-    //ESP_LOGI(TAG, "onPublish");
+}
 
-    if (request_name == "Aussentemperatur") {
-        m_pTemperatureOutsideSensor->publish_state(std::get<float>(variant));
-    } else if (request_name == "Betriebsmodus") {
-        const std::string value = std::get<std::string>(variant);
-        m_pOperationModeSensor->publish_state(value.c_str());
-    }
+void DakinRotexControl::set_operation_mode(std::string const& mode) {
+    m_data_requests.sendSet("Betriebsmodus setzen", map_betriebsmodus.getKey(mode));
+    //m_data_requests.sendGet("Betriebsmodus");
 }
 
 void DakinRotexControl::loop() {
@@ -65,7 +71,7 @@ void DakinRotexControl::loop() {
 }
 
 void DakinRotexControl::handle(uint32_t can_id, std::vector<uint8_t> const& data) {
-    m_data_requests.handle(can_id, data, millis());
+    m_data_requests.handle(can_id, data, m_accessor);
 }
 
 void DakinRotexControl::dump_config() {

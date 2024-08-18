@@ -7,6 +7,7 @@ namespace esphome {
 namespace dakin_rotex_control {
 
 class IPublisher;
+class Accessor;
 
 class TRequests {
 public:
@@ -20,7 +21,7 @@ public:
     bool sendNextPendingGet();
     void sendGet(std::string const& request_name);
     void sendSet(std::string const& request_name, float value);
-    void handle(uint32_t can_id, std::vector<uint8_t> const& responseData, uint32_t timestamp);
+    void handle(uint32_t can_id, std::vector<uint8_t> const& responseData, Accessor&);
 
 private:
     TRequest* getNextRequestToSend();

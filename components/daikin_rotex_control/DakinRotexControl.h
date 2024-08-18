@@ -2,8 +2,10 @@
 
 #include "esphome/components/daikin_rotex_control/IPublisher.h"
 #include "esphome/components/daikin_rotex_control/requests.h"
+#include "esphome/components/daikin_rotex_control/Accessor.h"
 #include "esphome/components/esp32_can/esp32_can.h"
 #include "esphome/components/sensor/sensor.h"
+#include "esphome/components/select/select.h"
 #include "esphome/components/text_sensor/text_sensor.h"
 #include "esphome/core/component.h"
 
@@ -21,6 +23,10 @@ public:
     void set_canbus(esphome::esp32_can::ESP32Can* pCanbus);
     void set_temperature_outside_sensor(sensor::Sensor* pSensor);
     void set_operation_mode_sensor(text_sensor::TextSensor* pSensor);
+    void set_operation_mode_select(select::Select* pSelect);
+    void set_operation_mode(std::string const& mode);
+
+    Accessor& getAccessor() { return m_accessor; }
 
     void handle(uint32_t can_id, std::vector<uint8_t> const& data);
 
@@ -28,7 +34,9 @@ protected:
 
     sensor::Sensor* m_pTemperatureOutsideSensor;
     text_sensor::TextSensor* m_pOperationModeSensor;
+    select::Select* m_pOperationModeSelect;
 
+    Accessor m_accessor;
     TRequests m_data_requests;
 private:
 
@@ -67,6 +75,10 @@ inline void DakinRotexControl::set_temperature_outside_sensor(sensor::Sensor* pS
 
 inline void DakinRotexControl::set_operation_mode_sensor(text_sensor::TextSensor* pSensor) {
     m_pOperationModeSensor = pSensor;
+}
+
+inline void DakinRotexControl::set_operation_mode_select(select::Select* pSelect) {
+    m_pOperationModeSelect = pSelect;
 }
 
 } // namespace dakin_rotex_control
