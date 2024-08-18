@@ -26,6 +26,9 @@ CONFIG_SCHEMA = cv.Schema(
 ).extend(cv.COMPONENT_SCHEMA)
 
 def to_code(config):
+    #cg.add_build_flag("-std=c++17")
+    #cg.add_build_flag("-fexceptions")
+
     var = cg.new_Pvariable(config[CONF_ID])
     yield cg.register_component(var, config)
 
