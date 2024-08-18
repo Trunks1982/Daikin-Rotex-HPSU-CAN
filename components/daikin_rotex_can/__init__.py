@@ -16,7 +16,7 @@ OperationModeSelect = daikin_rotex_can_ns.class_("OperationModeSelect", select.S
 DEPENDENCIES = []
 
 UNIT_BAR = "bar"
-UNIT_LITER_PER_HOUR = "ltr/h"
+UNIT_LITER_PER_HOUR = "L/h"
 
 AUTO_LOAD = ['sensor', 'select', 'text_sensor', 'binary_sensor']
 
@@ -30,14 +30,15 @@ CONF_TVBH = "tvbh"
 CONF_TR = "tr"
 CONF_WATER_PRESSURE = "water_pressure"
 CONF_WATER_FLOW = "water_flow"
+CONF_CIRCULATION_PUMP = "circulation_pump"
 
-CONF_OPERATION_MODE = "operation_mode"
+CONF_OPERATING_MODE = "operating_mode"
 CONF_ERROR_CODE = "error_code"
 
 CONF_STATUS_KOMPRESSOR = "status_kompressor"
 CONF_STATUS_KESSELPUMPE = "status_kesselpumpe"
 
-CONF_OPERATION_MODE_SELECT = "operation_mode_select"
+CONF_OPERATING_MODE_SELECT = "operating_mode_select"
 
 ICON_SUN_SNOWFLAKE_VARIANT = "mdi:sun-snowflake-variant"
 
@@ -96,10 +97,17 @@ CONFIG_SCHEMA = cv.Schema(
             accuracy_decimals=0,
             state_class=STATE_CLASS_MEASUREMENT
         ).extend(),
+        cv.Optional(CONF_CIRCULATION_PUMP): sensor.sensor_schema(
+            device_class=DEVICE_CLASS_VOLUME_FLOW_RATE,
+            unit_of_measurement=UNIT_PERCENT,
+            accuracy_decimals=0,
+            state_class=STATE_CLASS_MEASUREMENT,
+            icon="mdi:pump"
+        ).extend(),
 
         ######## Text Sensors ########
 
-        cv.Optional(CONF_OPERATION_MODE): text_sensor.text_sensor_schema(
+        cv.Optional(CONF_OPERATING_MODE): text_sensor.text_sensor_schema(
             icon=ICON_SUN_SNOWFLAKE_VARIANT
         ).extend(),
         cv.Optional(CONF_ERROR_CODE): text_sensor.text_sensor_schema(
@@ -117,7 +125,7 @@ CONFIG_SCHEMA = cv.Schema(
 
         ########## Selects ##########
 
-        cv.Optional(CONF_OPERATION_MODE_SELECT): select.select_schema(
+        cv.Optional(CONF_OPERATING_MODE_SELECT): select.select_schema(
             OperationModeSelect,
             entity_category=ENTITY_CATEGORY_CONFIG,
             icon=ICON_SUN_SNOWFLAKE_VARIANT
@@ -138,7 +146,7 @@ def to_code(config):
 
     if temperature_outside := config.get(CONF_TEMPERATURE_OUTSIDE):
         sens = yield sensor.new_sensor(temperature_outside)
-        cg.add(var.getAccessor().set_temperature_outside_sensor(sens))
+        cg.add(var.getAccessor().set_temperature_outside(sens))
 
     if tdhw1 := config.get(CONF_TDHW1):
         sens = yield sensor.new_sensor(tdhw1)
@@ -164,15 +172,19 @@ def to_code(config):
         sens = yield sensor.new_sensor(water_flow)
         cg.add(var.getAccessor().set_water_flow(sens))
 
+    if circulation_pump := config.get(CONF_CIRCULATION_PUMP):
+        sens = yield sensor.new_sensor(circulation_pump)
+        cg.add(var.getAccessor().set_circulation_pump(sens))
+
     ######## Text Sensors ########
 
-    if operation_mode := config.get(CONF_OPERATION_MODE):
-        sens = yield text_sensor.new_text_sensor(operation_mode)
-        cg.add(var.getAccessor().set_operation_mode_sensor(sens))
+    if operating_mode := config.get(CONF_OPERATING_MODE):
+        sens = yield text_sensor.new_text_sensor(operating_mode)
+        cg.add(var.getAccessor().set_operating_mode(sens))
 
     if error_code := config.get(CONF_ERROR_CODE):
         sens = yield text_sensor.new_text_sensor(error_code)
-        cg.add(var.getAccessor().set_error_code_sensor(sens))
+        cg.add(var.getAccessor().set_error_code(sens))
 
     ######## Binary Sensors ########
 
@@ -186,9 +198,9 @@ def to_code(config):
 
     ########## Selects ##########
 
-    operation_mode_options = ["Bereitschaft", "Heizen", "Absenken", "Sommer", "Kühlen", "Automatik 1", "Automatik 2"]
+    operating_mode_options = ["Bereitschaft", "Heizen", "Absenken", "Sommer", "Kühlen", "Automatik 1", "Automatik 2"]
 
-    if operation_mode_select := config.get(CONF_OPERATION_MODE_SELECT):
-        s = yield select.new_select(operation_mode_select, options = operation_mode_options)
+    if operating_mode_select := config.get(CONF_OPERATING_MODE_SELECT):
+        s = yield select.new_select(operating_mode_select, options = operating_mode_options)
         yield cg.register_parented(s, var)
-        cg.add(var.getAccessor().set_operation_mode_select(s))
+        cg.add(var.getAccessor().set_operating_mode_select(s))

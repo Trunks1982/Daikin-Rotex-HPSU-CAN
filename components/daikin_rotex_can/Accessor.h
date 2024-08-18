@@ -13,8 +13,8 @@ public:
 
     // Sensors
 
-    sensor::Sensor* get_temperature_outside_sensor() const { return m_pTemperatureOutsideSensor; }
-    void set_temperature_outside_sensor(sensor::Sensor* pSensor) { m_pTemperatureOutsideSensor = pSensor; }
+    sensor::Sensor* get_temperature_outside() const { return m_pTemperatureOutsideSensor; }
+    void set_temperature_outside(sensor::Sensor* pSensor) { m_pTemperatureOutsideSensor = pSensor; }
 
     sensor::Sensor* get_tdhw1() const { return m_tdhw1; }
     void set_tdhw1(sensor::Sensor* pSensor) { m_tdhw1 = pSensor; }
@@ -34,13 +34,16 @@ public:
     sensor::Sensor* get_water_flow() const { return m_water_flow; }
     void set_water_flow(sensor::Sensor* pSensor) { m_water_flow = pSensor; }
 
+    sensor::Sensor* get_circulation_pump() const { return m_circulation_pump; }
+    void set_circulation_pump(sensor::Sensor* pSensor) { m_circulation_pump = pSensor; }
+
     // Text Sensors
 
-    text_sensor::TextSensor* get_operation_mode_sensor() const { return m_pOperationModeSensor; }
-    void set_operation_mode_sensor(text_sensor::TextSensor* pSensor) { m_pOperationModeSensor = pSensor; }
+    text_sensor::TextSensor* get_operating_mode() const { return m_operating_mode; }
+    void set_operating_mode(text_sensor::TextSensor* pSensor) { m_operating_mode = pSensor; }
 
-    text_sensor::TextSensor* get_error_code_sensor() const { return m_error_code; }
-    void set_error_code_sensor(text_sensor::TextSensor* pSensor) { m_error_code = pSensor; }
+    text_sensor::TextSensor* get_error_code() const { return m_error_code; }
+    void set_error_code(text_sensor::TextSensor* pSensor) { m_error_code = pSensor; }
 
     // Binary Sensors
 
@@ -52,8 +55,8 @@ public:
 
     // Selects
 
-    select::Select* get_operation_mode_select() const { return m_pOperationModeSelect; }
-    void set_operation_mode_select(select::Select* pSelect) { m_pOperationModeSelect = pSelect; }
+    select::Select* get_operating_mode_select() const { return m_operating_mode_select; }
+    void set_operating_mode_select(select::Select* pSelect) { m_operating_mode_select = pSelect; }
 
 private:
     sensor::Sensor* m_pTemperatureOutsideSensor;
@@ -63,14 +66,15 @@ private:
     sensor::Sensor* m_tr;
     sensor::Sensor* m_water_pressure;
     sensor::Sensor* m_water_flow;
+    sensor::Sensor* m_circulation_pump;
 
-    text_sensor::TextSensor* m_pOperationModeSensor;
+    text_sensor::TextSensor* m_operating_mode;
     text_sensor::TextSensor* m_error_code;
 
     binary_sensor::BinarySensor* m_status_kompressor;
     binary_sensor::BinarySensor* m_status_kesselpumpe;
 
-    select::Select* m_pOperationModeSelect;
+    select::Select* m_operating_mode_select;
 };
 
 }

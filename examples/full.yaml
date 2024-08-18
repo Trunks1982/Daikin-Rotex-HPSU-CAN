@@ -74,3 +74,5 @@ daikin_rotex_can:
     name: "Status Kompressor"
   status_kesselpumpe:
     name: "Status Kesselpumpe"
+  circulation_pump:
+    name: "Umwaelzpumpe"

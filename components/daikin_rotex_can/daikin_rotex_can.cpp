@@ -26,7 +26,7 @@ const std::vector<TRequest> entity_config = {
         {  DC,   DC, 0xFA, 0xC0, 0xFF,   DC,   DC},
         [](auto const& data, auto& accessor) -> DataType {
             const float temp = float(((int((data[6]) + ((data[5]) << 8))) ^ 0x8000) - 0x8000) / 10;
-            accessor.get_temperature_outside_sensor()->publish_state(temp);
+            accessor.get_temperature_outside()->publish_state(temp);
             return temp;
         }
     },
@@ -35,7 +35,7 @@ const std::vector<TRequest> entity_config = {
         {0x31, 0x00, 0xFA, 0x00, 0x0E, 0x00, 0x00},
         {  DC,   DC, 0xFA, 0x00, 0x0E,   DC,   DC},
         [](auto const& data, auto& accessor) -> DataType {
-            float temp = float((float((int((data[6]) + ((data[5]) << 8))))/10));
+            const float temp = float((float((int((data[6]) + ((data[5]) << 8))))/10));
             accessor.get_tdhw1()->publish_state(temp);
             return temp;
         }
@@ -75,7 +75,7 @@ const std::vector<TRequest> entity_config = {
         {0x31, 0x00, 0x1C, 0x00, 0x00, 0x00, 0x00},
         {0xD2,   DC, 0x1C,   DC,   DC,   DC,   DC},
         [](auto const& data, auto& accessor) -> DataType {
-            float pressure = float((float((int((data[4]) + ((data[3]) << 8))))/1000));
+            const float pressure = float((float((int((data[4]) + ((data[3]) << 8))))/1000));
             accessor.get_water_pressure()->publish_state(pressure);
             return pressure;
         }
@@ -85,7 +85,7 @@ const std::vector<TRequest> entity_config = {
         {0x31, 0x00, 0xFA, 0x01, 0xDA, 0x00, 0x00},
         {  DC,   DC, 0xFA, 0x01, 0xDA,   DC,   DC},
         [](auto const& data, auto& accessor) -> DataType {
-            float flow = float((float((int((data[6]) + ((data[5]) << 8))))));
+            const float flow = float((float((int((data[6]) + ((data[5]) << 8))))));
             accessor.get_water_flow()->publish_state(flow);
             return flow;
         }
@@ -97,8 +97,8 @@ const std::vector<TRequest> entity_config = {
         {  DC,   DC, 0xFA, 0x01, 0x12,   DC,   DC},
         [](auto const& data, auto& accessor) -> DataType {
             const std::string mode = map_betriebsmodus.getValue(data[5]);
-            accessor.get_operation_mode_sensor()->publish_state(mode);
-            accessor.get_operation_mode_select()->publish_state(mode);
+            accessor.get_operating_mode()->publish_state(mode);
+            accessor.get_operating_mode_select()->publish_state(mode);
             return mode;
         }
     },
@@ -115,7 +115,7 @@ const std::vector<TRequest> entity_config = {
         0x500,
         {  DC,   DC, 0x61,   DC,   DC,   DC,   DC},
         [](auto const& data, auto& accessor) -> DataType {
-            float state = float((float((int((data[3]) + ((data[4]) << 8))))));
+            const float state = float((float((int((data[3]) + ((data[4]) << 8))))));
             accessor.get_status_kompressor()->publish_state(state);
             return state;
         }
@@ -126,9 +126,20 @@ const std::vector<TRequest> entity_config = {
         {0x31, 0x00, 0xFA, 0x0A, 0x8C, 0x00, 0x00},
         {  DC,   DC, 0xFA, 0x0A, 0x8C,   DC,   DC},
         [](auto const& data, auto& accessor) -> DataType {
-            float state = float((float((int((data[6]) + ((data[5]) << 8))))));
+            const float state = float((float((int((data[6]) + ((data[5]) << 8))))));
             accessor.get_status_kesselpumpe()->publish_state(state);
             return state;
+        }
+    },
+
+    {
+        "Umwälzpumpe",
+        {0x31, 0x00, 0xFA, 0xC0, 0xF7, 0x00, 0x00},
+        {  DC,   DC, 0xFA, 0xC0, 0xF7,   DC,   DC},
+        [](auto const& data, auto& accessor) -> DataType {
+            const float percent = int((data[6]) + data[5]);
+            accessor.get_circulation_pump()->publish_state(percent);
+            return percent;
         }
     },
 
@@ -139,7 +150,7 @@ const std::vector<TRequest> entity_config = {
         [](auto const& data, auto& accessor) -> DataType {
             const uint32_t code = uint32_t(data[6]) + (uint32_t(data[5]) << 8);
 
-            auto to_str = [](uint32_t code) -> std::string {
+            const auto to_str = [](uint32_t code) -> std::string {
                 switch (code)
                 {
                 case 0: return {"Kein Fehler"};
@@ -207,7 +218,7 @@ const std::vector<TRequest> entity_config = {
 
             std::string str_code = to_str(code);
 
-            accessor.get_error_code_sensor()->publish_state(str_code);
+            accessor.get_error_code()->publish_state(str_code);
             return str_code;
         }
     },

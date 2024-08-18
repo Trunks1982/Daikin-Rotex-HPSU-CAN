@@ -25,3 +25,4 @@ Configuration variables:
 - **tr** (*Optional*): Heating return temperature (***Ruecklauftemperatur Heizung***).
 - **status_kompressor** (*Optional*): Status of the compressor (***Status Kompressor***).
 - **status_kesselpumpe** (*Optional*): Status of the boiler pump (***Status Kesselpumpe***).
+- **circulation_pump** (*Optional*): Indicates the percentage at which the circulation pump is operating. (***Umwälzpumpe***).
