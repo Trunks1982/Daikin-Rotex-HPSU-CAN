@@ -41,6 +41,36 @@ const std::vector<TRequest> entity_config = {
         }
     },
     {
+        "Vorlauftemperatur",
+        {0x31, 0x00, 0xFA, 0xC0, 0xFC, 0x00, 0x00},
+        {  DC,   DC, 0xFA, 0xC0, 0xFC,   DC,   DC},
+        [](auto const& data, auto& accessor) -> DataType {
+            const float temp = float(float((int((data[6]) + ((data[5]) << 8))))/10);
+            accessor.get_tv()->publish_state(temp);
+            return temp;
+        }
+    },
+    {
+        "Vorlauftemperatur (TVBH)",
+        {0x31, 0x00, 0xFA, 0xC1, 0x02, 0x00, 0x00},
+        {  DC,   DC, 0xFA, 0xC1, 0x02,   DC,   DC},
+        [](auto const& data, auto& accessor) -> DataType {
+            const float temp = float(float((int((data[6]) + ((data[5]) << 8))))/10);
+            accessor.get_tvbh()->publish_state(temp);
+            return temp;
+        }
+    },
+    {
+        "Rücklauftemperatur Heizung",
+        {0x31, 0x00, 0xFA, 0xC1, 0x00, 0x00, 0x00},
+        {  DC,   DC, 0xFA, 0xC1, 0x00,   DC,   DC},
+        [](auto const& data, auto& accessor) -> DataType {
+            const float temp = float(float((int((data[6]) + ((data[5]) << 8))))/10);
+            accessor.get_tr()->publish_state(temp);
+            return temp;
+        }
+    },
+    {
         "water pressure",
         {0x31, 0x00, 0x1C, 0x00, 0x00, 0x00, 0x00},
         {0xD2,   DC, 0x1C,   DC,   DC,   DC,   DC},

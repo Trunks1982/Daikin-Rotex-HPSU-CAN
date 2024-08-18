@@ -18,6 +18,15 @@ public:
     sensor::Sensor* get_tdhw1() const { return m_tdhw1; }
     void set_tdhw1(sensor::Sensor* pSensor) { m_tdhw1 = pSensor; }
 
+    sensor::Sensor* get_tv() const { return m_tv; }
+    void set_tv(sensor::Sensor* pSensor) { m_tv = pSensor; }
+
+    sensor::Sensor* get_tvbh() const { return m_tvbh; }
+    void set_tvbh(sensor::Sensor* pSensor) { m_tvbh = pSensor; }
+
+    sensor::Sensor* get_tr() const { return m_tr; }
+    void set_tr(sensor::Sensor* pSensor) { m_tr = pSensor; }
+
     sensor::Sensor* get_water_pressure() const { return m_water_pressure; }
     void set_water_pressure(sensor::Sensor* pSensor) { m_water_pressure = pSensor; }
 
@@ -40,6 +49,9 @@ public:
 private:
     sensor::Sensor* m_pTemperatureOutsideSensor;
     sensor::Sensor* m_tdhw1;
+    sensor::Sensor* m_tv;
+    sensor::Sensor* m_tvbh;
+    sensor::Sensor* m_tr;
     sensor::Sensor* m_water_pressure;
     sensor::Sensor* m_water_flow;
 

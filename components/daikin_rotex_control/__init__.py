@@ -25,6 +25,9 @@ CONF_LOG_FILTER_TEXT = "log_filter_text"
 
 CONF_TEMPERATURE_OUTSIDE = "temperature_outside"    # External temperature
 CONF_TDHW1 = "tdhw1"
+CONF_TV = "tv"
+CONF_TVBH = "tvbh"
+CONF_TR = "tr"
 CONF_WATER_PRESSURE = "water_pressure"
 CONF_WATER_FLOW = "water_flow"
 
@@ -55,6 +58,24 @@ CONFIG_SCHEMA = cv.Schema(
             state_class=STATE_CLASS_MEASUREMENT
         ).extend(),
         cv.Optional(CONF_TDHW1): sensor.sensor_schema(
+            device_class=DEVICE_CLASS_TEMPERATURE,
+            unit_of_measurement=UNIT_CELSIUS,
+            accuracy_decimals=1,
+            state_class=STATE_CLASS_MEASUREMENT
+        ).extend(),
+        cv.Optional(CONF_TV): sensor.sensor_schema(
+            device_class=DEVICE_CLASS_TEMPERATURE,
+            unit_of_measurement=UNIT_CELSIUS,
+            accuracy_decimals=1,
+            state_class=STATE_CLASS_MEASUREMENT
+        ).extend(),
+        cv.Optional(CONF_TVBH): sensor.sensor_schema(
+            device_class=DEVICE_CLASS_TEMPERATURE,
+            unit_of_measurement=UNIT_CELSIUS,
+            accuracy_decimals=1,
+            state_class=STATE_CLASS_MEASUREMENT
+        ).extend(),
+        cv.Optional(CONF_TR): sensor.sensor_schema(
             device_class=DEVICE_CLASS_TEMPERATURE,
             unit_of_measurement=UNIT_CELSIUS,
             accuracy_decimals=1,
@@ -110,6 +131,18 @@ def to_code(config):
     if tdhw1 := config.get(CONF_TDHW1):
         sens = yield sensor.new_sensor(tdhw1)
         cg.add(var.getAccessor().set_tdhw1(sens))
+
+    if tv := config.get(CONF_TV):
+        sens = yield sensor.new_sensor(tv)
+        cg.add(var.getAccessor().set_tv(sens))
+
+    if tvbh := config.get(CONF_TVBH):
+        sens = yield sensor.new_sensor(tvbh)
+        cg.add(var.getAccessor().set_tvbh(sens))
+
+    if tr := config.get(CONF_TR):
+        sens = yield sensor.new_sensor(tr)
+        cg.add(var.getAccessor().set_tr(sens))
 
     if water_pressure := config.get(CONF_WATER_PRESSURE):
         sens = yield sensor.new_sensor(water_pressure)
