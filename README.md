@@ -1,7 +1,12 @@
-# How to setup
-
 ## Software requirements
  * [ESPHome](https://esphome.io/) installed
+
+# How to setup
+
+    The example [examples/minimal.yaml](examples/minimal.yaml) contains the essential configuration of the dakin_rotext_can component:
+    
+    - **external_components**: Allows the component *daikin_rotex_can* to be automatically loaded from github.
+    - **canbus** : Required for communication with the heat pump
 
 Configuration variables:
 ------------------------

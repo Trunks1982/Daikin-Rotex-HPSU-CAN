@@ -1,0 +1,76 @@
+esphome:
+    name: rotex
+    friendly_name: Rotex
+    platformio_options:
+        build_unflags:
+            - "-std=gnu++11"
+            - "-fno-exceptions"
+        build_flags:
+            - "-std=gnu++17"
+            - "-fexceptions"
+
+esp32:
+  board: esp32-s3-devkitc-1
+  framework:
+    type: arduino
+
+external_components:
+  - source: github://wrfz/esphome-daikin-rotex-can
+
+logger:
+  level: INFO
+
+api:
+  encryption:
+    key: !secret api_encryption_key
+
+ota:
+  platform: esphome
+  password: !secret ota_password
+
+web_server:
+  version: 3
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+
+  ap:
+    ssid: "DaikinRotex Fallback Hotspot"
+    password: !secret fallback_hotspot_password
+
+canbus:
+  - platform: esp32_can
+    id: can_bus
+    can_id: 0x680
+    rx_pin: GPIO2
+    tx_pin: GPIO3
+    bit_rate: 20kbps
+
+daikin_rotex_can:
+  id: rotext_hpsu_compact_508
+  canbus_id: can_bus
+  temperature_outside:
+    name: "Aussentemperatur"
+  operation_mode:
+    name: "Betriebsmodus"
+  operation_mode_select:
+    name: "Betriebsmodus setzen"
+  tdhw1:
+    name: "Warmwassertemperatur"
+  water_pressure:
+    name: "Wasserdruck"
+  water_flow:
+    name: "Durchfluss"
+  error_code:
+    name: "Fehlercode"
+  tvbh:
+    name: "Vorlauftemperatur Heizung (TVBH)"
+  tv:
+    name: "Heizkreis Vorlauf (TV)"
+  tr:
+    name: "Ruecklauftemperatur Heizung"
+  status_kompressor:
+    name: "Status Kompressor"
+  status_kesselpumpe:
+    name: "Status Kesselpumpe"
