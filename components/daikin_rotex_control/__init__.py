@@ -14,6 +14,9 @@ TimerText = timer_ns.class_("TimerText", text.Text, cg.Component)
 OperationModeSelect = dakin_rotex_control_ns.class_("OperationModeSelect", select.Select)
 
 DEPENDENCIES = []
+
+UNIT_BAR = "bar"
+
 AUTO_LOAD = ['sensor', 'select', 'text_sensor', 'binary_sensor']
 
 CONF_CAN_ID = "canbus_id"
@@ -21,6 +24,7 @@ CONF_LOG_FILTER_TEXT = "log_filter_text"
 
 CONF_TEMPERATURE_OUTSIDE = "temperature_outside"    # External temperature
 CONF_TDHW1 = "tdhw1"
+CONF_WATER_PRESSURE = "water_pressure"
 CONF_OPERATION_MODE = "operation_mode"
 CONF_OPERATION_MODE_SELECT = "operation_mode_select"
 
@@ -36,6 +40,9 @@ CONFIG_SCHEMA = cv.Schema(
                 cv.Optional(CONF_MODE, default="TEXT"): cv.enum(text.TEXT_MODES, upper=True),
             }
         ),
+
+        ########## Sensors ##########
+
         cv.Optional(CONF_TEMPERATURE_OUTSIDE): sensor.sensor_schema(
             device_class=DEVICE_CLASS_TEMPERATURE,
             unit_of_measurement=UNIT_CELSIUS,
@@ -48,9 +55,21 @@ CONFIG_SCHEMA = cv.Schema(
             accuracy_decimals=1,
             state_class=STATE_CLASS_MEASUREMENT
         ).extend(),
+        cv.Optional(CONF_WATER_PRESSURE): sensor.sensor_schema(
+            device_class=DEVICE_CLASS_PRESSURE,
+            unit_of_measurement=UNIT_BAR,
+            accuracy_decimals=2,
+            state_class=STATE_CLASS_MEASUREMENT
+        ).extend(),
+
+        ######## Text Sensors ########
+
         cv.Optional(CONF_OPERATION_MODE): text_sensor.text_sensor_schema(
             icon=ICON_SUN_SNOWFLAKE_VARIANT
         ).extend(),
+
+        ########## Selects ##########
+
         cv.Optional(CONF_OPERATION_MODE_SELECT): select.select_schema(
             OperationModeSelect,
             entity_category=ENTITY_CATEGORY_CONFIG,
@@ -77,6 +96,10 @@ def to_code(config):
     if tdhw1 := config.get(CONF_TDHW1):
         sens = yield sensor.new_sensor(tdhw1)
         cg.add(var.getAccessor().set_tdhw1(sens))
+
+    if water_pressure := config.get(CONF_WATER_PRESSURE):
+        sens = yield sensor.new_sensor(water_pressure)
+        cg.add(var.getAccessor().set_water_pressure(sens))
 
     ######## Text Sensors ########
 

@@ -41,6 +41,16 @@ const std::vector<TRequest> entity_config = {
         }
     },
     {
+        "water pressure",
+        {0x31, 0x00, 0x1C, 0x00, 0x00, 0x00, 0x00},
+        {0xD2,   DC, 0x1C,   DC,   DC,   DC,   DC},
+        [](auto const& data, auto& accessor) -> DataType {
+            float pressure = float((float((int((data[4]) + ((data[3]) << 8))))/1000));
+            accessor.get_water_pressure()->publish_state(pressure);
+            return pressure;
+        }
+    },
+    {
         "Betriebsmodus",
         {0x31, 0x00, 0xFA, 0x01, 0x12, 0x00, 0x00},
         {  DC,   DC, 0xFA, 0x01, 0x12,   DC,   DC},
