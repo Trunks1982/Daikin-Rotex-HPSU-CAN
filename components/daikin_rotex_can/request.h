@@ -1,13 +1,13 @@
 #pragma once
 
-#include "esphome/components/daikin_rotex_control/types.h"
-#include "esphome/components/daikin_rotex_control/utils.h"
-#include "esphome/components/daikin_rotex_control/Accessor.h"   //?
+#include "esphome/components/daikin_rotex_can/types.h"
+#include "esphome/components/daikin_rotex_can/utils.h"
+#include "esphome/components/daikin_rotex_can/Accessor.h"   //?
 #include "esphome/components/esp32_can/esp32_can.h"
 #include <functional>
 
 namespace esphome {
-namespace dakin_rotex_control {
+namespace daikin_rotex_can {
 
 const uint16_t DC = 0xFFFF; // Don't care
 

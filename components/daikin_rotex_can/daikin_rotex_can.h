@@ -1,16 +1,16 @@
 #pragma once
 
-#include "esphome/components/daikin_rotex_control/requests.h"
-#include "esphome/components/daikin_rotex_control/Accessor.h"
+#include "esphome/components/daikin_rotex_can/requests.h"
+#include "esphome/components/daikin_rotex_can/Accessor.h"
 #include "esphome/components/esp32_can/esp32_can.h"
 #include "esphome/core/component.h"
 
 namespace esphome {
-namespace dakin_rotex_control {
+namespace daikin_rotex_can {
 
-class DakinRotexControl: public Component {
+class DaikinRotexCanComponent: public Component {
 public:
-    DakinRotexControl();
+    DaikinRotexCanComponent();
     void setup() override;
     void loop() override;
     void dump_config() override;
@@ -29,13 +29,13 @@ private:
 
     class MyAction : public TCanbusAction {
     public:
-        MyAction(DakinRotexControl* pParent): m_pParent(pParent) {}
+        MyAction(DaikinRotexCanComponent* pParent): m_pParent(pParent) {}
     protected:
         virtual void play(std::vector<uint8_t> data, uint32_t can_id, bool remote_transmission_request) override {
             m_pParent->handle(can_id, data);
         }
     private:
-        DakinRotexControl* m_pParent;
+        DaikinRotexCanComponent* m_pParent;
     };
 
     Accessor m_accessor;
@@ -46,7 +46,7 @@ private:
     std::shared_ptr<MyAction> m_canbus_action;
 };
 
-inline void DakinRotexControl::set_canbus(esphome::esp32_can::ESP32Can* pCanbus) {
+inline void DaikinRotexCanComponent::set_canbus(esphome::esp32_can::ESP32Can* pCanbus) {
     m_data_requests.setCanbus(pCanbus);
 
     m_canbus_trigger = std::make_shared<esphome::canbus::CanbusTrigger>(pCanbus, 0, 0, false); // Listen to all can messages
@@ -56,5 +56,5 @@ inline void DakinRotexControl::set_canbus(esphome::esp32_can::ESP32Can* pCanbus)
     pCanbus->add_trigger(m_canbus_trigger.get());
 }
 
-} // namespace dakin_rotex_control
+} // namespace daikin_rotex_can
 } // namespace esphome

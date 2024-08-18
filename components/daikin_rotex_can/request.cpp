@@ -1,9 +1,9 @@
-#include "esphome/components/daikin_rotex_control/request.h"
-#include "esphome/components/daikin_rotex_control/Accessor.h"   // ?
+#include "esphome/components/daikin_rotex_can/request.h"
+#include "esphome/components/daikin_rotex_can/Accessor.h"   // ?
 #include "esphome/core/hal.h"
 
 namespace esphome {
-namespace dakin_rotex_control {
+namespace daikin_rotex_can {
 
 bool TRequest::inProgress() const {
     uint32_t mil = millis();

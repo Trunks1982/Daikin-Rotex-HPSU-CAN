@@ -1,10 +1,10 @@
-#include "esphome/components/daikin_rotex_control/requests.h"
+#include "esphome/components/daikin_rotex_can/requests.h"
 #include "esphome/core/hal.h"
 
 namespace esphome {
-namespace dakin_rotex_control {
+namespace daikin_rotex_can {
 
-TRequests::TRequests(std::vector<esphome::dakin_rotex_control::TRequest> const& requests)
+TRequests::TRequests(std::vector<esphome::daikin_rotex_can::TRequest> const& requests)
 : m_requests(requests)
 , m_pCanBus(nullptr)
 {

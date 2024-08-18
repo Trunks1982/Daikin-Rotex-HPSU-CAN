@@ -5,7 +5,7 @@
 #include <stdint.h>
 
 namespace esphome {
-namespace dakin_rotex_control {
+namespace daikin_rotex_can {
 
 using DataType = std::variant<uint32_t, uint8_t, float, std::string>;
 

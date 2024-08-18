@@ -2,10 +2,11 @@
 
 #include "esphome/components/select/select.h"
 #include "esphome/components/sensor/sensor.h"
+#include "esphome/components/binary_sensor/binary_sensor.h"
 #include "esphome/components/text_sensor/text_sensor.h"
 
 namespace esphome {
-namespace dakin_rotex_control {
+namespace daikin_rotex_can {
 
 class Accessor {
 public:
@@ -41,6 +42,14 @@ public:
     text_sensor::TextSensor* get_error_code_sensor() const { return m_error_code; }
     void set_error_code_sensor(text_sensor::TextSensor* pSensor) { m_error_code = pSensor; }
 
+    // Binary Sensors
+
+    binary_sensor::BinarySensor* get_status_kompressor() const { return m_status_kompressor; }
+    void set_status_kompressor(binary_sensor::BinarySensor* pSensor) { m_status_kompressor = pSensor; }
+
+    binary_sensor::BinarySensor* get_status_kesselpumpe() const { return m_status_kesselpumpe; }
+    void set_status_kesselpumpe(binary_sensor::BinarySensor* pSensor) { m_status_kesselpumpe = pSensor; }
+
     // Selects
 
     select::Select* get_operation_mode_select() const { return m_pOperationModeSelect; }
@@ -57,6 +66,9 @@ private:
 
     text_sensor::TextSensor* m_pOperationModeSensor;
     text_sensor::TextSensor* m_error_code;
+
+    binary_sensor::BinarySensor* m_status_kompressor;
+    binary_sensor::BinarySensor* m_status_kesselpumpe;
 
     select::Select* m_pOperationModeSelect;
 };

@@ -9,7 +9,7 @@
 #include <memory>
 
 namespace esphome {
-namespace dakin_rotex_control {
+namespace daikin_rotex_can {
 
 class Utils {
 public:

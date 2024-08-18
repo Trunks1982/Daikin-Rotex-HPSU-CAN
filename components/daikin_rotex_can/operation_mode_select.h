@@ -1,12 +1,12 @@
 #pragma once
 
 #include "esphome/components/select/select.h"
-#include "DakinRotexControl.h"
+#include "daikin_rotex_can.h"
 
 namespace esphome {
-namespace dakin_rotex_control {
+namespace daikin_rotex_can {
 
-class OperationModeSelect : public select::Select, public Parented<DakinRotexControl> {
+class OperationModeSelect : public select::Select, public Parented<DaikinRotexCanComponent> {
 public:
     OperationModeSelect() = default;
 

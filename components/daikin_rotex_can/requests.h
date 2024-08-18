@@ -1,16 +1,16 @@
 #pragma once
 
-#include "esphome/components/daikin_rotex_control/request.h"
+#include "esphome/components/daikin_rotex_can/request.h"
 #include <vector>
 
 namespace esphome {
-namespace dakin_rotex_control {
+namespace daikin_rotex_can {
 
 class Accessor;
 
 class TRequests {
 public:
-    TRequests(std::vector<esphome::dakin_rotex_control::TRequest> const& requests);
+    TRequests(std::vector<esphome::daikin_rotex_can::TRequest> const& requests);
 
     void setCanbus(esphome::esp32_can::ESP32Can* pCanBus);
 

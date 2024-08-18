@@ -52,7 +52,7 @@
       tx_pin: GPIO3
       bit_rate: 20kbps
 
-  daikin_rotex_control:
+  daikin_rotex_can:
     id: rotext_hpsu
     canbus_id: can_bus
     temperature_outside:

@@ -1,13 +1,13 @@
-#include "esphome/components/daikin_rotex_control/DakinRotexControl.h"
-#include "esphome/components/daikin_rotex_control/request.h"
-#include "esphome/components/daikin_rotex_control/BidiMap.h"
+#include "esphome/components/daikin_rotex_can/daikin_rotex_can.h"
+#include "esphome/components/daikin_rotex_can/request.h"
+#include "esphome/components/daikin_rotex_can/BidiMap.h"
 #include <string>
 #include <vector>
 
 namespace esphome {
-namespace dakin_rotex_control {
+namespace daikin_rotex_can {
 
-static const char *TAG = "dakin_rotex_control";
+static const char *TAG = "daikin_rotex_can";
 
 static const BidiMap<uint8_t, std::string> map_betriebsmodus {
     {0x01, "Bereitschaft"},
@@ -110,6 +110,29 @@ const std::vector<TRequest> entity_config = {
     },
 
     {
+        "Status Kompressor",
+        {0xA1, 0x00, 0x61, 0x00, 0x00, 0x00, 0x00},
+        0x500,
+        {  DC,   DC, 0x61,   DC,   DC,   DC,   DC},
+        [](auto const& data, auto& accessor) -> DataType {
+            float state = float((float((int((data[3]) + ((data[4]) << 8))))));
+            accessor.get_status_kompressor()->publish_state(state);
+            return state;
+        }
+    },
+
+    {
+        "Status Kessel",
+        {0x31, 0x00, 0xFA, 0x0A, 0x8C, 0x00, 0x00},
+        {  DC,   DC, 0xFA, 0x0A, 0x8C,   DC,   DC},
+        [](auto const& data, auto& accessor) -> DataType {
+            float state = float((float((int((data[6]) + ((data[5]) << 8))))));
+            accessor.get_status_kesselpumpe()->publish_state(state);
+            return state;
+        }
+    },
+
+    {
         "Fehlercode",
         {0x31, 0x00, 0xFA, 0x13, 0x88, 0x00, 0x00},
         {  DC,   DC, 0xFA, 0x13, 0x88,   DC,   DC},
@@ -190,30 +213,30 @@ const std::vector<TRequest> entity_config = {
     },
 };
 
-DakinRotexControl::DakinRotexControl()
+DaikinRotexCanComponent::DaikinRotexCanComponent()
 : m_data_requests(std::move(entity_config))
 {
 }
 
-void DakinRotexControl::setup() {
+void DaikinRotexCanComponent::setup() {
     //ESP_LOGI(TAG, "setup");
 }
 
-void DakinRotexControl::set_operation_mode(std::string const& mode) {
+void DaikinRotexCanComponent::set_operation_mode(std::string const& mode) {
     m_data_requests.sendSet("Betriebsmodus setzen", map_betriebsmodus.getKey(mode));
 }
 
-void DakinRotexControl::loop() {
+void DaikinRotexCanComponent::loop() {
     m_data_requests.sendNextPendingGet();
 }
 
-void DakinRotexControl::handle(uint32_t can_id, std::vector<uint8_t> const& data) {
+void DaikinRotexCanComponent::handle(uint32_t can_id, std::vector<uint8_t> const& data) {
     m_data_requests.handle(can_id, data, m_accessor);
 }
 
-void DakinRotexControl::dump_config() {
-    ESP_LOGCONFIG(TAG, "DakinRotexControl");
+void DaikinRotexCanComponent::dump_config() {
+    ESP_LOGCONFIG(TAG, "DaikinRotexCanComponent");
 }
 
-} // namespace dakin_rotex_control
+} // namespace daikin_rotex_can
 } // namespace esphome

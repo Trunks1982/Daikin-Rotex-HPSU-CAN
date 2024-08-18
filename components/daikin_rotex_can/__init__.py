@@ -8,10 +8,10 @@ from esphome.components.canbus import CanbusComponent
 #)
 
 timer_ns = cg.esphome_ns.namespace("timer")
-dakin_rotex_control_ns = cg.esphome_ns.namespace('dakin_rotex_control')
-DakinHPC = dakin_rotex_control_ns.class_('DakinRotexControl', cg.Component)
+daikin_rotex_can_ns = cg.esphome_ns.namespace('daikin_rotex_can')
+DaikinRotexCanComponent = daikin_rotex_can_ns.class_('DaikinRotexCanComponent', cg.Component)
 TimerText = timer_ns.class_("TimerText", text.Text, cg.Component)
-OperationModeSelect = dakin_rotex_control_ns.class_("OperationModeSelect", select.Select)
+OperationModeSelect = daikin_rotex_can_ns.class_("OperationModeSelect", select.Select)
 
 DEPENDENCIES = []
 
@@ -34,13 +34,16 @@ CONF_WATER_FLOW = "water_flow"
 CONF_OPERATION_MODE = "operation_mode"
 CONF_ERROR_CODE = "error_code"
 
+CONF_STATUS_KOMPRESSOR = "status_kompressor"
+CONF_STATUS_KESSELPUMPE = "status_kesselpumpe"
+
 CONF_OPERATION_MODE_SELECT = "operation_mode_select"
 
 ICON_SUN_SNOWFLAKE_VARIANT = "mdi:sun-snowflake-variant"
 
 CONFIG_SCHEMA = cv.Schema(
     {
-        cv.GenerateID(): cv.declare_id(DakinHPC),
+        cv.GenerateID(): cv.declare_id(DaikinRotexCanComponent),
         cv.Required(CONF_CAN_ID): cv.use_id(CanbusComponent),
         cv.Optional(CONF_LOG_FILTER_TEXT): text.TEXT_SCHEMA.extend(
             {
@@ -103,6 +106,15 @@ CONFIG_SCHEMA = cv.Schema(
             icon="mdi:alert"
         ).extend(),
 
+        ########## Binary Sensors ##########
+
+        cv.Optional(CONF_STATUS_KOMPRESSOR): binary_sensor.binary_sensor_schema(
+            icon="mdi:pump"
+        ).extend(),
+        cv.Optional(CONF_STATUS_KESSELPUMPE): binary_sensor.binary_sensor_schema(
+            icon="mdi:pump"
+        ).extend(),
+
         ########## Selects ##########
 
         cv.Optional(CONF_OPERATION_MODE_SELECT): select.select_schema(
@@ -161,6 +173,16 @@ def to_code(config):
     if error_code := config.get(CONF_ERROR_CODE):
         sens = yield text_sensor.new_text_sensor(error_code)
         cg.add(var.getAccessor().set_error_code_sensor(sens))
+
+    ######## Binary Sensors ########
+
+    if status_kompressor := config.get(CONF_STATUS_KOMPRESSOR):
+        sens = yield binary_sensor.new_binary_sensor(status_kompressor)
+        cg.add(var.getAccessor().set_status_kompressor(sens))
+
+    if status_kesselpumpe := config.get(CONF_STATUS_KESSELPUMPE):
+        sens = yield binary_sensor.new_binary_sensor(status_kesselpumpe)
+        cg.add(var.getAccessor().set_status_kesselpumpe(sens))
 
     ########## Selects ##########
 
