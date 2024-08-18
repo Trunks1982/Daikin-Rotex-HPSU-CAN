@@ -1,6 +1,6 @@
 import esphome.codegen as cg
 import esphome.config_validation as cv
-from esphome.components import sensor, binary_sensor, select, text_sensor, canbus, text
+from esphome.components import sensor, binary_sensor, number, select, text_sensor, canbus, text
 from esphome.const import *
 from esphome.components.canbus import CanbusComponent
 #from esphome.const import (
@@ -12,19 +12,21 @@ daikin_rotex_can_ns = cg.esphome_ns.namespace('daikin_rotex_can')
 DaikinRotexCanComponent = daikin_rotex_can_ns.class_('DaikinRotexCanComponent', cg.Component)
 TimerText = timer_ns.class_("TimerText", text.Text, cg.Component)
 OperationModeSelect = daikin_rotex_can_ns.class_("OperationModeSelect", select.Select)
+TargetHotWaterTemperatureNumber = daikin_rotex_can_ns.class_("TargetHotWaterTemperatureNumber", number.Number)
 
 DEPENDENCIES = []
 
 UNIT_BAR = "bar"
 UNIT_LITER_PER_HOUR = "L/h"
 
-AUTO_LOAD = ['sensor', 'select', 'text_sensor', 'binary_sensor']
+AUTO_LOAD = ['binary_sensor', 'number', 'sensor', 'select', 'text_sensor']
 
 CONF_CAN_ID = "canbus_id"
 CONF_LOG_FILTER_TEXT = "log_filter_text"
 
 CONF_TEMPERATURE_OUTSIDE = "temperature_outside"    # External temperature
 CONF_TDHW1 = "tdhw1"
+CONF_TARGET_HOT_WATER_TEMPERATURE = "target_hot_water_temperature"
 CONF_TV = "tv"
 CONF_TVBH = "tvbh"
 CONF_TR = "tr"
@@ -39,6 +41,8 @@ CONF_STATUS_KOMPRESSOR = "status_kompressor"
 CONF_STATUS_KESSELPUMPE = "status_kesselpumpe"
 
 CONF_OPERATING_MODE_SELECT = "operating_mode_select"
+
+CONF_TARGET_HOT_WATER_TEMPERATURE_SET = "target_hot_water_temperature_set"
 
 ICON_SUN_SNOWFLAKE_VARIANT = "mdi:sun-snowflake-variant"
 
@@ -62,6 +66,12 @@ CONFIG_SCHEMA = cv.Schema(
             state_class=STATE_CLASS_MEASUREMENT
         ).extend(),
         cv.Optional(CONF_TDHW1): sensor.sensor_schema(
+            device_class=DEVICE_CLASS_TEMPERATURE,
+            unit_of_measurement=UNIT_CELSIUS,
+            accuracy_decimals=1,
+            state_class=STATE_CLASS_MEASUREMENT
+        ).extend(),
+        cv.Optional(CONF_TARGET_HOT_WATER_TEMPERATURE): sensor.sensor_schema(
             device_class=DEVICE_CLASS_TEMPERATURE,
             unit_of_measurement=UNIT_CELSIUS,
             accuracy_decimals=1,
@@ -130,6 +140,14 @@ CONFIG_SCHEMA = cv.Schema(
             entity_category=ENTITY_CATEGORY_CONFIG,
             icon=ICON_SUN_SNOWFLAKE_VARIANT
         ).extend(),
+
+        ########## Number ##########
+
+        cv.Optional(CONF_TARGET_HOT_WATER_TEMPERATURE_SET): number.number_schema(
+            TargetHotWaterTemperatureNumber,
+            entity_category=ENTITY_CATEGORY_CONFIG,
+            icon=ICON_SUN_SNOWFLAKE_VARIANT
+        ).extend(),
     }
 ).extend(cv.COMPONENT_SCHEMA)
 
@@ -151,6 +169,10 @@ def to_code(config):
     if tdhw1 := config.get(CONF_TDHW1):
         sens = yield sensor.new_sensor(tdhw1)
         cg.add(var.getAccessor().set_tdhw1(sens))
+
+    if target_hot_water_temperature := config.get(CONF_TARGET_HOT_WATER_TEMPERATURE):
+        sens = yield sensor.new_sensor(target_hot_water_temperature)
+        cg.add(var.getAccessor().set_target_hot_water_temperature(sens))
 
     if tv := config.get(CONF_TV):
         sens = yield sensor.new_sensor(tv)
@@ -204,3 +226,14 @@ def to_code(config):
         s = yield select.new_select(operating_mode_select, options = operating_mode_options)
         yield cg.register_parented(s, var)
         cg.add(var.getAccessor().set_operating_mode_select(s))
+
+    ########## Selects ##########
+    if target_hot_water_temperature_set := config.get(CONF_TARGET_HOT_WATER_TEMPERATURE_SET):
+        num = yield number.new_number(
+            target_hot_water_temperature_set,
+            min_value=35,
+            max_value=70,
+            step=1
+        )
+        yield cg.register_parented(num, var)
+        cg.add(var.getAccessor().set_target_hot_water_temperature_set(num))

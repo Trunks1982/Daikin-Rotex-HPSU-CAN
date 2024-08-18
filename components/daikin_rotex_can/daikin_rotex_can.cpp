@@ -144,6 +144,29 @@ const std::vector<TRequest> entity_config = {
     },
 
     {
+        "T-WW-Soll1",
+        {0x31, 0x00, 0x13, 0x00, 0x00, 0x00, 0x00},
+        {0xD2, 0x00, 0x13,   DC,   DC, 0x00, 0x00},
+        [](auto const& data, auto& accessor) -> DataType {
+            const uint16_t temperature_raw = (data[3] <<  8) | data[4];
+            const float temp = static_cast<float>(temperature_raw) / 10.0;
+            accessor.get_target_hot_water_temperature()->publish_state(temp);
+            //id(ww_soll).publish_state(temperature);
+            //id(ww_soll_set).publish_state(temperature);
+            return temp;
+        }
+    },
+    {
+        "WW Einstellen",
+        [](auto const& value) -> std::vector<uint8_t> {
+            uint16_t temperature = (uint16_t)(value * 10);
+            uint8_t high_byte = temperature >> 8;
+            uint8_t low_byte = temperature & 0xFF;
+            return { 0x30, 0x00, 0x13, high_byte, low_byte, 0x00, 0x00 };
+        }
+    },
+
+    {
         "Fehlercode",
         {0x31, 0x00, 0xFA, 0x13, 0x88, 0x00, 0x00},
         {  DC,   DC, 0xFA, 0x13, 0x88,   DC,   DC},
@@ -235,6 +258,10 @@ void DaikinRotexCanComponent::setup() {
 
 void DaikinRotexCanComponent::set_operation_mode(std::string const& mode) {
     m_data_requests.sendSet("Betriebsmodus setzen", map_betriebsmodus.getKey(mode));
+}
+
+void DaikinRotexCanComponent::set_target_hot_water_temperature(float temperature) {
+    m_data_requests.sendSet("WW Einstellen", temperature);
 }
 
 void DaikinRotexCanComponent::loop() {

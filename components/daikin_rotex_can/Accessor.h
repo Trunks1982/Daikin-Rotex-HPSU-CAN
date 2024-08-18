@@ -3,6 +3,7 @@
 #include "esphome/components/select/select.h"
 #include "esphome/components/sensor/sensor.h"
 #include "esphome/components/binary_sensor/binary_sensor.h"
+#include "esphome/components/number/number.h"
 #include "esphome/components/text_sensor/text_sensor.h"
 
 namespace esphome {
@@ -18,6 +19,9 @@ public:
 
     sensor::Sensor* get_tdhw1() const { return m_tdhw1; }
     void set_tdhw1(sensor::Sensor* pSensor) { m_tdhw1 = pSensor; }
+
+    sensor::Sensor* get_target_hot_water_temperature() const { return m_target_hot_water_temperature; }
+    void set_target_hot_water_temperature(sensor::Sensor* pSensor) { m_target_hot_water_temperature = pSensor; }
 
     sensor::Sensor* get_tv() const { return m_tv; }
     void set_tv(sensor::Sensor* pSensor) { m_tv = pSensor; }
@@ -58,9 +62,15 @@ public:
     select::Select* get_operating_mode_select() const { return m_operating_mode_select; }
     void set_operating_mode_select(select::Select* pSelect) { m_operating_mode_select = pSelect; }
 
+    // Numbers
+
+    number::Number* get_target_hot_water_temperature_set() const { return m_target_hot_water_temperature_set; }
+    void set_target_hot_water_temperature_set(number::Number* pNumber) { m_target_hot_water_temperature_set = pNumber; }
+
 private:
     sensor::Sensor* m_pTemperatureOutsideSensor;
     sensor::Sensor* m_tdhw1;
+    sensor::Sensor* m_target_hot_water_temperature;
     sensor::Sensor* m_tv;
     sensor::Sensor* m_tvbh;
     sensor::Sensor* m_tr;
@@ -75,6 +85,8 @@ private:
     binary_sensor::BinarySensor* m_status_kesselpumpe;
 
     select::Select* m_operating_mode_select;
+
+    number::Number* m_target_hot_water_temperature_set;
 };
 
 }

@@ -4,7 +4,7 @@
 # How to setup
 
 The example [examples/minimal.yaml](examples/minimal.yaml) contains the essential configuration of the *dakin_rotext_can* component:
-    
+
 - **external_components**: Causes the component *daikin_rotex_can* to be automatically loaded from github during compilation.
 - **canbus** : Required for communication with the Daikin or Rotex heat pump
 
@@ -26,3 +26,5 @@ Configuration variables:
 - **status_kompressor** (*Optional*): Status of the compressor (***Status Kompressor***).
 - **status_kesselpumpe** (*Optional*): Status of the boiler pump (***Status Kesselpumpe***).
 - **circulation_pump** (*Optional*): Indicates the percentage at which the circulation pump is operating. (***Umwälzpumpe***).
+- **target_hot_water_temperature** (*Optional*): ... (***T-WW-Soll1***).
+- **target_hot_water_temperature_set** (*Optional*): ... (***WW Einstellen***).

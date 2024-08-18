@@ -1,7 +1,7 @@
 #pragma once
 
 #include "esphome/components/select/select.h"
-#include "daikin_rotex_can.h"
+#include "esphome/components/daikin_rotex_can/daikin_rotex_can.h"
 
 namespace esphome {
 namespace daikin_rotex_can {
