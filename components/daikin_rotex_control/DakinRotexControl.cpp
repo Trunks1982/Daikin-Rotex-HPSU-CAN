@@ -51,6 +51,16 @@ const std::vector<TRequest> entity_config = {
         }
     },
     {
+        "Durchfluss",
+        {0x31, 0x00, 0xFA, 0x01, 0xDA, 0x00, 0x00},
+        {  DC,   DC, 0xFA, 0x01, 0xDA,   DC,   DC},
+        [](auto const& data, auto& accessor) -> DataType {
+            float flow = float((float((int((data[6]) + ((data[5]) << 8))))));
+            accessor.get_water_flow()->publish_state(flow);
+            return flow;
+        }
+    },
+    {
         "Betriebsmodus",
         {0x31, 0x00, 0xFA, 0x01, 0x12, 0x00, 0x00},
         {  DC,   DC, 0xFA, 0x01, 0x12,   DC,   DC},

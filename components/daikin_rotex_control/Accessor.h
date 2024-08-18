@@ -21,6 +21,9 @@ public:
     sensor::Sensor* get_water_pressure() const { return m_water_pressure; }
     void set_water_pressure(sensor::Sensor* pSensor) { m_water_pressure = pSensor; }
 
+    sensor::Sensor* get_water_flow() const { return m_water_flow; }
+    void set_water_flow(sensor::Sensor* pSensor) { m_water_flow = pSensor; }
+
     // Text Sensors
 
     text_sensor::TextSensor* get_operation_mode_sensor() const { return m_pOperationModeSensor; }
@@ -35,6 +38,7 @@ private:
     sensor::Sensor* m_pTemperatureOutsideSensor;
     sensor::Sensor* m_tdhw1;
     sensor::Sensor* m_water_pressure;
+    sensor::Sensor* m_water_flow;
 
     text_sensor::TextSensor* m_pOperationModeSensor;
 

@@ -16,6 +16,7 @@ OperationModeSelect = dakin_rotex_control_ns.class_("OperationModeSelect", selec
 DEPENDENCIES = []
 
 UNIT_BAR = "bar"
+UNIT_LITER_PER_HOUR = "ltr/h"
 
 AUTO_LOAD = ['sensor', 'select', 'text_sensor', 'binary_sensor']
 
@@ -25,7 +26,10 @@ CONF_LOG_FILTER_TEXT = "log_filter_text"
 CONF_TEMPERATURE_OUTSIDE = "temperature_outside"    # External temperature
 CONF_TDHW1 = "tdhw1"
 CONF_WATER_PRESSURE = "water_pressure"
+CONF_WATER_FLOW = "water_flow"
+
 CONF_OPERATION_MODE = "operation_mode"
+
 CONF_OPERATION_MODE_SELECT = "operation_mode_select"
 
 ICON_SUN_SNOWFLAKE_VARIANT = "mdi:sun-snowflake-variant"
@@ -59,6 +63,12 @@ CONFIG_SCHEMA = cv.Schema(
             device_class=DEVICE_CLASS_PRESSURE,
             unit_of_measurement=UNIT_BAR,
             accuracy_decimals=2,
+            state_class=STATE_CLASS_MEASUREMENT
+        ).extend(),
+        cv.Optional(CONF_WATER_FLOW): sensor.sensor_schema(
+            device_class=DEVICE_CLASS_WATER,
+            unit_of_measurement=UNIT_LITER_PER_HOUR,
+            accuracy_decimals=0,
             state_class=STATE_CLASS_MEASUREMENT
         ).extend(),
 
@@ -100,6 +110,10 @@ def to_code(config):
     if water_pressure := config.get(CONF_WATER_PRESSURE):
         sens = yield sensor.new_sensor(water_pressure)
         cg.add(var.getAccessor().set_water_pressure(sens))
+
+    if water_flow := config.get(CONF_WATER_FLOW):
+        sens = yield sensor.new_sensor(water_flow)
+        cg.add(var.getAccessor().set_water_flow(sens))
 
     ######## Text Sensors ########
 
