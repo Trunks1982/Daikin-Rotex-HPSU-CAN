@@ -3,10 +3,12 @@
 
 # How to setup
 
-    The example [examples/minimal.yaml](examples/minimal.yaml) contains the essential configuration of the dakin_rotext_can component:
+The example [examples/minimal.yaml](examples/minimal.yaml) contains the essential configuration of the *dakin_rotext_can* component:
     
-    - **external_components**: Allows the component *daikin_rotex_can* to be automatically loaded from github.
-    - **canbus** : Required for communication with the heat pump
+- **external_components**: Causes the component *daikin_rotex_can* to be automatically loaded from github during compilation.
+- **canbus** : Required for communication with the Daikin or Rotex heat pump
+
+[examples/full.yaml](examples/full.yaml) contains a complete configuration to build the component with all supported sensors and switches.
 
 Configuration variables:
 ------------------------
