@@ -47,6 +47,10 @@ void DakinRotexControl::loop() {
     m_data_requests.sendNextPendingGet();
 }
 
+void DakinRotexControl::handle(uint32_t can_id, std::vector<uint8_t> const& data) {
+    m_data_requests.handle(can_id, data, millis());
+}
+
 void DakinRotexControl::dump_config() {
     ESP_LOGCONFIG(TAG, "DakinRotexControl");
 }

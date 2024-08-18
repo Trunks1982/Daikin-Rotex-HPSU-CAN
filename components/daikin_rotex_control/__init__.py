@@ -9,12 +9,13 @@ DakinHPC = dakin_rotex_control_ns.class_('DakinRotexControl', cg.Component)
 DEPENDENCIES = []
 AUTO_LOAD = ['sensor', 'text_sensor', 'binary_sensor']
 
+CONF_CAN_ID = "canbus_id"
 CONF_T_SENSORS = ["temperature_outside"]
 
 CONFIG_SCHEMA = cv.Schema(
     {
         cv.GenerateID(): cv.declare_id(DakinHPC),
-        cv.Required("canbus_id"): cv.use_id(CanbusComponent),
+        cv.Required(CONF_CAN_ID): cv.use_id(CanbusComponent),
         cv.Optional(CONF_T_SENSORS[0]):
             sensor.sensor_schema(
                 device_class=DEVICE_CLASS_TEMPERATURE,
@@ -31,6 +32,16 @@ def to_code(config):
 
     var = cg.new_Pvariable(config[CONF_ID])
     yield cg.register_component(var, config)
+
+#    cg.add(var.set_can_id(can_bus))
+
+#    output_ = await cg.get_variable(config[CONF_OUTPUT])
+#    cg.add(var.set_output(output_))
+
+    if CONF_CAN_ID in config:
+        cg.add_define("USE_CANBUS")
+        canbus = yield cg.get_variable(config[CONF_CAN_ID])
+        cg.add(var.set_canbus(canbus))
 
     for sens in CONF_T_SENSORS:
         if sens in config:
