@@ -4,6 +4,7 @@
 #include "esphome/components/sensor/sensor.h"
 #include "esphome/components/binary_sensor/binary_sensor.h"
 #include "esphome/components/number/number.h"
+#include "esphome/components/text/text.h"
 #include "esphome/components/text_sensor/text_sensor.h"
 
 namespace esphome {
@@ -11,6 +12,11 @@ namespace daikin_rotex_can {
 
 class Accessor {
 public:
+
+    // Texts
+
+    text::Text* get_log_filter() const { return m_log_filter; }
+    void set_log_filter(text::Text* pText) { m_log_filter = pText; }
 
     // Sensors
 
@@ -68,6 +74,8 @@ public:
     void set_target_hot_water_temperature_set(number::Number* pNumber) { m_target_hot_water_temperature_set = pNumber; }
 
 private:
+    text::Text* m_log_filter;
+
     sensor::Sensor* m_pTemperatureOutsideSensor;
     sensor::Sensor* m_tdhw1;
     sensor::Sensor* m_target_hot_water_temperature;

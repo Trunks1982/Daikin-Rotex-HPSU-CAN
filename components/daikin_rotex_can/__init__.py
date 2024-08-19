@@ -7,22 +7,21 @@ from esphome.components.canbus import CanbusComponent
 #    ENTITY_CATEGORY_CONFIG,
 #)
 
-timer_ns = cg.esphome_ns.namespace("timer")
 daikin_rotex_can_ns = cg.esphome_ns.namespace('daikin_rotex_can')
 DaikinRotexCanComponent = daikin_rotex_can_ns.class_('DaikinRotexCanComponent', cg.Component)
-TimerText = timer_ns.class_("TimerText", text.Text, cg.Component)
 OperationModeSelect = daikin_rotex_can_ns.class_("OperationModeSelect", select.Select)
 TargetHotWaterTemperatureNumber = daikin_rotex_can_ns.class_("TargetHotWaterTemperatureNumber", number.Number)
+LogFilterText = daikin_rotex_can_ns.class_("LogFilterText", text.Text)
 
 DEPENDENCIES = []
 
 UNIT_BAR = "bar"
 UNIT_LITER_PER_HOUR = "L/h"
 
-AUTO_LOAD = ['binary_sensor', 'number', 'sensor', 'select', 'text_sensor']
+AUTO_LOAD = ['binary_sensor', 'number', 'sensor', 'select', 'text', 'text_sensor']
 
 CONF_CAN_ID = "canbus_id"
-CONF_LOG_FILTER_TEXT = "log_filter_text"
+CONF_LOG_FILTER_TEXT = "log_filter"
 
 CONF_TEMPERATURE_OUTSIDE = "temperature_outside"    # External temperature
 CONF_TDHW1 = "tdhw1"
@@ -50,9 +49,13 @@ CONFIG_SCHEMA = cv.Schema(
     {
         cv.GenerateID(): cv.declare_id(DaikinRotexCanComponent),
         cv.Required(CONF_CAN_ID): cv.use_id(CanbusComponent),
-        cv.Optional(CONF_LOG_FILTER_TEXT): text.TEXT_SCHEMA.extend(
+
+        ########## Texts ##########
+
+        cv.Optional(CONF_LOG_FILTER_TEXT): 
+        text.TEXT_SCHEMA.extend(
             {
-                cv.GenerateID(): cv.declare_id(TimerText),
+                cv.GenerateID(): cv.declare_id(LogFilterText),
                 cv.Optional(CONF_MODE, default="TEXT"): cv.enum(text.TEXT_MODES, upper=True),
             }
         ),
@@ -159,6 +162,12 @@ def to_code(config):
         cg.add_define("USE_CANBUS")
         canbus = yield cg.get_variable(config[CONF_CAN_ID])
         cg.add(var.set_canbus(canbus))
+
+    ########## Texts ##########
+
+    if log_filter := config.get(CONF_LOG_FILTER_TEXT):
+        te = yield text.new_text(log_filter)
+        cg.add(var.getAccessor().set_log_filter(te))
 
     ########## Sensors ##########
 

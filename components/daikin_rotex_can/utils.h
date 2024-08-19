@@ -84,20 +84,22 @@ public:
     template<typename... Args>
     static void log(std::string const& tag, std::string const& str_format, Args... args) {
         const std::string formated = Utils::format(str_format, args...);
-        const std::string log_filter = "";//id(log_filter_text).state;*/
-        bool found = true;//log_filter.empty();
-        /*if (!found) {
+        const std::string log_filter = g_log_filter;
+        bool found = log_filter.empty();
+        if (!found) {
             for (auto segment : Utils::split(log_filter)) {
                 if (Utils::find(tag, segment) || Utils::find(formated, segment)) {
                     found = true;
                     break;
                 }
             }
-        }*/
+        }
         if (found) {
             ESP_LOGI(tag.c_str(), formated.c_str(), "");
         }
     }
+
+    static std::string g_log_filter;
 };
 
 }

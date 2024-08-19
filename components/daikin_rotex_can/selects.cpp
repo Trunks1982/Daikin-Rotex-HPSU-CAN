@@ -1,4 +1,4 @@
-#include "esphome/components/daikin_rotex_can/operation_mode_select.h"
+#include "esphome/components/daikin_rotex_can/selects.h"
 
 namespace esphome {
 namespace daikin_rotex_can {
