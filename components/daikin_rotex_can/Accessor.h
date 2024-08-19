@@ -47,6 +47,9 @@ public:
     sensor::Sensor* get_circulation_pump() const { return m_circulation_pump; }
     void set_circulation_pump(sensor::Sensor* pSensor) { m_circulation_pump = pSensor; }
 
+    sensor::Sensor* get_bypass_valve() const { return m_bypass_valve; }
+    void set_bypass_valve(sensor::Sensor* pSensor) { m_bypass_valve = pSensor; }
+
     // Text Sensors
 
     text_sensor::TextSensor* get_operating_mode() const { return m_operating_mode; }
@@ -88,6 +91,7 @@ private:
     sensor::Sensor* m_water_pressure;
     sensor::Sensor* m_water_flow;
     sensor::Sensor* m_circulation_pump;
+    sensor::Sensor* m_bypass_valve;
 
     text_sensor::TextSensor* m_operating_mode;
     text_sensor::TextSensor* m_mode_of_operating;

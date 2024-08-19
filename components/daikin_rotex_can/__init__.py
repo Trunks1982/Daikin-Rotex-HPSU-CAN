@@ -32,6 +32,7 @@ CONF_TR = "tr"
 CONF_WATER_PRESSURE = "water_pressure"
 CONF_WATER_FLOW = "water_flow"
 CONF_CIRCULATION_PUMP = "circulation_pump"
+CONF_BYPASS_VALVE = "bypass_valve"
 
 CONF_OPERATING_MODE = "operating_mode"
 CONF_MODE_OF_OPERATING = "mode_of_operation"
@@ -117,6 +118,13 @@ CONFIG_SCHEMA = cv.Schema(
             accuracy_decimals=0,
             state_class=STATE_CLASS_MEASUREMENT,
             icon="mdi:pump"
+        ).extend(),
+        cv.Optional(CONF_BYPASS_VALVE): sensor.sensor_schema(
+            device_class=DEVICE_CLASS_VOLUME_FLOW_RATE,
+            unit_of_measurement=UNIT_PERCENT,
+            accuracy_decimals=0,
+            state_class=STATE_CLASS_MEASUREMENT,
+            icon="mdi:waves-arrow-left"
         ).extend(),
 
         ######## Text Sensors ########
@@ -210,6 +218,10 @@ def to_code(config):
     if circulation_pump := config.get(CONF_CIRCULATION_PUMP):
         sens = yield sensor.new_sensor(circulation_pump)
         cg.add(var.getAccessor().set_circulation_pump(sens))
+
+    if bypass_valve := config.get(CONF_BYPASS_VALVE):
+        sens = yield sensor.new_sensor(bypass_valve)
+        cg.add(var.getAccessor().set_bypass_valve(sens))
 
     ######## Text Sensors ########
 

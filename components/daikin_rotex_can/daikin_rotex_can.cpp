@@ -190,6 +190,17 @@ const std::vector<TRequest> entity_config = {
     },
 
     {
+        "BPV",
+        {0x31, 0x00, 0xFA, 0xC0, 0xFB, 0x00, 0x00},
+        {  DC,   DC, 0xFA, 0xC0, 0xFB,   DC,   DC},
+        [](auto const& data, auto& accessor) -> DataType {
+            const uint32_t value = uint32_t((data[6]) + (data[5] << 8));
+            accessor.get_bypass_valve()->publish_state(value);
+            return value;
+        }
+    },
+
+    {
         "Fehlercode",
         {0x31, 0x00, 0xFA, 0x13, 0x88, 0x00, 0x00},
         {  DC,   DC, 0xFA, 0x13, 0x88,   DC,   DC},

@@ -52,6 +52,8 @@ daikin_rotex_can:
   canbus_id: can_bus
   log_filter:
     name: "Log Filter"
+  bypass_valve:
+    name: "BPV"
   temperature_outside:
     name: "Aussentemperatur"
   operation_mode:
