@@ -13,6 +13,7 @@ The example [examples/minimal.yaml](examples/minimal.yaml) contains the essentia
 Configuration variables:
 ------------------------
 
+- **log_filter** (*Optional*): ... (***Log Filter***).
 - **temperature_outside** (*Optional*): Outdoor temperature, measured by the heat pump's outdoor unit (***Aussentemperatur***).
 - **operation_mode** (*Optional*): Current operating mode of the heat pump (***Betriebsmodus***).
 - **operation_mode_select** (*Optional*): Switch to change the operating mode (***Betriebsmodus setzen***).

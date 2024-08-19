@@ -19,6 +19,14 @@ static const BidiMap<uint8_t, std::string> map_betriebsmodus {
     {0x0C, "Automatik 2"}
 };
 
+static const BidiMap<uint8_t, std::string> map_betriebsart {
+    {0x00, "Standby"},
+    {0x01, "Heizen"},
+    {0x02, "Kühlen"},
+    {0x03, "Abtauen"},
+    {0x04, "Warmwasserbereitung"}
+};
+
 const std::vector<TRequest> entity_config = {
     {
         "Aussentemperatur",
@@ -106,6 +114,21 @@ const std::vector<TRequest> entity_config = {
         "Betriebsmodus setzen",
         [](auto const& value) -> std::vector<uint8_t> {
             return {0x30, 0x00, 0xFA, 0x01, 0x12, static_cast<uint8_t>(value), 0x00};
+        }
+    },
+
+    {
+        "Betriebsart",
+        {0x31, 0x00, 0xFA, 0xC0, 0xF6, 0x00, 0x00},
+        {  DC,   DC, 0xFA, 0xC0, 0xF6,   DC,   DC},
+        [](auto const& data, auto& accessor) -> DataType {
+            const uint32_t mode = uint32_t(data[6] + data[5]);
+
+            const auto iter = map_betriebsart.findByKey(mode);
+            const std::string str_mode = iter != map_betriebsart.end() ? iter->second : "Unknown";
+
+            accessor.get_mode_of_operating()->publish_state(str_mode);
+            return str_mode;
         }
     },
 

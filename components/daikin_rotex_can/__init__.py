@@ -34,6 +34,7 @@ CONF_WATER_FLOW = "water_flow"
 CONF_CIRCULATION_PUMP = "circulation_pump"
 
 CONF_OPERATING_MODE = "operating_mode"
+CONF_MODE_OF_OPERATING = "mode_of_operation"
 CONF_ERROR_CODE = "error_code"
 
 CONF_STATUS_KOMPRESSOR = "status_kompressor"
@@ -121,6 +122,9 @@ CONFIG_SCHEMA = cv.Schema(
         ######## Text Sensors ########
 
         cv.Optional(CONF_OPERATING_MODE): text_sensor.text_sensor_schema(
+            icon=ICON_SUN_SNOWFLAKE_VARIANT
+        ).extend(),
+        cv.Optional(CONF_MODE_OF_OPERATING): text_sensor.text_sensor_schema(
             icon=ICON_SUN_SNOWFLAKE_VARIANT
         ).extend(),
         cv.Optional(CONF_ERROR_CODE): text_sensor.text_sensor_schema(
@@ -212,6 +216,10 @@ def to_code(config):
     if operating_mode := config.get(CONF_OPERATING_MODE):
         sens = yield text_sensor.new_text_sensor(operating_mode)
         cg.add(var.getAccessor().set_operating_mode(sens))
+
+    if mode_of_operating := config.get(CONF_MODE_OF_OPERATING):
+        sens = yield text_sensor.new_text_sensor(mode_of_operating)
+        cg.add(var.getAccessor().set_mode_of_operating(sens))
 
     if error_code := config.get(CONF_ERROR_CODE):
         sens = yield text_sensor.new_text_sensor(error_code)

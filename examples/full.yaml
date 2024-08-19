@@ -50,12 +50,16 @@ canbus:
 daikin_rotex_can:
   id: rotext_hpsu_compact_508
   canbus_id: can_bus
+  log_filter:
+    name: "Log Filter"
   temperature_outside:
     name: "Aussentemperatur"
   operation_mode:
     name: "Betriebsmodus"
   operation_mode_select:
     name: "Betriebsmodus setzen"
+  mode_of_operation:
+    name: "Betriebsart"
   tdhw1:
     name: "Warmwassertemperatur"
   water_pressure:
