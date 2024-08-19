@@ -201,6 +201,17 @@ const std::vector<TRequest> entity_config = {
     },
 
     {
+        "DHW Mischer Position",
+        {0x31, 0x00, 0xFA, 0x06, 0x9B, 0x00, 0x00},
+        {  DC,   DC, 0xFA, 0x06, 0x9B,   DC,   DC},
+        [](auto const& data, auto& accessor) -> DataType {
+            const uint32_t position = uint32_t(data[6]) + uint32_t(data[5] << 8);
+            accessor.get_dhw_mixer_position()->publish_state(position);
+            return position;
+        }
+    },
+
+    {
         "Fehlercode",
         {0x31, 0x00, 0xFA, 0x13, 0x88, 0x00, 0x00},
         {  DC,   DC, 0xFA, 0x13, 0x88,   DC,   DC},

@@ -23,6 +23,8 @@ AUTO_LOAD = ['binary_sensor', 'number', 'sensor', 'select', 'text', 'text_sensor
 CONF_CAN_ID = "canbus_id"
 CONF_LOG_FILTER_TEXT = "log_filter"
 
+########## Sensors ##########
+
 CONF_TEMPERATURE_OUTSIDE = "temperature_outside"    # External temperature
 CONF_TDHW1 = "tdhw1"
 CONF_TARGET_HOT_WATER_TEMPERATURE = "target_hot_water_temperature"
@@ -33,6 +35,9 @@ CONF_WATER_PRESSURE = "water_pressure"
 CONF_WATER_FLOW = "water_flow"
 CONF_CIRCULATION_PUMP = "circulation_pump"
 CONF_BYPASS_VALVE = "bypass_valve"
+CONF_DHW_MIXER_POSITION = "dhw_mixer_position"
+
+########## Text Sensors ##########
 
 CONF_OPERATING_MODE = "operating_mode"
 CONF_MODE_OF_OPERATING = "mode_of_operation"
@@ -120,6 +125,13 @@ CONFIG_SCHEMA = cv.Schema(
             icon="mdi:pump"
         ).extend(),
         cv.Optional(CONF_BYPASS_VALVE): sensor.sensor_schema(
+            device_class=DEVICE_CLASS_VOLUME_FLOW_RATE,
+            unit_of_measurement=UNIT_PERCENT,
+            accuracy_decimals=0,
+            state_class=STATE_CLASS_MEASUREMENT,
+            icon="mdi:waves-arrow-left"
+        ).extend(),
+        cv.Optional(CONF_DHW_MIXER_POSITION): sensor.sensor_schema(
             device_class=DEVICE_CLASS_VOLUME_FLOW_RATE,
             unit_of_measurement=UNIT_PERCENT,
             accuracy_decimals=0,
@@ -222,6 +234,10 @@ def to_code(config):
     if bypass_valve := config.get(CONF_BYPASS_VALVE):
         sens = yield sensor.new_sensor(bypass_valve)
         cg.add(var.getAccessor().set_bypass_valve(sens))
+
+    if dhw_mixer_position := config.get(CONF_DHW_MIXER_POSITION):
+        sens = yield sensor.new_sensor(dhw_mixer_position)
+        cg.add(var.getAccessor().set_dhw_mixer_position(sens))
 
     ######## Text Sensors ########
 

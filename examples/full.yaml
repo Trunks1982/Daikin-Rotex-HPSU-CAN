@@ -54,6 +54,8 @@ daikin_rotex_can:
     name: "Log Filter"
   bypass_valve:
     name: "BPV"
+  dhw_mixer_position:
+    name: "DHW Mischer Position"
   temperature_outside:
     name: "Aussentemperatur"
   operation_mode:
