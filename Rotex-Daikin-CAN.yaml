@@ -1,8 +1,10 @@
-############################### Version 1.4.0 #####################################
+############################### Version 1.5.1 #####################################
 substitutions:
   rx_pin: GPIO48
   tx_pin: GPIO47
   interval_time: 20s
+  fallback_ap_ssid: "Rotex Fallback Hotspot"
+  fallback_ap_password: "H3jGqANSa7aL"
 
 esphome:
   name: rotex
@@ -13,19 +15,30 @@ esp32:
   framework:
     type: arduino
 
+#mqtt:
+ # topic_prefix: boat
+ # discovery: false
+ # broker: 192.168.5.111
+ # port: 1883
+ # username: 
+ # password: 
+ # discovery_prefix: homeassistant
+
+
 globals:
   - id: backup_dhw
     type: int
-
   - id: interval_active
     type: bool
     restore_value: yes
     initial_value: 'true'
 
-
 # Enable logging
 logger:
-  #level: VERBOSE
+  #level: DEBUG
+  #logs:
+   # mqtt.component: DEBUG
+   # mqtt.client: ERROR
 
 # Enable Home Assistant API
 api:
@@ -36,260 +49,147 @@ ota:
   platform: esphome
   password: !secret ota_password
 
-
-web_server:  
+web_server:
+  version: 3
 
 wifi:
   ssid: !secret wifi_ssid
   password: !secret wifi_password
 
+#  manual_ip:
+#     static_ip: 192.168.0.157
+#     gateway: 192.168.0.1
+#     subnet: 255.255.255.0
+  
   # Enable fallback hotspot (captive portal) in case wifi connection fails
   ap:
-    ssid: "Rotex Fallback Hotspot"
-    password: "H3jGqANSa7aL"
-
+    ssid: ${fallback_ap_ssid}
+    password: ${fallback_ap_password}
 
 captive_portal:
 
- 
 ############################## Text Sensoren ########################################
+
 text_sensor:
   - platform: template
     name: "Betriebsmodus"
     id: text_betriebsmodus
-    lambda: |-
-      if(id(Betriebsmodus).state == 0){
-        return {"Notbetrieb"};
-      } else if (id(Betriebsmodus).state == 1){
-        return {"Bereitschaft"};
-      } else if (id(Betriebsmodus).state == 3){
-        return {"Heizen"};
-      } else if (id(Betriebsmodus).state == 4){
-        return {"Absenken"};
-      } else if (id(Betriebsmodus).state == 5){
-        return {"Sommer"}; 
-      } else if (id(Betriebsmodus).state == 11){
-        return {"Automatik 1"};
-      } else if (id(Betriebsmodus).state == 12){
-        return {"Automatik 2"};    
-      } else if (id(Betriebsmodus).state == 17){
-        return {"Kühlen"};       
-      } else {
-        return {"Unknown"};
-      }
-
+    web_server_sorting_weight: 3
+    
 
   - platform: template
     name: "SG-Modus"
     id: text_sg_modus
-    lambda: |-
-      if(id(SGModus).state == 0){
-        return {"Aus"};
-      } else if (id(SGModus).state == 1){
-        return {"SG Modus 1"};
-      } else if (id(SGModus).state == 2){
-        return {"SG Modus 2"};
-      } else {
-        return {"Unknown"};
-      }
+    
 
   - platform: template
     name: "Smart-Grid"
     id: text_smartgrid
-    lambda: |-
-      if(id(Smartgrid).state == 0){
-        return {"Aus"};
-      } else if (id(Smartgrid).state == 1){
-        return {"An"};
-      } else {
-        return {"Unknown"};
-      }
-
+    
   - platform: template
-    name: "Betriebart"
+    name: "Betriebsart"
     id: text_betriebsart
-    lambda: |-
-      if(id(Betriebsart).state == 0){
-        return {"Standby"};
-      } else if (id(Betriebsart).state == 1){
-        return {"Heizen"};
-      } else if (id(Betriebsart).state == 2){
-        return {"Kühlen"};
-      } else if (id(Betriebsart).state == 3){
-        return {"Abtauen"};
-      } else if (id(Betriebsart).state == 4){
-        return {"Warmwasserbereitung"}; 
-      } else {
-        return {"Unknown"};
-      }
-
-
-  - platform: template
-    name: "Fehlercode"
-    id: text_fehler
-    lambda: |-
-      if(id(Fehlercode).state == 0){
-        return {"kein Fehler"};
-      } else if (id(Fehlercode).state == 9001){
-        return {" Fehler E9001 Fehler Rücklauffühler Handbuch S.60"};
-      } else if (id(Fehlercode).state == 9002){
-        return {"Fehler E9002 Fehler Vorlauffühler Handbuch S.60"};
-      } else if (id(Fehlercode).state == 9003){
-        return {"Fehler E9003 Fehler Frostschutzfunktion Handbuch S.60"};
-      } else if (id(Fehlercode).state == 9004){
-        return {"Fehler E9004Fehler Durchfluss Handbuch S.61"};
-      } else if (id(Fehlercode).state == 9005){
-        return {"9005 Vorlauftemperaturfühler Handbuch S.60"};
-      } else if (id(Fehlercode).state == 9006){
-        return {"9006 Vorlauftemperaturfühler Handbuch S.60"};
-      } else if (id(Fehlercode).state == 9007){
-        return {"9007 Platine IG defekt Handbuch S.60"}; 
-      } else if (id(Fehlercode).state == 9008){
-        return {"9008 Kältemitteltemperatur außerhalb des Bereiches Handbuch S.60"};
-      } else if (id(Fehlercode).state == 9009){
-        return {"9009 STB Fehler Handbuch S.60"};
-      } else if (id(Fehlercode).state == 9010){
-        return {"9010 STB Fehler Handbuch S.60"};
-      } else if (id(Fehlercode).state == 9011){
-        return {"9011 Fehler Flowsensor Handbuch S.60"};
-      } else if (id(Fehlercode).state == 9012){
-        return {"9012 Fehler Vorlauffühler Handbuch S.60"};
-      } else if (id(Fehlercode).state == 9013){
-        return {"9013 Platine AG defekt Handbuch S.60"};
-      } else if (id(Fehlercode).state == 9014){
-        return {"9014 P-Kältemittel hoch Handbuch S.61"};
-      } else if (id(Fehlercode).state == 9015){
-        return {"9015 P-Kältemittel niedrig Handbuch S.61"};
-      } else if (id(Fehlercode).state == 9016){
-        return {"9016 Lastschutz Verdichter Handbuch S.61"};
-      } else if (id(Fehlercode).state == 9017){
-        return {"9017 Ventilator blockiert Handbuch S.61"};
-      } else if (id(Fehlercode).state == 9018){
-        return {"9018 Expansionsventil Handbuch S.61"};
-      } else if (id(Fehlercode).state == 9019){
-        return {"9019 Warmwassertemperatur > 85°C Handbuch S.61"};
-      } else if (id(Fehlercode).state == 9020){
-        return {"9020 T-Verdampfer hoch Handbuch S.61"};
-      } else if (id(Fehlercode).state == 9021){
-        return {"9021 HPS-System Handbuch S.61"};
-      } else if (id(Fehlercode).state == 9022){
-        return {"9022 Fehler AT-Fühler Handbuch S.62"};     
-      } else if (id(Fehlercode).state == 9023){
-        return {"9023 Fehler WW-Fühler Handbuch S.62"};     
-      } else if (id(Fehlercode).state == 9024){
-        return {"9024 Drucksensor Handbuch S.62"};     
-      } else if (id(Fehlercode).state == 9025){
-        return {"9025 Fehler Rücklauffühler Handbuch S.62"};     
-      } else if (id(Fehlercode).state == 9026){
-        return {"9026 Drucksensor Handbuch S.62"};
-      } else if (id(Fehlercode).state == 9027){
-        return {"9027 Aircoil-Fühler Defrost Handbuch S.62"};  
-      } else if (id(Fehlercode).state == 9028){
-        return {"9028 Aircoil-Fühler temp Handbuch S.62"};     
-      } else if (id(Fehlercode).state == 9029){
-        return {"9029 Fehler Kältefühler AG handbuch S.62"};     
-      } else if (id(Fehlercode).state == 9030){
-        return {"9030 Defekt elektrisch Handbuch S.63"};     
-      } else if (id(Fehlercode).state == 9031){
-        return {"9031 Defekt elektrisch Handbuch S.63"};
-      } else if (id(Fehlercode).state == 9032){
-        return {"9032 Defekt elektrisch Handbuch S.63"};     
-      } else if (id(Fehlercode).state == 9033){
-        return {"9033 Defekt elektrisch Handbuch S.63"};     
-      } else if (id(Fehlercode).state == 9034){
-        return {"9034 Defekt elektrisch Handbuch S.63"};     
-      } else if (id(Fehlercode).state == 9035){
-        return {"9035 Platine AG defekt Handbuch S.63"};     
-      } else if (id(Fehlercode).state == 9036){
-        return {"9036 Defekt elektrisch Handbuch S.63"};     
-      } else if (id(Fehlercode).state == 9037){
-        return {"9037 Einstellung Leistung Handbuch S.63"};     
-      } else if (id(Fehlercode).state == 9038){
-        return {"9038 Kältemittel Leck Handbuch S.64"}; 
-      } else if (id(Fehlercode).state == 9039){
-        return {"9039 Unter/Überspannung Handbuch S.64"};     
-      } else if (id(Fehlercode).state == 9041){
-        return {"9041 Übertragungsfehler Handbuch S.64"};     
-      } else if (id(Fehlercode).state == 9042){
-        return {"9042 Übertragungsfehler Handbuch S.64"};     
-      } else if (id(Fehlercode).state == 9043){
-        return {"9043 Übertragungsfehler Handbuch S.64"}; 
-      } else if (id(Fehlercode).state == 9044){
-        return {"9044 Übertragungsfehler Handbuch S.64"};     
-      } else if (id(Fehlercode).state == 75){
-        return {"75 Fehler Außentemperaturfühler Handbuch S.64"};     
-      } else if (id(Fehlercode).state == 76){
-        return {"76 Fehler Speichertemperaturfühler Handbuch S.64"};
-      } else if (id(Fehlercode).state == 81){
-        return {"81 Kommunikationsfehler Rocon Handbuch S.64"};     
-      } else if (id(Fehlercode).state == 88){
-        return {"88 Kommunikationsfehler Rocon Handbuch S.6"};     
-      } else if (id(Fehlercode).state == 91){
-        return {"91 Kommunikationsfehler Rocon Handbuch S.6"};     
-      } else if (id(Fehlercode).state == 128){
-        return {"128 Fehler Rücklauftemperaturfühler Handbuch S.64"};     
-      } else if (id(Fehlercode).state == 129){
-        return {"129 Fehler Drucksensor Handbuch S.64"};     
-      } else if (id(Fehlercode).state == 198){
-        return {"198 Durchflussmessung nicht plausibel Handbuch S.65"};     
-      } else if (id(Fehlercode).state == 200){
-        return {"200 Kommunikationsfehler Handbuch S.65"};     
-      } else if (id(Fehlercode).state == 8005){
-        return {"8005 Wasserdruck in Heizungsanlage zu gering Handbuch S.65"}; 
-      } else if (id(Fehlercode).state == 8100){
-        return {"8100 Kommunikation Handbuch S.65"};     
-      } else if (id(Fehlercode).state == 9000){
-        return {"9000 Interne vorübergehende Meldung Handbuch S65"};     
-      } else if (id(Fehlercode).state == 8006){
-        return {"8006 Warnung Druckverlust Handbuch S.65"};     
-      } else if (id(Fehlercode).state == 8007){
-        return {"8007 wasserdruck in Anlage zu hoch Handbuch S.65"};                                                                                                                                               
-      } else {
-        return {"Unknown"};
-      }
+    
 
   - platform: template
     name: "Status Kesselpumpe"
-    id: text_status2
-    lambda: |-
-      if(id(status_kessel).state == 0){
-        return {"Aus"};
-      } else if (id(status_kessel).state == 1){
-        return {"An"};
-       } else {
-        return {"Unknown"};
-      }
+    id: text_kesselpumpe
+  
+    
 
   - platform: template
     name: "Status Kompressor"
-    id: text_status3
-    lambda: |-
-      if(id(status_kompressor).state == 0){
-        return {"Aus"};
-      } else if (id(status_kessel).state == 1){
-        return {"An"};
-       } else {
-        return {"Unknown"};
-      }
-
+    id: text_kompressor
+    
+   
 
   - platform: template
     name: "HK-Funktion"
     id: text_hk_funktion
-    lambda: |-
-      if(id(hk_funktion).state == 0){
-        return {"Witterungsgeführt"};
-      } else if (id(hk_funktion).state == 1){
-        return {"Fest"};
-       } else {
-        return {"Unknown"};
-      }
-  
+
   - platform: wifi_info
     ip_address:
       name: ESP IP Address
     ssid:
       name: ESP Connected SSID
+
+
+  - platform: template
+    name: "Fehlercode"
+    id: text_fehler
+    web_server_sorting_weight: 4
+    lambda: |-
+      const std::map<int, std::string> error_map = {
+        {0, "kein Fehler"},
+        {9001, "Fehler E9001 Fehler Rücklauffühler Handbuch S.60"},
+        {9002, "Fehler E9002 Fehler Vorlauffühler Handbuch S.60"},
+        {9003, "Fehler E9003 Fehler Frostschutzfunktion Handbuch S.60"},
+        {9004, "Fehler E9004 Fehler Durchfluss Handbuch S.61"},
+        {9005, "9005 Vorlauftemperaturfühler Handbuch S.60"},
+        {9006, "9006 Vorlauftemperaturfühler Handbuch S.60"},
+        {9007, "9007 Platine IG defekt Handbuch S.60"},
+        {9008, "9008 Kältemitteltemperatur außerhalb des Bereiches Handbuch S.60"},
+        {9009, "9009 STB Fehler Handbuch S.60"},
+        {9010, "9010 STB Fehler Handbuch S.60"},
+        {9011, "9011 Fehler Flowsensor Handbuch S.60"},
+        {9012, "9012 Fehler Vorlauffühler Handbuch S.60"},
+        {9013, "9013 Platine AG defekt Handbuch S.60"},
+        {9014, "9014 P-Kältemittel hoch Handbuch S.61"},
+        {9015, "9015 P-Kältemittel niedrig Handbuch S.61"},
+        {9016, "9016 Lastschutz Verdichter Handbuch S.61"},
+        {9017, "9017 Ventilator blockiert Handbuch S.61"},
+        {9018, "9018 Expansionsventil Handbuch S.61"},
+        {9019, "9019 Warmwassertemperatur > 85°C Handbuch S.61"},
+        {9020, "9020 T-Verdampfer hoch Handbuch S.61"},
+        {9021, "9021 HPS-System Handbuch S.61"},
+        {9022, "9022 Fehler AT-Fühler Handbuch S.62"},
+        {9023, "9023 Fehler WW-Fühler Handbuch S.62"},
+        {9024, "9024 Drucksensor Handbuch S.62"},
+        {9025, "9025 Fehler Rücklauffühler Handbuch S.62"},
+        {9026, "9026 Drucksensor Handbuch S.62"},
+        {9027, "9027 Aircoil-Fühler Defrost Handbuch S.62"},
+        {9028, "9028 Aircoil-Fühler temp Handbuch S.62"},
+        {9029, "9029 Fehler Kältefühler AG Handbuch S.62"},
+        {9030, "9030 Defekt elektrisch Handbuch S.63"},
+        {9031, "9031 Defekt elektrisch Handbuch S.63"},
+        {9032, "9032 Defekt elektrisch Handbuch S.63"},
+        {9033, "9033 Defekt elektrisch Handbuch S.63"},
+        {9034, "9034 Defekt elektrisch Handbuch S.63"},
+        {9035, "9035 Platine AG defekt Handbuch S.63"},
+        {9036, "9036 Defekt elektrisch Handbuch S.63"},
+        {9037, "9037 Einstellung Leistung Handbuch S.63"},
+        {9038, "9038 Kältemittel Leck Handbuch S.64"},
+        {9039, "9039 Unter/Überspannung Handbuch S.64"},
+        {9041, "9041 Übertragungsfehler Handbuch S.64"},
+        {9042, "9042 Übertragungsfehler Handbuch S.64"},
+        {9043, "9043 Übertragungsfehler Handbuch S.64"},
+        {9044, "9044 Übertragungsfehler Handbuch S.64"},
+        {75, "75 Fehler Außentemperaturfühler Handbuch S.64"},
+        {76, "76 Fehler Speichertemperaturfühler Handbuch S.64"},
+        {81, "81 Kommunikationsfehler Rocon Handbuch S.64"},
+        {88, "88 Kommunikationsfehler Rocon Handbuch S.6"},
+        {91, "91 Kommunikationsfehler Rocon Handbuch S.6"},
+        {128, "128 Fehler Rücklauftemperaturfühler Handbuch S.64"},
+        {129, "129 Fehler Drucksensor Handbuch S.64"},
+        {198, "198 Durchflussmessung nicht plausibel Handbuch S.65"},
+        {200, "200 Kommunikationsfehler Handbuch S.65"},
+        {8005, "8005 Wasserdruck in Heizungsanlage zu gering Handbuch S.65"},
+        {8100, "8100 Kommunikation Handbuch S.65"},
+        {9000, "9000 Interne vorübergehende Meldung Handbuch S.65"},
+        {8006, "8006 Warnung Druckverlust Handbuch S.65"},
+        {8007, "8007 Wasserdruck in Anlage zu hoch Handbuch S.65"}
+      };
+
+      auto it = error_map.find(id(Fehlercode).state);
+      if (it != error_map.end()) {
+        return it->second;
+      } else {
+        return std::string("Unknown");
+      }
+
+
+
+
 
 
 
@@ -307,6 +207,7 @@ button:
     name: Warmwasser bereiten
     id: ww_button
     icon: "mdi:water-boiler"
+    web_server_sorting_weight: 5
     on_press:
       then:
         - globals.set:
@@ -333,6 +234,8 @@ switch:
   - platform: template
     name: "Intervall Abfrage"
     optimistic: true
+    restore_mode: ALWAYS_ON
+    web_server_sorting_weight: 15
     turn_on_action:
       - globals.set:
           id: interval_active
@@ -353,7 +256,18 @@ switch:
 ############################### Number (Slidermodus) ###############################################  
 number:
 
-##### Raumsoll 1
+  - platform: template
+    name: "Intervall für CAN-Bus Nachrichten"
+    id: interval_time
+    mode: box
+    min_value: 10
+    max_value: 360
+    step: 5
+    unit_of_measurement: s
+    optimistic: true
+    initial_value: 14
+
+  # Raumsoll 1
   - platform: template
     name: "Raumsoll 1 Einstellen"
     id: r_soll
@@ -366,18 +280,18 @@ number:
     unit_of_measurement: "°C"
     icon: "mdi:thermometer-lines"
     device_class: "temperature"
+    web_server_sorting_weight: 6
     set_action:
       - delay: 250ms
       - canbus.send:
           can_id: 0x680
           data: !lambda |-
-            uint16_t temperature = (uint16_t)(x * 10); // Convert to int16be
+            uint16_t temperature = (uint16_t)(x * 10); // Temperatur in 0.1°C Schritten
             uint8_t high_byte = temperature >> 8;
             uint8_t low_byte = temperature & 0xFF;
             return { 0x30, 0x00, 0x05, high_byte, low_byte, 0x00, 0x00 };
 
-#### Heizkurve                                                                                                                                                                                                                                                           
-
+  # Heizkurve
   - platform: template
     name: "Heizkurve Einstellen"
     id: set_heizkurve
@@ -387,18 +301,18 @@ number:
     max_value: 2.55
     step: 0.01
     initial_value: 0.48
+    web_server_sorting_weight: 13
     set_action:
       - delay: 250ms
       - canbus.send:
           can_id: 0x680
           data: !lambda |-
-            uint16_t hk = (uint16_t)(x * 100); // Convert to int16be
+            uint16_t hk = (uint16_t)(x * 100); // Heizkurve in 0.01 Schritten
             uint8_t high_byte = hk >> 8;
             uint8_t low_byte = hk & 0xFF;
             return { 0x30, 0x00, 0xFA, 0x01, 0x0E, high_byte, low_byte };
 
-
-##### Warmwasser
+  # Warmwasser
   - platform: template
     name: "WW Einstellen"
     id: ww_soll
@@ -411,17 +325,18 @@ number:
     unit_of_measurement: "°C"
     icon: "mdi:thermometer-lines"
     device_class: "temperature"
+    web_server_sorting_weight: 6
     set_action:
       - delay: 250ms
       - canbus.send:
           can_id: 0x680
           data: !lambda |-
-            uint16_t temperature = (uint16_t)(x * 10); // Convert to int16be
+            uint16_t temperature = (uint16_t)(x * 10); // Warmwassertemperatur in 0.1°C Schritten
             uint8_t high_byte = temperature >> 8;
             uint8_t low_byte = temperature & 0xFF;
             return { 0x30, 0x00, 0x13, high_byte, low_byte, 0x00, 0x00 };
-            
-##### Min VL
+
+  # Min VL
   - platform: template
     name: "Min VL Einstellen"
     id: min_vl_set
@@ -434,17 +349,18 @@ number:
     unit_of_measurement: "°C"
     icon: "mdi:thermometer-lines"
     device_class: "temperature"
+    web_server_sorting_weight: 11
     set_action:
       - delay: 250ms
       - canbus.send:
           can_id: 0x680
           data: !lambda |-
-            uint16_t temperature = (uint16_t)(x * 10); // Convert to int16be
+            uint16_t temperature = (uint16_t)(x * 10); // Mindest-Vorlauftemperatur in 0.1°C Schritten
             uint8_t high_byte = temperature >> 8;
             uint8_t low_byte = temperature & 0xFF;
             return { 0x30, 0x00, 0xFA, 0x01, 0x2B, high_byte, low_byte };
 
-##### Max VL Set
+  # Max VL Set
   - platform: template
     name: "Max VL Einstellen"
     id: max_vl_set
@@ -455,6 +371,7 @@ number:
     step: 1
     initial_value: 35
     unit_of_measurement: "°C"
+    web_server_sorting_weight: 12
     icon: "mdi:thermometer-lines"
     device_class: "temperature"
     set_action:
@@ -462,12 +379,12 @@ number:
       - canbus.send:
           can_id: 0x680
           data: !lambda |-
-            uint16_t temperature = (uint16_t)(x * 10); // Convert to int16be
+            uint16_t temperature = (uint16_t)(x * 10); // Höchst-Vorlauftemperatur in 0.1°C Schritten
             uint8_t high_byte = temperature >> 8;
             uint8_t low_byte = temperature & 0xFF;
-            return { 0x30, 0x00, 0x28, high_byte, low_byte, 0x00, 0x00, };
+            return { 0x30, 0x00, 0x28, high_byte, low_byte, 0x00, 0x00 };
 
-##### T Vorlauf Tag Set
+  # T Vorlauf Tag Set
   - platform: template
     name: "T Vorlauf Tag Einstellen"
     id: t_vorlauf_tag_set
@@ -478,6 +395,7 @@ number:
     step: 1
     initial_value: 35
     unit_of_measurement: "°C"
+    web_server_sorting_weight: 10
     icon: "mdi:thermometer-lines"
     device_class: "temperature"
     set_action:
@@ -485,16 +403,14 @@ number:
       - canbus.send:
           can_id: 0x680
           data: !lambda |-
-            uint16_t temperature = (uint16_t)(x * 10); // Convert to int16be
+            uint16_t temperature = (uint16_t)(x * 10); // Vorlauftemperatur am Tag in 0.1°C Schritten
             uint8_t high_byte = temperature >> 8;
             uint8_t low_byte = temperature & 0xFF;
-            return { 0x30, 0x00, 0xFA,  0x01, 0x29, high_byte, low_byte, };
+            return { 0x30, 0x00, 0xFA, 0x01, 0x29, high_byte, low_byte };
 
 ####################### Select Tasten ###############################
 
-  
-
-#Set Betriebsmodus
+# Set Betriebsmodus
 select:
   - platform: template
     name: "Betriebsmodus setzen"
@@ -509,6 +425,7 @@ select:
       - "Automatik 1"
       - "Automatik 2"
     initial_option: Heizen
+    web_server_sorting_weight: 1
     set_action:
       then:
         - delay: 250ms
@@ -524,10 +441,14 @@ select:
                 {"Automatik 1", 11},
                 {"Automatik 2", 12}
               };
-              return {0x30, 0x00, 0xFA, 0x01, 0x12, mode_map.at(x), 0x00};
+              auto it = mode_map.find(x);
+              if (it != mode_map.end()) {
+                return {0x30, 0x00, 0xFA, 0x01, 0x12, it->second, 0x00};
+              } else {
+                return {0x30, 0x00, 0xFA, 0x01, 0x12, 0xFF, 0x00}; // Fehlerwert
+              }
 
-#Set HK Funktion
-
+# Set HK Funktion
   - platform: template
     name: "HK Funktion"
     id: hk
@@ -536,6 +457,7 @@ select:
       - "Witterungsgeführt"
       - "Fest"
     initial_option: Witterungsgeführt
+    web_server_sorting_weight: 7
     set_action:
       then:
         - delay: 250ms
@@ -546,10 +468,14 @@ select:
                 {"Witterungsgeführt", 0},
                 {"Fest", 1}
               };
-              return {0x30, 0x00, 0xFA, 0x01, 0x41, 0x00, mode_map.at(x)};
+              auto it = mode_map.find(x);
+              if (it != mode_map.end()) {
+                return {0x30, 0x00, 0xFA, 0x01, 0x41, 0x00, it->second};
+              } else {
+                return {0x30, 0x00, 0xFA, 0x01, 0x41, 0x00, 0xFF}; // Fehlerwert
+              }
 
-#Set SG Funktion
-
+# Set SG Funktion
   - platform: template
     name: "SG Modus"
     id: sg
@@ -559,6 +485,7 @@ select:
       - "SG Modus 1"
       - "SG Modus 2"
     initial_option: Aus
+    web_server_sorting_weight: 8
     set_action:
       then:
         - delay: 250ms
@@ -570,11 +497,14 @@ select:
                 {"SG Modus 1", 1},
                 {"SG Modus 2", 2}
               };
-              return {0x30, 0x00, 0xFA, 0x06, 0x94, 0x00, mode_map.at(x)};
+              auto it = mode_map.find(x);
+              if (it != mode_map.end()) {
+                return {0x30, 0x00, 0xFA, 0x06, 0x94, 0x00, it->second};
+              } else {
+                return {0x30, 0x00, 0xFA, 0x06, 0x94, 0x00, 0xFF}; // Fehlerwert
+              }
 
-
-#Set Smart Grid
-
+# Set Smart Grid
   - platform: template
     name: "Smart Grid"
     id: smartgrid
@@ -583,6 +513,7 @@ select:
       - "Aus"
       - "An"
     initial_option: Aus
+    web_server_sorting_weight: 9
     set_action:
       then:
         - delay: 250ms
@@ -593,14 +524,15 @@ select:
                 {"Aus", 0},
                 {"An", 1}
               };
-              return {0x30, 0x00, 0xFA, 0x06, 0x93, 0x00, mode_map.at(x)};
-
+              auto it = mode_map.find(x);
+              if (it != mode_map.end()) {
+                return {0x30, 0x00, 0xFA, 0x06, 0x93, 0x00, it->second};
+              } else {
+                return {0x30, 0x00, 0xFA, 0x06, 0x93, 0x00, 0xFF}; // Fehlerwert
+              }
 
 ################################# Alle Sensoren #####################################
 sensor:
-
-
-
   - platform: wifi_signal
     name: "WiFi Signal Sensor"
     update_interval: 60s
@@ -623,23 +555,6 @@ sensor:
     state_class: "measurement"
     accuracy_decimals: 0
 
-  - platform: template
-    name: "SG Modus"
-    id: SGModus
-    internal: true
-    unit_of_measurement: ""
-    icon: "mdi:thermometer-lines"
-    state_class: "measurement"
-    accuracy_decimals: 0
-  
-  - platform: template
-    name: "Smart Grid"
-    id: Smartgrid
-    internal: true
-    unit_of_measurement: ""
-    icon: "mdi:thermometer-lines"
-    state_class: "measurement"
-    accuracy_decimals: 0
 
   - platform: template
     name: "Heizkurve"
@@ -650,9 +565,9 @@ sensor:
     state_class: "measurement"
     accuracy_decimals: 2
 
-
   - platform: template
     name: "Thermische Leistung"
+    id: thermische_leistung
     device_class: "power"
     unit_of_measurement: "kW"
     accuracy_decimals: 2
@@ -662,16 +577,12 @@ sensor:
         return ((id(TV).state - id(ruecklauf).state) * (4.19 * id(durchfluss).state)) / 3600;
       } else if (id(text_betriebsart).state == "Heizen") {
         return ((id(TVBH).state - id(ruecklauf).state) * (4.19 * id(durchfluss).state)) / 3600;
+      } else if (id(text_betriebsart).state == "Kühlen") {
+        return ((id(TVBH).state - id(ruecklauf).state) * (4.19 * id(durchfluss).state)) / 3600;  
       } else {
         return 0.0;
       }
 
-
-
-
-
-
-      
   - platform: template
     name: "Raumsoll 1"
     id: raumsoll1
@@ -680,21 +591,6 @@ sensor:
     device_class: "temperature"
     state_class: "measurement"
     accuracy_decimals: 1
-      
-
-  - platform: template
-    name: "Status Kessel"
-    id: status_kessel
-    internal: true
-    icon: "mdi:thermometer-lines"
-    accuracy_decimals: 0
-    
-  - platform: template
-    name: "Status Kompressor"
-    id: status_kompressor
-    internal: true
-    icon: "mdi:thermometer-lines"
-    accuracy_decimals: 0  
 
   - platform: template
     name: "Wasserdruck"
@@ -710,7 +606,7 @@ sensor:
     id: Erzeugte_Energie_Gesamt
     unit_of_measurement: "kWh"
     icon: "mdi:thermometer-lines"
-    device_class: "ENERGY_STORAGE"
+    device_class: "energy"
     state_class: "measurement"
     accuracy_decimals: 0
 
@@ -719,7 +615,7 @@ sensor:
     id: Qchhp
     unit_of_measurement: "kWh"
     icon: "mdi:thermometer-lines"
-    device_class: "ENERGY_STORAGE"
+    device_class: "energy"
     state_class: "measurement"
     accuracy_decimals: 0
 
@@ -732,25 +628,6 @@ sensor:
     state_class: "measurement"
     accuracy_decimals: 0
 
-  - platform: template
-    name: "Betriebsmodus"
-    internal: true
-    id: Betriebsmodus
-    unit_of_measurement: ""
-    icon: "mdi:thermometer-lines"
-    device_class: "temperature"
-    state_class: "measurement"
-    accuracy_decimals: 0
-   
-  - platform: template
-    name: "Betriebsart"
-    id: Betriebsart
-    internal: true
-    unit_of_measurement: ""
-    icon: "mdi:thermometer-lines"
-    device_class: "temperature"
-    state_class: "measurement"
-    accuracy_decimals: 0
     
   - platform: template
     name: "T-WW-Soll1"
@@ -824,10 +701,18 @@ sensor:
     accuracy_decimals: 0
 
   - platform: template
+    name: "Volumenstrom"
+    id: Volumenstrom
+    unit_of_measurement: "ltr/h"
+    icon: "mdi:waves-arrow-left"
+    state_class: "measurement"
+    accuracy_decimals: 0 
+
+  - platform: template
     name: "Laufzeit Compressor"
     id: rt_compressor
     unit_of_measurement: "h"
-    icon: "mdi:icon-time"
+    icon: "mdi:clock"
     state_class: "measurement"
     accuracy_decimals: 0
 
@@ -835,7 +720,7 @@ sensor:
     name: "Laufzeit Pump"
     id: rt_pump
     unit_of_measurement: "h"
-    icon: "mdi:icon-time"
+    icon: "mdi:clock"
     state_class: "measurement"
     accuracy_decimals: 0
 
@@ -848,7 +733,6 @@ sensor:
 
   - platform: template
     name: "Min VL Soll"
-    internal: false
     id: min_vl_soll
     unit_of_measurement: "°C"
     icon: "mdi:waves-arrow-left"
@@ -857,7 +741,6 @@ sensor:
 
   - platform: template
     name: "Max VL Soll"
-    internal: false
     id: max_vl_soll
     unit_of_measurement: "°C"
     icon: "mdi:waves-arrow-left"
@@ -865,17 +748,7 @@ sensor:
     accuracy_decimals: 0    
 
   - platform: template
-    name: "HK-Funktion"
-    internal: true
-    id: hk_funktion
-    unit_of_measurement: ""
-    icon: "mdi:waves-arrow-left"
-    state_class: "measurement"
-    accuracy_decimals: 0      
-
-  - platform: template
     name: "Spreizung MOD HZ"
-    internal: false
     id: spreizung_mod_hz
     unit_of_measurement: "K"
     icon: "mdi:waves-arrow-left"
@@ -884,179 +757,191 @@ sensor:
 
   - platform: template
     name: "Spreizung MOD WW"
-    internal: false
     id: spreizung_mod_ww
     unit_of_measurement: "K"
     icon: "mdi:waves-arrow-left"
     state_class: "measurement"
     accuracy_decimals: 0        
 
-
   - platform: template
     name: "T Vorlauf Tag"
-    internal: false
     id: t_vorlauf_tag
     unit_of_measurement: "°C"
     icon: "mdi:waves-arrow-left"
     state_class: "measurement"
-    accuracy_decimals: 0 
+    accuracy_decimals: 0
 
   
-########################### CAN Nachrichten abfragen #################################################
+
+
 interval:
-  - interval:  ${interval_time}
+  - interval: 1s
     then:
-      if:
-        condition:
-          - lambda: 'return id(interval_active);'
-        then:
+      - lambda: |-
+          static unsigned long last_run = 0;
+          unsigned long now = millis();
+          int interval = (int)(id(interval_time).state * 1000);  // Slider-Wert in Millisekunden
+          if (id(interval_active) && (now - last_run >= interval)) {
+              last_run = now;
+              id(send_canbus_messages).execute();
+          }
+
+########################### CAN Nachrichten abfragen #################################################
+script:
+  - id: send_canbus_messages
+    then:
+      
           #Status Kessel
           - canbus.send:
               data: [0x31, 0x00, 0xFA, 0x0A, 0x8C, 0x00, 0x00]
               can_id: 0x680
-          - delay: 500ms
+          - delay: 50ms
           #Umwälzpumpe
           - canbus.send:
               data: [0x31, 0x00, 0xFA, 0xC0, 0xF7, 0x00, 0x00]
               can_id: 0x680
-          - delay: 500ms
+          - delay: 50ms
           - canbus.send:
               data: [0x31, 0x00, 0xFA, 0x01, 0x12, 0x00, 0x00]
               can_id: 0x680
-          - delay: 500ms
+          - delay: 50ms
           - canbus.send:
               data: [0x31, 0x00, 0xFA, 0xC0, 0xF6, 0x00, 0x00]
               can_id: 0x680
-          - delay: 500ms
+          - delay: 50ms
           - canbus.send:
               data: [0x31, 0x00, 0x02, 0x00, 0x00, 0x00, 0x00]
               can_id: 0x680
-          - delay: 500ms
+          - delay: 50ms
           - canbus.send:
               data: [0x31, 0x00, 0xFA, 0xC0, 0xFB, 0x00, 0x00]
               can_id: 0x680
-          - delay: 500ms
+          - delay: 50ms
+          #Durchfluss
           - canbus.send:
               data: [0x31, 0x00, 0xFA, 0x01, 0xDA, 0x00, 0x00]
               can_id: 0x680
-          - delay: 500ms
+          - delay: 50ms
           - canbus.send:
               data: [0x31, 0x00, 0xFA, 0x06, 0xA4, 0x00, 0x00]
               can_id: 0x680
-          - delay: 500ms
+          - delay: 50ms
           - canbus.send:
               data: [0x31, 0x00, 0xFA, 0xC1, 0x02, 0x00, 0x00]
               can_id: 0x680
-          - delay: 500ms
+          - delay: 50ms
           - canbus.send:
               data: [0x31, 0x00, 0xFA, 0xC0, 0xFC, 0x00, 0x00]
               can_id: 0x680
-          - delay: 500ms
+          - delay: 50ms
           #Rücklauftemperatur Hzg - ok 1/10
           - canbus.send:
               data: [0x31, 0x00, 0xFA, 0xC1, 0x00, 0x00, 0x00]
               can_id: 0x680
-          - delay: 500ms
+          - delay: 50ms
           - canbus.send:
               data: [0x31, 0x00, 0xfa, 0x00, 0x0e, 0x00, 0x00]
               can_id: 0x680
-          - delay: 500ms
+          - delay: 50ms
           - canbus.send:
               data: [0x31, 0x00, 0x13, 0x00, 0x00, 0x00, 0x00]
               can_id: 0x680
-          - delay: 500ms
+          - delay: 50ms
           #Warmwasser Temperatur  °C et dec value - ok /10
           - canbus.send:
               data: [0x31, 0x00, 0x0E, 0x00, 0x00, 0x00, 0x00]
               can_id: 0x680
-          - delay: 500ms
+          - delay: 50ms
           - canbus.send:
               data: [0x31, 0x00, 0x05, 0x00, 0x00, 0x00, 0x00]
               can_id: 0x680
-          - delay: 500ms
+          - delay: 50ms
           - canbus.send:
               data: [0x31, 0x00, 0xFA, 0x06, 0xA5, 0x00, 0x00]
               can_id: 0x680
-          - delay: 500ms
+          - delay: 50ms
           - canbus.send:
               data: [0x31, 0x00, 0xfa, 0x01, 0x2B, 0x00, 0x00]
               can_id: 0x680
-          - delay: 500ms
+          - delay: 50ms
           - canbus.send:
               data: [0x31, 0x00, 0x28, 0x00, 0x00, 0x00, 0x00]
               can_id: 0x680
-          - delay: 500ms
+          - delay: 50ms
           - canbus.send:
               data: [0x31, 0x00, 0xFA, 0x01, 0x41, 0x00, 0x00]
               can_id: 0x680
-          - delay: 500ms
+          - delay: 50ms
           - canbus.send:
               data: [0x31, 0x00, 0xFA, 0x01, 0x29, 0x00, 0x00]
               can_id: 0x680
-          - delay: 500ms
+          - delay: 50ms
           - canbus.send:
               data: [0x31, 0x00, 0xFA, 0x13, 0x88, 0x00, 0x00]
               can_id: 0x680
-          - delay: 500ms
+          - delay: 50ms
 
- # - interval: 300s
-  #  then:
-   #   if:
-    #    condition:
-     #     - lambda: 'return id(interval_active);'
-      #  then:
+
           - canbus.send:
               data: [0x31, 0x00, 0xFA, 0x09, 0x30, 0x00, 0x00]
               can_id: 0x680
-          - delay: 500ms
+          - delay: 50ms
           - canbus.send:
               data: [0x31, 0x00, 0x1C, 0x00, 0x00, 0x00, 0x00]
               can_id: 0x680
-          - delay: 500ms
+          - delay: 50ms
           #Qchhp
           - canbus.send:
               data: [0x31, 0x00, 0xFA, 0x09, 0x20, 0x00, 0x00]
               can_id: 0x680
-          - delay: 500ms
+          - delay: 50ms
           - canbus.send:
               data: [0x31, 0x00, 0xFA, 0xC0, 0xFF, 0x00, 0x00]
               can_id: 0x680
-          - delay: 500ms
+          - delay: 50ms
           - canbus.send:
               data: [0x31, 0x00, 0xFA, 0x01, 0x0E, 0x00, 0x00]
               can_id: 0x680
-          - delay: 500ms
+          - delay: 50ms
           - canbus.send:
               data: [0x31, 0x00, 0xFA, 0x06, 0x83, 0x00, 0x00]
               can_id: 0x680
-          - delay: 500ms
+          - delay: 50ms
           - canbus.send:
               data: [0x31, 0x00, 0xFA, 0x06, 0x84, 0x00, 0x00]
               can_id: 0x680
-          - delay: 500ms
+          - delay: 50ms
 
           - canbus.send:
               data: [ 0x31, 0x00, 0xFA, 0x06, 0x94, 0x00, 0x00 ]
               can_id: 0x680
-          - delay: 500ms          
+          - delay: 50ms        
 
 
           - canbus.send:
               data: [ 0x31, 0x00, 0xFA, 0x06, 0x93, 0x00, 0x00 ]
               can_id: 0x680
-          - delay: 500ms          
+          - delay: 50ms         
 #Status Kompressor
           - canbus.send:
               data: [ 0xA1, 0x00, 0x61, 0x00, 0x00, 0x00, 0x00 ]
               can_id: 0x680
-          - delay: 500ms       
+          - delay: 50ms      
 
 #Status Mischer DHW
           - canbus.send:
               data: [ 0x31, 0x00, 0xFA, 0x06, 0x9B, 0x00, 0x00 ]
               can_id: 0x680
-          - delay: 500ms     
+          - delay: 50ms   
 
+#Volumenstrom
+          - canbus.send:
+              data: [ 0x31, 0x00, 0xFA, 0xC1, 0x01, 0x00, 0x00]
+              can_id: 0x680
+          - delay: 50ms              
+
+
+################################# CAN Nachrichten empfangen (Auswertung) #####################################
 canbus:
   - platform: esp32_can
     id: can_bus
@@ -1065,373 +950,476 @@ canbus:
     rx_pin: ${rx_pin}
     bit_rate: 20kbps
     on_frame:
+      ################################# CAN Nachrichten empfangen (Auswertung) #####################################
 
-################################# CAN Nachrichten empfangen (Auswertung) #####################################
-
-
-
-#Mischer DHW Position
+      # Mischer DHW Position
     - can_id: 0x180
       then:
         - lambda: |-
-            if(x[2]==0xFA and x[3]==0x06 and x[4] ==0x9B) {
-             float temperature =float((float((int((x[6])+( (x[5])<<8))))));
-             id(dhw_mischer_postion).publish_state(temperature);
-             ESP_LOGD("main", "Temperature received over can is %f", temperature);
+            if (x[2] == 0xFA && x[3] == 0x06 && x[4] == 0x9B) {
+              int16_t raw_value = (x[5] << 8) | x[6];
+              float temperature = static_cast<float>(raw_value);
+              id(dhw_mischer_postion).publish_state(temperature);
+              ESP_LOGD("main", "Mischer DHW Position ist %f %%", temperature);
+             }
+
+      # Fehlercode
+    - can_id: 0x180
+      then:
+        - lambda: |-
+            if (x[2] == 0xFA && x[3] == 0x13 && x[4] == 0x88) {
+              int16_t raw_value = (x[5] << 8) | x[6];
+              float temperature = static_cast<float>(raw_value);
+              id(Fehlercode).publish_state(temperature);
+              ESP_LOGD("main", "Fehlercode ist %f", temperature);
             }
 
-#Fehlercode
+      # Heizkurve
     - can_id: 0x180
       then:
         - lambda: |-
-            if(x[2]==0xFA and x[3]==0x13 and x[4] ==0x88) {
-             float temperature =float((float((int((x[6])+( (x[5])<<8))))));
-             id(Fehlercode).publish_state(temperature);
-             ESP_LOGD("main", "Temperature received over can is %f", temperature);
+            if (x[2] == 0xFA && x[3] == 0x01 && x[4] == 0x0E) {
+              int16_t raw_value = (x[5] << 8) | x[6];
+              float temperature = static_cast<float>(raw_value) / 100.0f;
+              id(heizkurve).publish_state(temperature);
+              ESP_LOGD("main", "Heizkurve ist %f", temperature);
             }
 
 
-
-#Heizkurve
+      # Wasserdruck
     - can_id: 0x180
       then:
         - lambda: |-
-            if(x[2]==0xFA and x[3]==0x01 and x[4] ==0x0E) {
-             float temperature =float((float((int((x[6])+( (x[5])<<8))))/100));
-             id(heizkurve).publish_state(temperature);
-             ESP_LOGD("main", "Temperature received over can is %f", temperature);
+            if (x[0] == 0xd2 && x[2] == 0x1C) {
+              float temperature = ((x[3] << 8) | x[4]) / 1000.0f;
+              id(Wasserdruck).publish_state(temperature);
+              ESP_LOGD("main", "Wasserdruck ist %f bar", temperature);
+            }
+
+      # Qchhp
+    - can_id: 0x180
+      then:
+        - lambda: |-
+            if (x[2] == 0xFA && x[3] == 0x09 && x[4] == 0x20) {
+              int16_t raw_value = (x[5] << 8) | x[6];
+              float temperature = static_cast<float>(raw_value);
+              id(Qchhp).publish_state(temperature);
+              ESP_LOGD("main", "Qchhp ist %f", temperature);
+            }
+
+      # Erzeugte Energie gesamt
+    - can_id: 0x180
+      then:
+        - lambda: |-
+            if (x[2] == 0xFA && x[3] == 0x09 && x[4] == 0x30) {
+              int16_t raw_value = (x[5] << 8) | x[6];
+              float temperature = static_cast<float>(raw_value);
+              id(Erzeugte_Energie_Gesamt).publish_state(temperature);
+              ESP_LOGD("main", "Erzeugte Energie gesamt beträgt %f kwh", temperature);
+            }
+
+      # Umwälzpumpe
+    - can_id: 0x180
+      then:
+        - lambda: |-
+            if (x[2] == 0xFA && x[3] == 0xC0 && x[4] == 0xF7) {
+              int16_t raw_value = (x[5] << 8) | x[6];
+              float temperature = static_cast<float>(raw_value);
+              id(Umwaelzpumpe).publish_state(temperature);
+              ESP_LOGD("main", "Umwälzpumpe ist %f %", temperature);
+            }
+
+      # Betriebsart
+    - can_id: 0x180
+      then:
+        - lambda: |-
+            if (x[2] == 0xFA && x[3] == 0xC0 && x[4] == 0xF6) {
+              int16_t raw_value = (x[5] << 8) | x[6];
+              std::string state_text;
+
+              if (raw_value == 0) {
+                state_text = "Standby";
+              } else if (raw_value == 1) {
+                state_text = "Heizen";
+              } else if (raw_value == 2) {
+                state_text = "Kühlen";
+              } else if (raw_value == 3) {
+                state_text = "Abtauen";
+              } else if (raw_value == 4) {
+                state_text = "Warmwasserbereitung";
+              } else {
+                state_text = "Unknown";
+              }
+
+              id(text_betriebsart).publish_state(state_text);
+              ESP_LOGD("main", "Betriebsart ist %s", state_text.c_str());
+            }
+
+      # Betriebsmodus
+    - can_id: 0x180
+      then:
+        - lambda: |-
+            if (x[2] == 0xFA && x[3] == 0x01 && x[4] == 0x12) {
+              int16_t raw_value = (x[6] << 8) | x[5];
+              std::string state_text;
+          
+          
+              if (raw_value == 1) {
+                state_text = "Bereitschaft";
+              } else if (raw_value == 3) {
+                state_text = "Heizen";
+              } else if (raw_value == 4) {
+                state_text = "Absenken";
+              } else if (raw_value == 5) {
+                state_text = "Sommer";
+              } else if (raw_value == 17) {
+                state_text = "Kühlen";
+              } else if (raw_value == 11) {
+                state_text = "Automatik 1";
+              } else if (raw_value == 12) {
+                state_text = "Automatik 2";
+              } else if (raw_value == 0) {
+                state_text = "Notbetrieb";  
+              } else {
+                state_text = "Unknown";
+              }
+          
+          
+              id(text_betriebsmodus).publish_state(state_text);
+              ESP_LOGD("main", "Betriebsmodus: %s", state_text.c_str());
+            }
+
+      # VL Soll
+    - can_id: 0x180
+      then:
+        - lambda: |-
+            if (x[0] == 0xd2 && x[2] == 0x02) {
+              float temperature = ((x[3] << 8) | x[4]) / 10.0f;
+              id(vl_soll).publish_state(temperature);
+              ESP_LOGD("main", "VL Soll ist %f °C", temperature);
+            }
+
+      # BPV
+    - can_id: 0x180
+      then:
+        - lambda: |-
+            if (x[2] == 0xFA && x[3] == 0xC0 && x[4] == 0xFB) {
+              int16_t raw_value = (x[5] << 8) | x[6];
+              float temperature = static_cast<float>(raw_value);
+              id(BPV).publish_state(temperature);
+              ESP_LOGD("main", "BPV ist %f %", temperature);
+            }
+
+      # Durchfluss
+    - can_id: 0x180
+      then:
+        - lambda: |-
+            if (x[2] == 0xFA && x[3] == 0x01 && x[4] == 0xDA) {
+              int16_t raw_value = (x[5] << 8) | x[6];
+              float temperature = static_cast<float>(raw_value);
+              id(durchfluss).publish_state(temperature);
+              ESP_LOGD("main", "Durchfluss ist %f ltr/h", temperature);
+            }
+
+      # Volumenstrom
+    - can_id: 0x180
+      then:
+        - lambda: |-
+            if (x[2] == 0xFA && x[3] == 0xC1 && x[4] == 0x01) {
+              float temperature = (x[5] << 8) | x[6];
+              id(Volumenstrom).publish_state(temperature);
+              ESP_LOGD("main", "Volumenstrom ist %f ltr/h", temperature);
+            }
+
+      # RT-Pumpe
+    - can_id: 0x180
+      then:
+        - lambda: |-
+            if (x[2] == 0xFA && x[3] == 0x06 && x[4] == 0xA4) {
+              float rt_pump1 = x[6] | (x[5] << 8); 
+              id(rt_pump).publish_state(rt_pump1);   
+              ESP_LOGD("main", "Laufzeit Pumpe ist %f", rt_pump1); 
             }
 
 
-
-#Status Kesselpumpe
+#rt_compressor
     - can_id: 0x180
       then:
         - lambda: |-
-            if(x[2]==0xFA and x[3]==0x0A and x[4] ==0x8C) {
-             float temperature =float((float((int((x[6])+( (x[5])<<8))))));
-             id(status_kessel).publish_state(temperature);
-             ESP_LOGD("main", "Temperature received over can is %f", temperature);
+            if (x[2] == 0xFA && x[3] == 0x06 && x[4] == 0xA5) {
+              float rt_compressor1 = (x[6] | (x[5] << 8)); 
+              id(rt_compressor).publish_state(rt_compressor1);   
+              ESP_LOGD("main", "Laufzeit Compressor ist %f", rt_compressor1); 
             }
 
 # Status Kompressor
     - can_id: 0x500
       then:
         - lambda: |-
-            if(x[2]==0x61) {
-             float temperature =float((float((int((x[3])+( (x[4])<<8))))));
-             id(status_kompressor).publish_state(temperature);
-             ESP_LOGD("main", "Temperature received over can is %f", temperature);
+            if (x[2] == 0x61) {
+              int kompressor_status_value = (x[4] << 8) | x[3];
+              std::string state_text;
+
+              if (kompressor_status_value == 0) {
+                state_text = "Aus";
+              } else if (kompressor_status_value == 1) {
+                state_text = "An";
+              } else {
+                state_text = "Unbekannt";
+              }
+
+              id(text_kompressor).publish_state(state_text);
+              ESP_LOGD("main", "Status Kompressor: %s", state_text.c_str());
             }
 
-#Wasserdruck
+
+
+
+# Status Kessel 
     - can_id: 0x180
       then:
         - lambda: |-
-            if(x[0]==0xd2 and x[2]==0x1C) {
-             float temperature =float((float((int((x[4])+( (x[3])<<8))))/1000));
-             id(Wasserdruck).publish_state(temperature);
-             ESP_LOGD("main", "Temperature received over can is %f", temperature);
+            if (x[2] == 0xFA && x[3] == 0x0A && x[4] == 0x8C) {
+              int kessel_status_value = (x[5] << 8) | x[6];
+              std::string state_text;
+          
+              if (kessel_status_value == 0) {
+                state_text = "Aus";
+              } else if (kessel_status_value == 1) {
+                state_text = "An";
+              } else {
+                state_text = "Unbekannt";
+              }
+          
+              id(text_kesselpumpe).publish_state(state_text);
+              ESP_LOGD("main", "Kessel Status: %s", state_text.c_str());
             }
 
-#Qchhp
+# Wassertemperatur
     - can_id: 0x180
       then:
         - lambda: |-
-            if(x[2]==0xFA and x[3]==0x09 and x[4] ==0x20) {
-             float temperature =float((float((int((x[6])+( (x[5])<<8))))));
-             id(Qchhp).publish_state(temperature);
-             ESP_LOGD("main", "Temperature received over can is %f", temperature);
-            }
-
-#Erzeugte Energie gesamt
-    - can_id: 0x180
-      then:
-        - lambda: |-
-            if(x[2]==0xFA and x[3]==0x09 and x[4] ==0x30) {
-             float temperature =float((float((int((x[6])+( (x[5])<<8))))));
-             id(Erzeugte_Energie_Gesamt).publish_state(temperature);
-             ESP_LOGD("main", "Temperature received over can is %f", temperature);
-            }
-
-
-#Umwälzpumpe
-    - can_id: 0x180
-      then:
-        - lambda: |-
-            if(x[2]==0xFA and x[3]==0xC0 and x[4] ==0xF7) {
-             float temperature =float((float((int((x[6])+( (x[5])))))));
-             id(Umwaelzpumpe).publish_state(temperature);
-             ESP_LOGD("main", "Temperature received over can is %f", temperature);
-            }
-
-#Betriebsart
-    - can_id: 0x180
-      then:
-        - lambda: |-
-           if(x[2]==0xFA and x[3]==0xC0 and x[4] == 0xF6) {
-             float temperature =float((float((int((x[6])+( (x[5])))))));
-              id(Betriebsart).publish_state(temperature);
-              ESP_LOGD("main", "Temperature received over can is %f", temperature);
-            }
-
-
-#Betriebsmodus
-    - can_id: 0x180
-      then:
-       - lambda: |-
-           if(x[2]==0xFA and x[3]==0x01 and x[4] ==0x12) {
-            float temperature =float((float((int((x[6])+( (x[5])))))));
-             id(Betriebsmodus).publish_state(temperature);
-             ESP_LOGD("main", "Temperature received over can is %f", temperature);
-            }
-
-#VL Soll
-    - can_id: 0x180
-      then:
-       - lambda: |-
-          if(x[0]==0xd2 and x[2]==0x02) {
-             float temperature =float((float((int((x[4])+( (x[3])<<8))))/10));
-             id(vl_soll).publish_state(temperature);
-             ESP_LOGD("main", "Temperature received over can is %f", temperature);
-           }
-
-#BPV
-    - can_id: 0x180
-      then:
-        - lambda: |-
-            if(x[2]==0xFA and x[3]==0xC0 and x[4]==0xFB) {
-             float temperature =float((float((int((x[6])+( (x[5])<<8))))));
-              id(BPV).publish_state(temperature);
-              ESP_LOGD("main", "Temperature received over can is %f", temperature);
-            }
-
-#Volumenstrom 
-    - can_id: 0x180
-      then:
-        - lambda: |-
-            if(x[2]==0xFA and x[3]==0x01 and x[4] ==0xDA) {
-             float temperature =float((float((int((x[6])+( (x[5])<<8))))));
-              id(durchfluss).publish_state(temperature);
-              ESP_LOGD("main", "Temperature received over can is %f", temperature);
-            }
-
-#rt_pump
-    - can_id: 0x180
-      then:
-        - lambda: |-
-            if(x[2]==0xFA and x[3]==0x06 and x[4] ==0xA4) {
-              float temperature =float((float((int((x[6])+((x[5])<<8))))));
-              id(rt_pump).publish_state(temperature);
-              ESP_LOGD("main", "Temperature received over can is %f", temperature);
-            }
-
-#rt_compressor
-    - can_id: 0x180
-      then:
-        - lambda: |-
-            if(x[2]==0xFA and x[3]==0x06 and x[4] ==0xA5) {
-              float temperature =float((float((int((x[6])+((x[5])<<8))))));
-              id(rt_compressor).publish_state(temperature);
-              ESP_LOGD("main", "Temperature received over can is %f", temperature);
-            }
-
-#Warmwasser-Temperaturabfrage 
-    - can_id: 0x180
-      then:
-        - lambda: |-
-            if(x[2]==0xFA and x[3]==0x00 and x[4] == 0x0E) {
-              float temperature =float((float((int((x[6])+( (x[5])<<8))))/10));
+            if (x[2] == 0xFA && x[3] == 0x00 && x[4] == 0x0E) {
+              float temperature = ((x[5] << 8) | x[6]) / 10.0f;
               id(temperature_water).publish_state(temperature);
-              ESP_LOGD("main", "Temperature received over can is %f", temperature);
+              ESP_LOGD("main", "Warmwasser-Temperatur ist %f °C", temperature);
             }
 
 #Vorlauftemperaturabfrage (TVBH)
     - can_id: 0x180
       then:
         - lambda: |-
-            if(x[2]==0xFA and x[3]==0xC1 and x[4] == 0x02) {
-              float temperature =float(float((int((x[6])+( (x[5])<<8))))/10);
+            if (x[2] == 0xFA && x[3] == 0xC1 && x[4] == 0x02) {
+              float temperature = ((x[5] << 8) | x[6]) / 10.0f;
               id(TVBH).publish_state(temperature);
-              ESP_LOGD("main", "Temperature received over can is %f", temperature);
-            } 
-            
-#Vorlauftemperaturabfrage Heizkreis (TV)
-    - can_id: 0x180
-      then:
-        - lambda: |-
-            if(x[2]==0xFA and x[3]==0xC0 and x[4] == 0xFC) {
-              float temperature =float(float((int((x[6])+( (x[5])<<8))))/10);
-              id(TV).publish_state(temperature);
-              ESP_LOGD("main", "Temperature received over can is %f", temperature);
+              ESP_LOGD("main", "Vorlauftemperatur (TVBH) ist %f °C", temperature);
             }
-#Rücklauftemperaturabfrage
-    - can_id: 0x180
-      then:
-        - lambda: |-
-            if(x[2]==0xFA and x[3]==0xC1 and x[4] == 0x00) {
-              float temperature =float(float((int((x[6])+( (x[5])<<8))))/10);
-              id(ruecklauf).publish_state(temperature);
-              ESP_LOGD("main", "Temperature received over can is %f", temperature);
-            }
-
 
 #Außentemperaturabfrage
     - can_id: 0x180
       then:
         - lambda: |-
-            if(x[2]==0xFA and x[3]==0xC0 and x[4] == 0xFF) {
-              float temperature = float(((int((x[6])+( (x[5])<<8))) ^ 0x8000) - 0x8000)/10;
-              id(temperature_outside).publish_state(temperature); 
-              ESP_LOGD("main", "Temperature received over can is %f", temperature);
+            if (x[2] == 0xFA && x[3] == 0xC0 && x[4] == 0xFF) {
+              int16_t raw_value = (x[5] << 8) | x[6]; // Kombinieren der Bytes zu einem 16-Bit Wert
+              float temperature = static_cast<float>(raw_value) / 10.0f; // Umwandlung in Grad Celsius
+              id(temperature_outside).publish_state(temperature);
+              ESP_LOGD("main", "Außentemperatur ist %f °C", temperature);
             }
-
-
-#HK Funktion
-    - can_id: 0x180
-      then:
-       - lambda: |-
-          if(x[2]==0xFA and x[3]==0x01 and x[4]==0x41) {
-             float temperature =float((float((int((x[6])+( (x[5])<<8))))));
-             id(hk_funktion).publish_state(temperature);
-             ESP_LOGD("main", "Temperature received over can is %f", temperature);
-           }
-
-#Spreizung MOD HZ
-    - can_id: 0x180
-      then:
-       - lambda: |-
-          if(x[2]==0xFA and x[3]==0x06 and x[4]==0x83) {
-             float temperature =float((float((int((x[6])+( (x[5])<<8))))/10));
-             id(spreizung_mod_hz).publish_state(temperature);
-             ESP_LOGD("main", "Temperature received over can is %f", temperature);
-           }           
-
-#Spreizung MOD WW
-    - can_id: 0x180
-      then:
-       - lambda: |-
-          if(x[2]==0xFA and x[3]==0x06 and x[4]==0x84) {
-             float temperature =float((float((int((x[6])+( (x[5])<<8))))/10));
-             id(spreizung_mod_ww).publish_state(temperature);
-             ESP_LOGD("main", "Temperature received over can is %f", temperature);
-           }                      
-
-#Spreizung MOD WW
-    - can_id: 0x180
-      then:
-       - lambda: |-
-          if(x[2]==0xFA and x[3]==0x01 and x[4]==0x29) {
-             float temperature =float((float((int((x[6])+( (x[5])<<8))))/10));
-             id(t_vorlauf_tag).publish_state(temperature);
-             ESP_LOGD("main", "Temperature received over can is %f", temperature);
-           }                      
-
-
-#SG Modus
-    - can_id: 0x180
-      then:
-       - lambda: |-
-          if(x[2]==0xFA and x[3]==0x06 and x[4]==0x94) {
-             float temperature =float((float((int((x[6])+( (x[5])<<8))))));
-             id(SGModus).publish_state(temperature);
-             ESP_LOGD("main", "Temperature received over can is %f", temperature);
-           }                                 
-
-
-#Smart Grid
-    - can_id: 0x180
-      then:
-       - lambda: |-
-          if(x[2]==0xFA and x[3]==0x06 and x[4]==0x93) {
-             float temperature =float((float((int((x[6])+( (x[5])<<8))))));
-             id(Smartgrid).publish_state(temperature);
-             ESP_LOGD("main", "Temperature received over can is %f", temperature);
-           }                                 
 
 #Raumsoll
     - can_id: 0x180
       then:
-       - lambda: |-
-          if(x[0]==0xd2 and x[1]==0x00 and x[2]==0x05 and x[3]==0x00 and x[5]==0x00) {
-             float temperature =float((float((int((x[4])+((x[3])<<8))))/10));
-             id(raumsoll1).publish_state(temperature);
-             ESP_LOGD("main", "Temperature received over can is %f", temperature);
-           }                                 
+        - lambda: |-
+            if (x[0] == 0xd2 && x[1] == 0x00 && x[2] == 0x05 && x[3] == 0x00 && x[5] == 0x00) {
+              int16_t raw_value = (x[4] + (x[3] << 8));
+              float temperature = static_cast<float>(raw_value) / 10.0f;
+              id(raumsoll1).publish_state(temperature);
+              ESP_LOGD("main", "Raumsoll ist %f °C", temperature);
+            }
+
+
 
 #Warmwasser
     - can_id: 0x180
       then:
-       - lambda: |-
-          if(x[0] == 0xd2 && x[1] == 0x00 && x[2] == 0x13 && x[5] == 0x00 && x[6] == 0x00) {
-              uint16_t temperature_raw = (x[3] << 8) | x[4]; // Convert to int16be
-              float temperature = static_cast<float>(temperature_raw) / 10.0;
+        - lambda: |-
+            if (x[0] == 0xd2 && x[1] == 0x00 && x[2] == 0x13 && x[5] == 0x00 && x[6] == 0x00) {
+              uint16_t temperature_raw = (x[3] << 8) | x[4];
+              float temperature = static_cast<float>(temperature_raw) / 10.0f;
               id(t_ww_soll).publish_state(temperature);
-             ESP_LOGD("main", "Temperature received over can is %f", temperature);
-           }                                            
+              ESP_LOGD("main", "Warmwasser ist %f °C", temperature);
+            }
+
+#t_vorlauf_tag
+    - can_id: 0x180
+      then:
+        - lambda: |-
+            if (x[2] == 0xFA && x[3] == 0x01 && x[4] == 0x29) {
+              uint16_t temperature_raw = (x[5] << 8) | x[6];
+              float temperature = static_cast<float>(temperature_raw) / 10.0f;
+              id(t_vorlauf_tag).publish_state(temperature);
+              ESP_LOGD("main", "t_vorlauf_tag ist %f °C", temperature);
+            }
+
+#Rücklauftemperaturabfrage
+    - can_id: 0x180
+      then:
+        - lambda: |-
+            if (x[2] == 0xFA && x[3] == 0xC1 && x[4] == 0x00) {
+              float ruecklauf_temp = ((x[5] << 8) | x[6]) / 10.0f;
+              id(ruecklauf).publish_state(ruecklauf_temp);
+              ESP_LOGD("main", "Rücklauftemperatur ist %f °C", ruecklauf_temp);
+            }
+
+#Vorlauftemperaturabfrage Heizkreis (TV)
+    - can_id: 0x180
+      then:
+        - lambda: |-
+            if (x[2] == 0xFA && x[3] == 0xC0 && x[4] == 0xFC) {
+              float vorlauf_temp = ((x[5] << 8) | x[6]) / 10.0f;
+              id(TV).publish_state(vorlauf_temp);
+              ESP_LOGD("main", "Vorlauftemperatur (TV) ist %f °C", vorlauf_temp);
+            }
+
+#SG Modus
+    - can_id: 0x180
+      then:
+        - lambda: |-
+            if (x[2] == 0xFA && x[3] == 0x06 && x[4] == 0x94) {
+              int sg_modus_value = (x[5] << 8) | x[6];
+              std::string state_text;
+
+              if (sg_modus_value == 0) {
+                state_text = "Aus";
+              } else if (sg_modus_value == 1) {
+                state_text = "SG Modus 1";
+              } else if (sg_modus_value == 2) {
+                state_text = "SG Modus 2";  
+              } else {
+               state_text = "Unbekannt";
+              }
+
+               id(text_sg_modus).publish_state(state_text);
+               ESP_LOGD("main", "SG Modus: %s", state_text.c_str());
+             }
+
+#Smart Grid
+    - can_id: 0x180
+      then:
+        - lambda: |-
+            if (x[2] == 0xFA && x[3] == 0x06 && x[4] == 0x93) {
+              int smart_grid_value = (x[5] << 8) | x[6];
+              std::string state_text;
+
+              if (smart_grid_value == 0) {
+                state_text = "Aus";
+              } else if (smart_grid_value == 1) {
+                state_text = "An";
+              } else {
+                state_text = "Unbekannt";
+              }
+
+              id(text_smartgrid).publish_state(state_text);
+              ESP_LOGD("main", "Smart Grid: %s", state_text.c_str());
+            }
+
 
 #Min Vl Soll
     - can_id: 0x180
       then:
-       - lambda: |-
-          if(x[2]==0xFA and x[3]==0x01 and x[4]==0x2B) {
-              float temperature =float(float((int((x[6])+( (x[5])<<8))))/10);
-              id(min_vl_soll).publish_state(temperature);
-             ESP_LOGD("main", "Temperature received over can is %f", temperature);
-           }                                 
+        - lambda: |-
+            if (x[2] == 0xFA && x[3] == 0x01 && x[4] == 0x2B) {
+              float min_vl_soll1 = (x[5] << 8 | x[6]) / 10.0;
+              id(min_vl_soll).publish_state(min_vl_soll1);
+              ESP_LOGD("main", "Min Vl Soll ist %f °C", min_vl_soll1);
+            }
+
 
 #Max Vl Soll
     - can_id: 0x180
       then:
-       - lambda: |-
-          if(x[2]==0x28) {
-             float temperature =float((float((int((x[4])+( (x[3])<<8))))/10));
-             id(max_vl_soll).publish_state(temperature);
-             ESP_LOGD("main", "Temperature received over can is %f", temperature);
-           }                                            
+        - lambda: |-
+            if (x[2] == 0x28) {
+              float max_vl_soll1 = (x[3] << 8 | x[4]) / 10.0;
+              id(max_vl_soll).publish_state(max_vl_soll1);
+              ESP_LOGD("main", "Max Vl Soll ist %f °C", max_vl_soll1);
+            }
+
+#Spreizung MOD HZ
+    - can_id: 0x180
+      then:
+        - lambda: |-
+            if (x[2] == 0xFA && x[3] == 0x06 && x[4] == 0x83) {
+              float spreizung_mod_hz_value = (x[5] << 8 | x[6]) / 10.0;
+              id(spreizung_mod_hz).publish_state(spreizung_mod_hz_value);
+              ESP_LOGD("main", "Spreizung MOD HZ ist %f K", spreizung_mod_hz_value);
+            }
+
+
+#Spreizung MOD WW
+    - can_id: 0x180
+      then:
+        - lambda: |-
+            if (x[2] == 0xFA && x[3] == 0x06 && x[4] == 0x84) {
+              float spreizung_mod_ww_value = (x[5] << 8 | x[6]) / 10.0;
+              id(spreizung_mod_ww).publish_state(spreizung_mod_ww_value);
+              ESP_LOGD("main", "Spreizung MOD WW ist %f K", spreizung_mod_ww_value);
+            }
+
+#HK Funktion
+    - can_id: 0x180
+      then:
+        - lambda: |-
+            if (x[2] == 0xFA && x[3] == 0x01 && x[4] == 0x41) {
+              int hk_funktion_value = (x[5] << 8) | x[6];
+              std::string state_text;
+                
+              if (hk_funktion_value == 0) {
+                state_text = "Witterungsgeführt";
+              } else if (hk_funktion_value == 1) {
+                state_text = "Fest";
+              } else {
+                state_text = "Unknown";
+              }
+                
+              id(text_hk_funktion).publish_state(state_text);
+              ESP_LOGD("main", "HK Funktion: %s", state_text.c_str());
+            }
 
 #Betriebsmodus (Automatik bei jeglicher Änderung)0x31, 0x00, 0xFA, 0x01, 0x12, 0x00, 0x00
     - can_id: 0x180
       then:
         - lambda: |-
-            if(x[2]==0xFA and x[3]==0x01 and x[4]==0x12) {
-              if (x[5]==0x01){
+            if (x[2] == 0xFA && x[3] == 0x01 && x[4] == 0x12) {
+              std::map<uint8_t, std::string> option_map = {
+                {0x01, "Bereitschaft"},
+                {0x03, "Heizen"},
+                {0x04, "Absenken"},
+                {0x05, "Sommer"},
+                {0x17, "Kühlen"},
+                {0x0B, "Automatik 1"},
+                {0x0C, "Automatik 2"}
+              };
+              auto it = option_map.find(x[5]);
+              if (it != option_map.end()) {
                 auto call = id(betrieb).make_call();
-                call.set_option("Bereitschaft");
-                call.perform();}
-              else if (x[5]==0x03){
-                auto call = id(betrieb).make_call();
-                call.set_option("Heizen");
-                call.perform();}
-              else if (x[5]==0x04){
-                auto call = id(betrieb).make_call();
-                call.set_option("Absenken");
-                call.perform();}
-              else if (x[5]==0x05){
-                auto call = id(betrieb).make_call();
-                call.set_option("Sommer");
-                call.perform();}
-              else if (x[5]==0x17){
-                auto call = id(betrieb).make_call();
-                call.set_option("Kühlen");
-                call.perform();}
-              else if (x[5]==0x0B){
-                auto call = id(betrieb).make_call();
-                call.set_option("Automatik 1");
-                call.perform();}
-              else if (x[5]==0x0C){
-                auto call = id(betrieb).make_call();
-                call.set_option("Automatik 2");
-                call.perform();}
+                call.set_option(it->second);
+                call.perform();
               }
+            }
 
 
 
 
-#Show data in raw form as hex-values
+# CAN-Bus Konfiguration
     - can_id: 0x180
       then:
         - lambda: |-
+            if (x.size() < 7) {
+              ESP_LOGE("main", "Datenfehler: weniger als 7 Elemente erhalten");
+              return;
+            }
+        
             int wert0 = int(x[0]);
             int wert1 = int(x[1]);
             int wert2 = int(x[2]);
@@ -1439,63 +1427,42 @@ canbus:
             int wert4 = int(x[4]);
             int wert5 = int(x[5]);
             int wert6 = int(x[6]);
-            float wert7 = float(int((x[6])+((x[5])<<8)));
-            ESP_LOGD("main", "Antwort von 180 Hex: %x %x %x %x %x %x %x", wert0, wert1, wert2, wert3, wert4, wert5, wert6);
-            ESP_LOGD("main", "Antwort von 180 Float: %f", wert7);
-            ESP_LOGI("main", "Antwort von 180 Dez.: %i %i", wert5, wert6);
+            float wert7 = float(int((x[6]) + ((x[5]) << 8)));
+        
+            ESP_LOGD("main", "Antwort von 0x180 CAN ID: %x %x %x %x %x %x %x", wert0, wert1, wert2, wert3, wert4, wert5, wert6);
+            ESP_LOGD("main", "Antwort von 0x180 Float: %f", wert7);
+            ESP_LOGI("main", "Antwort von 0x180 Dez.: %i %i", wert5, wert6);
 
-#Show data in raw form as hex-values
-    - can_id: 0x300
-      then:
-        - lambda: |-
-            int wert0 = int(x[0]);
-            int wert1 = int(x[1]);
-            int wert2 = int(x[2]);
-            int wert3 = int(x[3]);
-            int wert4 = int(x[4]);
-            int wert5 = int(x[5]);
-            int wert6 = int(x[6]);
-            float wert7 = float(int((x[6])+((x[5])<<8)));
-            ESP_LOGD("main", "Antwort von 300 Hex: %x %x %x %x %x %x %x", wert0, wert1, wert2, wert3, wert4, wert5, wert6);
-            ESP_LOGD("main", "Antwort von 300 Float: %f", wert7);
-            ESP_LOGI("main", "Antwort von 300 Dez.: %i %i", wert5, wert6);
 
-#Show data in raw form as hex-values
-    - can_id: 0x301
-      then:
-        - lambda: |-
-            int wert0 = int(x[0]);
-            int wert1 = int(x[1]);
-            int wert2 = int(x[2]);
-            int wert3 = int(x[3]);
-            int wert4 = int(x[4]);
-            int wert5 = int(x[5]);
-            int wert6 = int(x[6]);
-            float wert7 = float(int((x[6])+((x[5])<<8)));
-            ESP_LOGD("main", "Antwort von 301 Hex: %x %x %x %x %x %x %x", wert0, wert1, wert2, wert3, wert4, wert5, wert6);
-            ESP_LOGD("main", "Antwort von 301 Float: %f", wert7);
-            ESP_LOGI("main", "Antwort von 301 Dez.: %i %i", wert5, wert6);
+   # - can_id: 0x300
+    #  then:
+     #   - lambda: |-
+      #      if (x.size() < 7) {
+       #       ESP_LOGE("main", "Datenfehler: weniger als 7 Elemente erhalten");
+        #      return;
+         #   }
+        
+          #  int wert0 = int(x[0]);
+          #  int wert1 = int(x[1]);
+          #  int wert2 = int(x[2]);
+          #  int wert3 = int(x[3]);
+          #  int wert4 = int(x[4]);
+          #  int wert5 = int(x[5]);
+          #  int wert6 = int(x[6]);
+          #  float wert7 = float(int((x[6]) + ((x[5]) << 8)));
+        
+           # ESP_LOGD("main", "Antwort von 0x301 Hex: %x %x %x %x %x %x %x", wert0, wert1, wert2, wert3, wert4, wert5, wert6);
+           # ESP_LOGD("main", "Antwort von 0x301 Float: %f", wert7);
+           # ESP_LOGI("main", "Antwort von 0x301 Dez.: %i %i", wert5, wert6);
 
-#Show data in raw form as hex-values
-    - can_id: 0x500
-      then:
-        - lambda: |-
-            int wert0 = int(x[0]);
-            int wert1 = int(x[1]);
-            int wert2 = int(x[2]);
-            int wert3 = int(x[3]);
-            int wert4 = int(x[4]);
-            int wert5 = int(x[5]);
-            int wert6 = int(x[6]);
-            float wert7 = float(int((x[6])+((x[5])<<8)));
-            ESP_LOGD("main", "Antwort von 301 Hex: %x %x %x %x %x %x %x", wert0, wert1, wert2, wert3, wert4, wert5, wert6);
-            ESP_LOGD("main", "Antwort von 301 Float: %f", wert7);
-            ESP_LOGI("main", "Antwort von 301 Dez.: %i %i", wert5, wert6);
-
-#Show data in raw form as hex-values
     - can_id: 0x680
       then:
         - lambda: |-
+            if (x.size() < 7) {
+              ESP_LOGE("main", "Datenfehler: weniger als 7 Elemente erhalten");
+              return;
+            }
+        
             int wert0 = int(x[0]);
             int wert1 = int(x[1]);
             int wert2 = int(x[2]);
@@ -1503,7 +1470,8 @@ canbus:
             int wert4 = int(x[4]);
             int wert5 = int(x[5]);
             int wert6 = int(x[6]);
-            float wert7 = float(int((x[6])+((x[5])<<8)));
-            ESP_LOGD("main", "Antwort von 301 Hex: %x %x %x %x %x %x %x", wert0, wert1, wert2, wert3, wert4, wert5, wert6);
-            ESP_LOGD("main", "Antwort von 301 Float: %f", wert7);
-            ESP_LOGI("main", "Antwort von 301 Dez.: %i %i", wert5, wert6);            
+            float wert7 = float(int((x[6]) + ((x[5]) << 8)));
+        
+            ESP_LOGD("main", "Antwort von 0x680 Hex: %x %x %x %x %x %x %x", wert0, wert1, wert2, wert3, wert4, wert5, wert6);
+            ESP_LOGD("main", "Antwort von 0x680 Float: %f", wert7);
+            ESP_LOGI("main", "Antwort von 0x680 Dez.: %i %i", wert5, wert6);
