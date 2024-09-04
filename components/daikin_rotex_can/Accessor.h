@@ -53,6 +53,9 @@ public:
     sensor::Sensor* get_dhw_mixer_position() const { return m_dhw_mixer_position; }
     void set_dhw_mixer_position(sensor::Sensor* pSensor) { m_dhw_mixer_position = pSensor; }
 
+    sensor::Sensor* get_target_supply_temperature() const { return m_target_supply_temperature; }
+    void set_target_supply_temperature(sensor::Sensor* pSensor) { m_target_supply_temperature = pSensor; }
+
     // Text Sensors
 
     text_sensor::TextSensor* get_operating_mode() const { return m_operating_mode; }
@@ -96,6 +99,7 @@ private:
     sensor::Sensor* m_circulation_pump;
     sensor::Sensor* m_bypass_valve;
     sensor::Sensor* m_dhw_mixer_position;
+    sensor::Sensor* m_target_supply_temperature;
 
     text_sensor::TextSensor* m_operating_mode;
     text_sensor::TextSensor* m_mode_of_operating;

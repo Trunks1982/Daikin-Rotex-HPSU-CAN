@@ -36,6 +36,7 @@ CONF_WATER_FLOW = "water_flow"
 CONF_CIRCULATION_PUMP = "circulation_pump"
 CONF_BYPASS_VALVE = "bypass_valve"
 CONF_DHW_MIXER_POSITION = "dhw_mixer_position"
+CONF_TARGET_SUPPLY_TEMPERATURE = "target_supply_temperature" # Vorlauf Soll
 
 ########## Text Sensors ##########
 
@@ -138,6 +139,12 @@ CONFIG_SCHEMA = cv.Schema(
             state_class=STATE_CLASS_MEASUREMENT,
             icon="mdi:waves-arrow-left"
         ).extend(),
+        cv.Optional(CONF_TARGET_SUPPLY_TEMPERATURE): sensor.sensor_schema(
+            device_class=DEVICE_CLASS_TEMPERATURE,
+            unit_of_measurement=UNIT_CELSIUS,
+            accuracy_decimals=1,
+            state_class=STATE_CLASS_MEASUREMENT
+        ).extend(),
 
         ######## Text Sensors ########
 
@@ -238,6 +245,10 @@ def to_code(config):
     if dhw_mixer_position := config.get(CONF_DHW_MIXER_POSITION):
         sens = yield sensor.new_sensor(dhw_mixer_position)
         cg.add(var.getAccessor().set_dhw_mixer_position(sens))
+
+    if target_supply_temperature := config.get(CONF_TARGET_SUPPLY_TEMPERATURE):
+        sens = yield sensor.new_sensor(target_supply_temperature)
+        cg.add(var.getAccessor().set_target_supply_temperature(sens))
 
     ######## Text Sensors ########
 

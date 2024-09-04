@@ -231,6 +231,18 @@ const std::vector<TRequest> entity_config = {
     },
 
     {
+        "VL Soll",
+        {0x31, 0x00, 0x02, 0x00, 0x00, 0x00, 0x00},
+        {0xD2,   DC, 0x02,   DC,   DC,   DC,   DC},
+        [](auto& accessor) -> bool { return accessor.get_target_supply_temperature() != nullptr; },
+        [](auto const& data, auto& accessor) -> DataType {
+            const float temp = ((data[3] << 8) | data[4]) / 10.0f;
+            accessor.get_target_supply_temperature()->publish_state(temp);
+            return temp;
+        }
+    },
+
+    {
         "Fehlercode",
         {0x31, 0x00, 0xFA, 0x13, 0x88, 0x00, 0x00},
         {  DC,   DC, 0xFA, 0x13, 0x88,   DC,   DC},
