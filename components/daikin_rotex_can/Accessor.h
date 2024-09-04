@@ -62,6 +62,9 @@ public:
     sensor::Sensor* get_thermal_power() const { return m_thermal_power; }
     void set_thermal_power(sensor::Sensor* pSensor) { m_thermal_power = pSensor; }
 
+    sensor::Sensor* get_heating_curve() const { return m_heating_curve; }
+    void set_heating_curve(sensor::Sensor* pSensor) { m_heating_curve = pSensor; }
+
     // Text Sensors
 
     text_sensor::TextSensor* get_operating_mode() const { return m_operating_mode; }
@@ -124,6 +127,7 @@ private:
     sensor::Sensor* m_target_supply_temperature;
     sensor::Sensor* m_daytime_supply_temperature;
     sensor::Sensor* m_thermal_power;
+    sensor::Sensor* m_heating_curve;
 
     text_sensor::TextSensor* m_operating_mode;
     text_sensor::TextSensor* m_mode_of_operating;

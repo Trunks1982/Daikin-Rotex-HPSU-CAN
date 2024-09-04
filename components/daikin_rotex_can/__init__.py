@@ -39,6 +39,7 @@ CONF_DHW_MIXER_POSITION = "dhw_mixer_position"
 CONF_TARGET_SUPPLY_TEMPERATURE = "target_supply_temperature" # Vorlauf Soll
 CONF_DAYTIME_SUPPLY_TEMPERATURE = "daytime_supply_temperature" # Temperatur Vorlauf Tag
 CONF_THERMAL_POWER = "thermal_power" # Thermische Leistung
+CONF_HEATING_CURVE = "heating_curve" # Heizkurve
 
 ########## Text Sensors ##########
 
@@ -159,6 +160,12 @@ CONFIG_SCHEMA = cv.Schema(
             accuracy_decimals=2,
             state_class=STATE_CLASS_MEASUREMENT
         ).extend(),
+        cv.Optional(CONF_HEATING_CURVE): sensor.sensor_schema(
+            device_class=DEVICE_CLASS_TEMPERATURE,
+            icon="mdi:thermometer-lines",
+            accuracy_decimals=2,
+            state_class=STATE_CLASS_MEASUREMENT
+        ).extend(),
 
         ######## Text Sensors ########
 
@@ -271,6 +278,10 @@ def to_code(config):
     if thermal_power := config.get(CONF_THERMAL_POWER):
         sens = yield sensor.new_sensor(thermal_power)
         cg.add(var.getAccessor().set_thermal_power(sens))
+
+    if heating_curve := config.get(CONF_HEATING_CURVE):
+        sens = yield sensor.new_sensor(heating_curve)
+        cg.add(var.getAccessor().set_heating_curve(sens))
 
     ######## Text Sensors ########
 

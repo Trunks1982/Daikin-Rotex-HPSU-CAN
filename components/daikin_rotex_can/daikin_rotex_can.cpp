@@ -261,6 +261,19 @@ const std::vector<TRequest> entity_config = {
     },
 
     {
+        "Heizkurve",
+        {0x31, 0x00, 0xFA, 0x01, 0x0E, 0x00, 0x00},
+        {  DC,   DC, 0xFA, 0x01, 0x0E,   DC,   DC},
+        [](auto& accessor) -> bool { return accessor.get_heating_curve() != nullptr; },
+        [](auto const& data, auto& accessor) -> DataType {
+            const float value = (uint32_t(data[6]) + (data[5] << 8)) / 100.0f;
+            accessor.get_heating_curve()->publish_state(value);
+            //id(heizkurve_set).publish_state(value);
+            return value;
+        }
+    },
+
+    {
         "Fehlercode",
         {0x31, 0x00, 0xFA, 0x13, 0x88, 0x00, 0x00},
         {  DC,   DC, 0xFA, 0x13, 0x88,   DC,   DC},
