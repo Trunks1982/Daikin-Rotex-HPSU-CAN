@@ -72,6 +72,8 @@ daikin_rotex_can:
     name: "Durchfluss"
   error_code:
     name: "Fehlercode"
+  target_hot_water_temperature:
+    name: "T-WW-Soll1"
   tvbh:
     name: "Vorlauftemperatur Heizung (TVBH)"
   tv:

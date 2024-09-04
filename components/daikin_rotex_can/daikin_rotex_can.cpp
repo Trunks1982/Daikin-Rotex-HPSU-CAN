@@ -7,7 +7,7 @@
 namespace esphome {
 namespace daikin_rotex_can {
 
-static const char *TAG = "daikin_rotex_can";
+static const char* TAG = "daikin_rotex_can";
 
 static const BidiMap<uint8_t, std::string> map_betriebsmodus {
     {0x01, "Bereitschaft"},
@@ -323,7 +323,7 @@ void DaikinRotexCanComponent::validateConfig() {
 }
 
 void DaikinRotexCanComponent::setup() {
-    //ESP_LOGI(TAG, "setup");
+    ESP_LOGI(TAG, "setup");
 }
 
 void DaikinRotexCanComponent::set_operation_mode(std::string const& mode) {
