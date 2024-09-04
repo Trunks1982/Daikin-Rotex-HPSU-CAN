@@ -274,6 +274,18 @@ const std::vector<TRequest> entity_config = {
     },
 
     {
+        "EHS für CH",
+        {0x31, 0x00, 0xFA, 0x09, 0x20, 0x00, 0x00},
+        {  DC,   DC, 0xFA, 0x09, 0x20,   DC,   DC},
+        [](auto& accessor) -> bool { return accessor.get_ehs_for_ch() != nullptr; },
+        [](auto const& data, auto& accessor) -> DataType {
+            const float temp = float((int((data[6]) + ((data[5]) << 8))));
+            accessor.get_ehs_for_ch()->publish_state(temp);
+            return temp;
+        }
+    },
+
+    {
         "Fehlercode",
         {0x31, 0x00, 0xFA, 0x13, 0x88, 0x00, 0x00},
         {  DC,   DC, 0xFA, 0x13, 0x88,   DC,   DC},

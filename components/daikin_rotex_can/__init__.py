@@ -40,6 +40,7 @@ CONF_TARGET_SUPPLY_TEMPERATURE = "target_supply_temperature" # Vorlauf Soll
 CONF_DAYTIME_SUPPLY_TEMPERATURE = "daytime_supply_temperature" # Temperatur Vorlauf Tag
 CONF_THERMAL_POWER = "thermal_power" # Thermische Leistung
 CONF_HEATING_CURVE = "heating_curve" # Heizkurve
+CONF_EHS_FOR_CH = "ehs_for_ch"
 
 ########## Text Sensors ##########
 
@@ -166,6 +167,13 @@ CONFIG_SCHEMA = cv.Schema(
             accuracy_decimals=2,
             state_class=STATE_CLASS_MEASUREMENT
         ).extend(),
+        cv.Optional(CONF_EHS_FOR_CH): sensor.sensor_schema(
+            device_class=DEVICE_CLASS_ENERGY_STORAGE,
+            state_class=STATE_CLASS_MEASUREMENT,
+            unit_of_measurement=UNIT_KILOWATT_HOURS,
+            accuracy_decimals=0,
+            icon="mdi:thermometer-lines",
+        ).extend(),
 
         ######## Text Sensors ########
 
@@ -282,6 +290,10 @@ def to_code(config):
     if heating_curve := config.get(CONF_HEATING_CURVE):
         sens = yield sensor.new_sensor(heating_curve)
         cg.add(var.getAccessor().set_heating_curve(sens))
+
+    if ehs_for_ch := config.get(CONF_EHS_FOR_CH):
+        sens = yield sensor.new_sensor(ehs_for_ch)
+        cg.add(var.getAccessor().set_ehs_for_ch(sens))
 
     ######## Text Sensors ########
 
