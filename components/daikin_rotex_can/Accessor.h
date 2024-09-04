@@ -56,6 +56,12 @@ public:
     sensor::Sensor* get_target_supply_temperature() const { return m_target_supply_temperature; }
     void set_target_supply_temperature(sensor::Sensor* pSensor) { m_target_supply_temperature = pSensor; }
 
+    sensor::Sensor* get_daytime_supply_temperature() const { return m_daytime_supply_temperature; }
+    void set_daytime_supply_temperature(sensor::Sensor* pSensor) { m_daytime_supply_temperature = pSensor; }
+
+    sensor::Sensor* get_thermal_power() const { return m_thermal_power; }
+    void set_thermal_power(sensor::Sensor* pSensor) { m_thermal_power = pSensor; }
+
     // Text Sensors
 
     text_sensor::TextSensor* get_operating_mode() const { return m_operating_mode; }
@@ -85,6 +91,22 @@ public:
     number::Number* get_target_hot_water_temperature_set() const { return m_target_hot_water_temperature_set; }
     void set_target_hot_water_temperature_set(number::Number* pNumber) { m_target_hot_water_temperature_set = pNumber; }
 
+public:
+    void update_thermal_power() {
+        float power = 0.0f;
+        if (get_mode_of_operating() != nullptr && get_water_flow() != nullptr && get_tv() != nullptr && get_tvbh() != nullptr && get_tr() != nullptr) {
+            if (get_mode_of_operating()->state == "Warmwasserbereitung") {
+                power = (get_tv()->state - get_tr()->state) * (4.19 * get_water_flow()->state) / 3600.0f;
+            } else if (get_mode_of_operating()->state == "Heizen") {
+                power = (get_tvbh()->state - get_tr()->state) * (4.19 * get_water_flow()->state) / 3600.0f;
+            } else if (get_mode_of_operating()->state == "Kühlen") {
+                power = (get_tvbh()->state - get_tr()->state) * (4.19 * get_water_flow()->state) / 3600.0f;
+            }
+        }
+
+        get_thermal_power()->publish_state(power);
+    }
+
 private:
     text::Text* m_log_filter;
 
@@ -100,6 +122,8 @@ private:
     sensor::Sensor* m_bypass_valve;
     sensor::Sensor* m_dhw_mixer_position;
     sensor::Sensor* m_target_supply_temperature;
+    sensor::Sensor* m_daytime_supply_temperature;
+    sensor::Sensor* m_thermal_power;
 
     text_sensor::TextSensor* m_operating_mode;
     text_sensor::TextSensor* m_mode_of_operating;

@@ -58,6 +58,7 @@ const std::vector<TRequest> entity_config = {
         [](auto const& data, auto& accessor) -> DataType {
             const float temp = float(float((int((data[6]) + ((data[5]) << 8))))/10);
             accessor.get_tv()->publish_state(temp);
+            accessor.update_thermal_power();
             return temp;
         }
     },
@@ -69,6 +70,7 @@ const std::vector<TRequest> entity_config = {
         [](auto const& data, auto& accessor) -> DataType {
             const float temp = float(float((int((data[6]) + ((data[5]) << 8))))/10);
             accessor.get_tvbh()->publish_state(temp);
+            accessor.update_thermal_power();
             return temp;
         }
     },
@@ -80,6 +82,7 @@ const std::vector<TRequest> entity_config = {
         [](auto const& data, auto& accessor) -> DataType {
             const float temp = float(float((int((data[6]) + ((data[5]) << 8))))/10);
             accessor.get_tr()->publish_state(temp);
+            accessor.update_thermal_power();
             return temp;
         }
     },
@@ -102,6 +105,7 @@ const std::vector<TRequest> entity_config = {
         [](auto const& data, auto& accessor) -> DataType {
             const float flow = float((float((int((data[6]) + ((data[5]) << 8))))));
             accessor.get_water_flow()->publish_state(flow);
+            accessor.update_thermal_power();
             return flow;
         }
     },
@@ -141,6 +145,7 @@ const std::vector<TRequest> entity_config = {
             const std::string str_mode = iter != map_betriebsart.end() ? iter->second : "Unknown";
 
             accessor.get_mode_of_operating()->publish_state(str_mode);
+            accessor.update_thermal_power();
             return str_mode;
         }
     },
@@ -227,6 +232,19 @@ const std::vector<TRequest> entity_config = {
             const uint32_t position = uint32_t(data[6]) + uint32_t(data[5] << 8);
             accessor.get_dhw_mixer_position()->publish_state(position);
             return position;
+        }
+    },
+
+    {
+        "T Vorlauf Tag",
+        {0x31, 0x00, 0xFA, 0x01, 0x29, 0x00, 0x00},
+        {  DC,   DC, 0xFA, 0x01, 0x29,   DC,   DC},
+        [](auto& accessor) -> bool { return accessor.get_daytime_supply_temperature() != nullptr; },
+        [](auto const& data, auto& accessor) -> DataType {
+            float temp = float((float((int((data[6]) + ((data[5]) << 8))))/10));
+            accessor.get_daytime_supply_temperature()->publish_state(temp);
+            //id(t_vorlauf_tag_set).publish_state(temp);
+            return temp;
         }
     },
 

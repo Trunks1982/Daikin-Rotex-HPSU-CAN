@@ -37,6 +37,8 @@ CONF_CIRCULATION_PUMP = "circulation_pump"
 CONF_BYPASS_VALVE = "bypass_valve"
 CONF_DHW_MIXER_POSITION = "dhw_mixer_position"
 CONF_TARGET_SUPPLY_TEMPERATURE = "target_supply_temperature" # Vorlauf Soll
+CONF_DAYTIME_SUPPLY_TEMPERATURE = "daytime_supply_temperature" # Temperatur Vorlauf Tag
+CONF_THERMAL_POWER = "thermal_power" # Thermische Leistung
 
 ########## Text Sensors ##########
 
@@ -145,6 +147,18 @@ CONFIG_SCHEMA = cv.Schema(
             accuracy_decimals=1,
             state_class=STATE_CLASS_MEASUREMENT
         ).extend(),
+        cv.Optional(CONF_DAYTIME_SUPPLY_TEMPERATURE): sensor.sensor_schema(
+            device_class=DEVICE_CLASS_TEMPERATURE,
+            unit_of_measurement=UNIT_CELSIUS,
+            accuracy_decimals=1,
+            state_class=STATE_CLASS_MEASUREMENT
+        ).extend(),
+        cv.Optional(CONF_THERMAL_POWER): sensor.sensor_schema(
+            device_class=DEVICE_CLASS_POWER,
+            unit_of_measurement=UNIT_KILOWATT,
+            accuracy_decimals=2,
+            state_class=STATE_CLASS_MEASUREMENT
+        ).extend(),
 
         ######## Text Sensors ########
 
@@ -249,6 +263,14 @@ def to_code(config):
     if target_supply_temperature := config.get(CONF_TARGET_SUPPLY_TEMPERATURE):
         sens = yield sensor.new_sensor(target_supply_temperature)
         cg.add(var.getAccessor().set_target_supply_temperature(sens))
+
+    if daytime_supply_temperature := config.get(CONF_DAYTIME_SUPPLY_TEMPERATURE):
+        sens = yield sensor.new_sensor(daytime_supply_temperature)
+        cg.add(var.getAccessor().set_daytime_supply_temperature(sens))
+
+    if thermal_power := config.get(CONF_THERMAL_POWER):
+        sens = yield sensor.new_sensor(thermal_power)
+        cg.add(var.getAccessor().set_thermal_power(sens))
 
     ######## Text Sensors ########
 
