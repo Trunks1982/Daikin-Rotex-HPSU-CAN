@@ -12,13 +12,15 @@ class TRequests {
 public:
     TRequests(std::vector<esphome::daikin_rotex_can::TRequest> const& requests);
 
+    void removeInvalidRequests(Accessor const& accessor);
+
     void setCanbus(esphome::esp32_can::ESP32Can* pCanBus);
 
     uint32_t size() const;
     TRequest const& get(uint32_t index) const;
 
     bool sendNextPendingGet();
-    void sendGet(std::string const& request_name);
+    void sendGet(std::string const& request_name, Accessor const& accessor);
     void sendSet(std::string const& request_name, float value);
     void handle(uint32_t can_id, std::vector<uint8_t> const& responseData, Accessor&);
 

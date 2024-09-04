@@ -282,3 +282,5 @@ def to_code(config):
         )
         yield cg.register_parented(num, var)
         cg.add(var.getAccessor().set_target_hot_water_temperature_set(num))
+
+    cg.add(var.validateConfig())

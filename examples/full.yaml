@@ -58,9 +58,9 @@ daikin_rotex_can:
     name: "DHW Mischer Position"
   temperature_outside:
     name: "Aussentemperatur"
-  operation_mode:
+  operating_mode:
     name: "Betriebsmodus"
-  operation_mode_select:
+  operating_mode_select:
     name: "Betriebsmodus setzen"
   mode_of_operation:
     name: "Betriebsart"

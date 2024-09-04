@@ -10,6 +10,19 @@ TRequests::TRequests(std::vector<esphome::daikin_rotex_can::TRequest> const& req
 {
 }
 
+void TRequests::removeInvalidRequests(Accessor const& accessor) {
+    ESP_LOGI("TRequests", "removeInvalidRequests >>");
+    m_requests.erase(
+        std::remove_if(
+            m_requests.begin(),
+            m_requests.end(),
+            [&accessor](TRequest const& request) { return !request.isGetSupported(accessor); }
+        ),
+        m_requests.end()
+    );
+    ESP_LOGI("TRequests", "removeInvalidRequests <<");
+}
+
 bool TRequests::sendNextPendingGet() {
     TRequest* pRequest = getNextRequestToSend();
     if (pRequest != nullptr) {
@@ -19,9 +32,14 @@ bool TRequests::sendNextPendingGet() {
     return false;
 }
 
-void TRequests::sendGet(std::string const& request_name) {
-    const auto it = std::find_if(m_requests.begin(), m_requests.end(),
-        [& request_name](auto& request) { return request.getName() == request_name; });
+void TRequests::sendGet(std::string const& request_name, Accessor const& accessor) {
+    const auto it = std::find_if(
+        m_requests.begin(),
+        m_requests.end(),
+        [& request_name, & accessor](auto& request) {
+            return request.getName() == request_name && request.isGetSupported(accessor);
+        }
+    );
 
     if (it != m_requests.end()) {
         it->sendGet(m_pCanBus);

@@ -32,6 +32,7 @@ const std::vector<TRequest> entity_config = {
         "Aussentemperatur",
         {0x31, 0x00, 0xFA, 0xC0, 0xFF, 0x00, 0x00},
         {  DC,   DC, 0xFA, 0xC0, 0xFF,   DC,   DC},
+        [](auto& accessor) -> bool { return accessor.get_temperature_outside() != nullptr; },
         [](auto const& data, auto& accessor) -> DataType {
             const float temp = float(((int((data[6]) + ((data[5]) << 8))) ^ 0x8000) - 0x8000) / 10;
             accessor.get_temperature_outside()->publish_state(temp);
@@ -42,6 +43,7 @@ const std::vector<TRequest> entity_config = {
         "tdhw1",
         {0x31, 0x00, 0xFA, 0x00, 0x0E, 0x00, 0x00},
         {  DC,   DC, 0xFA, 0x00, 0x0E,   DC,   DC},
+        [](auto& accessor) -> bool { return accessor.get_tdhw1() != nullptr; },
         [](auto const& data, auto& accessor) -> DataType {
             const float temp = float((float((int((data[6]) + ((data[5]) << 8))))/10));
             accessor.get_tdhw1()->publish_state(temp);
@@ -52,6 +54,7 @@ const std::vector<TRequest> entity_config = {
         "Vorlauftemperatur",
         {0x31, 0x00, 0xFA, 0xC0, 0xFC, 0x00, 0x00},
         {  DC,   DC, 0xFA, 0xC0, 0xFC,   DC,   DC},
+        [](auto& accessor) -> bool { return accessor.get_tv() != nullptr; },
         [](auto const& data, auto& accessor) -> DataType {
             const float temp = float(float((int((data[6]) + ((data[5]) << 8))))/10);
             accessor.get_tv()->publish_state(temp);
@@ -62,6 +65,7 @@ const std::vector<TRequest> entity_config = {
         "Vorlauftemperatur (TVBH)",
         {0x31, 0x00, 0xFA, 0xC1, 0x02, 0x00, 0x00},
         {  DC,   DC, 0xFA, 0xC1, 0x02,   DC,   DC},
+        [](auto& accessor) -> bool { return accessor.get_tvbh() != nullptr; },
         [](auto const& data, auto& accessor) -> DataType {
             const float temp = float(float((int((data[6]) + ((data[5]) << 8))))/10);
             accessor.get_tvbh()->publish_state(temp);
@@ -72,6 +76,7 @@ const std::vector<TRequest> entity_config = {
         "Rücklauftemperatur Heizung",
         {0x31, 0x00, 0xFA, 0xC1, 0x00, 0x00, 0x00},
         {  DC,   DC, 0xFA, 0xC1, 0x00,   DC,   DC},
+        [](auto& accessor) -> bool { return accessor.get_tr() != nullptr; },
         [](auto const& data, auto& accessor) -> DataType {
             const float temp = float(float((int((data[6]) + ((data[5]) << 8))))/10);
             accessor.get_tr()->publish_state(temp);
@@ -82,6 +87,7 @@ const std::vector<TRequest> entity_config = {
         "water pressure",
         {0x31, 0x00, 0x1C, 0x00, 0x00, 0x00, 0x00},
         {0xD2,   DC, 0x1C,   DC,   DC,   DC,   DC},
+        [](auto& accessor) -> bool { return accessor.get_water_pressure() != nullptr; },
         [](auto const& data, auto& accessor) -> DataType {
             const float pressure = float((float((int((data[4]) + ((data[3]) << 8))))/1000));
             accessor.get_water_pressure()->publish_state(pressure);
@@ -92,6 +98,7 @@ const std::vector<TRequest> entity_config = {
         "Durchfluss",
         {0x31, 0x00, 0xFA, 0x01, 0xDA, 0x00, 0x00},
         {  DC,   DC, 0xFA, 0x01, 0xDA,   DC,   DC},
+        [](auto& accessor) -> bool { return accessor.get_water_flow() != nullptr; },
         [](auto const& data, auto& accessor) -> DataType {
             const float flow = float((float((int((data[6]) + ((data[5]) << 8))))));
             accessor.get_water_flow()->publish_state(flow);
@@ -103,10 +110,15 @@ const std::vector<TRequest> entity_config = {
         "Betriebsmodus",
         {0x31, 0x00, 0xFA, 0x01, 0x12, 0x00, 0x00},
         {  DC,   DC, 0xFA, 0x01, 0x12,   DC,   DC},
+        [](auto& accessor) -> bool { return accessor.get_operating_mode() != nullptr || accessor.get_operating_mode_select() != nullptr; },
         [](auto const& data, auto& accessor) -> DataType {
             const std::string mode = map_betriebsmodus.getValue(data[5]);
-            accessor.get_operating_mode()->publish_state(mode);
-            accessor.get_operating_mode_select()->publish_state(mode);
+            if (accessor.get_operating_mode() != nullptr) {
+                accessor.get_operating_mode()->publish_state(mode);
+            }
+            if (accessor.get_operating_mode_select() != nullptr) {
+                accessor.get_operating_mode_select()->publish_state(mode);
+            }
             return mode;
         }
     },
@@ -121,6 +133,7 @@ const std::vector<TRequest> entity_config = {
         "Betriebsart",
         {0x31, 0x00, 0xFA, 0xC0, 0xF6, 0x00, 0x00},
         {  DC,   DC, 0xFA, 0xC0, 0xF6,   DC,   DC},
+        [](auto& accessor) -> bool { return accessor.get_mode_of_operating() != nullptr; },
         [](auto const& data, auto& accessor) -> DataType {
             const uint32_t mode = uint32_t(data[6] + data[5]);
 
@@ -137,6 +150,7 @@ const std::vector<TRequest> entity_config = {
         {0xA1, 0x00, 0x61, 0x00, 0x00, 0x00, 0x00},
         0x500,
         {  DC,   DC, 0x61,   DC,   DC,   DC,   DC},
+        [](auto& accessor) -> bool { return accessor.get_status_kompressor() != nullptr; },
         [](auto const& data, auto& accessor) -> DataType {
             const float state = float((float((int((data[3]) + ((data[4]) << 8))))));
             accessor.get_status_kompressor()->publish_state(state);
@@ -148,6 +162,7 @@ const std::vector<TRequest> entity_config = {
         "Status Kessel",
         {0x31, 0x00, 0xFA, 0x0A, 0x8C, 0x00, 0x00},
         {  DC,   DC, 0xFA, 0x0A, 0x8C,   DC,   DC},
+        [](auto& accessor) -> bool { return accessor.get_status_kesselpumpe() != nullptr; },
         [](auto const& data, auto& accessor) -> DataType {
             const float state = float((float((int((data[6]) + ((data[5]) << 8))))));
             accessor.get_status_kesselpumpe()->publish_state(state);
@@ -159,6 +174,7 @@ const std::vector<TRequest> entity_config = {
         "Umwälzpumpe",
         {0x31, 0x00, 0xFA, 0xC0, 0xF7, 0x00, 0x00},
         {  DC,   DC, 0xFA, 0xC0, 0xF7,   DC,   DC},
+        [](auto& accessor) -> bool { return accessor.get_circulation_pump() != nullptr; },
         [](auto const& data, auto& accessor) -> DataType {
             const float percent = int((data[6]) + data[5]);
             accessor.get_circulation_pump()->publish_state(percent);
@@ -170,8 +186,9 @@ const std::vector<TRequest> entity_config = {
         "T-WW-Soll1",
         {0x31, 0x00, 0x13, 0x00, 0x00, 0x00, 0x00},
         {0xD2, 0x00, 0x13,   DC,   DC, 0x00, 0x00},
+        [](auto& accessor) -> bool { return accessor.get_target_hot_water_temperature() != nullptr; },
         [](auto const& data, auto& accessor) -> DataType {
-            const uint16_t temperature_raw = (data[3] <<  8) | data[4];
+            const uint16_t temperature_raw = (data[3] << 8) | data[4];
             const float temp = static_cast<float>(temperature_raw) / 10.0;
             accessor.get_target_hot_water_temperature()->publish_state(temp);
             //id(ww_soll).publish_state(temperature);
@@ -193,6 +210,7 @@ const std::vector<TRequest> entity_config = {
         "BPV",
         {0x31, 0x00, 0xFA, 0xC0, 0xFB, 0x00, 0x00},
         {  DC,   DC, 0xFA, 0xC0, 0xFB,   DC,   DC},
+        [](auto& accessor) -> bool { return accessor.get_bypass_valve() != nullptr; },
         [](auto const& data, auto& accessor) -> DataType {
             const uint32_t value = uint32_t((data[6]) + (data[5] << 8));
             accessor.get_bypass_valve()->publish_state(value);
@@ -204,6 +222,7 @@ const std::vector<TRequest> entity_config = {
         "DHW Mischer Position",
         {0x31, 0x00, 0xFA, 0x06, 0x9B, 0x00, 0x00},
         {  DC,   DC, 0xFA, 0x06, 0x9B,   DC,   DC},
+        [](auto& accessor) -> bool { return accessor.get_dhw_mixer_position() != nullptr; },
         [](auto const& data, auto& accessor) -> DataType {
             const uint32_t position = uint32_t(data[6]) + uint32_t(data[5] << 8);
             accessor.get_dhw_mixer_position()->publish_state(position);
@@ -215,6 +234,7 @@ const std::vector<TRequest> entity_config = {
         "Fehlercode",
         {0x31, 0x00, 0xFA, 0x13, 0x88, 0x00, 0x00},
         {  DC,   DC, 0xFA, 0x13, 0x88,   DC,   DC},
+        [](auto& accessor) -> bool { return accessor.get_error_code() != nullptr; },
         [](auto const& data, auto& accessor) -> DataType {
             const uint32_t code = uint32_t(data[6]) + (uint32_t(data[5]) << 8);
 
@@ -293,8 +313,13 @@ const std::vector<TRequest> entity_config = {
 };
 
 DaikinRotexCanComponent::DaikinRotexCanComponent()
-: m_data_requests(std::move(entity_config))
+: m_accessor()
+, m_data_requests(std::move(entity_config))
 {
+}
+
+void DaikinRotexCanComponent::validateConfig() {
+    m_data_requests.removeInvalidRequests(m_accessor);
 }
 
 void DaikinRotexCanComponent::setup() {
