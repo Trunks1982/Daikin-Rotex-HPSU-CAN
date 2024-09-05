@@ -286,6 +286,18 @@ const std::vector<TRequest> entity_config = {
     },
 
     {
+        "Erzeugte Energie gesamt",
+        {0x31, 0x00, 0xFA, 0x09, 0x30, 0x00, 0x00},
+        {  DC,   DC, 0xFA, 0x09, 0x30,   DC,   DC},
+        [](auto& accessor) -> bool { return accessor.get_total_energy_produced() != nullptr; },
+        [](auto const& data, auto& accessor) -> DataType {
+            float value = float((float((int((data[6]) + ((data[5]) << 8))))));
+            accessor.get_total_energy_produced()->publish_state(value);
+            return value;
+        }
+    },
+
+    {
         "Fehlercode",
         {0x31, 0x00, 0xFA, 0x13, 0x88, 0x00, 0x00},
         {  DC,   DC, 0xFA, 0x13, 0x88,   DC,   DC},
