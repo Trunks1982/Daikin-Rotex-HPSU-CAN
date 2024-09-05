@@ -28,5 +28,6 @@ canbus:
 daikin_rotex_can:
   id: rotext_hpsu
   canbus_id: can_bus
-  tdhw1:
-    name: "Warmwassertemperatur"
+  entities:
+    tdhw1:
+      name: "Warmwassertemperatur"

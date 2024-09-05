@@ -52,39 +52,52 @@ daikin_rotex_can:
   canbus_id: can_bus
   log_filter:
     name: "Log Filter"
-  bypass_valve:
-    name: "BPV"
-  dhw_mixer_position:
-    name: "DHW Mischer Position"
-  temperature_outside:
-    name: "Aussentemperatur"
-  operating_mode:
-    name: "Betriebsmodus"
-  operating_mode_select:
-    name: "Betriebsmodus setzen"
-  mode_of_operation:
-    name: "Betriebsart"
-  tdhw1:
-    name: "Warmwassertemperatur"
-  water_pressure:
-    name: "Wasserdruck"
-  water_flow:
-    name: "Durchfluss"
-  error_code:
-    name: "Fehlercode"
-  target_hot_water_temperature:
-    name: "T-WW-Soll1"
-  target_supply_temperature:
-    name: "Vorlauf Soll"
-  tvbh:
-    name: "Vorlauftemperatur Heizung (TVBH)"
-  tv:
-    name: "Heizkreis Vorlauf (TV)"
-  tr:
-    name: "Ruecklauftemperatur Heizung"
-  status_kompressor:
-    name: "Status Kompressor"
-  status_kesselpumpe:
-    name: "Status Kesselpumpe"
-  circulation_pump:
-    name: "Umwaelzpumpe"
+  entities:
+    bypass_valve:
+      name: "BPV"
+    circulation_pump:
+      name: "Umwaelzpumpe"
+    daytime_supply_temperature:
+      name: "T Vorlauf Tag"
+    dhw_mixer_position:
+      name: "DHW Mischer Position"
+    ehs_for_ch:
+      name: "EHS fuer CH"
+    error_code:
+      name: "Fehlercode"
+    heating_curve:
+      name: "Heizkurve"
+    hk_function:
+      name: "HK-Funktion"
+    mode_of_operation:
+      name: "Betriebsart"
+    operating_mode:
+      name: "Betriebsmodus"
+    operating_mode_select:
+      name: "Betriebsmodus setzen"
+    status_kesselpumpe:
+      name: "Status Kesselpumpe"
+    status_kompressor:
+      name: "Status Kompressor"
+    tdhw1:
+      name: "Warmwassertemperatur"
+    temperature_outside:
+      name: "Aussentemperatur"
+    tr:
+      name: "Ruecklauftemperatur Heizung"
+    tv:
+      name: "Heizkreis Vorlauf (TV)"
+    tvbh:
+      name: "Vorlauftemperatur Heizung (TVBH)"
+    water_flow:
+      name: "Durchfluss"
+    water_pressure:
+      name: "Wasserdruck"
+    target_hot_water_temperature:
+      name: "T-WW-Soll1"
+    target_supply_temperature:
+      name: "Vorlauf Soll"
+    thermal_power:
+      name: "Thermische Leistung"
+    total_energy_produced:
+      name: "Erzeugte Energie Gesamt"
