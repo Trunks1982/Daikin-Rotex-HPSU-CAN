@@ -317,6 +317,30 @@ const std::vector<TRequest> entity_config = {
         }
     },
 
+    { // Min VL Soll
+        {0x31, 0x00, 0xFA, 0x01, 0x2B, 0x00, 0x00},
+        {  DC,   DC, 0xFA, 0x01, 0x2B,   DC,   DC},
+        [](auto& accessor) -> EntityBase* { return accessor.get_min_target_supply_temperature(); },
+        [](auto const& data, auto& accessor) -> DataType {
+            const float temp = float(float((int((data[6]) + ((data[5]) << 8))))/10);
+            accessor.get_min_target_supply_temperature()->publish_state(temp);
+            //id(min_vl_soll_set).publish_state(temp);
+            return temp;
+        }
+    },
+
+    { // Max VL Soll
+        {0x31, 0x00, 0x28, 0x00, 0x00, 0x00, 0x00},
+        {  DC,   DC, 0x28,   DC,   DC,   DC,   DC},
+        [](auto& accessor) -> EntityBase* { return accessor.get_max_target_supply_temperature(); },
+        [](auto const& data, auto& accessor) -> DataType {
+            const float temp = float((float((int((data[4]) + ((data[3]) << 8))))/10));
+            accessor.get_max_target_supply_temperature()->publish_state(temp);
+            //id(max_vl_soll_set).publish_state(temp);
+            return temp;
+        }
+    },
+
     { // Fehlercode
         {0x31, 0x00, 0xFA, 0x13, 0x88, 0x00, 0x00},
         {  DC,   DC, 0xFA, 0x13, 0x88,   DC,   DC},

@@ -45,6 +45,8 @@ CONF_EHS_FOR_CH = "ehs_for_ch"
 CONF_TOTAL_ENERGY_PRODUCED = "total_energy_produced"
 CONF_RUNTIME_COMPRESSOR = "runtime_compressor"
 CONF_RUNTIME_PUMP = "runtime_pump"
+CONF_MIN_TARGET_SUPPLY_TEMPERATURE = "min_target_supply_temperature" # Min Vorlauf Soll
+CONF_MAX_TARGET_SUPPLY_TEMPERATURE = "max_target_supply_temperature" # Max Vorlauf Soll
 
 ########## Text Sensors ##########
 
@@ -204,6 +206,18 @@ CONFIG_SCHEMA = cv.Schema(
                     accuracy_decimals=0,
                     icon="mdi:clock-time-two-outline",
                 ).extend(),
+                cv.Optional(CONF_MIN_TARGET_SUPPLY_TEMPERATURE): sensor.sensor_schema(
+                    device_class=DEVICE_CLASS_TEMPERATURE,
+                    unit_of_measurement=UNIT_CELSIUS,
+                    accuracy_decimals=0,
+                    icon="mdi:waves-arrow-left",
+                ).extend(),
+                cv.Optional(CONF_MAX_TARGET_SUPPLY_TEMPERATURE): sensor.sensor_schema(
+                    device_class=DEVICE_CLASS_TEMPERATURE,
+                    unit_of_measurement=UNIT_CELSIUS,
+                    accuracy_decimals=0,
+                    icon="mdi:waves-arrow-right",
+                ).extend(),
 
                 ######## Text Sensors ########
 
@@ -342,6 +356,14 @@ def to_code(config):
         if runtime_pump := entities.get(CONF_RUNTIME_PUMP):
             sens = yield sensor.new_sensor(runtime_pump)
             cg.add(var.getAccessor().set_runtime_pump(sens))
+
+        if min_target_supply_temperature := entities.get(CONF_MIN_TARGET_SUPPLY_TEMPERATURE):
+            sens = yield sensor.new_sensor(min_target_supply_temperature)
+            cg.add(var.getAccessor().set_min_target_supply_temperature(sens))
+
+        if max_target_supply_temperature := entities.get(CONF_MAX_TARGET_SUPPLY_TEMPERATURE):
+            sens = yield sensor.new_sensor(max_target_supply_temperature)
+            cg.add(var.getAccessor().set_max_target_supply_temperature(sens))
 
         ######## Text Sensors ########
 

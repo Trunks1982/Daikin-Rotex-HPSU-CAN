@@ -69,12 +69,20 @@ daikin_rotex_can:
       name: "Heizkurve"
     hk_function:
       name: "HK-Funktion"
+    max_target_supply_temperature:
+      name: "Max VL Soll"
+    min_target_supply_temperature:
+      name: "Min VL Soll"
     mode_of_operation:
       name: "Betriebsart"
     operating_mode:
       name: "Betriebsmodus"
     operating_mode_select:
       name: "Betriebsmodus setzen"
+    runtime_compressor:
+      name: "Laufzeit Compressor"
+    runtime_pump:
+      name: "Laufzeit Pump"
     status_kesselpumpe:
       name: "Status Kesselpumpe"
     status_kompressor:

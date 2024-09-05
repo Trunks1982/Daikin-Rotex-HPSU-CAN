@@ -77,6 +77,12 @@ public:
     sensor::Sensor* get_runtime_pump() const { return m_runtime_pump; }
     void set_runtime_pump(sensor::Sensor* pSensor) { m_runtime_pump = pSensor; }
 
+    sensor::Sensor* get_min_target_supply_temperature() const { return m_min_target_supply_temperature; }
+    void set_min_target_supply_temperature(sensor::Sensor* pSensor) { m_min_target_supply_temperature = pSensor; }
+
+    sensor::Sensor* get_max_target_supply_temperature() const { return m_max_target_supply_temperature; }
+    void set_max_target_supply_temperature(sensor::Sensor* pSensor) { m_max_target_supply_temperature = pSensor; }
+
     // Text Sensors
 
     text_sensor::TextSensor* get_operating_mode() const { return m_operating_mode; }
@@ -147,6 +153,8 @@ private:
     sensor::Sensor* m_total_energy_produced;
     sensor::Sensor* m_runtime_compressor;
     sensor::Sensor* m_runtime_pump;
+    sensor::Sensor* m_min_target_supply_temperature;
+    sensor::Sensor* m_max_target_supply_temperature;
 
     text_sensor::TextSensor* m_operating_mode;
     text_sensor::TextSensor* m_mode_of_operating;
