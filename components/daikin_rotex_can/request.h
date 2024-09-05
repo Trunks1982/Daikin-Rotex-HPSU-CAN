@@ -14,22 +14,21 @@ const uint16_t DC = 0xFFFF; // Don't care
 class TRequest
 {
 public:
-    using TGetCondition = std::function<bool(const Accessor&)>;
+    using TEntityProvider = std::function<EntityBase*(const Accessor&)>;
     using TGetLambda = std::function<DataType(std::vector<uint8_t> const&, Accessor&)>;
     using TSetLambda = std::function<std::vector<uint8_t>(float const&)>;
 public:
-    TRequest(std::string const& name,
+    TRequest(
         std::array<uint8_t, 7> const& data,
         uint32_t response_can_id,
         std::array<uint16_t, 7> const& expected_reponse,
-        TGetCondition get_condition,
+        TEntityProvider entity_provider,
         TGetLambda lambda,
         TSetLambda setLambda)
-    : m_name(name)
-    , m_data(data)
+    : m_data(data)
     , m_response_can_id(response_can_id)
     , m_expected_reponse(expected_reponse)
-    , m_get_condition(get_condition)
+    , m_entity_provider(entity_provider)
     , m_lambda(lambda)
     , m_set_lambda(setLambda)
     , m_last_update(0u)
@@ -37,47 +36,49 @@ public:
     {
     }
 
-    TRequest(std::string const& name,
+    TRequest(
         std::array<uint8_t, 7> const& data,
         uint32_t response_can_id,
         std::array<uint16_t, 7> const& expected_reponse,
-        TGetCondition get_condition,
+        TEntityProvider entity_provider,
         TGetLambda lambda)
-    : TRequest(name, data, response_can_id, expected_reponse, get_condition, lambda, [](float) -> std::vector<uint8_t> { return {}; })
+    : TRequest(data, response_can_id, expected_reponse, entity_provider, lambda, [](float) -> std::vector<uint8_t> { return {}; })
     {
     }
 
-    TRequest(std::string const& name,
+    TRequest(
         std::array<uint8_t, 7> const& data,
         std::array<uint16_t, 7> const& expected_reponse,
-        TGetCondition get_condition,
+        TEntityProvider entity_provider,
         TGetLambda lambda,
         TSetLambda setLambda)
-    : TRequest(name, data, 0x180, expected_reponse, get_condition, lambda, setLambda)
+    : TRequest(data, 0x180, expected_reponse, entity_provider, lambda, setLambda)
     {
     }
 
-    TRequest(std::string const& name,
+    TRequest(
         std::array<uint8_t, 7> const& data,
         std::array<uint16_t, 7> const& expected_reponse,
-        TGetCondition get_condition,
+        TEntityProvider entity_provider,
         TGetLambda lambda)
-    : TRequest(name, data, 0x180, expected_reponse, get_condition, lambda)
+    : TRequest(data, 0x180, expected_reponse, entity_provider, lambda)
     {
     }
 
-    TRequest(std::string const& name,
+    TRequest(
+        TEntityProvider entity_provider,
         TSetLambda setLambda)
-    : TRequest(name, {}, 0x00, {}, [](const Accessor&) -> bool { return true; }, [](auto const&, Accessor&) -> DataType { return 0u; }, setLambda)
+    : TRequest({}, 0x00, {}, entity_provider, [](auto const&, Accessor&) -> DataType { return 0u; }, setLambda)
     {
     }
 
-    std::string const& getName() const {
-        return m_name;
+    std::string getName(Accessor const& accessor) const {
+        EntityBase* pEntity = m_entity_provider(accessor);
+        return pEntity->get_name().str();
     }
 
     bool isGetSupported(Accessor const& accessor) const {
-        return m_get_condition(accessor);
+        return m_entity_provider(accessor) != nullptr;
     }
 
     uint32_t getLastUpdate() const {
@@ -89,19 +90,18 @@ public:
     }
 
     bool isMatch(uint32_t can_id, std::vector<uint8_t> const& responseData) const;
-    bool handle(uint32_t can_id, std::vector<uint8_t> const& responseData, uint32_t timestamp, Accessor&);
+    bool handle(Accessor&, uint32_t can_id, std::vector<uint8_t> const& responseData, uint32_t timestamp);
 
-    void sendGet(esphome::esp32_can::ESP32Can* pCanBus);
-    void sendSet(esphome::esp32_can::ESP32Can* pCanBus, float value);
+    void sendGet(Accessor const& accessor, esphome::esp32_can::ESP32Can* pCanBus);
+    void sendSet(Accessor const& accessor, esphome::esp32_can::ESP32Can* pCanBus, float value);
 
     bool inProgress() const;
 
 private:
-    std::string m_name;
     std::array<uint8_t, 7> m_data;
     uint32_t m_response_can_id;
     std::array<uint16_t, 7> m_expected_reponse;
-    TGetCondition m_get_condition;
+    TEntityProvider m_entity_provider;
     TGetLambda m_lambda;
     std::function<std::vector<uint8_t>(float const&)> m_set_lambda;
     uint32_t m_last_update;

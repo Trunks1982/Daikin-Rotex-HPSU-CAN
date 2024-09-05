@@ -28,33 +28,30 @@ static const BidiMap<uint8_t, std::string> map_betriebsart {
 };
 
 const std::vector<TRequest> entity_config = {
-    {
-        "Aussentemperatur",
+    { // Aussentemperatur
         {0x31, 0x00, 0xFA, 0xC0, 0xFF, 0x00, 0x00},
         {  DC,   DC, 0xFA, 0xC0, 0xFF,   DC,   DC},
-        [](auto& accessor) -> bool { return accessor.get_temperature_outside() != nullptr; },
+        [](auto& accessor) -> EntityBase* { return accessor.get_temperature_outside(); },
         [](auto const& data, auto& accessor) -> DataType {
             const float temp = float(((int((data[6]) + ((data[5]) << 8))) ^ 0x8000) - 0x8000) / 10;
             accessor.get_temperature_outside()->publish_state(temp);
             return temp;
         }
     },
-    {
-        "tdhw1",
+    { // tdhw1
         {0x31, 0x00, 0xFA, 0x00, 0x0E, 0x00, 0x00},
         {  DC,   DC, 0xFA, 0x00, 0x0E,   DC,   DC},
-        [](auto& accessor) -> bool { return accessor.get_tdhw1() != nullptr; },
+        [](auto& accessor) -> EntityBase* { return accessor.get_tdhw1(); },
         [](auto const& data, auto& accessor) -> DataType {
             const float temp = float((float((int((data[6]) + ((data[5]) << 8))))/10));
             accessor.get_tdhw1()->publish_state(temp);
             return temp;
         }
     },
-    {
-        "Vorlauftemperatur",
+    { // Vorlauftemperatur
         {0x31, 0x00, 0xFA, 0xC0, 0xFC, 0x00, 0x00},
         {  DC,   DC, 0xFA, 0xC0, 0xFC,   DC,   DC},
-        [](auto& accessor) -> bool { return accessor.get_tv() != nullptr; },
+        [](auto& accessor) -> EntityBase* { return accessor.get_tv(); },
         [](auto const& data, auto& accessor) -> DataType {
             const float temp = float(float((int((data[6]) + ((data[5]) << 8))))/10);
             accessor.get_tv()->publish_state(temp);
@@ -62,11 +59,10 @@ const std::vector<TRequest> entity_config = {
             return temp;
         }
     },
-    {
-        "Vorlauftemperatur (TVBH)",
+    { // Vorlauftemperatur (TVBH)
         {0x31, 0x00, 0xFA, 0xC1, 0x02, 0x00, 0x00},
         {  DC,   DC, 0xFA, 0xC1, 0x02,   DC,   DC},
-        [](auto& accessor) -> bool { return accessor.get_tvbh() != nullptr; },
+        [](auto& accessor) -> EntityBase* { return accessor.get_tvbh(); },
         [](auto const& data, auto& accessor) -> DataType {
             const float temp = float(float((int((data[6]) + ((data[5]) << 8))))/10);
             accessor.get_tvbh()->publish_state(temp);
@@ -74,11 +70,10 @@ const std::vector<TRequest> entity_config = {
             return temp;
         }
     },
-    {
-        "Rücklauftemperatur Heizung",
+    { // Rücklauftemperatur Heizung
         {0x31, 0x00, 0xFA, 0xC1, 0x00, 0x00, 0x00},
         {  DC,   DC, 0xFA, 0xC1, 0x00,   DC,   DC},
-        [](auto& accessor) -> bool { return accessor.get_tr() != nullptr; },
+        [](auto& accessor) -> EntityBase* { return accessor.get_tr(); },
         [](auto const& data, auto& accessor) -> DataType {
             const float temp = float(float((int((data[6]) + ((data[5]) << 8))))/10);
             accessor.get_tr()->publish_state(temp);
@@ -86,22 +81,20 @@ const std::vector<TRequest> entity_config = {
             return temp;
         }
     },
-    {
-        "water pressure",
+    { // Water Pressure
         {0x31, 0x00, 0x1C, 0x00, 0x00, 0x00, 0x00},
         {0xD2,   DC, 0x1C,   DC,   DC,   DC,   DC},
-        [](auto& accessor) -> bool { return accessor.get_water_pressure() != nullptr; },
+        [](auto& accessor) -> EntityBase* { return accessor.get_water_pressure(); },
         [](auto const& data, auto& accessor) -> DataType {
             const float pressure = float((float((int((data[4]) + ((data[3]) << 8))))/1000));
             accessor.get_water_pressure()->publish_state(pressure);
             return pressure;
         }
     },
-    {
-        "Durchfluss",
+    { // Durchfluss
         {0x31, 0x00, 0xFA, 0x01, 0xDA, 0x00, 0x00},
         {  DC,   DC, 0xFA, 0x01, 0xDA,   DC,   DC},
-        [](auto& accessor) -> bool { return accessor.get_water_flow() != nullptr; },
+        [](auto& accessor) -> EntityBase* { return accessor.get_water_flow(); },
         [](auto const& data, auto& accessor) -> DataType {
             const float flow = float((float((int((data[6]) + ((data[5]) << 8))))));
             accessor.get_water_flow()->publish_state(flow);
@@ -110,11 +103,10 @@ const std::vector<TRequest> entity_config = {
         }
     },
 
-    {
-        "Betriebsmodus",
+    { // Betriebsmodus
         {0x31, 0x00, 0xFA, 0x01, 0x12, 0x00, 0x00},
         {  DC,   DC, 0xFA, 0x01, 0x12,   DC,   DC},
-        [](auto& accessor) -> bool { return accessor.get_operating_mode() != nullptr || accessor.get_operating_mode_select() != nullptr; },
+        [](auto& accessor) -> EntityBase* { return accessor.get_operating_mode(); },
         [](auto const& data, auto& accessor) -> DataType {
             const std::string mode = map_betriebsmodus.getValue(data[5]);
             if (accessor.get_operating_mode() != nullptr) {
@@ -126,18 +118,17 @@ const std::vector<TRequest> entity_config = {
             return mode;
         }
     },
-    {
-        "Betriebsmodus setzen",
+    { // Betriebsmodus setzen
+        [](auto& accessor) -> EntityBase* { return accessor.get_operating_mode_select(); },
         [](auto const& value) -> std::vector<uint8_t> {
             return {0x30, 0x00, 0xFA, 0x01, 0x12, static_cast<uint8_t>(value), 0x00};
         }
     },
 
-    {
-        "Betriebsart",
+    { // Betriebsart
         {0x31, 0x00, 0xFA, 0xC0, 0xF6, 0x00, 0x00},
         {  DC,   DC, 0xFA, 0xC0, 0xF6,   DC,   DC},
-        [](auto& accessor) -> bool { return accessor.get_mode_of_operating() != nullptr; },
+        [](auto& accessor) -> EntityBase* { return accessor.get_mode_of_operating(); },
         [](auto const& data, auto& accessor) -> DataType {
             const uint32_t mode = uint32_t(data[6] + data[5]);
 
@@ -150,12 +141,11 @@ const std::vector<TRequest> entity_config = {
         }
     },
 
-    {
-        "Status Kompressor",
+    { // Status Kompressor
         {0xA1, 0x00, 0x61, 0x00, 0x00, 0x00, 0x00},
         0x500,
         {  DC,   DC, 0x61,   DC,   DC,   DC,   DC},
-        [](auto& accessor) -> bool { return accessor.get_status_kompressor() != nullptr; },
+        [](auto& accessor) -> EntityBase* { return accessor.get_status_kompressor(); },
         [](auto const& data, auto& accessor) -> DataType {
             const float state = float((float((int((data[3]) + ((data[4]) << 8))))));
             accessor.get_status_kompressor()->publish_state(state);
@@ -163,11 +153,10 @@ const std::vector<TRequest> entity_config = {
         }
     },
 
-    {
-        "Status Kessel",
+    { // Status Kessel
         {0x31, 0x00, 0xFA, 0x0A, 0x8C, 0x00, 0x00},
         {  DC,   DC, 0xFA, 0x0A, 0x8C,   DC,   DC},
-        [](auto& accessor) -> bool { return accessor.get_status_kesselpumpe() != nullptr; },
+        [](auto& accessor) -> EntityBase* { return accessor.get_status_kesselpumpe(); },
         [](auto const& data, auto& accessor) -> DataType {
             const float state = float((float((int((data[6]) + ((data[5]) << 8))))));
             accessor.get_status_kesselpumpe()->publish_state(state);
@@ -175,11 +164,10 @@ const std::vector<TRequest> entity_config = {
         }
     },
 
-    {
-        "Umwälzpumpe",
+    { // Umwälzpumpe
         {0x31, 0x00, 0xFA, 0xC0, 0xF7, 0x00, 0x00},
         {  DC,   DC, 0xFA, 0xC0, 0xF7,   DC,   DC},
-        [](auto& accessor) -> bool { return accessor.get_circulation_pump() != nullptr; },
+        [](auto& accessor) -> EntityBase* { return accessor.get_circulation_pump(); },
         [](auto const& data, auto& accessor) -> DataType {
             const float percent = int((data[6]) + data[5]);
             accessor.get_circulation_pump()->publish_state(percent);
@@ -187,11 +175,10 @@ const std::vector<TRequest> entity_config = {
         }
     },
 
-    {
-        "T-WW-Soll1",
+    { // T-WW-Soll1
         {0x31, 0x00, 0x13, 0x00, 0x00, 0x00, 0x00},
         {0xD2, 0x00, 0x13,   DC,   DC, 0x00, 0x00},
-        [](auto& accessor) -> bool { return accessor.get_target_hot_water_temperature() != nullptr; },
+        [](auto& accessor) -> EntityBase* { return accessor.get_target_hot_water_temperature(); },
         [](auto const& data, auto& accessor) -> DataType {
             const uint16_t temperature_raw = (data[3] << 8) | data[4];
             const float temp = static_cast<float>(temperature_raw) / 10.0;
@@ -201,8 +188,8 @@ const std::vector<TRequest> entity_config = {
             return temp;
         }
     },
-    {
-        "WW Einstellen",
+    { // WW Einstellen
+        [](auto& accessor) -> EntityBase* { return accessor.get_target_hot_water_temperature(); }, // Falscher Sensor!!!!!?????
         [](auto const& value) -> std::vector<uint8_t> {
             uint16_t temperature = (uint16_t)(value * 10);
             uint8_t high_byte = temperature >> 8;
@@ -211,11 +198,10 @@ const std::vector<TRequest> entity_config = {
         }
     },
 
-    {
-        "BPV",
+    { // BPV
         {0x31, 0x00, 0xFA, 0xC0, 0xFB, 0x00, 0x00},
         {  DC,   DC, 0xFA, 0xC0, 0xFB,   DC,   DC},
-        [](auto& accessor) -> bool { return accessor.get_bypass_valve() != nullptr; },
+        [](auto& accessor) -> EntityBase* { return accessor.get_bypass_valve(); },
         [](auto const& data, auto& accessor) -> DataType {
             const uint32_t value = uint32_t((data[6]) + (data[5] << 8));
             accessor.get_bypass_valve()->publish_state(value);
@@ -223,11 +209,10 @@ const std::vector<TRequest> entity_config = {
         }
     },
 
-    {
-        "DHW Mischer Position",
+    { // DHW Mischer Position
         {0x31, 0x00, 0xFA, 0x06, 0x9B, 0x00, 0x00},
         {  DC,   DC, 0xFA, 0x06, 0x9B,   DC,   DC},
-        [](auto& accessor) -> bool { return accessor.get_dhw_mixer_position() != nullptr; },
+        [](auto& accessor) -> EntityBase* { return accessor.get_dhw_mixer_position(); },
         [](auto const& data, auto& accessor) -> DataType {
             const uint32_t position = uint32_t(data[6]) + uint32_t(data[5] << 8);
             accessor.get_dhw_mixer_position()->publish_state(position);
@@ -235,11 +220,10 @@ const std::vector<TRequest> entity_config = {
         }
     },
 
-    {
-        "T Vorlauf Tag",
+    { // T Vorlauf Tag
         {0x31, 0x00, 0xFA, 0x01, 0x29, 0x00, 0x00},
         {  DC,   DC, 0xFA, 0x01, 0x29,   DC,   DC},
-        [](auto& accessor) -> bool { return accessor.get_daytime_supply_temperature() != nullptr; },
+        [](auto& accessor) -> EntityBase* { return accessor.get_daytime_supply_temperature(); },
         [](auto const& data, auto& accessor) -> DataType {
             float temp = float((float((int((data[6]) + ((data[5]) << 8))))/10));
             accessor.get_daytime_supply_temperature()->publish_state(temp);
@@ -248,11 +232,10 @@ const std::vector<TRequest> entity_config = {
         }
     },
 
-    {
-        "VL Soll",
+    { // VL Soll
         {0x31, 0x00, 0x02, 0x00, 0x00, 0x00, 0x00},
         {0xD2,   DC, 0x02,   DC,   DC,   DC,   DC},
-        [](auto& accessor) -> bool { return accessor.get_target_supply_temperature() != nullptr; },
+        [](auto& accessor) -> EntityBase* { return accessor.get_target_supply_temperature(); },
         [](auto const& data, auto& accessor) -> DataType {
             const float temp = ((data[3] << 8) | data[4]) / 10.0f;
             accessor.get_target_supply_temperature()->publish_state(temp);
@@ -260,11 +243,10 @@ const std::vector<TRequest> entity_config = {
         }
     },
 
-    {
-        "Heizkurve",
+    { // Heizkurve
         {0x31, 0x00, 0xFA, 0x01, 0x0E, 0x00, 0x00},
         {  DC,   DC, 0xFA, 0x01, 0x0E,   DC,   DC},
-        [](auto& accessor) -> bool { return accessor.get_heating_curve() != nullptr; },
+        [](auto& accessor) -> EntityBase* { return accessor.get_heating_curve(); },
         [](auto const& data, auto& accessor) -> DataType {
             const float value = (uint32_t(data[6]) + (data[5] << 8)) / 100.0f;
             accessor.get_heating_curve()->publish_state(value);
@@ -273,11 +255,10 @@ const std::vector<TRequest> entity_config = {
         }
     },
 
-    {
-        "EHS für CH",
+    { // EHS für CH
         {0x31, 0x00, 0xFA, 0x09, 0x20, 0x00, 0x00},
         {  DC,   DC, 0xFA, 0x09, 0x20,   DC,   DC},
-        [](auto& accessor) -> bool { return accessor.get_ehs_for_ch() != nullptr; },
+        [](auto& accessor) -> EntityBase* { return accessor.get_ehs_for_ch(); },
         [](auto const& data, auto& accessor) -> DataType {
             const float temp = float((int((data[6]) + ((data[5]) << 8))));
             accessor.get_ehs_for_ch()->publish_state(temp);
@@ -285,11 +266,10 @@ const std::vector<TRequest> entity_config = {
         }
     },
 
-    {
-        "Erzeugte Energie gesamt",
+    { // Erzeugte Energie gesamt
         {0x31, 0x00, 0xFA, 0x09, 0x30, 0x00, 0x00},
         {  DC,   DC, 0xFA, 0x09, 0x30,   DC,   DC},
-        [](auto& accessor) -> bool { return accessor.get_total_energy_produced() != nullptr; },
+        [](auto& accessor) -> EntityBase* { return accessor.get_total_energy_produced(); },
         [](auto const& data, auto& accessor) -> DataType {
             float value = float((float((int((data[6]) + ((data[5]) << 8))))));
             accessor.get_total_energy_produced()->publish_state(value);
@@ -297,11 +277,10 @@ const std::vector<TRequest> entity_config = {
         }
     },
 
-    {
-        "Fehlercode",
+    { // Fehlercode
         {0x31, 0x00, 0xFA, 0x13, 0x88, 0x00, 0x00},
         {  DC,   DC, 0xFA, 0x13, 0x88,   DC,   DC},
-        [](auto& accessor) -> bool { return accessor.get_error_code() != nullptr; },
+        [](auto& accessor) -> EntityBase* { return accessor.get_error_code(); },
         [](auto const& data, auto& accessor) -> DataType {
             const uint32_t code = uint32_t(data[6]) + (uint32_t(data[5]) << 8);
 
@@ -394,19 +373,19 @@ void DaikinRotexCanComponent::setup() {
 }
 
 void DaikinRotexCanComponent::set_operation_mode(std::string const& mode) {
-    m_data_requests.sendSet("Betriebsmodus setzen", map_betriebsmodus.getKey(mode));
+    m_data_requests.sendSet(m_accessor, "Betriebsmodus setzen", map_betriebsmodus.getKey(mode));
 }
 
 void DaikinRotexCanComponent::set_target_hot_water_temperature(float temperature) {
-    m_data_requests.sendSet("WW Einstellen", temperature);
+    m_data_requests.sendSet(m_accessor, "WW Einstellen", temperature);
 }
 
 void DaikinRotexCanComponent::loop() {
-    m_data_requests.sendNextPendingGet();
+    m_data_requests.sendNextPendingGet(m_accessor);
 }
 
 void DaikinRotexCanComponent::handle(uint32_t can_id, std::vector<uint8_t> const& data) {
-    m_data_requests.handle(can_id, data, m_accessor);
+    m_data_requests.handle(m_accessor, can_id, data);
 }
 
 void DaikinRotexCanComponent::dump_config() {

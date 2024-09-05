@@ -19,10 +19,10 @@ public:
     uint32_t size() const;
     TRequest const& get(uint32_t index) const;
 
-    bool sendNextPendingGet();
-    void sendGet(std::string const& request_name, Accessor const& accessor);
-    void sendSet(std::string const& request_name, float value);
-    void handle(uint32_t can_id, std::vector<uint8_t> const& responseData, Accessor&);
+    bool sendNextPendingGet(Accessor const& accessor);
+    void sendGet(Accessor const& accessor, std::string const& request_name);
+    void sendSet(Accessor const& accessor, std::string const& request_name, float value);
+    void handle(Accessor&, uint32_t can_id, std::vector<uint8_t> const& responseData);
 
 private:
     TRequest* getNextRequestToSend();
