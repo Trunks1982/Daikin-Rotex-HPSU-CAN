@@ -83,6 +83,14 @@ daikin_rotex_can:
       name: "Laufzeit Compressor"
     runtime_pump:
       name: "Laufzeit Pump"
+    sg_mode:
+      name: "SG Modus"
+    smart_grid:
+      name: "Smart Grid"
+    spreizung_mod_hz:
+      name: "Spreizung MOD HZ"
+    spreizung_mod_ww:
+      name: "Spreizung MOD WW"
     status_kesselpumpe:
       name: "Status Kesselpumpe"
     status_kompressor:

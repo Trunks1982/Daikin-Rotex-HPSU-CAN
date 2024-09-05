@@ -47,12 +47,16 @@ CONF_RUNTIME_COMPRESSOR = "runtime_compressor"
 CONF_RUNTIME_PUMP = "runtime_pump"
 CONF_MIN_TARGET_SUPPLY_TEMPERATURE = "min_target_supply_temperature" # Min Vorlauf Soll
 CONF_MAX_TARGET_SUPPLY_TEMPERATURE = "max_target_supply_temperature" # Max Vorlauf Soll
+CONF_SPREIZUNG_MOD_HZ = "spreizung_mod_hz"
+CONF_SPREIZUNG_MOD_WW = "spreizung_mod_ww"
 
 ########## Text Sensors ##########
 
 CONF_OPERATING_MODE = "operating_mode"
 CONF_MODE_OF_OPERATING = "mode_of_operation"
 CONF_HK_FUNCTION = "hk_function"
+CONF_SG_MODE = "sg_mode"
+CONF_SMART_GRID = "smart_grid"
 CONF_ERROR_CODE = "error_code"
 
 ########## Binary Sensors ##########
@@ -218,6 +222,18 @@ CONFIG_SCHEMA = cv.Schema(
                     accuracy_decimals=0,
                     icon="mdi:waves-arrow-right",
                 ).extend(),
+                cv.Optional(CONF_SPREIZUNG_MOD_HZ): sensor.sensor_schema(
+                    device_class=DEVICE_CLASS_TEMPERATURE,
+                    unit_of_measurement=UNIT_CELSIUS,
+                    accuracy_decimals=0,
+                    icon="mdi:thermometer-lines",
+                ).extend(),
+                cv.Optional(CONF_SPREIZUNG_MOD_WW): sensor.sensor_schema(
+                    device_class=DEVICE_CLASS_TEMPERATURE,
+                    unit_of_measurement=UNIT_CELSIUS,
+                    accuracy_decimals=0,
+                    icon="mdi:thermometer-lines",
+                ).extend(),
 
                 ######## Text Sensors ########
 
@@ -232,6 +248,12 @@ CONFIG_SCHEMA = cv.Schema(
                 ).extend(),
                 cv.Optional(CONF_ERROR_CODE): text_sensor.text_sensor_schema(
                     icon="mdi:alert"
+                ).extend(),
+                cv.Optional(CONF_SG_MODE): text_sensor.text_sensor_schema(
+                    icon="mdi:thermometer-lines",
+                ).extend(),
+                cv.Optional(CONF_SMART_GRID): text_sensor.text_sensor_schema(
+                    icon="mdi:thermometer-lines",
                 ).extend(),
 
                 ########## Binary Sensors ##########
@@ -365,6 +387,14 @@ def to_code(config):
             sens = yield sensor.new_sensor(max_target_supply_temperature)
             cg.add(var.getAccessor().set_max_target_supply_temperature(sens))
 
+        if spreizung_mod_hz := entities.get(CONF_SPREIZUNG_MOD_HZ):
+            sens = yield sensor.new_sensor(spreizung_mod_hz)
+            cg.add(var.getAccessor().set_spreizung_mod_hz(sens))
+
+        if spreizung_mod_ww := entities.get(CONF_SPREIZUNG_MOD_WW):
+            sens = yield sensor.new_sensor(spreizung_mod_ww)
+            cg.add(var.getAccessor().set_spreizung_mod_ww(sens))
+
         ######## Text Sensors ########
 
         if operating_mode := entities.get(CONF_OPERATING_MODE):
@@ -382,6 +412,14 @@ def to_code(config):
         if error_code := entities.get(CONF_ERROR_CODE):
             sens = yield text_sensor.new_text_sensor(error_code)
             cg.add(var.getAccessor().set_error_code(sens))
+
+        if sg_mode := entities.get(CONF_SG_MODE):
+            sens = yield text_sensor.new_text_sensor(sg_mode)
+            cg.add(var.getAccessor().set_sg_mode(sens))
+
+        if smart_grid := entities.get(CONF_SMART_GRID):
+            sens = yield text_sensor.new_text_sensor(smart_grid)
+            cg.add(var.getAccessor().set_smart_grid(sens))
 
         ######## Binary Sensors ########
 

@@ -83,6 +83,12 @@ public:
     sensor::Sensor* get_max_target_supply_temperature() const { return m_max_target_supply_temperature; }
     void set_max_target_supply_temperature(sensor::Sensor* pSensor) { m_max_target_supply_temperature = pSensor; }
 
+    sensor::Sensor* get_spreizung_mod_hz() const { return m_spreizung_mod_hz; }
+    void set_spreizung_mod_hz(sensor::Sensor* pSensor) { m_spreizung_mod_hz = pSensor; }
+
+    sensor::Sensor* get_spreizung_mod_ww() const { return m_spreizung_mod_ww; }
+    void set_spreizung_mod_ww(sensor::Sensor* pSensor) { m_spreizung_mod_ww = pSensor; }
+
     // Text Sensors
 
     text_sensor::TextSensor* get_operating_mode() const { return m_operating_mode; }
@@ -93,6 +99,12 @@ public:
 
     text_sensor::TextSensor* get_hk_function() const { return m_hk_function; }
     void set_hk_function(text_sensor::TextSensor* pSensor) { m_hk_function = pSensor; }
+
+    text_sensor::TextSensor* get_sg_mode() const { return m_sg_mode; }
+    void set_sg_mode(text_sensor::TextSensor* pSensor) { m_sg_mode = pSensor; }
+
+    text_sensor::TextSensor* get_smart_grid() const { return m_smart_grid; }
+    void set_smart_grid(text_sensor::TextSensor* pSensor) { m_smart_grid = pSensor; }
 
     text_sensor::TextSensor* get_error_code() const { return m_error_code; }
     void set_error_code(text_sensor::TextSensor* pSensor) { m_error_code = pSensor; }
@@ -155,10 +167,14 @@ private:
     sensor::Sensor* m_runtime_pump;
     sensor::Sensor* m_min_target_supply_temperature;
     sensor::Sensor* m_max_target_supply_temperature;
+    sensor::Sensor* m_spreizung_mod_hz;
+    sensor::Sensor* m_spreizung_mod_ww;
 
     text_sensor::TextSensor* m_operating_mode;
     text_sensor::TextSensor* m_mode_of_operating;
     text_sensor::TextSensor* m_hk_function;
+    text_sensor::TextSensor* m_sg_mode;
+    text_sensor::TextSensor* m_smart_grid;
     text_sensor::TextSensor* m_error_code;
 
     binary_sensor::BinarySensor* m_status_kompressor;

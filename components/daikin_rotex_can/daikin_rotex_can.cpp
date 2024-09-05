@@ -32,6 +32,17 @@ static const BidiMap<uint8_t, std::string> map_hk_function {
     {0x01, "Fest"}
 };
 
+static const BidiMap<uint8_t, std::string> map_sg_mode = {
+    {0x00, "Aus"},
+    {0x01, "SG Modus 1"},
+    {0x02, "SG Modus 2"}
+};
+
+static const BidiMap<uint8_t, std::string> map_sg = {
+    {0x00, "Aus"},
+    {0x01, "An"}
+};
+
 const std::vector<TRequest> entity_config = {
     { // Aussentemperatur
         {0x31, 0x00, 0xFA, 0xC0, 0xFF, 0x00, 0x00},
@@ -338,6 +349,48 @@ const std::vector<TRequest> entity_config = {
             accessor.get_max_target_supply_temperature()->publish_state(temp);
             //id(max_vl_soll_set).publish_state(temp);
             return temp;
+        }
+    },
+
+    { // Spreizung MOD HZ
+        {0x31, 0x00, 0xFA, 0x06, 0x83, 0x00, 0x00},
+        {  DC,   DC, 0xFA, 0x06, 0x83,   DC,   DC},
+        [](auto& accessor) -> EntityBase* { return accessor.get_spreizung_mod_hz(); },
+        [](auto const& data, auto& accessor) -> DataType {
+            float temp = float((float((int((data[6]) + ((data[5]) << 8))))/10));
+            accessor.get_spreizung_mod_hz()->publish_state(temp);
+            return temp;
+        }
+    },
+    { // Spreizung MOD WW
+        {0x31, 0x00, 0xFA, 0x06, 0x84, 0x00, 0x00},
+        {  DC,   DC, 0xFA, 0x06, 0x84,   DC,   DC},
+        [](auto& accessor) -> EntityBase* { return accessor.get_spreizung_mod_ww(); },
+        [](auto const& data, auto& accessor) -> DataType {
+            float temp = float((float((int((data[6]) + ((data[5]) << 8))))/10));
+            accessor.get_spreizung_mod_ww()->publish_state(temp);
+            return temp;
+        }
+    },
+
+    { // SGModus
+        {0x31, 0x00, 0xFA, 0x06, 0x94, 0x00, 0x00},
+        {  DC,   DC, 0xFA, 0x06, 0x94,   DC,   DC},
+        [](auto& accessor) -> EntityBase* { return accessor.get_sg_mode(); },
+        [](auto const& data, auto& accessor) -> DataType {
+            const std::string mode = map_sg_mode.getValue(data[6]);
+            accessor.get_sg_mode()->publish_state(mode);
+            return mode;
+        }
+    },
+    { // Smart Grid
+        {0x31, 0x00, 0xFA, 0x06, 0x93, 0x00, 0x00},
+        {  DC,   DC, 0xFA, 0x06, 0x93,   DC,   DC},
+        [](auto& accessor) -> EntityBase* { return accessor.get_smart_grid(); },
+        [](auto const& data, auto& accessor) -> DataType {
+            const std::string state = map_sg.getValue(data[6]);
+            accessor.get_smart_grid()->publish_state(state);
+            return state;
         }
     },
 
