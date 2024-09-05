@@ -9,9 +9,13 @@ from esphome.components.canbus import CanbusComponent
 
 daikin_rotex_can_ns = cg.esphome_ns.namespace('daikin_rotex_can')
 DaikinRotexCanComponent = daikin_rotex_can_ns.class_('DaikinRotexCanComponent', cg.Component)
+
 OperationModeSelect = daikin_rotex_can_ns.class_("OperationModeSelect", select.Select)
+HKFunctionSelect = daikin_rotex_can_ns.class_("HKFunctionSelect", select.Select)
+
 TargetHotWaterTemperatureNumber = daikin_rotex_can_ns.class_("TargetHotWaterTemperatureNumber", number.Number)
 HeatingCurveNumber = daikin_rotex_can_ns.class_("HeatingCurveNumber", number.Number)
+
 LogFilterText = daikin_rotex_can_ns.class_("LogFilterText", text.Text)
 
 DEPENDENCIES = []
@@ -68,6 +72,7 @@ CONF_STATUS_KESSELPUMPE = "status_kesselpumpe"
 ########## Selects ##########
 
 CONF_OPERATING_MODE_SELECT = "operating_mode_select"
+CONF_HK_FUNCTION_SELECT = "hk_function_select"
 
 ########## Numbers ##########
 
@@ -278,6 +283,11 @@ CONFIG_SCHEMA = cv.Schema(
                     entity_category=ENTITY_CATEGORY_CONFIG,
                     icon=ICON_SUN_SNOWFLAKE_VARIANT
                 ).extend(),
+                cv.Optional(CONF_HK_FUNCTION_SELECT): select.select_schema(
+                    HKFunctionSelect,
+                    entity_category=ENTITY_CATEGORY_CONFIG,
+                    icon="mdi:weather-partly-snowy"
+                ).extend(),
 
                 ########## Number ##########
 
@@ -444,12 +454,17 @@ def to_code(config):
 
         ########## Selects ##########
 
-        operating_mode_options = ["Bereitschaft", "Heizen", "Absenken", "Sommer", "Kühlen", "Automatik 1", "Automatik 2"]
-
-        if operating_mode_select := entities.get(CONF_OPERATING_MODE_SELECT):
-            s = yield select.new_select(operating_mode_select, options = operating_mode_options)
+        if select_conf := entities.get(CONF_OPERATING_MODE_SELECT):
+            options = ["Bereitschaft", "Heizen", "Absenken", "Sommer", "Kühlen", "Automatik 1", "Automatik 2"]
+            s = yield select.new_select(select_conf, options = options)
             yield cg.register_parented(s, var)
             cg.add(var.getAccessor().set_operating_mode_select(s))
+
+        if select_conf := entities.get(CONF_HK_FUNCTION_SELECT):
+            options = ["Witterungsgeführt", "Fest"]
+            s = yield select.new_select(select_conf, options = options)
+            yield cg.register_parented(s, var)
+            cg.add(var.getAccessor().set_hk_function_select(s))
 
         ########## Numbers ##########
 

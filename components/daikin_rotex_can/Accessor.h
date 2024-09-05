@@ -122,6 +122,9 @@ public:
     select::Select* get_operating_mode_select() const { return m_operating_mode_select; }
     void set_operating_mode_select(select::Select* pSelect) { m_operating_mode_select = pSelect; }
 
+    select::Select* get_hk_function_select() const { return m_hk_function_select; }
+    void set_hk_function_select(select::Select* pSelect) { m_hk_function_select = pSelect; }
+
     // Numbers
 
     number::Number* get_target_hot_water_temperature_set() const { return m_target_hot_water_temperature_set; }
@@ -184,6 +187,7 @@ private:
     binary_sensor::BinarySensor* m_status_kesselpumpe;
 
     select::Select* m_operating_mode_select;
+    select::Select* m_hk_function_select;
 
     number::Number* m_target_hot_water_temperature_set;
     number::Number* m_heating_curve_set;

@@ -8,5 +8,10 @@ void OperationModeSelect::control(const std::string &value) {
     this->parent_->set_operation_mode(state);
 }
 
+void HKFunctionSelect::control(const std::string &value) {
+    this->publish_state(value);
+    this->parent_->set_hk_function(state);
+}
+
 }  // namespace daikin_rotex_can
 }  // namespace esphome

@@ -71,6 +71,8 @@ daikin_rotex_can:
       name: "Heizkurve Einstellen"
     hk_function:
       name: "HK-Funktion"
+    hk_function_select:
+      name: "HK Funktion"
     max_target_supply_temperature:
       name: "Max VL Soll"
     min_target_supply_temperature:

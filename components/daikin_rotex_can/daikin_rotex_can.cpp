@@ -166,7 +166,16 @@ const std::vector<TRequest> entity_config = {
             const std::string str_mode = iter != map_hk_function.end() ? iter->second : "Unknown";
 
             accessor.get_hk_function()->publish_state(str_mode);
+            if (accessor.get_hk_function_select() != nullptr) {
+                accessor.get_hk_function_select()->publish_state(str_mode);
+            }
             return str_mode;
+        }
+    },
+    { // HK Function Einstellen
+        [](auto& accessor) -> EntityBase* { return accessor.get_hk_function_select(); },
+        [](auto const& value) -> std::vector<uint8_t> {
+            return { 0x30, 0x00, 0xFA, 0x01, 0x41, 0x00, static_cast<uint8_t>(value)};
         }
     },
 
@@ -504,6 +513,10 @@ void DaikinRotexCanComponent::setup() {
 
 void DaikinRotexCanComponent::set_operation_mode(std::string const& mode) {
     m_data_requests.sendSet(m_accessor, m_accessor.get_operating_mode_select()->get_name(), map_betriebsmodus.getKey(mode));
+}
+
+void DaikinRotexCanComponent::set_hk_function(std::string const& mode) {
+    m_data_requests.sendSet(m_accessor, m_accessor.get_hk_function_select()->get_name(), map_hk_function.getKey(mode));
 }
 
 void DaikinRotexCanComponent::set_target_hot_water_temperature(float temperature) {

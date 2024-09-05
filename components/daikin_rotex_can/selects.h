@@ -14,5 +14,13 @@ protected:
     void control(const std::string &value) override;
 };
 
+class HKFunctionSelect : public select::Select, public Parented<DaikinRotexCanComponent> {
+public:
+    HKFunctionSelect() = default;
+
+protected:
+    void control(const std::string &value) override;
+};
+
 }  // namespace ld2410
 }  // namespace esphome
