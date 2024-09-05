@@ -127,6 +127,9 @@ public:
     number::Number* get_target_hot_water_temperature_set() const { return m_target_hot_water_temperature_set; }
     void set_target_hot_water_temperature_set(number::Number* pNumber) { m_target_hot_water_temperature_set = pNumber; }
 
+    number::Number* get_heating_curve_set() const { return m_heating_curve_set; }
+    void set_heating_curve_set(number::Number* pNumber) { m_heating_curve_set = pNumber; }
+
 public:
     void update_thermal_power() {
         float power = 0.0f;
@@ -183,6 +186,7 @@ private:
     select::Select* m_operating_mode_select;
 
     number::Number* m_target_hot_water_temperature_set;
+    number::Number* m_heating_curve_set;
 };
 
 }

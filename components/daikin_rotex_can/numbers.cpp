@@ -8,5 +8,10 @@ void TargetHotWaterTemperatureNumber::control(float value) {
     this->parent_->set_target_hot_water_temperature(value);
 }
 
+void HeatingCurveNumber::control(float value) {
+    this->publish_state(value);
+    this->parent_->set_heating_curve(value);
+}
+
 }  // namespace seeed_mr24hpc1
 }  // namespace esphome

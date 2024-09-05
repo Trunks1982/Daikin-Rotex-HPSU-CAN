@@ -11,6 +11,7 @@ daikin_rotex_can_ns = cg.esphome_ns.namespace('daikin_rotex_can')
 DaikinRotexCanComponent = daikin_rotex_can_ns.class_('DaikinRotexCanComponent', cg.Component)
 OperationModeSelect = daikin_rotex_can_ns.class_("OperationModeSelect", select.Select)
 TargetHotWaterTemperatureNumber = daikin_rotex_can_ns.class_("TargetHotWaterTemperatureNumber", number.Number)
+HeatingCurveNumber = daikin_rotex_can_ns.class_("HeatingCurveNumber", number.Number)
 LogFilterText = daikin_rotex_can_ns.class_("LogFilterText", text.Text)
 
 DEPENDENCIES = []
@@ -68,7 +69,12 @@ CONF_STATUS_KESSELPUMPE = "status_kesselpumpe"
 
 CONF_OPERATING_MODE_SELECT = "operating_mode_select"
 
+########## Numbers ##########
+
 CONF_TARGET_HOT_WATER_TEMPERATURE_SET = "target_hot_water_temperature_set"
+CONF_HEATING_CURVE_SET = "heating_curve_set" # Heizkurve setzen
+
+########## Icons ##########
 
 ICON_SUN_SNOWFLAKE_VARIANT = "mdi:sun-snowflake-variant"
 
@@ -280,6 +286,11 @@ CONFIG_SCHEMA = cv.Schema(
                     entity_category=ENTITY_CATEGORY_CONFIG,
                     icon=ICON_SUN_SNOWFLAKE_VARIANT
                 ).extend(),
+                cv.Optional(CONF_HEATING_CURVE_SET): number.number_schema(
+                    HeatingCurveNumber,
+                    entity_category=ENTITY_CATEGORY_CONFIG,
+                    icon=ICON_SUN_SNOWFLAKE_VARIANT
+                ).extend(),
             }
         ),
     }
@@ -440,7 +451,8 @@ def to_code(config):
             yield cg.register_parented(s, var)
             cg.add(var.getAccessor().set_operating_mode_select(s))
 
-        ########## Selects ##########
+        ########## Numbers ##########
+
         if target_hot_water_temperature_set := entities.get(CONF_TARGET_HOT_WATER_TEMPERATURE_SET):
             num = yield number.new_number(
                 target_hot_water_temperature_set,
@@ -450,5 +462,15 @@ def to_code(config):
             )
             yield cg.register_parented(num, var)
             cg.add(var.getAccessor().set_target_hot_water_temperature_set(num))
+
+        if heating_curve_set := entities.get(CONF_HEATING_CURVE_SET):
+            num = yield number.new_number(
+                heating_curve_set,
+                min_value=0,
+                max_value=2.55,
+                step=0.01
+            )
+            yield cg.register_parented(num, var)
+            cg.add(var.getAccessor().set_heating_curve_set(num))
 
     cg.add(var.validateConfig())

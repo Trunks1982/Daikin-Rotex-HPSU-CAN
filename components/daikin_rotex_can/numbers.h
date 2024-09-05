@@ -14,5 +14,13 @@ protected:
     void control(float value) override;
 };
 
+class HeatingCurveNumber : public number::Number, public Parented<DaikinRotexCanComponent> {
+public:
+    HeatingCurveNumber() = default;
+
+protected:
+    void control(float value) override;
+};
+
 }
 }

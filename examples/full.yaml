@@ -67,6 +67,8 @@ daikin_rotex_can:
       name: "Fehlercode"
     heating_curve:
       name: "Heizkurve"
+    heating_curve_set:
+      name: "Heizkurve Einstellen"
     hk_function:
       name: "HK-Funktion"
     max_target_supply_temperature:

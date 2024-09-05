@@ -18,6 +18,8 @@ public:
     void set_canbus(esphome::esp32_can::ESP32Can* pCanbus);
     void set_operation_mode(std::string const& mode);
     void set_target_hot_water_temperature(float temperature);
+    void set_heating_curve(float heating_curve);
+
     void validateConfig();
 
     Accessor& getAccessor() { return m_accessor; }

@@ -279,8 +279,21 @@ const std::vector<TRequest> entity_config = {
         [](auto const& data, auto& accessor) -> DataType {
             const float value = (uint32_t(data[6]) + (data[5] << 8)) / 100.0f;
             accessor.get_heating_curve()->publish_state(value);
-            //id(heizkurve_set).publish_state(value);
+            if (accessor.get_heating_curve_set() != nullptr) {
+                accessor.get_heating_curve_set()->publish_state(value);
+            }
             return value;
+        }
+    },
+
+    { // Heizkurve einstellen
+        [](auto& accessor) -> EntityBase* { return accessor.get_heating_curve_set(); },
+        [](auto const& value) -> std::vector<uint8_t> {
+            const uint16_t hk = (uint16_t)(value * 100);
+            const uint8_t high_byte = hk >> 8;
+            const uint8_t low_byte = hk & 0xFF;
+
+            return { 0x30, 0x00, 0xFA, 0x01, 0x0E, high_byte, low_byte };
         }
     },
 
@@ -490,11 +503,15 @@ void DaikinRotexCanComponent::setup() {
 }
 
 void DaikinRotexCanComponent::set_operation_mode(std::string const& mode) {
-    m_data_requests.sendSet(m_accessor, "Betriebsmodus setzen", map_betriebsmodus.getKey(mode));
+    m_data_requests.sendSet(m_accessor, m_accessor.get_operating_mode_select()->get_name(), map_betriebsmodus.getKey(mode));
 }
 
 void DaikinRotexCanComponent::set_target_hot_water_temperature(float temperature) {
-    m_data_requests.sendSet(m_accessor, "WW Einstellen", temperature);
+    m_data_requests.sendSet(m_accessor, m_accessor.get_target_hot_water_temperature_set()->get_name(), temperature);
+}
+
+void DaikinRotexCanComponent::set_heating_curve(float heating_curve) {
+    m_data_requests.sendSet(m_accessor, m_accessor.get_heating_curve_set()->get_name(), heating_curve);
 }
 
 void DaikinRotexCanComponent::loop() {
