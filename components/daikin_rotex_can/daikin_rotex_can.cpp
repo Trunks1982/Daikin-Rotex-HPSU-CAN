@@ -27,6 +27,11 @@ static const BidiMap<uint8_t, std::string> map_betriebsart {
     {0x04, "Warmwasserbereitung"}
 };
 
+static const BidiMap<uint8_t, std::string> map_hk_function {
+    {0x00, "Witterungsgeführt"},
+    {0x01, "Fest"}
+};
+
 const std::vector<TRequest> entity_config = {
     { // Aussentemperatur
         {0x31, 0x00, 0xFA, 0xC0, 0xFF, 0x00, 0x00},
@@ -137,6 +142,19 @@ const std::vector<TRequest> entity_config = {
 
             accessor.get_mode_of_operating()->publish_state(str_mode);
             accessor.update_thermal_power();
+            return str_mode;
+        }
+    },
+
+    { // HK Function
+        {0x31, 0x00, 0xFA, 0x01, 0x41, 0x00, 0x00},
+        {  DC,   DC, 0xFA, 0x01, 0x41,   DC,   DC},
+        [](auto& accessor) -> EntityBase* { return accessor.get_hk_function(); },
+        [](auto const& data, auto& accessor) -> DataType {
+            const auto iter = map_hk_function.findByKey(data[6]);
+            const std::string str_mode = iter != map_hk_function.end() ? iter->second : "Unknown";
+
+            accessor.get_hk_function()->publish_state(str_mode);
             return str_mode;
         }
     },

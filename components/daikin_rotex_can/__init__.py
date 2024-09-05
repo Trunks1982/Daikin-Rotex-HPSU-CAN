@@ -47,10 +47,15 @@ CONF_TOTAL_ENERGY_PRODUCED = "total_energy_produced"
 
 CONF_OPERATING_MODE = "operating_mode"
 CONF_MODE_OF_OPERATING = "mode_of_operation"
+CONF_HK_FUNCTION = "hk_function"
 CONF_ERROR_CODE = "error_code"
+
+########## Binary Sensors ##########
 
 CONF_STATUS_KOMPRESSOR = "status_kompressor"
 CONF_STATUS_KESSELPUMPE = "status_kesselpumpe"
+
+########## Selects ##########
 
 CONF_OPERATING_MODE_SELECT = "operating_mode_select"
 
@@ -191,6 +196,9 @@ CONFIG_SCHEMA = cv.Schema(
         cv.Optional(CONF_MODE_OF_OPERATING): text_sensor.text_sensor_schema(
             icon=ICON_SUN_SNOWFLAKE_VARIANT
         ).extend(),
+        cv.Optional(CONF_HK_FUNCTION): text_sensor.text_sensor_schema(
+            icon="mdi:weather-partly-cloudy"
+        ).extend(),
         cv.Optional(CONF_ERROR_CODE): text_sensor.text_sensor_schema(
             icon="mdi:alert"
         ).extend(),
@@ -316,6 +324,10 @@ def to_code(config):
     if mode_of_operating := config.get(CONF_MODE_OF_OPERATING):
         sens = yield text_sensor.new_text_sensor(mode_of_operating)
         cg.add(var.getAccessor().set_mode_of_operating(sens))
+
+    if hk_function := config.get(CONF_HK_FUNCTION):
+        sens = yield text_sensor.new_text_sensor(hk_function)
+        cg.add(var.getAccessor().set_hk_function(sens))
 
     if error_code := config.get(CONF_ERROR_CODE):
         sens = yield text_sensor.new_text_sensor(error_code)

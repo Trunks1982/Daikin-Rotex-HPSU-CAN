@@ -79,6 +79,9 @@ public:
     text_sensor::TextSensor* get_mode_of_operating() const { return m_mode_of_operating; }
     void set_mode_of_operating(text_sensor::TextSensor* pSensor) { m_mode_of_operating = pSensor; }
 
+    text_sensor::TextSensor* get_hk_function() const { return m_hk_function; }
+    void set_hk_function(text_sensor::TextSensor* pSensor) { m_hk_function = pSensor; }
+
     text_sensor::TextSensor* get_error_code() const { return m_error_code; }
     void set_error_code(text_sensor::TextSensor* pSensor) { m_error_code = pSensor; }
 
@@ -139,6 +142,7 @@ private:
 
     text_sensor::TextSensor* m_operating_mode;
     text_sensor::TextSensor* m_mode_of_operating;
+    text_sensor::TextSensor* m_hk_function;
     text_sensor::TextSensor* m_error_code;
 
     binary_sensor::BinarySensor* m_status_kompressor;
