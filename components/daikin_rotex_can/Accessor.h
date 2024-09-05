@@ -71,6 +71,12 @@ public:
     sensor::Sensor* get_total_energy_produced() const { return m_total_energy_produced; }
     void set_total_energy_produced(sensor::Sensor* pSensor) { m_total_energy_produced = pSensor; }
 
+    sensor::Sensor* get_runtime_compressor() const { return m_runtime_compressor; }
+    void set_runtime_compressor(sensor::Sensor* pSensor) { m_runtime_compressor = pSensor; }
+
+    sensor::Sensor* get_runtime_pump() const { return m_runtime_pump; }
+    void set_runtime_pump(sensor::Sensor* pSensor) { m_runtime_pump = pSensor; }
+
     // Text Sensors
 
     text_sensor::TextSensor* get_operating_mode() const { return m_operating_mode; }
@@ -139,6 +145,8 @@ private:
     sensor::Sensor* m_heating_curve;
     sensor::Sensor* m_ehs_for_ch;
     sensor::Sensor* m_total_energy_produced;
+    sensor::Sensor* m_runtime_compressor;
+    sensor::Sensor* m_runtime_pump;
 
     text_sensor::TextSensor* m_operating_mode;
     text_sensor::TextSensor* m_mode_of_operating;

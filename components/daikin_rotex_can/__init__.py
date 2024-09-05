@@ -43,6 +43,8 @@ CONF_THERMAL_POWER = "thermal_power" # Thermische Leistung
 CONF_HEATING_CURVE = "heating_curve" # Heizkurve
 CONF_EHS_FOR_CH = "ehs_for_ch"
 CONF_TOTAL_ENERGY_PRODUCED = "total_energy_produced"
+CONF_RUNTIME_COMPRESSOR = "runtime_compressor"
+CONF_RUNTIME_PUMP = "runtime_pump"
 
 ########## Text Sensors ##########
 
@@ -190,6 +192,18 @@ CONFIG_SCHEMA = cv.Schema(
                     accuracy_decimals=0,
                     icon="mdi:thermometer-lines",
                 ).extend(),
+                cv.Optional(CONF_RUNTIME_COMPRESSOR): sensor.sensor_schema(
+                    state_class=STATE_CLASS_MEASUREMENT,
+                    unit_of_measurement=UNIT_HOUR,
+                    accuracy_decimals=0,
+                    icon="mdi:clock-time-two-outline",
+                ).extend(),
+                cv.Optional(CONF_RUNTIME_PUMP): sensor.sensor_schema(
+                    state_class=STATE_CLASS_MEASUREMENT,
+                    unit_of_measurement=UNIT_HOUR,
+                    accuracy_decimals=0,
+                    icon="mdi:clock-time-two-outline",
+                ).extend(),
 
                 ######## Text Sensors ########
 
@@ -320,6 +334,14 @@ def to_code(config):
         if total_energy_produced := entities.get(CONF_TOTAL_ENERGY_PRODUCED):
             sens = yield sensor.new_sensor(total_energy_produced)
             cg.add(var.getAccessor().set_total_energy_produced(sens))
+
+        if runtime_compressor := entities.get(CONF_RUNTIME_COMPRESSOR):
+            sens = yield sensor.new_sensor(runtime_compressor)
+            cg.add(var.getAccessor().set_runtime_compressor(sens))
+
+        if runtime_pump := entities.get(CONF_RUNTIME_PUMP):
+            sens = yield sensor.new_sensor(runtime_pump)
+            cg.add(var.getAccessor().set_runtime_pump(sens))
 
         ######## Text Sensors ########
 
