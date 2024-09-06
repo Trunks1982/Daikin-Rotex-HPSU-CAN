@@ -9,7 +9,13 @@ namespace daikin_rotex_can {
 class TargetHotWaterTemperatureNumber : public number::Number, public Parented<DaikinRotexCanComponent> {
 public:
     TargetHotWaterTemperatureNumber() = default;
+protected:
+    void control(float value) override;
+};
 
+class TargetRoom1TemperatureNumber : public number::Number, public Parented<DaikinRotexCanComponent> {
+public:
+    TargetRoom1TemperatureNumber() = default;
 protected:
     void control(float value) override;
 };
@@ -17,7 +23,6 @@ protected:
 class FlowTemperatureDayNumber : public number::Number, public Parented<DaikinRotexCanComponent> {
 public:
     FlowTemperatureDayNumber() = default;
-
 protected:
     void control(float value) override;
 };
@@ -25,7 +30,6 @@ protected:
 class MaxTargetFlowTempNumber : public number::Number, public Parented<DaikinRotexCanComponent> {
 public:
     MaxTargetFlowTempNumber() = default;
-
 protected:
     void control(float value) override;
 };
@@ -33,7 +37,6 @@ protected:
 class MinTargetFlowTempNumber : public number::Number, public Parented<DaikinRotexCanComponent> {
 public:
     MinTargetFlowTempNumber() = default;
-
 protected:
     void control(float value) override;
 };
@@ -41,7 +44,6 @@ protected:
 class HeatingCurveNumber : public number::Number, public Parented<DaikinRotexCanComponent> {
 public:
     HeatingCurveNumber() = default;
-
 protected:
     void control(float value) override;
 };

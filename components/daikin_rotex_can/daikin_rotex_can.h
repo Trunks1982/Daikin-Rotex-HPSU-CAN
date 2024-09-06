@@ -25,6 +25,7 @@ public:
 
     // Numbers
     void set_target_hot_water_temperature(float temperature);
+    void set_target_room1_temperature(float temperature);
     void set_flow_temperature_day(float temperature);
     void set_max_target_flow_temp(float temperature);
     void set_min_target_flow_temp(float temperature);

@@ -466,6 +466,29 @@ const std::vector<TRequest> entity_config = {
         }
     },
 
+    { // Raumsoll 1
+        {0x31, 0x00, 0x05, 0x00, 0x00, 0x00, 0x00},
+        {0xD2, 0x00, 0x05,   DC,   DC, 0x00,   DC},
+        [](auto& accessor) -> EntityBase* { return accessor.get_target_room1_temperature(); },
+        [](auto const& data, auto& accessor) -> DataType {
+            const float temp = ((data[3] << 8) + data[4]) / 10.0f;
+            accessor.get_target_room1_temperature()->publish_state(temp);
+            if (accessor.get_target_room1_temperature_set() != nullptr) {
+                accessor.get_target_room1_temperature_set()->publish_state(temp);
+            }
+            return temp;
+        }
+    },
+    { // Raumsoll 1 Einstellen
+        [](auto& accessor) -> EntityBase* { return accessor.get_target_room1_temperature_set(); },
+        [](auto const& value) -> std::vector<uint8_t> {
+            const uint16_t temp = static_cast<uint16_t>(value * 10);
+            const uint8_t high_byte = temp >> 8;
+            const uint8_t low_byte = temp & 0xFF;
+            return { 0x30, 0x00, 0x05, high_byte, low_byte, 0x00, 0x00 };
+        }
+    },
+
     { // Fehlercode
         {0x31, 0x00, 0xFA, 0x13, 0x88, 0x00, 0x00},
         {  DC,   DC, 0xFA, 0x13, 0x88,   DC,   DC},
@@ -581,6 +604,10 @@ void DaikinRotexCanComponent::set_smart_grid(std::string const& mode) {
 ///////////////// Numbers /////////////////
 void DaikinRotexCanComponent::set_target_hot_water_temperature(float temperature) {
     m_data_requests.sendSet(m_accessor, m_accessor.get_target_hot_water_temperature_set()->get_name(), temperature);
+}
+
+void DaikinRotexCanComponent::set_target_room1_temperature(float temperature) {
+    m_data_requests.sendSet(m_accessor, m_accessor.get_target_room1_temperature_set()->get_name(), temperature);
 }
 
 void DaikinRotexCanComponent::set_flow_temperature_day(float temperature) {

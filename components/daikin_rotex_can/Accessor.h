@@ -26,6 +26,9 @@ public:
     sensor::Sensor* get_tdhw1() const { return m_tdhw1; }
     void set_tdhw1(sensor::Sensor* pSensor) { m_tdhw1 = pSensor; }
 
+    sensor::Sensor* get_target_room1_temperature() const { return m_target_room1_temperature; }
+    void set_target_room1_temperature(sensor::Sensor* pSensor) { m_target_room1_temperature = pSensor; }
+
     sensor::Sensor* get_target_hot_water_temperature() const { return m_target_hot_water_temperature; }
     void set_target_hot_water_temperature(sensor::Sensor* pSensor) { m_target_hot_water_temperature = pSensor; }
 
@@ -136,6 +139,9 @@ public:
     number::Number* get_target_hot_water_temperature_set() const { return m_target_hot_water_temperature_set; }
     void set_target_hot_water_temperature_set(number::Number* pNumber) { m_target_hot_water_temperature_set = pNumber; }
 
+    number::Number* get_target_room1_temperature_set() const { return m_target_room1_temperature_set; }
+    void set_target_room1_temperature_set(number::Number* pSensor) { m_target_room1_temperature_set = pSensor; }
+
     number::Number* get_flow_temperature_day_set() const { return m_flow_temperature_day_set; }
     void set_flow_temperature_day_set(number::Number* pNumber) { m_flow_temperature_day_set = pNumber; }
 
@@ -167,8 +173,10 @@ public:
 private:
     text::Text* m_log_filter;
 
+    // Sensors
     sensor::Sensor* m_pTemperatureOutsideSensor;
     sensor::Sensor* m_tdhw1;
+    sensor::Sensor* m_target_room1_temperature;
     sensor::Sensor* m_target_hot_water_temperature;
     sensor::Sensor* m_tv;
     sensor::Sensor* m_tvbh;
@@ -191,6 +199,7 @@ private:
     sensor::Sensor* m_spreizung_mod_hz;
     sensor::Sensor* m_spreizung_mod_ww;
 
+    // Text Sensors
     text_sensor::TextSensor* m_operating_mode;
     text_sensor::TextSensor* m_mode_of_operating;
     text_sensor::TextSensor* m_hk_function;
@@ -198,15 +207,19 @@ private:
     text_sensor::TextSensor* m_smart_grid;
     text_sensor::TextSensor* m_error_code;
 
+    // Binary Sensors
     binary_sensor::BinarySensor* m_status_kompressor;
     binary_sensor::BinarySensor* m_status_kesselpumpe;
 
+    // Selects
     select::Select* m_operating_mode_select;
     select::Select* m_hk_function_select;
     select::Select* m_sg_mode_select;
     select::Select* m_smart_grid_select;
 
+    // Numbers
     number::Number* m_target_hot_water_temperature_set;
+    number::Number* m_target_room1_temperature_set;
     number::Number* m_flow_temperature_day_set;
     number::Number* m_max_target_flow_temp_set;
     number::Number* m_min_target_flow_temp_set;

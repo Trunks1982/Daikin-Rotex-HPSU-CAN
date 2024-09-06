@@ -16,6 +16,7 @@ SGModeSelect = daikin_rotex_can_ns.class_("SGModeSelect", select.Select)
 SmartGridSelect = daikin_rotex_can_ns.class_("SmartGridSelect", select.Select)
 
 TargetHotWaterTemperatureNumber = daikin_rotex_can_ns.class_("TargetHotWaterTemperatureNumber", number.Number)
+TargetRoom1TemperatureNumber =  daikin_rotex_can_ns.class_("TargetRoom1TemperatureNumber", number.Number)
 FlowTemperatureDayNumber = daikin_rotex_can_ns.class_("FlowTemperatureDayNumber", number.Number)
 MaxTargetFlowTempNumber = daikin_rotex_can_ns.class_("MaxTargetFlowTempNumber", number.Number)
 MinTargetFlowTempNumber = daikin_rotex_can_ns.class_("MinTargetFlowTempNumber", number.Number)
@@ -38,6 +39,7 @@ CONF_ENTITIES = "entities"
 
 CONF_TEMPERATURE_OUTSIDE = "temperature_outside"    # External temperature
 CONF_TDHW1 = "tdhw1"
+CONF_TARGET_ROOM1_TEMPERATURE = "target_room1_temperature"
 CONF_TARGET_HOT_WATER_TEMPERATURE = "target_hot_water_temperature"
 CONF_TV = "tv"
 CONF_TVBH = "tvbh"
@@ -84,6 +86,7 @@ CONF_SMART_GRID_SELECT = "smart_grid_select"
 ########## Numbers ##########
 
 CONF_TARGET_HOT_WATER_TEMPERATURE_SET = "target_hot_water_temperature_set"
+CONF_TARGET_ROOM1_TEMPERATURE_SET = "target_room1_temperature_set"
 CONF_FLOW_TEMPERATURE_DAY_SET = "flow_temperature_day_set"
 CONF_MAX_TARGET_FLOW_TEMP_SET = "max_target_flow_temp_set"
 CONF_MIN_TARGET_FLOW_TEMP_SET = "min_target_flow_temp_set"
@@ -119,6 +122,12 @@ CONFIG_SCHEMA = cv.Schema(
                     state_class=STATE_CLASS_MEASUREMENT
                 ).extend(),
                 cv.Optional(CONF_TDHW1): sensor.sensor_schema(
+                    device_class=DEVICE_CLASS_TEMPERATURE,
+                    unit_of_measurement=UNIT_CELSIUS,
+                    accuracy_decimals=1,
+                    state_class=STATE_CLASS_MEASUREMENT
+                ).extend(),
+                cv.Optional(CONF_TARGET_ROOM1_TEMPERATURE): sensor.sensor_schema(
                     device_class=DEVICE_CLASS_TEMPERATURE,
                     unit_of_measurement=UNIT_CELSIUS,
                     accuracy_decimals=1,
@@ -316,6 +325,11 @@ CONFIG_SCHEMA = cv.Schema(
                     entity_category=ENTITY_CATEGORY_CONFIG,
                     icon=ICON_SUN_SNOWFLAKE_VARIANT
                 ).extend(),
+                cv.Optional(CONF_TARGET_ROOM1_TEMPERATURE_SET): number.number_schema(
+                    TargetRoom1TemperatureNumber,
+                    entity_category=ENTITY_CATEGORY_CONFIG,
+                    icon=ICON_SUN_SNOWFLAKE_VARIANT
+                ).extend(),
                 cv.Optional(CONF_FLOW_TEMPERATURE_DAY_SET): number.number_schema(
                     FlowTemperatureDayNumber,
                     entity_category=ENTITY_CATEGORY_CONFIG,
@@ -366,6 +380,10 @@ def to_code(config):
         if sensor_conf := entities.get(CONF_TDHW1):
             sens = yield sensor.new_sensor(sensor_conf)
             cg.add(var.getAccessor().set_tdhw1(sens))
+
+        if sensor_conf := entities.get(CONF_TARGET_ROOM1_TEMPERATURE):
+            sens = yield sensor.new_sensor(sensor_conf)
+            cg.add(var.getAccessor().set_target_room1_temperature(sens))
 
         if sensor_conf := entities.get(CONF_TARGET_HOT_WATER_TEMPERATURE):
             sens = yield sensor.new_sensor(sensor_conf)
@@ -524,6 +542,16 @@ def to_code(config):
             )
             yield cg.register_parented(num, var)
             cg.add(var.getAccessor().set_target_hot_water_temperature_set(num))
+
+        if number_conf := entities.get(CONF_TARGET_ROOM1_TEMPERATURE_SET):
+            num = yield number.new_number(
+                number_conf,
+                min_value=15,
+                max_value=25,
+                step=0.1
+            )
+            yield cg.register_parented(num, var)
+            cg.add(var.getAccessor().set_target_room1_temperature_set(num))
 
         if number_conf := entities.get(CONF_FLOW_TEMPERATURE_DAY_SET):
             num = yield number.new_number(
