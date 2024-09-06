@@ -169,6 +169,12 @@ public:
     number::Number* get_heating_curve_set() const { return m_heating_curve_set; }
     void set_heating_curve_set(number::Number* pNumber) { m_heating_curve_set = pNumber; }
 
+    number::Number* get_circulation_pump_min_set() const { return m_circulation_pump_min_set; }
+    void set_circulation_pump_min_set(number::Number* pNumber) { m_circulation_pump_min_set = pNumber; }
+
+    number::Number* get_circulation_pump_max_set() const { return m_circulation_pump_max_set; }
+    void set_circulation_pump_max_set(number::Number* pNumber) { m_circulation_pump_max_set = pNumber; }
+
 public:
     void update_thermal_power() {
         float power = 0.0f;
@@ -241,6 +247,8 @@ private:
     number::Number* m_max_target_flow_temp_set;
     number::Number* m_min_target_flow_temp_set;
     number::Number* m_heating_curve_set;
+    number::Number* m_circulation_pump_min_set;
+    number::Number* m_circulation_pump_max_set;
 
     DaikinRotexCanComponent* m_pDaikinRotexCanComponent;
 };

@@ -61,6 +61,10 @@ daikin_rotex_can:
       name: "Umwälzpumpe Min"
     circulation_pump_max:
       name: "Umwälzpumpe Max"
+    circulation_pump_min_set:
+      name: "Umwälzpumpe Min"
+    circulation_pump_max_set:
+      name: "Umwälzpumpe Max"
     dhw_mixer_position:
       name: "DHW Mischer Position"
     dhw_run:

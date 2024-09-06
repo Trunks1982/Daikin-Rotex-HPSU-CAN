@@ -33,5 +33,15 @@ void HeatingCurveNumber::control(float value) {
     this->parent_->set_heating_curve(value);
 }
 
+void CirculationPumpMinNumber::control(float value) {
+    this->publish_state(value);
+    this->parent_->set_circulation_pump_min(value);
+}
+
+void CirculationPumpMaxNumber::control(float value) {
+    this->publish_state(value);
+    this->parent_->set_circulation_pump_max(value);
+}
+
 }  // namespace seeed_mr24hpc1
 }  // namespace esphome

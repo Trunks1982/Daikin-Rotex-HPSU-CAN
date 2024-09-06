@@ -33,6 +33,8 @@ public:
     void set_max_target_flow_temp(float temperature);
     void set_min_target_flow_temp(float temperature);
     void set_heating_curve(float heating_curve);
+    void set_circulation_pump_min(uint8_t percent);
+    void set_circulation_pump_max(uint8_t percent);
 
     // Buttons
     void dhw_run();

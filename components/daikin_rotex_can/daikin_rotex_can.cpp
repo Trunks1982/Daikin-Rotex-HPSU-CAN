@@ -212,16 +212,30 @@ const std::vector<TRequest> entity_config = {
             return percent;
         }
     },
-    { // Umwälzpumpe Min
+
+    { // Circulation Pump
         {0x31, 0x00, 0xFA, 0x06, 0x7F, 0x00, 0x00},
         {  DC,   DC, 0xFA, 0x06, 0x7F,   DC,   DC},
         [](auto& accessor) -> EntityBase* { return accessor.get_circulation_pump_min(); },
         [](auto const& data, auto& accessor) -> DataType {
             const float percent = data[6];
             accessor.get_circulation_pump_min()->publish_state(percent);
+            if (accessor.get_circulation_pump_min_set() != nullptr) {
+                accessor.get_circulation_pump_min_set()->publish_state(percent);
+            }
             return percent;
         }
     },
+    { // Circulation Pump Min Set
+        [](auto& accessor) -> EntityBase* { return accessor.get_circulation_pump_min(); },
+        [](auto const& value) -> std::vector<uint8_t> {
+            const uint16_t temp = static_cast<uint16_t>(value);
+            const uint8_t hi_byte = temp >> 8;
+            const uint8_t lo_byte = temp & 0xFF;
+            return {0x30, 0x00, 0xFA, 0x06, 0x7F, hi_byte, lo_byte};
+        }
+    },
+
     { // Umwälzpumpe Max
         {0x31, 0x00, 0xFA, 0x06, 0x7E, 0x00, 0x00},
         {  DC,   DC, 0xFA, 0x06, 0x7E,   DC,   DC},
@@ -229,7 +243,19 @@ const std::vector<TRequest> entity_config = {
         [](auto const& data, auto& accessor) -> DataType {
             const float percent = data[6];
             accessor.get_circulation_pump_max()->publish_state(percent);
+            if (accessor.get_circulation_pump_max_set() != nullptr) {
+                accessor.get_circulation_pump_max_set()->publish_state(percent);
+            }
             return percent;
+        }
+    },
+    { // Circulation Pump Max Set
+        [](auto& accessor) -> EntityBase* { return accessor.get_circulation_pump_max(); },
+        [](auto const& value) -> std::vector<uint8_t> {
+            const uint16_t temp = static_cast<uint16_t>(value);
+            const uint8_t hi_byte = temp >> 8;
+            const uint8_t lo_byte = temp & 0xFF;
+            return {0x30, 0x00, 0xFA, 0x06, 0x7E, hi_byte, lo_byte};
         }
     },
 
@@ -258,7 +284,7 @@ const std::vector<TRequest> entity_config = {
             const uint16_t temp = (uint16_t)(value * 10);
             const uint8_t hi_byte = temp >> 8;
             const uint8_t lo_byte = temp & 0xFF;
-            return { 0x30, 0x00, 0x13, hi_byte, lo_byte, 0x00, 0x00 };
+            return {0x30, 0x00, 0x13, hi_byte, lo_byte, 0x00, 0x00};
         }
     },
 
@@ -303,7 +329,7 @@ const std::vector<TRequest> entity_config = {
             const uint16_t temp = (uint16_t)(value * 10);
             const uint8_t hi_byte = temp >> 8;
             const uint8_t lo_byte = temp & 0xFF;
-            return { 0x30, 0x00, 0xFA,  0x01, 0x29, hi_byte, lo_byte};
+            return {0x30, 0x00, 0xFA,  0x01, 0x29, hi_byte, lo_byte};
         }
     },
 
@@ -337,7 +363,7 @@ const std::vector<TRequest> entity_config = {
             const uint16_t hk = (uint16_t)(value * 100);
             const uint8_t hi_byte = hk >> 8;
             const uint8_t lo_byte = hk & 0xFF;
-            return { 0x30, 0x00, 0xFA, 0x01, 0x0E, hi_byte, lo_byte };
+            return {0x30, 0x00, 0xFA, 0x01, 0x0E, hi_byte, lo_byte};
         }
     },
 
@@ -404,7 +430,7 @@ const std::vector<TRequest> entity_config = {
             const uint16_t temp = (uint16_t)(value * 10);
             const uint8_t hi_byte = temp >> 8;
             const uint8_t lo_byte = temp & 0xFF;
-            return { 0x30, 0x00, 0xFA, 0x01, 0x2B, hi_byte, lo_byte };
+            return {0x30, 0x00, 0xFA, 0x01, 0x2B, hi_byte, lo_byte};
         }
     },
 
@@ -427,7 +453,7 @@ const std::vector<TRequest> entity_config = {
             const uint16_t temp = static_cast<uint16_t>(value * 10);
             const uint8_t hi_byte = temp >> 8;
             const uint8_t lo_byte = temp & 0xFF;
-            return { 0x30, 0x00, 0x28, hi_byte, lo_byte, 0x00, 0x00, };
+            return {0x30, 0x00, 0x28, hi_byte, lo_byte, 0x00, 0x00};
         }
     },
 
@@ -511,7 +537,7 @@ const std::vector<TRequest> entity_config = {
             const uint16_t temp = static_cast<uint16_t>(value * 10);
             const uint8_t hi_byte = temp >> 8;
             const uint8_t lo_byte = temp & 0xFF;
-            return { 0x30, 0x00, 0x05, hi_byte, lo_byte, 0x00, 0x00 };
+            return {0x30, 0x00, 0x05, hi_byte, lo_byte, 0x00, 0x00};
         }
     },
 
@@ -663,6 +689,17 @@ void DaikinRotexCanComponent::set_heating_curve(float heating_curve) {
     m_data_requests.sendSet(m_accessor, m_accessor.get_heating_curve_set()->get_name(), heating_curve);
     m_data_requests.sendGet(m_accessor, m_accessor.get_heating_curve()->get_name());
 }
+
+void DaikinRotexCanComponent::set_circulation_pump_min(uint8_t percent) {
+    m_data_requests.sendSet(m_accessor, m_accessor.get_circulation_pump_min_set()->get_name(), percent);
+    m_data_requests.sendGet(m_accessor, m_accessor.get_circulation_pump_min()->get_name());
+}
+
+void DaikinRotexCanComponent::set_circulation_pump_max(uint8_t percent) {
+    m_data_requests.sendSet(m_accessor, m_accessor.get_circulation_pump_max_set()->get_name(), percent);
+    m_data_requests.sendGet(m_accessor, m_accessor.get_circulation_pump_max()->get_name());
+}
+
 
 ///////////////// Buttons /////////////////
 void DaikinRotexCanComponent::dhw_run() {

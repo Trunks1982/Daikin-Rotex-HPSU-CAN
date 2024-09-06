@@ -21,6 +21,8 @@ FlowTemperatureDayNumber = daikin_rotex_can_ns.class_("FlowTemperatureDayNumber"
 MaxTargetFlowTempNumber = daikin_rotex_can_ns.class_("MaxTargetFlowTempNumber", number.Number)
 MinTargetFlowTempNumber = daikin_rotex_can_ns.class_("MinTargetFlowTempNumber", number.Number)
 HeatingCurveNumber = daikin_rotex_can_ns.class_("HeatingCurveNumber", number.Number)
+CirculationPumpMinNumber = daikin_rotex_can_ns.class_("CirculationPumpMinNumber", number.Number)
+CirculationPumpMaxNumber = daikin_rotex_can_ns.class_("CirculationPumpMaxNumber", number.Number)
 
 LogFilterText = daikin_rotex_can_ns.class_("LogFilterText", text.Text)
 
@@ -95,6 +97,8 @@ CONF_FLOW_TEMPERATURE_DAY_SET = "flow_temperature_day_set"
 CONF_MAX_TARGET_FLOW_TEMP_SET = "max_target_flow_temp_set"
 CONF_MIN_TARGET_FLOW_TEMP_SET = "min_target_flow_temp_set"
 CONF_HEATING_CURVE_SET = "heating_curve_set" # Heizkurve setzen
+CONF_CIRCULATION_PUMP_MIN_SET = "circulation_pump_min_set"
+CONF_CIRCULATION_PUMP_MAX_SET = "circulation_pump_max_set"
 
 ########## Numbers ##########
 
@@ -372,6 +376,16 @@ CONFIG_SCHEMA = cv.Schema(
                     entity_category=ENTITY_CATEGORY_CONFIG,
                     icon=ICON_SUN_SNOWFLAKE_VARIANT
                 ).extend(),
+                cv.Optional(CONF_CIRCULATION_PUMP_MIN_SET): number.number_schema(
+                    CirculationPumpMinNumber,
+                    entity_category=ENTITY_CATEGORY_CONFIG,
+                    icon=ICON_SUN_SNOWFLAKE_VARIANT
+                ).extend(),
+                cv.Optional(CONF_CIRCULATION_PUMP_MAX_SET): number.number_schema(
+                    CirculationPumpMaxNumber,
+                    entity_category=ENTITY_CATEGORY_CONFIG,
+                    icon=ICON_SUN_SNOWFLAKE_VARIANT
+                ).extend(),
 
                 ########## Buttons ##########
 
@@ -631,6 +645,26 @@ def to_code(config):
             )
             yield cg.register_parented(num, var)
             cg.add(var.getAccessor().set_heating_curve_set(num))
+
+        if number_conf := entities.get(CONF_CIRCULATION_PUMP_MIN_SET):
+            num = yield number.new_number(
+                number_conf,
+                min_value=40,
+                max_value=100,
+                step=1
+            )
+            yield cg.register_parented(num, var)
+            cg.add(var.getAccessor().set_circulation_pump_min_set(num))
+
+        if number_conf := entities.get(CONF_CIRCULATION_PUMP_MAX_SET):
+            num = yield number.new_number(
+                number_conf,
+                min_value=60,
+                max_value=100,
+                step=1
+            )
+            yield cg.register_parented(num, var)
+            cg.add(var.getAccessor().set_circulation_pump_max_set(num))
 
         ########## Numbers ##########
 

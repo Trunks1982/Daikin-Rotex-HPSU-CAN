@@ -48,5 +48,19 @@ protected:
     void control(float value) override;
 };
 
+class CirculationPumpMinNumber : public number::Number, public Parented<DaikinRotexCanComponent> {
+public:
+    CirculationPumpMinNumber() = default;
+protected:
+    void control(float value) override;
+};
+
+class CirculationPumpMaxNumber : public number::Number, public Parented<DaikinRotexCanComponent> {
+public:
+    CirculationPumpMaxNumber() = default;
+protected:
+    void control(float value) override;
+};
+
 }
 }
