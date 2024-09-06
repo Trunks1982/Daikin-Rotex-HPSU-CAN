@@ -398,7 +398,7 @@ const std::vector<TRequest> entity_config = {
     { // Max VL Einstellen
         [](auto& accessor) -> EntityBase* { return accessor.get_max_target_flow_temp_set(); },
         [](auto const& value) -> std::vector<uint8_t> {
-            const uint16_t temp = statuic_cast<uint16_t>(value * 10);
+            const uint16_t temp = static_cast<uint16_t>(value * 10);
             const uint8_t hi_byte = temp >> 8;
             const uint8_t lo_byte = temp & 0xFF;
             return { 0x30, 0x00, 0x28, hi_byte, lo_byte, 0x00, 0x00, };
@@ -587,43 +587,53 @@ void DaikinRotexCanComponent::setup() {
 ///////////////// Selects /////////////////
 void DaikinRotexCanComponent::set_operation_mode(std::string const& mode) {
     m_data_requests.sendSet(m_accessor, m_accessor.get_operating_mode_select()->get_name(), map_betriebsmodus.getKey(mode));
+    m_data_requests.sendGet(m_accessor, m_accessor.get_operating_mode()->get_name());
 }
 
 void DaikinRotexCanComponent::set_hk_function(std::string const& mode) {
     m_data_requests.sendSet(m_accessor, m_accessor.get_hk_function_select()->get_name(), map_hk_function.getKey(mode));
+    m_data_requests.sendGet(m_accessor, m_accessor.get_hk_function()->get_name());
 }
 
 void DaikinRotexCanComponent::set_sg_mode(std::string const& mode) {
     m_data_requests.sendSet(m_accessor, m_accessor.get_sg_mode_select()->get_name(), map_sg_mode.getKey(mode));
+    m_data_requests.sendGet(m_accessor, m_accessor.get_sg_mode()->get_name());
 }
 
 void DaikinRotexCanComponent::set_smart_grid(std::string const& mode) {
     m_data_requests.sendSet(m_accessor, m_accessor.get_smart_grid_select()->get_name(), map_sg.getKey(mode));
+    m_data_requests.sendGet(m_accessor, m_accessor.get_smart_grid()->get_name());
 }
 
 ///////////////// Numbers /////////////////
 void DaikinRotexCanComponent::set_target_hot_water_temperature(float temperature) {
     m_data_requests.sendSet(m_accessor, m_accessor.get_target_hot_water_temperature_set()->get_name(), temperature);
+    m_data_requests.sendGet(m_accessor, m_accessor.get_target_hot_water_temperature()->get_name());
 }
 
 void DaikinRotexCanComponent::set_target_room1_temperature(float temperature) {
     m_data_requests.sendSet(m_accessor, m_accessor.get_target_room1_temperature_set()->get_name(), temperature);
+    m_data_requests.sendGet(m_accessor, m_accessor.get_target_room1_temperature()->get_name());
 }
 
 void DaikinRotexCanComponent::set_flow_temperature_day(float temperature) {
     m_data_requests.sendSet(m_accessor, m_accessor.get_flow_temperature_day_set()->get_name(), temperature);
+    m_data_requests.sendGet(m_accessor, m_accessor.get_flow_temperature_day()->get_name());
 }
 
 void DaikinRotexCanComponent::set_max_target_flow_temp(float temperature) {
     m_data_requests.sendSet(m_accessor, m_accessor.get_max_target_flow_temp_set()->get_name(), temperature);
+    m_data_requests.sendGet(m_accessor, m_accessor.get_max_target_supply_temperature()->get_name());
 }
 
 void DaikinRotexCanComponent::set_min_target_flow_temp(float temperature) {
     m_data_requests.sendSet(m_accessor, m_accessor.get_min_target_flow_temp_set()->get_name(), temperature);
+    m_data_requests.sendGet(m_accessor, m_accessor.get_min_target_supply_temperature()->get_name());
 }
 
 void DaikinRotexCanComponent::set_heating_curve(float heating_curve) {
     m_data_requests.sendSet(m_accessor, m_accessor.get_heating_curve_set()->get_name(), heating_curve);
+    m_data_requests.sendGet(m_accessor, m_accessor.get_heating_curve()->get_name());
 }
 
 void DaikinRotexCanComponent::loop() {
