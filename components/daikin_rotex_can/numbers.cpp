@@ -8,6 +8,11 @@ void TargetHotWaterTemperatureNumber::control(float value) {
     this->parent_->set_target_hot_water_temperature(value);
 }
 
+void FlowTemperatureDayNumber::control(float value) {
+    this->publish_state(value);
+    this->parent_->set_flow_temperature_day(value);
+}
+
 void HeatingCurveNumber::control(float value) {
     this->publish_state(value);
     this->parent_->set_heating_curve(value);

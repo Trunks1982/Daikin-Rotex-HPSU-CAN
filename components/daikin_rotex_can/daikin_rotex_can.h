@@ -21,6 +21,7 @@ public:
     void set_hk_function(std::string const& state);
 
     void set_target_hot_water_temperature(float temperature);
+    void set_flow_temperature_day(float temperature);
     void set_heating_curve(float heating_curve);
 
     void validateConfig();

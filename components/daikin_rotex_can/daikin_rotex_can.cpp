@@ -264,8 +264,19 @@ const std::vector<TRequest> entity_config = {
         [](auto const& data, auto& accessor) -> DataType {
             const float temp = ((data[5] << 8) + data[6]) / 10.0f;
             accessor.get_daytime_supply_temperature()->publish_state(temp);
-            //id(t_vorlauf_tag_set).publish_state(temp);
+            if (accessor.get_flow_temperature_day_set() != nullptr) {
+                accessor.get_flow_temperature_day_set()->publish_state(temp);
+            }
             return temp;
+        }
+    },
+    { // T Vorlauf Tag Einstellen
+        [](auto& accessor) -> EntityBase* { return accessor.get_flow_temperature_day_set(); },
+        [](auto const& value) -> std::vector<uint8_t> {
+            const uint16_t temperature = (uint16_t)(value * 10);
+            const uint8_t high_byte = temperature >> 8;
+            const uint8_t low_byte = temperature & 0xFF;
+            return { 0x30, 0x00, 0xFA,  0x01, 0x29, high_byte, low_byte, };
         }
     },
 
@@ -293,7 +304,6 @@ const std::vector<TRequest> entity_config = {
             return value;
         }
     },
-
     { // Heizkurve einstellen
         [](auto& accessor) -> EntityBase* { return accessor.get_heating_curve_set(); },
         [](auto const& value) -> std::vector<uint8_t> {
@@ -520,6 +530,10 @@ void DaikinRotexCanComponent::set_hk_function(std::string const& mode) {
 
 void DaikinRotexCanComponent::set_target_hot_water_temperature(float temperature) {
     m_data_requests.sendSet(m_accessor, m_accessor.get_target_hot_water_temperature_set()->get_name(), temperature);
+}
+
+void DaikinRotexCanComponent::set_flow_temperature_day(float temperature) {
+    m_data_requests.sendSet(m_accessor, m_accessor.get_flow_temperature_day_set()->get_name(), temperature);
 }
 
 void DaikinRotexCanComponent::set_heating_curve(float heating_curve) {

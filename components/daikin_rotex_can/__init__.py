@@ -14,6 +14,7 @@ OperationModeSelect = daikin_rotex_can_ns.class_("OperationModeSelect", select.S
 HKFunctionSelect = daikin_rotex_can_ns.class_("HKFunctionSelect", select.Select)
 
 TargetHotWaterTemperatureNumber = daikin_rotex_can_ns.class_("TargetHotWaterTemperatureNumber", number.Number)
+FlowTemperatureDayNumber = daikin_rotex_can_ns.class_("FlowTemperatureDayNumber", number.Number)
 HeatingCurveNumber = daikin_rotex_can_ns.class_("HeatingCurveNumber", number.Number)
 
 LogFilterText = daikin_rotex_can_ns.class_("LogFilterText", text.Text)
@@ -77,6 +78,7 @@ CONF_HK_FUNCTION_SELECT = "hk_function_select"
 ########## Numbers ##########
 
 CONF_TARGET_HOT_WATER_TEMPERATURE_SET = "target_hot_water_temperature_set"
+CONF_FLOW_TEMPERATURE_DAY_SET = "flow_temperature_day_set"
 CONF_HEATING_CURVE_SET = "heating_curve_set" # Heizkurve setzen
 
 ########## Icons ##########
@@ -296,6 +298,11 @@ CONFIG_SCHEMA = cv.Schema(
                     entity_category=ENTITY_CATEGORY_CONFIG,
                     icon=ICON_SUN_SNOWFLAKE_VARIANT
                 ).extend(),
+                cv.Optional(CONF_FLOW_TEMPERATURE_DAY_SET): number.number_schema(
+                    FlowTemperatureDayNumber,
+                    entity_category=ENTITY_CATEGORY_CONFIG,
+                    icon=ICON_SUN_SNOWFLAKE_VARIANT
+                ).extend(),
                 cv.Optional(CONF_HEATING_CURVE_SET): number.number_schema(
                     HeatingCurveNumber,
                     entity_category=ENTITY_CATEGORY_CONFIG,
@@ -477,6 +484,16 @@ def to_code(config):
             )
             yield cg.register_parented(num, var)
             cg.add(var.getAccessor().set_target_hot_water_temperature_set(num))
+
+        if number_conf := entities.get(CONF_FLOW_TEMPERATURE_DAY_SET):
+            num = yield number.new_number(
+                number_conf,
+                min_value=25,
+                max_value=60,
+                step=1
+            )
+            yield cg.register_parented(num, var)
+            cg.add(var.getAccessor().set_flow_temperature_day_set(num))
 
         if number_conf := entities.get(CONF_HEATING_CURVE_SET):
             num = yield number.new_number(

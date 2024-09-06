@@ -130,6 +130,9 @@ public:
     number::Number* get_target_hot_water_temperature_set() const { return m_target_hot_water_temperature_set; }
     void set_target_hot_water_temperature_set(number::Number* pNumber) { m_target_hot_water_temperature_set = pNumber; }
 
+    number::Number* get_flow_temperature_day_set() const { return m_flow_temperature_day_set; }
+    void set_flow_temperature_day_set(number::Number* pNumber) { m_flow_temperature_day_set = pNumber; }
+
     number::Number* get_heating_curve_set() const { return m_heating_curve_set; }
     void set_heating_curve_set(number::Number* pNumber) { m_heating_curve_set = pNumber; }
 
@@ -190,6 +193,7 @@ private:
     select::Select* m_hk_function_select;
 
     number::Number* m_target_hot_water_temperature_set;
+    number::Number* m_flow_temperature_day_set;
     number::Number* m_heating_curve_set;
 };
 
