@@ -10,8 +10,17 @@
 namespace esphome {
 namespace daikin_rotex_can {
 
+class DaikinRotexCanComponent;
+
 class Accessor {
 public:
+    Accessor(DaikinRotexCanComponent* pDaikinRotexCanComponent)
+    : m_pDaikinRotexCanComponent(pDaikinRotexCanComponent) {
+    }
+
+    DaikinRotexCanComponent* getDaikinRotexCanComponent() const {
+        return m_pDaikinRotexCanComponent;
+    }
 
     // Texts
 
@@ -224,6 +233,8 @@ private:
     number::Number* m_max_target_flow_temp_set;
     number::Number* m_min_target_flow_temp_set;
     number::Number* m_heating_curve_set;
+
+    DaikinRotexCanComponent* m_pDaikinRotexCanComponent;
 };
 
 }

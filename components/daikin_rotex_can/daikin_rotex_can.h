@@ -4,12 +4,15 @@
 #include "esphome/components/daikin_rotex_can/Accessor.h"
 #include "esphome/components/esp32_can/esp32_can.h"
 #include "esphome/core/component.h"
+#include <list>
 
 namespace esphome {
 namespace daikin_rotex_can {
 
 class DaikinRotexCanComponent: public Component {
 public:
+    using TVoidFunc = std::function<void()>;
+
     DaikinRotexCanComponent();
     void setup() override;
     void loop() override;
@@ -31,11 +34,17 @@ public:
     void set_min_target_flow_temp(float temperature);
     void set_heating_curve(float heating_curve);
 
+    // Buttons
+    void dhw_run();
+
     void validateConfig();
 
     Accessor& getAccessor() { return m_accessor; }
 
     void handle(uint32_t can_id, std::vector<uint8_t> const& data);
+
+    void run_dhw_lambdas();
+    void call_later(TVoidFunc lambda) { m_later_calls.push_back(lambda); }
 
 private:
 
@@ -55,10 +64,11 @@ private:
 
     Accessor m_accessor;
     TRequests m_data_requests;
-
     std::shared_ptr<esphome::canbus::CanbusTrigger> m_canbus_trigger;
     std::shared_ptr<TCanbusAutomation> m_canbus_automation;
     std::shared_ptr<MyAction> m_canbus_action;
+    std::list<TVoidFunc> m_later_calls;
+    std::list<TVoidFunc> m_dhw_run_lambdas;
 };
 
 inline void DaikinRotexCanComponent::set_canbus(esphome::esp32_can::ESP32Can* pCanbus) {

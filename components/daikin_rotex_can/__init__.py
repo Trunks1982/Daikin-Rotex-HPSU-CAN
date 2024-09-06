@@ -1,6 +1,6 @@
 import esphome.codegen as cg
 import esphome.config_validation as cv
-from esphome.components import sensor, binary_sensor, number, select, text_sensor, canbus, text
+from esphome.components import sensor, binary_sensor, button, number, select, text_sensor, canbus, text
 from esphome.const import *
 from esphome.components.canbus import CanbusComponent
 #from esphome.const import (
@@ -24,12 +24,14 @@ HeatingCurveNumber = daikin_rotex_can_ns.class_("HeatingCurveNumber", number.Num
 
 LogFilterText = daikin_rotex_can_ns.class_("LogFilterText", text.Text)
 
+DHWRunButton = daikin_rotex_can_ns.class_("DHWRunButton", button.Button)
+
 DEPENDENCIES = []
 
 UNIT_BAR = "bar"
 UNIT_LITER_PER_HOUR = "L/h"
 
-AUTO_LOAD = ['binary_sensor', 'number', 'sensor', 'select', 'text', 'text_sensor']
+AUTO_LOAD = ['binary_sensor', 'button', 'number', 'sensor', 'select', 'text', 'text_sensor']
 
 CONF_CAN_ID = "canbus_id"
 CONF_LOG_FILTER_TEXT = "log_filter"
@@ -91,6 +93,10 @@ CONF_FLOW_TEMPERATURE_DAY_SET = "flow_temperature_day_set"
 CONF_MAX_TARGET_FLOW_TEMP_SET = "max_target_flow_temp_set"
 CONF_MIN_TARGET_FLOW_TEMP_SET = "min_target_flow_temp_set"
 CONF_HEATING_CURVE_SET = "heating_curve_set" # Heizkurve setzen
+
+########## Numbers ##########
+
+CONF_DHW_RUN = "dhw_run"
 
 ########## Icons ##########
 
@@ -350,6 +356,14 @@ CONFIG_SCHEMA = cv.Schema(
                     entity_category=ENTITY_CATEGORY_CONFIG,
                     icon=ICON_SUN_SNOWFLAKE_VARIANT
                 ).extend(),
+
+                ########## Buttons ##########
+
+                cv.Optional(CONF_DHW_RUN): button.button_schema(
+                    DHWRunButton,
+                    entity_category=ENTITY_CATEGORY_CONFIG,
+                    icon=ICON_SUN_SNOWFLAKE_VARIANT
+                ).extend(),
             }
         ),
     }
@@ -592,5 +606,11 @@ def to_code(config):
             )
             yield cg.register_parented(num, var)
             cg.add(var.getAccessor().set_heating_curve_set(num))
+
+        ########## Numbers ##########
+
+        if button_conf := entities.get(CONF_DHW_RUN):
+            but = yield button.new_button(button_conf)
+            yield cg.register_parented(but, var)
 
     cg.add(var.validateConfig())

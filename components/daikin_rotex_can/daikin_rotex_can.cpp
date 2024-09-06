@@ -219,10 +219,16 @@ const std::vector<TRequest> entity_config = {
         [](auto& accessor) -> EntityBase* { return accessor.get_target_hot_water_temperature(); },
         [](auto const& data, auto& accessor) -> DataType {
             const float temp = ((data[3] << 8) + data[4]) / 10.0f;
+
             accessor.get_target_hot_water_temperature()->publish_state(temp);
             if (accessor.get_target_hot_water_temperature_set() != nullptr) {
                 accessor.get_target_hot_water_temperature_set()->publish_state(temp);
             }
+
+            accessor.getDaikinRotexCanComponent()->call_later([&](){
+                accessor.getDaikinRotexCanComponent()->run_dhw_lambdas();
+            });
+
             return temp;
         }
     },
@@ -571,8 +577,10 @@ const std::vector<TRequest> entity_config = {
 };
 
 DaikinRotexCanComponent::DaikinRotexCanComponent()
-: m_accessor()
+: m_accessor(this)
 , m_data_requests(std::move(entity_config))
+, m_later_calls()
+, m_dhw_run_lambdas()
 {
 }
 
@@ -636,8 +644,36 @@ void DaikinRotexCanComponent::set_heating_curve(float heating_curve) {
     m_data_requests.sendGet(m_accessor, m_accessor.get_heating_curve()->get_name());
 }
 
+///////////////// Buttons /////////////////
+void DaikinRotexCanComponent::dhw_run() {
+    const float temp = m_accessor.get_target_hot_water_temperature()->get_raw_state();
+
+    m_data_requests.sendSet(m_accessor, m_accessor.get_target_hot_water_temperature_set()->get_name(), 70);
+    m_data_requests.sendGet(m_accessor, m_accessor.get_target_hot_water_temperature()->get_name());
+
+    m_dhw_run_lambdas.push_back([temp, this]() {
+        m_data_requests.sendSet(m_accessor, m_accessor.get_target_hot_water_temperature_set()->get_name(), temp);
+        m_data_requests.sendGet(m_accessor, m_accessor.get_target_hot_water_temperature()->get_name());
+    });
+}
+
+void DaikinRotexCanComponent::run_dhw_lambdas() {
+    if (m_accessor.getDaikinRotexCanComponent() != nullptr) {
+        if (!m_dhw_run_lambdas.empty()) {
+            auto& lambda = m_dhw_run_lambdas.front();
+            lambda();
+            m_dhw_run_lambdas.pop_front();
+        }
+    }
+}
+
 void DaikinRotexCanComponent::loop() {
     m_data_requests.sendNextPendingGet(m_accessor);
+    while (!m_later_calls.empty()) {
+        auto& lambda = m_later_calls.front();
+        lambda();
+        m_later_calls.pop_front();
+    }
 }
 
 void DaikinRotexCanComponent::handle(uint32_t can_id, std::vector<uint8_t> const& data) {
