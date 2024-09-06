@@ -17,9 +17,13 @@ public:
 
     void set_canbus(esphome::esp32_can::ESP32Can* pCanbus);
 
+    // Selects
     void set_operation_mode(std::string const& state);
     void set_hk_function(std::string const& state);
+    void set_sg_mode(std::string const& state);
+    void set_smart_grid(std::string const& state);
 
+    // Numbers
     void set_target_hot_water_temperature(float temperature);
     void set_flow_temperature_day(float temperature);
     void set_max_target_flow_temp(float temperature);

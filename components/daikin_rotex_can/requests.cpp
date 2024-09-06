@@ -37,7 +37,7 @@ void TRequests::sendGet(Accessor const& accessor, std::string const& request_nam
         m_requests.begin(),
         m_requests.end(),
         [& request_name, & accessor](auto& request) {
-            return request.getName(accessor) == request_name && request.isGetSupported(accessor);
+            return !request.isSetter() && request.getName(accessor) == request_name && request.isGetSupported(accessor);
         }
     );
 
@@ -50,7 +50,7 @@ void TRequests::sendGet(Accessor const& accessor, std::string const& request_nam
 
 void TRequests::sendSet(Accessor const& accessor, std::string const& request_name, float value) {
     const auto it = std::find_if(m_requests.begin(), m_requests.end(),
-        [&request_name, &accessor](auto& request) { return request.getName(accessor) == request_name; }
+        [&request_name, &accessor](auto& request) { return request.isSetter() && request.getName(accessor) == request_name; }
     );
     if (it != m_requests.end()) {
         it->sendSet(accessor, m_pCanBus, value);
@@ -63,7 +63,7 @@ void TRequests::handle(Accessor& accessor, uint32_t can_id, std::vector<uint8_t>
     bool bHandled = false;
     const uint32_t timestamp = millis();
     for (auto& request : m_requests) {
-        if (request.isMatch(can_id, responseData)) {
+        if (!request.isSetter() && request.isMatch(can_id, responseData)) {
             request.handle(accessor, can_id, responseData, timestamp);
             bHandled = true;
         }

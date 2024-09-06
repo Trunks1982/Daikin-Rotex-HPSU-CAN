@@ -24,7 +24,8 @@ public:
         std::array<uint16_t, 7> const& expected_reponse,
         TEntityProvider entity_provider,
         TGetLambda lambda,
-        TSetLambda setLambda)
+        TSetLambda setLambda,
+        bool setter)
     : m_data(data)
     , m_response_can_id(response_can_id)
     , m_expected_reponse(expected_reponse)
@@ -33,6 +34,7 @@ public:
     , m_set_lambda(setLambda)
     , m_last_update(0u)
     , m_last_request(0u)
+    , m_setter(setter)
     {
     }
 
@@ -42,7 +44,7 @@ public:
         std::array<uint16_t, 7> const& expected_reponse,
         TEntityProvider entity_provider,
         TGetLambda lambda)
-    : TRequest(data, response_can_id, expected_reponse, entity_provider, lambda, [](float) -> std::vector<uint8_t> { return {}; })
+    : TRequest(data, response_can_id, expected_reponse, entity_provider, lambda, [](float) -> std::vector<uint8_t> { return {}; }, false)
     {
     }
 
@@ -52,7 +54,7 @@ public:
         TEntityProvider entity_provider,
         TGetLambda lambda,
         TSetLambda setLambda)
-    : TRequest(data, 0x180, expected_reponse, entity_provider, lambda, setLambda)
+    : TRequest(data, 0x180, expected_reponse, entity_provider, lambda, setLambda, true)
     {
     }
 
@@ -68,7 +70,7 @@ public:
     TRequest(
         TEntityProvider entity_provider,
         TSetLambda setLambda)
-    : TRequest({}, 0x00, {}, entity_provider, [](auto const&, Accessor&) -> DataType { return 0u; }, setLambda)
+    : TRequest({}, 0x00, {}, entity_provider, [](auto const&, Accessor&) -> DataType { return 0u; }, setLambda, true)
     {
     }
 
@@ -96,6 +98,7 @@ public:
     void sendSet(Accessor const& accessor, esphome::esp32_can::ESP32Can* pCanBus, float value);
 
     bool inProgress() const;
+    bool isSetter() const { return m_setter; }
 
 private:
     std::array<uint8_t, 7> m_data;
@@ -106,6 +109,7 @@ private:
     std::function<std::vector<uint8_t>(float const&)> m_set_lambda;
     uint32_t m_last_update;
     uint32_t m_last_request;
+    bool m_setter;
 };
 
 }

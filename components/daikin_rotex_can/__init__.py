@@ -12,6 +12,8 @@ DaikinRotexCanComponent = daikin_rotex_can_ns.class_('DaikinRotexCanComponent', 
 
 OperationModeSelect = daikin_rotex_can_ns.class_("OperationModeSelect", select.Select)
 HKFunctionSelect = daikin_rotex_can_ns.class_("HKFunctionSelect", select.Select)
+SGModeSelect = daikin_rotex_can_ns.class_("SGModeSelect", select.Select)
+SmartGridSelect = daikin_rotex_can_ns.class_("SmartGridSelect", select.Select)
 
 TargetHotWaterTemperatureNumber = daikin_rotex_can_ns.class_("TargetHotWaterTemperatureNumber", number.Number)
 FlowTemperatureDayNumber = daikin_rotex_can_ns.class_("FlowTemperatureDayNumber", number.Number)
@@ -76,6 +78,8 @@ CONF_STATUS_KESSELPUMPE = "status_kesselpumpe"
 
 CONF_OPERATING_MODE_SELECT = "operating_mode_select"
 CONF_HK_FUNCTION_SELECT = "hk_function_select"
+CONF_SG_MODE_SELECT = "sg_mode_select"
+CONF_SMART_GRID_SELECT = "smart_grid_select"
 
 ########## Numbers ##########
 
@@ -294,6 +298,16 @@ CONFIG_SCHEMA = cv.Schema(
                     entity_category=ENTITY_CATEGORY_CONFIG,
                     icon="mdi:weather-partly-snowy"
                 ).extend(),
+                cv.Optional(CONF_SG_MODE_SELECT): select.select_schema(
+                    SGModeSelect,
+                    entity_category=ENTITY_CATEGORY_CONFIG,
+                    icon="mdi:weather-partly-snowy"
+                ).extend(),
+                cv.Optional(CONF_SMART_GRID_SELECT): select.select_schema(
+                    SmartGridSelect,
+                    entity_category=ENTITY_CATEGORY_CONFIG,
+                    icon="mdi:weather-partly-snowy"
+                ).extend(),
 
                 ########## Number ##########
 
@@ -486,6 +500,18 @@ def to_code(config):
             sel = yield select.new_select(select_conf, options = options)
             yield cg.register_parented(sel, var)
             cg.add(var.getAccessor().set_hk_function_select(sel))
+
+        if select_conf := entities.get(CONF_SG_MODE_SELECT):
+            options = ["Aus", "SG Modus 1", "SG Modus 2"]
+            sel = yield select.new_select(select_conf, options = options)
+            yield cg.register_parented(sel, var)
+            cg.add(var.getAccessor().set_sg_mode_select(sel))
+
+        if select_conf := entities.get(CONF_SMART_GRID_SELECT):
+            options = ["Aus", "An"]
+            sel = yield select.new_select(select_conf, options = options)
+            yield cg.register_parented(sel, var)
+            cg.add(var.getAccessor().set_smart_grid_select(sel))
 
         ########## Numbers ##########
 

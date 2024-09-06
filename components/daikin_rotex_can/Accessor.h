@@ -125,6 +125,12 @@ public:
     select::Select* get_hk_function_select() const { return m_hk_function_select; }
     void set_hk_function_select(select::Select* pSelect) { m_hk_function_select = pSelect; }
 
+    select::Select* get_sg_mode_select() const { return m_sg_mode_select; }
+    void set_sg_mode_select(select::Select* pSelect) { m_sg_mode_select = pSelect; }
+
+    select::Select* get_smart_grid_select() const { return m_smart_grid_select; }
+    void set_smart_grid_select(select::Select* pSelect) { m_smart_grid_select = pSelect; }
+
     // Numbers
 
     number::Number* get_target_hot_water_temperature_set() const { return m_target_hot_water_temperature_set; }
@@ -197,6 +203,8 @@ private:
 
     select::Select* m_operating_mode_select;
     select::Select* m_hk_function_select;
+    select::Select* m_sg_mode_select;
+    select::Select* m_smart_grid_select;
 
     number::Number* m_target_hot_water_temperature_set;
     number::Number* m_flow_temperature_day_set;

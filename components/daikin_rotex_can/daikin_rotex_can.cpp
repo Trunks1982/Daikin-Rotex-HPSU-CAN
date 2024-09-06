@@ -433,9 +433,19 @@ const std::vector<TRequest> entity_config = {
         [](auto const& data, auto& accessor) -> DataType {
             const std::string mode = map_sg_mode.getValue(data[6]);
             accessor.get_sg_mode()->publish_state(mode);
+            if (accessor.get_sg_mode_select() != nullptr) {
+                accessor.get_sg_mode_select()->publish_state(mode);
+            }
             return mode;
         }
     },
+    {
+        [](auto& accessor) -> EntityBase* { return accessor.get_sg_mode_select(); },
+        [](auto const& value) -> std::vector<uint8_t> {
+            return {0x30, 0x00, 0xFA, 0x06, 0x94, 0x00, static_cast<uint8_t>(value)};
+        }
+    },
+
     { // Smart Grid
         {0x31, 0x00, 0xFA, 0x06, 0x93, 0x00, 0x00},
         {  DC,   DC, 0xFA, 0x06, 0x93,   DC,   DC},
@@ -443,7 +453,16 @@ const std::vector<TRequest> entity_config = {
         [](auto const& data, auto& accessor) -> DataType {
             const std::string state = map_sg.getValue(data[6]);
             accessor.get_smart_grid()->publish_state(state);
+            if (accessor.get_smart_grid_select() != nullptr) {
+                accessor.get_smart_grid_select()->publish_state(state);
+            }
             return state;
+        }
+    },
+    {
+        [](auto& accessor) -> EntityBase* { return accessor.get_smart_grid_select(); },
+        [](auto const& value) -> std::vector<uint8_t> {
+            return {0x30, 0x00, 0xFA, 0x06, 0x93, 0x00, static_cast<uint8_t>(value)};
         }
     },
 
@@ -542,6 +561,7 @@ void DaikinRotexCanComponent::setup() {
     ESP_LOGI(TAG, "setup");
 }
 
+///////////////// Selects /////////////////
 void DaikinRotexCanComponent::set_operation_mode(std::string const& mode) {
     m_data_requests.sendSet(m_accessor, m_accessor.get_operating_mode_select()->get_name(), map_betriebsmodus.getKey(mode));
 }
@@ -550,6 +570,15 @@ void DaikinRotexCanComponent::set_hk_function(std::string const& mode) {
     m_data_requests.sendSet(m_accessor, m_accessor.get_hk_function_select()->get_name(), map_hk_function.getKey(mode));
 }
 
+void DaikinRotexCanComponent::set_sg_mode(std::string const& mode) {
+    m_data_requests.sendSet(m_accessor, m_accessor.get_sg_mode_select()->get_name(), map_sg_mode.getKey(mode));
+}
+
+void DaikinRotexCanComponent::set_smart_grid(std::string const& mode) {
+    m_data_requests.sendSet(m_accessor, m_accessor.get_smart_grid_select()->get_name(), map_sg.getKey(mode));
+}
+
+///////////////// Numbers /////////////////
 void DaikinRotexCanComponent::set_target_hot_water_temperature(float temperature) {
     m_data_requests.sendSet(m_accessor, m_accessor.get_target_hot_water_temperature_set()->get_name(), temperature);
 }
