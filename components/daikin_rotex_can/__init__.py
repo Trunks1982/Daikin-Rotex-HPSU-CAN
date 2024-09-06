@@ -235,13 +235,13 @@ CONFIG_SCHEMA = cv.Schema(
                 ).extend(),
                 cv.Optional(CONF_SPREIZUNG_MOD_HZ): sensor.sensor_schema(
                     device_class=DEVICE_CLASS_TEMPERATURE,
-                    unit_of_measurement=UNIT_CELSIUS,
+                    unit_of_measurement=UNIT_KELVIN,
                     accuracy_decimals=0,
                     icon="mdi:thermometer-lines",
                 ).extend(),
                 cv.Optional(CONF_SPREIZUNG_MOD_WW): sensor.sensor_schema(
                     device_class=DEVICE_CLASS_TEMPERATURE,
-                    unit_of_measurement=UNIT_CELSIUS,
+                    unit_of_measurement=UNIT_KELVIN,
                     accuracy_decimals=0,
                     icon="mdi:thermometer-lines",
                 ).extend(),
@@ -324,153 +324,153 @@ def to_code(config):
     if entities := config.get(CONF_ENTITIES):
         ########## Sensors ##########
 
-        if temperature_outside := entities.get(CONF_TEMPERATURE_OUTSIDE):
-            sens = yield sensor.new_sensor(temperature_outside)
+        if sensor_conf := entities.get(CONF_TEMPERATURE_OUTSIDE):
+            sens = yield sensor.new_sensor(sensor_conf)
             cg.add(var.getAccessor().set_temperature_outside(sens))
 
-        if tdhw1 := entities.get(CONF_TDHW1):
-            sens = yield sensor.new_sensor(tdhw1)
+        if sensor_conf := entities.get(CONF_TDHW1):
+            sens = yield sensor.new_sensor(sensor_conf)
             cg.add(var.getAccessor().set_tdhw1(sens))
 
-        if target_hot_water_temperature := entities.get(CONF_TARGET_HOT_WATER_TEMPERATURE):
-            sens = yield sensor.new_sensor(target_hot_water_temperature)
+        if sensor_conf := entities.get(CONF_TARGET_HOT_WATER_TEMPERATURE):
+            sens = yield sensor.new_sensor(sensor_conf)
             cg.add(var.getAccessor().set_target_hot_water_temperature(sens))
 
-        if tv := entities.get(CONF_TV):
-            sens = yield sensor.new_sensor(tv)
+        if sensor_conf := entities.get(CONF_TV):
+            sens = yield sensor.new_sensor(sensor_conf)
             cg.add(var.getAccessor().set_tv(sens))
 
-        if tvbh := entities.get(CONF_TVBH):
-            sens = yield sensor.new_sensor(tvbh)
+        if sensor_conf := entities.get(CONF_TVBH):
+            sens = yield sensor.new_sensor(sensor_conf)
             cg.add(var.getAccessor().set_tvbh(sens))
 
-        if tr := entities.get(CONF_TR):
-            sens = yield sensor.new_sensor(tr)
+        if sensor_conf := entities.get(CONF_TR):
+            sens = yield sensor.new_sensor(sensor_conf)
             cg.add(var.getAccessor().set_tr(sens))
 
-        if water_pressure := entities.get(CONF_WATER_PRESSURE):
-            sens = yield sensor.new_sensor(water_pressure)
+        if sensor_conf := entities.get(CONF_WATER_PRESSURE):
+            sens = yield sensor.new_sensor(sensor_conf)
             cg.add(var.getAccessor().set_water_pressure(sens))
 
-        if water_flow := entities.get(CONF_WATER_FLOW):
-            sens = yield sensor.new_sensor(water_flow)
+        if sensor_conf := entities.get(CONF_WATER_FLOW):
+            sens = yield sensor.new_sensor(sensor_conf)
             cg.add(var.getAccessor().set_water_flow(sens))
 
-        if circulation_pump := entities.get(CONF_CIRCULATION_PUMP):
-            sens = yield sensor.new_sensor(circulation_pump)
+        if sensor_conf := entities.get(CONF_CIRCULATION_PUMP):
+            sens = yield sensor.new_sensor(sensor_conf)
             cg.add(var.getAccessor().set_circulation_pump(sens))
 
-        if bypass_valve := entities.get(CONF_BYPASS_VALVE):
-            sens = yield sensor.new_sensor(bypass_valve)
+        if sensor_conf := entities.get(CONF_BYPASS_VALVE):
+            sens = yield sensor.new_sensor(sensor_conf)
             cg.add(var.getAccessor().set_bypass_valve(sens))
 
-        if dhw_mixer_position := entities.get(CONF_DHW_MIXER_POSITION):
-            sens = yield sensor.new_sensor(dhw_mixer_position)
+        if sensor_conf := entities.get(CONF_DHW_MIXER_POSITION):
+            sens = yield sensor.new_sensor(sensor_conf)
             cg.add(var.getAccessor().set_dhw_mixer_position(sens))
 
-        if target_supply_temperature := entities.get(CONF_TARGET_SUPPLY_TEMPERATURE):
-            sens = yield sensor.new_sensor(target_supply_temperature)
+        if sensor_conf := entities.get(CONF_TARGET_SUPPLY_TEMPERATURE):
+            sens = yield sensor.new_sensor(sensor_conf)
             cg.add(var.getAccessor().set_target_supply_temperature(sens))
 
-        if daytime_supply_temperature := entities.get(CONF_DAYTIME_SUPPLY_TEMPERATURE):
-            sens = yield sensor.new_sensor(daytime_supply_temperature)
+        if sensor_conf := entities.get(CONF_DAYTIME_SUPPLY_TEMPERATURE):
+            sens = yield sensor.new_sensor(sensor_conf)
             cg.add(var.getAccessor().set_daytime_supply_temperature(sens))
 
-        if thermal_power := entities.get(CONF_THERMAL_POWER):
-            sens = yield sensor.new_sensor(thermal_power)
+        if sensor_conf := entities.get(CONF_THERMAL_POWER):
+            sens = yield sensor.new_sensor(sensor_conf)
             cg.add(var.getAccessor().set_thermal_power(sens))
 
-        if heating_curve := entities.get(CONF_HEATING_CURVE):
-            sens = yield sensor.new_sensor(heating_curve)
+        if sensor_conf := entities.get(CONF_HEATING_CURVE):
+            sens = yield sensor.new_sensor(sensor_conf)
             cg.add(var.getAccessor().set_heating_curve(sens))
 
-        if ehs_for_ch := entities.get(CONF_EHS_FOR_CH):
-            sens = yield sensor.new_sensor(ehs_for_ch)
+        if sensor_conf := entities.get(CONF_EHS_FOR_CH):
+            sens = yield sensor.new_sensor(sensor_conf)
             cg.add(var.getAccessor().set_ehs_for_ch(sens))
 
-        if total_energy_produced := entities.get(CONF_TOTAL_ENERGY_PRODUCED):
-            sens = yield sensor.new_sensor(total_energy_produced)
+        if sensor_conf := entities.get(CONF_TOTAL_ENERGY_PRODUCED):
+            sens = yield sensor.new_sensor(sensor_conf)
             cg.add(var.getAccessor().set_total_energy_produced(sens))
 
-        if runtime_compressor := entities.get(CONF_RUNTIME_COMPRESSOR):
-            sens = yield sensor.new_sensor(runtime_compressor)
+        if sensor_conf := entities.get(CONF_RUNTIME_COMPRESSOR):
+            sens = yield sensor.new_sensor(sensor_conf)
             cg.add(var.getAccessor().set_runtime_compressor(sens))
 
-        if runtime_pump := entities.get(CONF_RUNTIME_PUMP):
-            sens = yield sensor.new_sensor(runtime_pump)
+        if sensor_conf := entities.get(CONF_RUNTIME_PUMP):
+            sens = yield sensor.new_sensor(sensor_conf)
             cg.add(var.getAccessor().set_runtime_pump(sens))
 
-        if min_target_supply_temperature := entities.get(CONF_MIN_TARGET_SUPPLY_TEMPERATURE):
-            sens = yield sensor.new_sensor(min_target_supply_temperature)
+        if sensor_conf := entities.get(CONF_MIN_TARGET_SUPPLY_TEMPERATURE):
+            sens = yield sensor.new_sensor(sensor_conf)
             cg.add(var.getAccessor().set_min_target_supply_temperature(sens))
 
-        if max_target_supply_temperature := entities.get(CONF_MAX_TARGET_SUPPLY_TEMPERATURE):
-            sens = yield sensor.new_sensor(max_target_supply_temperature)
+        if sensor_conf := entities.get(CONF_MAX_TARGET_SUPPLY_TEMPERATURE):
+            sens = yield sensor.new_sensor(sensor_conf)
             cg.add(var.getAccessor().set_max_target_supply_temperature(sens))
 
-        if spreizung_mod_hz := entities.get(CONF_SPREIZUNG_MOD_HZ):
-            sens = yield sensor.new_sensor(spreizung_mod_hz)
+        if sensor_conf := entities.get(CONF_SPREIZUNG_MOD_HZ):
+            sens = yield sensor.new_sensor(sensor_conf)
             cg.add(var.getAccessor().set_spreizung_mod_hz(sens))
 
-        if spreizung_mod_ww := entities.get(CONF_SPREIZUNG_MOD_WW):
-            sens = yield sensor.new_sensor(spreizung_mod_ww)
+        if sensor_conf := entities.get(CONF_SPREIZUNG_MOD_WW):
+            sens = yield sensor.new_sensor(sensor_conf)
             cg.add(var.getAccessor().set_spreizung_mod_ww(sens))
 
         ######## Text Sensors ########
 
-        if operating_mode := entities.get(CONF_OPERATING_MODE):
-            sens = yield text_sensor.new_text_sensor(operating_mode)
+        if sensor_conf := entities.get(CONF_OPERATING_MODE):
+            sens = yield text_sensor.new_text_sensor(sensor_conf)
             cg.add(var.getAccessor().set_operating_mode(sens))
 
-        if mode_of_operating := entities.get(CONF_MODE_OF_OPERATING):
-            sens = yield text_sensor.new_text_sensor(mode_of_operating)
+        if sensor_conf := entities.get(CONF_MODE_OF_OPERATING):
+            sens = yield text_sensor.new_text_sensor(sensor_conf)
             cg.add(var.getAccessor().set_mode_of_operating(sens))
 
-        if hk_function := entities.get(CONF_HK_FUNCTION):
-            sens = yield text_sensor.new_text_sensor(hk_function)
+        if sensor_conf := entities.get(CONF_HK_FUNCTION):
+            sens = yield text_sensor.new_text_sensor(sensor_conf)
             cg.add(var.getAccessor().set_hk_function(sens))
 
-        if error_code := entities.get(CONF_ERROR_CODE):
-            sens = yield text_sensor.new_text_sensor(error_code)
+        if sensor_conf := entities.get(CONF_ERROR_CODE):
+            sens = yield text_sensor.new_text_sensor(sensor_conf)
             cg.add(var.getAccessor().set_error_code(sens))
 
-        if sg_mode := entities.get(CONF_SG_MODE):
-            sens = yield text_sensor.new_text_sensor(sg_mode)
+        if sensor_conf := entities.get(CONF_SG_MODE):
+            sens = yield text_sensor.new_text_sensor(sensor_conf)
             cg.add(var.getAccessor().set_sg_mode(sens))
 
-        if smart_grid := entities.get(CONF_SMART_GRID):
-            sens = yield text_sensor.new_text_sensor(smart_grid)
+        if sensor_conf := entities.get(CONF_SMART_GRID):
+            sens = yield text_sensor.new_text_sensor(sensor_conf)
             cg.add(var.getAccessor().set_smart_grid(sens))
 
         ######## Binary Sensors ########
 
-        if status_kompressor := entities.get(CONF_STATUS_KOMPRESSOR):
-            sens = yield binary_sensor.new_binary_sensor(status_kompressor)
+        if sensor_conf := entities.get(CONF_STATUS_KOMPRESSOR):
+            sens = yield binary_sensor.new_binary_sensor(sensor_conf)
             cg.add(var.getAccessor().set_status_kompressor(sens))
 
-        if status_kesselpumpe := entities.get(CONF_STATUS_KESSELPUMPE):
-            sens = yield binary_sensor.new_binary_sensor(status_kesselpumpe)
+        if sensor_conf := entities.get(CONF_STATUS_KESSELPUMPE):
+            sens = yield binary_sensor.new_binary_sensor(sensor_conf)
             cg.add(var.getAccessor().set_status_kesselpumpe(sens))
 
         ########## Selects ##########
 
         if select_conf := entities.get(CONF_OPERATING_MODE_SELECT):
             options = ["Bereitschaft", "Heizen", "Absenken", "Sommer", "Kühlen", "Automatik 1", "Automatik 2"]
-            s = yield select.new_select(select_conf, options = options)
-            yield cg.register_parented(s, var)
-            cg.add(var.getAccessor().set_operating_mode_select(s))
+            sel = yield select.new_select(select_conf, options = options)
+            yield cg.register_parented(sel, var)
+            cg.add(var.getAccessor().set_operating_mode_select(sel))
 
         if select_conf := entities.get(CONF_HK_FUNCTION_SELECT):
             options = ["Witterungsgeführt", "Fest"]
-            s = yield select.new_select(select_conf, options = options)
-            yield cg.register_parented(s, var)
-            cg.add(var.getAccessor().set_hk_function_select(s))
+            sel = yield select.new_select(select_conf, options = options)
+            yield cg.register_parented(sel, var)
+            cg.add(var.getAccessor().set_hk_function_select(sel))
 
         ########## Numbers ##########
 
-        if target_hot_water_temperature_set := entities.get(CONF_TARGET_HOT_WATER_TEMPERATURE_SET):
+        if number_conf := entities.get(CONF_TARGET_HOT_WATER_TEMPERATURE_SET):
             num = yield number.new_number(
-                target_hot_water_temperature_set,
+                number_conf,
                 min_value=35,
                 max_value=70,
                 step=1
@@ -478,9 +478,9 @@ def to_code(config):
             yield cg.register_parented(num, var)
             cg.add(var.getAccessor().set_target_hot_water_temperature_set(num))
 
-        if heating_curve_set := entities.get(CONF_HEATING_CURVE_SET):
+        if number_conf := entities.get(CONF_HEATING_CURVE_SET):
             num = yield number.new_number(
-                heating_curve_set,
+                number_conf,
                 min_value=0,
                 max_value=2.55,
                 step=0.01
