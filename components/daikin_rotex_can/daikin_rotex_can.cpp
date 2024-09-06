@@ -49,7 +49,7 @@ const std::vector<TRequest> entity_config = {
         {  DC,   DC, 0xFA, 0xC0, 0xFF,   DC,   DC},
         [](auto& accessor) -> EntityBase* { return accessor.get_temperature_outside(); },
         [](auto const& data, auto& accessor) -> DataType {
-            const float temp = float(((int((data[6]) + ((data[5]) << 8))) ^ 0x8000) - 0x8000) / 10;
+            const float temp = ((data[5] << 8) + data[6]) / 10.0f;
             accessor.get_temperature_outside()->publish_state(temp);
             return temp;
         }
@@ -59,7 +59,7 @@ const std::vector<TRequest> entity_config = {
         {  DC,   DC, 0xFA, 0x00, 0x0E,   DC,   DC},
         [](auto& accessor) -> EntityBase* { return accessor.get_tdhw1(); },
         [](auto const& data, auto& accessor) -> DataType {
-            const float temp = float((float((int((data[6]) + ((data[5]) << 8))))/10));
+            const float temp = ((data[5] << 8) + data[6]) / 10.0f;
             accessor.get_tdhw1()->publish_state(temp);
             return temp;
         }
@@ -69,7 +69,7 @@ const std::vector<TRequest> entity_config = {
         {  DC,   DC, 0xFA, 0xC0, 0xFC,   DC,   DC},
         [](auto& accessor) -> EntityBase* { return accessor.get_tv(); },
         [](auto const& data, auto& accessor) -> DataType {
-            const float temp = float(float((int((data[6]) + ((data[5]) << 8))))/10);
+            const float temp = ((data[5] << 8) + data[6]) / 10.0f;
             accessor.get_tv()->publish_state(temp);
             accessor.update_thermal_power();
             return temp;
@@ -80,7 +80,7 @@ const std::vector<TRequest> entity_config = {
         {  DC,   DC, 0xFA, 0xC1, 0x02,   DC,   DC},
         [](auto& accessor) -> EntityBase* { return accessor.get_tvbh(); },
         [](auto const& data, auto& accessor) -> DataType {
-            const float temp = float(float((int((data[6]) + ((data[5]) << 8))))/10);
+            const float temp = ((data[5] << 8) + data[6]) / 10.0f;
             accessor.get_tvbh()->publish_state(temp);
             accessor.update_thermal_power();
             return temp;
@@ -91,7 +91,7 @@ const std::vector<TRequest> entity_config = {
         {  DC,   DC, 0xFA, 0xC1, 0x00,   DC,   DC},
         [](auto& accessor) -> EntityBase* { return accessor.get_tr(); },
         [](auto const& data, auto& accessor) -> DataType {
-            const float temp = float(float((int((data[6]) + ((data[5]) << 8))))/10);
+            const float temp = ((data[5] << 8) + data[6]) / 10.0f;
             accessor.get_tr()->publish_state(temp);
             accessor.update_thermal_power();
             return temp;
@@ -102,7 +102,7 @@ const std::vector<TRequest> entity_config = {
         {0xD2,   DC, 0x1C,   DC,   DC,   DC,   DC},
         [](auto& accessor) -> EntityBase* { return accessor.get_water_pressure(); },
         [](auto const& data, auto& accessor) -> DataType {
-            const float pressure = float((float((int((data[4]) + ((data[3]) << 8))))/1000));
+            const float pressure = (((data[3]) << 8) + data[4]) / 1000.0f;
             accessor.get_water_pressure()->publish_state(pressure);
             return pressure;
         }
@@ -112,7 +112,7 @@ const std::vector<TRequest> entity_config = {
         {  DC,   DC, 0xFA, 0x01, 0xDA,   DC,   DC},
         [](auto& accessor) -> EntityBase* { return accessor.get_water_flow(); },
         [](auto const& data, auto& accessor) -> DataType {
-            const float flow = float((float((int((data[6]) + ((data[5]) << 8))))));
+            const uint32_t flow = (data[5] << 8) + data[6];
             accessor.get_water_flow()->publish_state(flow);
             accessor.update_thermal_power();
             return flow;
@@ -185,7 +185,7 @@ const std::vector<TRequest> entity_config = {
         {  DC,   DC, 0x61,   DC,   DC,   DC,   DC},
         [](auto& accessor) -> EntityBase* { return accessor.get_status_kompressor(); },
         [](auto const& data, auto& accessor) -> DataType {
-            const float state = float((float((int((data[3]) + ((data[4]) << 8))))));
+            const uint8_t state = data[3];
             accessor.get_status_kompressor()->publish_state(state);
             return state;
         }
@@ -196,7 +196,7 @@ const std::vector<TRequest> entity_config = {
         {  DC,   DC, 0xFA, 0x0A, 0x8C,   DC,   DC},
         [](auto& accessor) -> EntityBase* { return accessor.get_status_kesselpumpe(); },
         [](auto const& data, auto& accessor) -> DataType {
-            const float state = float((float((int((data[6]) + ((data[5]) << 8))))));
+            const float state = data[6];
             accessor.get_status_kesselpumpe()->publish_state(state);
             return state;
         }
@@ -207,7 +207,7 @@ const std::vector<TRequest> entity_config = {
         {  DC,   DC, 0xFA, 0xC0, 0xF7,   DC,   DC},
         [](auto& accessor) -> EntityBase* { return accessor.get_circulation_pump(); },
         [](auto const& data, auto& accessor) -> DataType {
-            const float percent = int((data[6]) + data[5]);
+            const float percent = data[6];
             accessor.get_circulation_pump()->publish_state(percent);
             return percent;
         }
@@ -218,8 +218,7 @@ const std::vector<TRequest> entity_config = {
         {0xD2, 0x00, 0x13,   DC,   DC, 0x00, 0x00},
         [](auto& accessor) -> EntityBase* { return accessor.get_target_hot_water_temperature(); },
         [](auto const& data, auto& accessor) -> DataType {
-            const uint16_t temperature_raw = (data[3] << 8) | data[4];
-            const float temp = static_cast<float>(temperature_raw) / 10.0;
+            const float temp = ((data[3] << 8) + data[4]) / 10.0f;
             accessor.get_target_hot_water_temperature()->publish_state(temp);
             //id(ww_soll).publish_state(temperature);
             //id(ww_soll_set).publish_state(temperature);
@@ -241,7 +240,7 @@ const std::vector<TRequest> entity_config = {
         {  DC,   DC, 0xFA, 0xC0, 0xFB,   DC,   DC},
         [](auto& accessor) -> EntityBase* { return accessor.get_bypass_valve(); },
         [](auto const& data, auto& accessor) -> DataType {
-            const uint32_t value = uint32_t((data[6]) + (data[5] << 8));
+            const uint32_t value = (data[5] << 8) + data[6];
             accessor.get_bypass_valve()->publish_state(value);
             return value;
         }
@@ -252,7 +251,7 @@ const std::vector<TRequest> entity_config = {
         {  DC,   DC, 0xFA, 0x06, 0x9B,   DC,   DC},
         [](auto& accessor) -> EntityBase* { return accessor.get_dhw_mixer_position(); },
         [](auto const& data, auto& accessor) -> DataType {
-            const uint32_t position = uint32_t(data[6]) + uint32_t(data[5] << 8);
+            const uint32_t position = (data[5] << 8) + data[6];
             accessor.get_dhw_mixer_position()->publish_state(position);
             return position;
         }
@@ -263,7 +262,7 @@ const std::vector<TRequest> entity_config = {
         {  DC,   DC, 0xFA, 0x01, 0x29,   DC,   DC},
         [](auto& accessor) -> EntityBase* { return accessor.get_daytime_supply_temperature(); },
         [](auto const& data, auto& accessor) -> DataType {
-            float temp = float((float((int((data[6]) + ((data[5]) << 8))))/10));
+            const float temp = ((data[5] << 8) + data[6]) / 10.0f;
             accessor.get_daytime_supply_temperature()->publish_state(temp);
             //id(t_vorlauf_tag_set).publish_state(temp);
             return temp;
@@ -286,7 +285,7 @@ const std::vector<TRequest> entity_config = {
         {  DC,   DC, 0xFA, 0x01, 0x0E,   DC,   DC},
         [](auto& accessor) -> EntityBase* { return accessor.get_heating_curve(); },
         [](auto const& data, auto& accessor) -> DataType {
-            const float value = (uint32_t(data[6]) + (data[5] << 8)) / 100.0f;
+            const float value = ((data[5] << 8) + data[6]) / 100.0f;
             accessor.get_heating_curve()->publish_state(value);
             if (accessor.get_heating_curve_set() != nullptr) {
                 accessor.get_heating_curve_set()->publish_state(value);
@@ -311,9 +310,9 @@ const std::vector<TRequest> entity_config = {
         {  DC,   DC, 0xFA, 0x09, 0x20,   DC,   DC},
         [](auto& accessor) -> EntityBase* { return accessor.get_ehs_for_ch(); },
         [](auto const& data, auto& accessor) -> DataType {
-            const float temp = float((int((data[6]) + ((data[5]) << 8))));
-            accessor.get_ehs_for_ch()->publish_state(temp);
-            return temp;
+            const uint32_t value = (data[5] << 8) + data[6];
+            accessor.get_ehs_for_ch()->publish_state(value);
+            return value;
         }
     },
 
@@ -322,7 +321,7 @@ const std::vector<TRequest> entity_config = {
         {  DC,   DC, 0xFA, 0x09, 0x30,   DC,   DC},
         [](auto& accessor) -> EntityBase* { return accessor.get_total_energy_produced(); },
         [](auto const& data, auto& accessor) -> DataType {
-            float value = float((float((int((data[6]) + ((data[5]) << 8))))));
+            const uint32_t value = (data[5] << 8) + data[6];
             accessor.get_total_energy_produced()->publish_state(value);
             return value;
         }
@@ -333,7 +332,7 @@ const std::vector<TRequest> entity_config = {
         {  DC,   DC, 0xFA, 0x06, 0xA5,   DC,   DC},
         [](auto& accessor) -> EntityBase* { return accessor.get_runtime_compressor(); },
         [](auto const& data, auto& accessor) -> DataType {
-            const float hours = float((int((data[6]) + ((data[5]) << 8))));
+            const uint32_t hours = (data[5] << 8) + data[6];
             accessor.get_runtime_compressor()->publish_state(hours);
             return hours;
         }
@@ -344,7 +343,7 @@ const std::vector<TRequest> entity_config = {
         {  DC,   DC, 0xFA, 0x06, 0xA4,   DC,   DC},
         [](auto& accessor) -> EntityBase* { return accessor.get_runtime_pump(); },
         [](auto const& data, auto& accessor) -> DataType {
-            const float hours = float((float((int((data[6]) + ((data[5]) << 8))))));
+            const uint32_t hours = (data[5] << 8) + data[6];
             accessor.get_runtime_pump()->publish_state(hours);
             return hours;
         }
@@ -355,7 +354,7 @@ const std::vector<TRequest> entity_config = {
         {  DC,   DC, 0xFA, 0x01, 0x2B,   DC,   DC},
         [](auto& accessor) -> EntityBase* { return accessor.get_min_target_supply_temperature(); },
         [](auto const& data, auto& accessor) -> DataType {
-            const float temp = float(float((int((data[6]) + ((data[5]) << 8))))/10);
+            const float temp = ((data[5] << 8) + data[6]) / 10.0f;
             accessor.get_min_target_supply_temperature()->publish_state(temp);
             //id(min_vl_soll_set).publish_state(temp);
             return temp;
@@ -367,7 +366,7 @@ const std::vector<TRequest> entity_config = {
         {  DC,   DC, 0x28,   DC,   DC,   DC,   DC},
         [](auto& accessor) -> EntityBase* { return accessor.get_max_target_supply_temperature(); },
         [](auto const& data, auto& accessor) -> DataType {
-            const float temp = float((float((int((data[4]) + ((data[3]) << 8))))/10));
+            const float temp = ((data[3] << 8) + data[4]) / 10.0f;
             accessor.get_max_target_supply_temperature()->publish_state(temp);
             //id(max_vl_soll_set).publish_state(temp);
             return temp;
@@ -379,7 +378,7 @@ const std::vector<TRequest> entity_config = {
         {  DC,   DC, 0xFA, 0x06, 0x83,   DC,   DC},
         [](auto& accessor) -> EntityBase* { return accessor.get_spreizung_mod_hz(); },
         [](auto const& data, auto& accessor) -> DataType {
-            float temp = float((float((int((data[6]) + ((data[5]) << 8))))/10));
+            const float temp = ((data[5] << 8) + data[6]) / 10.0f;
             accessor.get_spreizung_mod_hz()->publish_state(temp);
             return temp;
         }
@@ -389,7 +388,7 @@ const std::vector<TRequest> entity_config = {
         {  DC,   DC, 0xFA, 0x06, 0x84,   DC,   DC},
         [](auto& accessor) -> EntityBase* { return accessor.get_spreizung_mod_ww(); },
         [](auto const& data, auto& accessor) -> DataType {
-            float temp = float((float((int((data[6]) + ((data[5]) << 8))))/10));
+            const float temp = ((data[5] << 8) + data[6]) / 10.0f;
             accessor.get_spreizung_mod_ww()->publish_state(temp);
             return temp;
         }
@@ -421,7 +420,7 @@ const std::vector<TRequest> entity_config = {
         {  DC,   DC, 0xFA, 0x13, 0x88,   DC,   DC},
         [](auto& accessor) -> EntityBase* { return accessor.get_error_code(); },
         [](auto const& data, auto& accessor) -> DataType {
-            const uint32_t code = uint32_t(data[6]) + (uint32_t(data[5]) << 8);
+            const uint32_t code = (data[5] << 8) + data[6];
 
             const auto to_str = [](uint32_t code) -> std::string {
                 switch (code)
