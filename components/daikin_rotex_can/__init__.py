@@ -15,6 +15,8 @@ HKFunctionSelect = daikin_rotex_can_ns.class_("HKFunctionSelect", select.Select)
 
 TargetHotWaterTemperatureNumber = daikin_rotex_can_ns.class_("TargetHotWaterTemperatureNumber", number.Number)
 FlowTemperatureDayNumber = daikin_rotex_can_ns.class_("FlowTemperatureDayNumber", number.Number)
+MaxTargetFlowTempNumber = daikin_rotex_can_ns.class_("MaxTargetFlowTempNumber", number.Number)
+MinTargetFlowTempNumber = daikin_rotex_can_ns.class_("MinTargetFlowTempNumber", number.Number)
 HeatingCurveNumber = daikin_rotex_can_ns.class_("HeatingCurveNumber", number.Number)
 
 LogFilterText = daikin_rotex_can_ns.class_("LogFilterText", text.Text)
@@ -79,6 +81,8 @@ CONF_HK_FUNCTION_SELECT = "hk_function_select"
 
 CONF_TARGET_HOT_WATER_TEMPERATURE_SET = "target_hot_water_temperature_set"
 CONF_FLOW_TEMPERATURE_DAY_SET = "flow_temperature_day_set"
+CONF_MAX_TARGET_FLOW_TEMP_SET = "max_target_flow_temp_set"
+CONF_MIN_TARGET_FLOW_TEMP_SET = "min_target_flow_temp_set"
 CONF_HEATING_CURVE_SET = "heating_curve_set" # Heizkurve setzen
 
 ########## Icons ##########
@@ -303,6 +307,16 @@ CONFIG_SCHEMA = cv.Schema(
                     entity_category=ENTITY_CATEGORY_CONFIG,
                     icon=ICON_SUN_SNOWFLAKE_VARIANT
                 ).extend(),
+                cv.Optional(CONF_MAX_TARGET_FLOW_TEMP_SET): number.number_schema(
+                    MaxTargetFlowTempNumber,
+                    entity_category=ENTITY_CATEGORY_CONFIG,
+                    icon=ICON_SUN_SNOWFLAKE_VARIANT
+                ).extend(),
+                cv.Optional(CONF_MIN_TARGET_FLOW_TEMP_SET): number.number_schema(
+                    MinTargetFlowTempNumber,
+                    entity_category=ENTITY_CATEGORY_CONFIG,
+                    icon=ICON_SUN_SNOWFLAKE_VARIANT
+                ).extend(),
                 cv.Optional(CONF_HEATING_CURVE_SET): number.number_schema(
                     HeatingCurveNumber,
                     entity_category=ENTITY_CATEGORY_CONFIG,
@@ -494,6 +508,26 @@ def to_code(config):
             )
             yield cg.register_parented(num, var)
             cg.add(var.getAccessor().set_flow_temperature_day_set(num))
+
+        if number_conf := entities.get(CONF_MAX_TARGET_FLOW_TEMP_SET):
+            num = yield number.new_number(
+                number_conf,
+                min_value=25,
+                max_value=60,
+                step=1
+            )
+            yield cg.register_parented(num, var)
+            cg.add(var.getAccessor().set_max_target_flow_temp_set(num))
+
+        if number_conf := entities.get(CONF_MIN_TARGET_FLOW_TEMP_SET):
+            num = yield number.new_number(
+                number_conf,
+                min_value=25,
+                max_value=40,
+                step=1
+            )
+            yield cg.register_parented(num, var)
+            cg.add(var.getAccessor().set_min_target_flow_temp_set(num))
 
         if number_conf := entities.get(CONF_HEATING_CURVE_SET):
             num = yield number.new_number(

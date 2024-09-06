@@ -133,6 +133,12 @@ public:
     number::Number* get_flow_temperature_day_set() const { return m_flow_temperature_day_set; }
     void set_flow_temperature_day_set(number::Number* pNumber) { m_flow_temperature_day_set = pNumber; }
 
+    number::Number* get_max_target_flow_temp_set() const { return m_max_target_flow_temp_set; }
+    void set_max_target_flow_temp_set(number::Number* pNumber) { m_max_target_flow_temp_set = pNumber; }
+
+    number::Number* get_min_target_flow_temp_set() const { return m_min_target_flow_temp_set; }
+    void set_min_target_flow_temp_set(number::Number* pNumber) { m_min_target_flow_temp_set = pNumber; }
+
     number::Number* get_heating_curve_set() const { return m_heating_curve_set; }
     void set_heating_curve_set(number::Number* pNumber) { m_heating_curve_set = pNumber; }
 
@@ -194,6 +200,8 @@ private:
 
     number::Number* m_target_hot_water_temperature_set;
     number::Number* m_flow_temperature_day_set;
+    number::Number* m_max_target_flow_temp_set;
+    number::Number* m_min_target_flow_temp_set;
     number::Number* m_heating_curve_set;
 };
 

@@ -22,6 +22,22 @@ protected:
     void control(float value) override;
 };
 
+class MaxTargetFlowTempNumber : public number::Number, public Parented<DaikinRotexCanComponent> {
+public:
+    MaxTargetFlowTempNumber() = default;
+
+protected:
+    void control(float value) override;
+};
+
+class MinTargetFlowTempNumber : public number::Number, public Parented<DaikinRotexCanComponent> {
+public:
+    MinTargetFlowTempNumber() = default;
+
+protected:
+    void control(float value) override;
+};
+
 class HeatingCurveNumber : public number::Number, public Parented<DaikinRotexCanComponent> {
 public:
     HeatingCurveNumber() = default;
