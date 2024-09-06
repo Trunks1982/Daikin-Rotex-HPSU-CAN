@@ -220,18 +220,19 @@ const std::vector<TRequest> entity_config = {
         [](auto const& data, auto& accessor) -> DataType {
             const float temp = ((data[3] << 8) + data[4]) / 10.0f;
             accessor.get_target_hot_water_temperature()->publish_state(temp);
-            //id(ww_soll).publish_state(temperature);
-            //id(ww_soll_set).publish_state(temperature);
+            if (accessor.get_target_hot_water_temperature_set() != nullptr) {
+                accessor.get_target_hot_water_temperature_set()->publish_state(temp);
+            }
             return temp;
         }
     },
     { // WW Einstellen
-        [](auto& accessor) -> EntityBase* { return accessor.get_target_hot_water_temperature(); }, // Falscher Sensor!!!!!?????
+        [](auto& accessor) -> EntityBase* { return accessor.get_target_hot_water_temperature_set(); },
         [](auto const& value) -> std::vector<uint8_t> {
-            uint16_t temperature = (uint16_t)(value * 10);
-            uint8_t high_byte = temperature >> 8;
-            uint8_t low_byte = temperature & 0xFF;
-            return { 0x30, 0x00, 0x13, high_byte, low_byte, 0x00, 0x00 };
+            const uint16_t temp = (uint16_t)(value * 10);
+            const uint8_t hi_byte = temp >> 8;
+            const uint8_t lo_byte = temp & 0xFF;
+            return { 0x30, 0x00, 0x13, hi_byte, lo_byte, 0x00, 0x00 };
         }
     },
 
@@ -273,10 +274,10 @@ const std::vector<TRequest> entity_config = {
     { // T Vorlauf Tag Einstellen
         [](auto& accessor) -> EntityBase* { return accessor.get_flow_temperature_day_set(); },
         [](auto const& value) -> std::vector<uint8_t> {
-            const uint16_t temperature = (uint16_t)(value * 10);
-            const uint8_t high_byte = temperature >> 8;
-            const uint8_t low_byte = temperature & 0xFF;
-            return { 0x30, 0x00, 0xFA,  0x01, 0x29, high_byte, low_byte, };
+            const uint16_t temp = (uint16_t)(value * 10);
+            const uint8_t hi_byte = temp >> 8;
+            const uint8_t lo_byte = temp & 0xFF;
+            return { 0x30, 0x00, 0xFA,  0x01, 0x29, hi_byte, lo_byte};
         }
     },
 
@@ -308,10 +309,9 @@ const std::vector<TRequest> entity_config = {
         [](auto& accessor) -> EntityBase* { return accessor.get_heating_curve_set(); },
         [](auto const& value) -> std::vector<uint8_t> {
             const uint16_t hk = (uint16_t)(value * 100);
-            const uint8_t high_byte = hk >> 8;
-            const uint8_t low_byte = hk & 0xFF;
-
-            return { 0x30, 0x00, 0xFA, 0x01, 0x0E, high_byte, low_byte };
+            const uint8_t hi_byte = hk >> 8;
+            const uint8_t lo_byte = hk & 0xFF;
+            return { 0x30, 0x00, 0xFA, 0x01, 0x0E, hi_byte, lo_byte };
         }
     },
 
@@ -375,10 +375,10 @@ const std::vector<TRequest> entity_config = {
     { // Min VL Einstellen
         [](auto& accessor) -> EntityBase* { return accessor.get_min_target_flow_temp_set(); },
         [](auto const& value) -> std::vector<uint8_t> {
-            uint16_t temperature = (uint16_t)(value * 10);
-            uint8_t high_byte = temperature >> 8;
-            uint8_t low_byte = temperature & 0xFF;
-            return { 0x30, 0x00, 0xFA, 0x01, 0x2B, high_byte, low_byte };
+            const uint16_t temp = (uint16_t)(value * 10);
+            const uint8_t hi_byte = temp >> 8;
+            const uint8_t lo_byte = temp & 0xFF;
+            return { 0x30, 0x00, 0xFA, 0x01, 0x2B, hi_byte, lo_byte };
         }
     },
 
@@ -398,10 +398,10 @@ const std::vector<TRequest> entity_config = {
     { // Max VL Einstellen
         [](auto& accessor) -> EntityBase* { return accessor.get_max_target_flow_temp_set(); },
         [](auto const& value) -> std::vector<uint8_t> {
-            uint16_t temperature = (uint16_t)(value * 10); // Convert to int16be
-            uint8_t high_byte = temperature >> 8;
-            uint8_t low_byte = temperature & 0xFF;
-            return { 0x30, 0x00, 0x28, high_byte, low_byte, 0x00, 0x00, };
+            const uint16_t temp = statuic_cast<uint16_t>(value * 10);
+            const uint8_t hi_byte = temp >> 8;
+            const uint8_t lo_byte = temp & 0xFF;
+            return { 0x30, 0x00, 0x28, hi_byte, lo_byte, 0x00, 0x00, };
         }
     },
 
@@ -483,9 +483,9 @@ const std::vector<TRequest> entity_config = {
         [](auto& accessor) -> EntityBase* { return accessor.get_target_room1_temperature_set(); },
         [](auto const& value) -> std::vector<uint8_t> {
             const uint16_t temp = static_cast<uint16_t>(value * 10);
-            const uint8_t high_byte = temp >> 8;
-            const uint8_t low_byte = temp & 0xFF;
-            return { 0x30, 0x00, 0x05, high_byte, low_byte, 0x00, 0x00 };
+            const uint8_t hi_byte = temp >> 8;
+            const uint8_t lo_byte = temp & 0xFF;
+            return { 0x30, 0x00, 0x05, hi_byte, lo_byte, 0x00, 0x00 };
         }
     },
 

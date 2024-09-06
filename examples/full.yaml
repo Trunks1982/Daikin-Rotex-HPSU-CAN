@@ -109,6 +109,8 @@ daikin_rotex_can:
       name: "Status Kesselpumpe"
     status_kompressor:
       name: "Status Kompressor"
+    target_hot_water_temperature_set:
+      name: "WW Einstellen"
     target_room1_temperature:
       name: "Raumsoll 1"
     target_room1_temperature_set:
