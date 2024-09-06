@@ -212,6 +212,26 @@ const std::vector<TRequest> entity_config = {
             return percent;
         }
     },
+    { // Umwälzpumpe Min
+        {0x31, 0x00, 0xFA, 0x06, 0x7F, 0x00, 0x00},
+        {  DC,   DC, 0xFA, 0x06, 0x7F,   DC,   DC},
+        [](auto& accessor) -> EntityBase* { return accessor.get_circulation_pump_min(); },
+        [](auto const& data, auto& accessor) -> DataType {
+            const float percent = data[6];
+            accessor.get_circulation_pump_min()->publish_state(percent);
+            return percent;
+        }
+    },
+    { // Umwälzpumpe Max
+        {0x31, 0x00, 0xFA, 0x06, 0x7E, 0x00, 0x00},
+        {  DC,   DC, 0xFA, 0x06, 0x7E,   DC,   DC},
+        [](auto& accessor) -> EntityBase* { return accessor.get_circulation_pump_max(); },
+        [](auto const& data, auto& accessor) -> DataType {
+            const float percent = data[6];
+            accessor.get_circulation_pump_max()->publish_state(percent);
+            return percent;
+        }
+    },
 
     { // T-WW-Soll1
         {0x31, 0x00, 0x13, 0x00, 0x00, 0x00, 0x00},

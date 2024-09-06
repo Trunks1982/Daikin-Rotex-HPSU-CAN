@@ -63,6 +63,8 @@ CONF_MIN_TARGET_SUPPLY_TEMPERATURE = "min_target_supply_temperature" # Min Vorla
 CONF_MAX_TARGET_SUPPLY_TEMPERATURE = "max_target_supply_temperature" # Max Vorlauf Soll
 CONF_SPREIZUNG_MOD_HZ = "spreizung_mod_hz"
 CONF_SPREIZUNG_MOD_WW = "spreizung_mod_ww"
+CONF_CIRCULATION_PUMP_MIN = "circulation_pump_min"
+CONF_CIRCULATION_PUMP_MAX = "circulation_pump_max"
 
 ########## Text Sensors ##########
 
@@ -269,6 +271,20 @@ CONFIG_SCHEMA = cv.Schema(
                     unit_of_measurement=UNIT_KELVIN,
                     accuracy_decimals=0,
                     icon="mdi:thermometer-lines",
+                ).extend(),
+                cv.Optional(CONF_CIRCULATION_PUMP_MIN): sensor.sensor_schema(
+                    device_class=DEVICE_CLASS_VOLUME_FLOW_RATE,
+                    unit_of_measurement=UNIT_PERCENT,
+                    accuracy_decimals=0,
+                    state_class=STATE_CLASS_MEASUREMENT,
+                    icon="mdi:waves-arrow-left"
+                ).extend(),
+                cv.Optional(CONF_CIRCULATION_PUMP_MAX): sensor.sensor_schema(
+                    device_class=DEVICE_CLASS_VOLUME_FLOW_RATE,
+                    unit_of_measurement=UNIT_PERCENT,
+                    accuracy_decimals=0,
+                    state_class=STATE_CLASS_MEASUREMENT,
+                    icon="mdi:waves-arrow-left"
                 ).extend(),
 
                 ######## Text Sensors ########
@@ -482,6 +498,15 @@ def to_code(config):
         if sensor_conf := entities.get(CONF_SPREIZUNG_MOD_WW):
             sens = yield sensor.new_sensor(sensor_conf)
             cg.add(var.getAccessor().set_spreizung_mod_ww(sens))
+
+        if sensor_conf := entities.get(CONF_CIRCULATION_PUMP_MIN):
+            sens = yield sensor.new_sensor(sensor_conf)
+            cg.add(var.getAccessor().set_circulation_pump_min(sens))
+
+        if sensor_conf := entities.get(CONF_CIRCULATION_PUMP_MAX):
+            sens = yield sensor.new_sensor(sensor_conf)
+            cg.add(var.getAccessor().set_circulation_pump_max(sens))
+
 
         ######## Text Sensors ########
 

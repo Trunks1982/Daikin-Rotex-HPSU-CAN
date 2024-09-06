@@ -57,8 +57,14 @@ daikin_rotex_can:
       name: "BPV"
     circulation_pump:
       name: "Umwaelzpumpe"
+    circulation_pump_min:
+      name: "Umwälzpumpe Min"
+    circulation_pump_max:
+      name: "Umwälzpumpe Max"
     dhw_mixer_position:
       name: "DHW Mischer Position"
+    dhw_run:
+      name: "Warmwasser bereiten"
     ehs_for_ch:
       name: "EHS fuer CH"
     error_code:
