@@ -57,14 +57,16 @@ daikin_rotex_can:
       name: "BPV"
     circulation_pump:
       name: "Umwaelzpumpe"
-    daytime_supply_temperature:
-      name: "T Vorlauf Tag"
     dhw_mixer_position:
       name: "DHW Mischer Position"
     ehs_for_ch:
       name: "EHS fuer CH"
     error_code:
       name: "Fehlercode"
+    flow_temperature_day:
+      name: "T Vorlauf Tag"
+    flow_temperature_day_set:
+      name: "T Vorlauf Tag Einstellen"
     heating_curve:
       name: "Heizkurve"
     heating_curve_set:

@@ -56,8 +56,8 @@ public:
     sensor::Sensor* get_target_supply_temperature() const { return m_target_supply_temperature; }
     void set_target_supply_temperature(sensor::Sensor* pSensor) { m_target_supply_temperature = pSensor; }
 
-    sensor::Sensor* get_daytime_supply_temperature() const { return m_daytime_supply_temperature; }
-    void set_daytime_supply_temperature(sensor::Sensor* pSensor) { m_daytime_supply_temperature = pSensor; }
+    sensor::Sensor* get_flow_temperature_day() const { return m_flow_temperature_day; }
+    void set_flow_temperature_day(sensor::Sensor* pSensor) { m_flow_temperature_day = pSensor; }
 
     sensor::Sensor* get_thermal_power() const { return m_thermal_power; }
     void set_thermal_power(sensor::Sensor* pSensor) { m_thermal_power = pSensor; }
@@ -167,7 +167,7 @@ private:
     sensor::Sensor* m_bypass_valve;
     sensor::Sensor* m_dhw_mixer_position;
     sensor::Sensor* m_target_supply_temperature;
-    sensor::Sensor* m_daytime_supply_temperature;
+    sensor::Sensor* m_flow_temperature_day;
     sensor::Sensor* m_thermal_power;
     sensor::Sensor* m_heating_curve;
     sensor::Sensor* m_ehs_for_ch;

@@ -260,10 +260,10 @@ const std::vector<TRequest> entity_config = {
     { // T Vorlauf Tag
         {0x31, 0x00, 0xFA, 0x01, 0x29, 0x00, 0x00},
         {  DC,   DC, 0xFA, 0x01, 0x29,   DC,   DC},
-        [](auto& accessor) -> EntityBase* { return accessor.get_daytime_supply_temperature(); },
+        [](auto& accessor) -> EntityBase* { return accessor.get_flow_temperature_day(); },
         [](auto const& data, auto& accessor) -> DataType {
             const float temp = ((data[5] << 8) + data[6]) / 10.0f;
-            accessor.get_daytime_supply_temperature()->publish_state(temp);
+            accessor.get_flow_temperature_day()->publish_state(temp);
             if (accessor.get_flow_temperature_day_set() != nullptr) {
                 accessor.get_flow_temperature_day_set()->publish_state(temp);
             }
