@@ -293,17 +293,6 @@ const std::vector<TRequest> entity_config = {
         }
     },
 
-    { // EHS für CH
-        {0x31, 0x00, 0xFA, 0x09, 0x20, 0x00, 0x00},
-        {  DC,   DC, 0xFA, 0x09, 0x20,   DC,   DC},
-        [](auto& accessor) -> EntityBase* { return accessor.get_ehs_for_ch(); },
-        [](auto const& data, auto& accessor) -> DataType {
-            const uint32_t value = (data[5] << 8) + data[6];
-            accessor.get_ehs_for_ch()->publish_state(value);
-            return value;
-        }
-    },
-
     { // Erzeugte Energie gesamt
         {0x31, 0x00, 0xFA, 0x09, 0x30, 0x00, 0x00},
         {  DC,   DC, 0xFA, 0x09, 0x30,   DC,   DC},

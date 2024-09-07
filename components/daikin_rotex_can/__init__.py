@@ -117,8 +117,21 @@ my_sensors = [
         "data": "31 00 02 00 00 00 00",
         "expected_reponse": "D2 __ 02 __ __ __ __",
         "data_offset": 3,
-        "data_size": 4,
+        "data_size": 2,
         "divider": 10.0
+    },
+    {
+        "name": "ehs_for_ch",
+        "device_class": DEVICE_CLASS_ENERGY_STORAGE,
+        "unit_of_measurement": UNIT_KILOWATT_HOURS,
+        "accuracy_decimals": 0,
+        "state_class": STATE_CLASS_MEASUREMENT,
+        "icon": "mdi:thermometer-lines",
+        "data": "31 00 FA 09 20 00 00",
+        "expected_reponse": "__ __ FA 09 20 __ __",
+        "data_offset": 5,
+        "data_size": 2,
+        "divider": 1
     }
 ]
 
@@ -142,7 +155,6 @@ CONF_WATER_FLOW = "water_flow"
 CONF_FLOW_TEMPERATURE_DAY = "flow_temperature_day" # Temperatur Vorlauf Tag
 CONF_THERMAL_POWER = "thermal_power" # Thermische Leistung
 CONF_HEATING_CURVE = "heating_curve" # Heizkurve
-CONF_EHS_FOR_CH = "ehs_for_ch"
 CONF_TOTAL_ENERGY_PRODUCED = "total_energy_produced"
 CONF_RUNTIME_COMPRESSOR = "runtime_compressor"
 CONF_RUNTIME_PUMP = "runtime_pump"
@@ -264,13 +276,6 @@ entity_schemas = {
                     icon="mdi:thermometer-lines",
                     accuracy_decimals=2,
                     state_class=STATE_CLASS_MEASUREMENT
-                ).extend(),
-                cv.Optional(CONF_EHS_FOR_CH): sensor.sensor_schema(
-                    device_class=DEVICE_CLASS_ENERGY_STORAGE,
-                    state_class=STATE_CLASS_MEASUREMENT,
-                    unit_of_measurement=UNIT_KILOWATT_HOURS,
-                    accuracy_decimals=0,
-                    icon="mdi:thermometer-lines",
                 ).extend(),
                 cv.Optional(CONF_TOTAL_ENERGY_PRODUCED): sensor.sensor_schema(
                     device_class=DEVICE_CLASS_ENERGY_STORAGE,
@@ -537,10 +542,6 @@ def to_code(config):
         if sensor_conf := entities.get(CONF_HEATING_CURVE):
             sens = yield sensor.new_sensor(sensor_conf)
             cg.add(var.getAccessor().set_heating_curve(sens))
-
-        if sensor_conf := entities.get(CONF_EHS_FOR_CH):
-            sens = yield sensor.new_sensor(sensor_conf)
-            cg.add(var.getAccessor().set_ehs_for_ch(sens))
 
         if sensor_conf := entities.get(CONF_TOTAL_ENERGY_PRODUCED):
             sens = yield sensor.new_sensor(sensor_conf)
