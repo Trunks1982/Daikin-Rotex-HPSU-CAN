@@ -293,17 +293,6 @@ const std::vector<TRequest> entity_config = {
         }
     },
 
-    { // Erzeugte Energie gesamt
-        {0x31, 0x00, 0xFA, 0x09, 0x30, 0x00, 0x00},
-        {  DC,   DC, 0xFA, 0x09, 0x30,   DC,   DC},
-        [](auto& accessor) -> EntityBase* { return accessor.get_total_energy_produced(); },
-        [](auto const& data, auto& accessor) -> DataType {
-            const uint32_t value = (data[5] << 8) + data[6];
-            accessor.get_total_energy_produced()->publish_state(value);
-            return value;
-        }
-    },
-
     { // Laufzeit Kompressor
         {0x31, 0x00, 0xFA, 0x06, 0xA5, 0x00, 0x00},
         {  DC,   DC, 0xFA, 0x06, 0xA5,   DC,   DC},
