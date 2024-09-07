@@ -20,6 +20,7 @@ public:
 
     uint32_t size() const;
     TRequest const& get(uint32_t index) const;
+    TRequest const* get(Accessor const& accessor, std::string const& id) const;
 
     bool sendNextPendingGet(Accessor const& accessor);
     void sendGet(Accessor const& accessor, std::string const& request_name);
@@ -47,6 +48,15 @@ inline uint32_t TRequests::size() const {
 
 inline TRequest const& TRequests::get(uint32_t index) const {
     return m_requests[index];
+}
+
+inline TRequest const* TRequests::get(Accessor const& accessor, std::string const& id) const {
+    for (auto& request: m_requests) {
+        if (request.get_id() == id) {
+            return &request;
+        }
+    }
+    return nullptr;
 }
 
 

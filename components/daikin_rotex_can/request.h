@@ -19,6 +19,7 @@ public:
     using TSetLambda = std::function<std::vector<uint8_t>(float const&)>;
 public:
     TRequest(
+        std::string const& id,
         std::array<uint8_t, 7> const& data,
         uint32_t response_can_id,
         std::array<uint16_t, 7> const& expected_reponse,
@@ -26,7 +27,8 @@ public:
         TGetLambda lambda,
         TSetLambda setLambda,
         bool setter)
-    : m_data(data)
+    : m_id(id)
+    , m_data(data)
     , m_response_can_id(response_can_id)
     , m_expected_reponse(expected_reponse)
     , m_entity_provider(entity_provider)
@@ -39,44 +41,54 @@ public:
     }
 
     TRequest(
+        std::string const& id,
         std::array<uint8_t, 7> const& data,
         uint32_t response_can_id,
         std::array<uint16_t, 7> const& expected_reponse,
         TEntityProvider entity_provider,
         TGetLambda lambda)
-    : TRequest(data, response_can_id, expected_reponse, entity_provider, lambda, [](float) -> std::vector<uint8_t> { return {}; }, false)
+    : TRequest(id, data, response_can_id, expected_reponse, entity_provider, lambda, [](float) -> std::vector<uint8_t> { return {}; }, false)
     {
     }
 
     TRequest(
+        std::string const& id,
         std::array<uint8_t, 7> const& data,
         std::array<uint16_t, 7> const& expected_reponse,
         TEntityProvider entity_provider,
         TGetLambda lambda,
         TSetLambda setLambda)
-    : TRequest(data, 0x180, expected_reponse, entity_provider, lambda, setLambda, true)
+    : TRequest(id, data, 0x180, expected_reponse, entity_provider, lambda, setLambda, true)
     {
     }
 
     TRequest(
+        std::string const& id,
         std::array<uint8_t, 7> const& data,
         std::array<uint16_t, 7> const& expected_reponse,
         TEntityProvider entity_provider,
         TGetLambda lambda)
-    : TRequest(data, 0x180, expected_reponse, entity_provider, lambda)
+    : TRequest(id, data, 0x180, expected_reponse, entity_provider, lambda)
     {
     }
 
     TRequest(
+        std::string const& id,
         TEntityProvider entity_provider,
         TSetLambda setLambda)
-    : TRequest({}, 0x00, {}, entity_provider, [](auto const&, Accessor&) -> DataType { return 0u; }, setLambda, true)
+    : TRequest(id, {}, 0x00, {}, entity_provider, [](auto const&, Accessor&) -> DataType { return 0u; }, setLambda, true)
     {
     }
+
+    std::string const& get_id() const { return m_id; }
 
     std::string getName(Accessor const& accessor) const {
         EntityBase* pEntity = m_entity_provider(accessor);
         return pEntity->get_name().str();
+    }
+
+    EntityBase* getEntity(Accessor const& accessor) const {
+        return m_entity_provider(accessor);
     }
 
     bool isGetSupported(Accessor const& accessor) const {
@@ -103,12 +115,13 @@ public:
     std::string string(Accessor const& accessor) {
         return Utils::format(
             "TRequest<name: %s, data: %s>",
-            m_entity_provider(accessor)->get_name().c_str(),
+            getName(accessor).c_str(),
             Utils::to_hex(m_data).c_str()
         );
     }
 
 private:
+    std::string m_id;
     std::array<uint8_t, 7> m_data;
     uint32_t m_response_can_id;
     std::array<uint16_t, 7> m_expected_reponse;

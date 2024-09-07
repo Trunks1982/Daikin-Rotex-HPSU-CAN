@@ -15,7 +15,6 @@ void TRequests::add(esphome::daikin_rotex_can::TRequest const& request) {
 }
 
 void TRequests::removeInvalidRequests(Accessor const& accessor) {
-    ESP_LOGI("TRequests", "removeInvalidRequests >>");
     m_requests.erase(
         std::remove_if(
             m_requests.begin(),
@@ -24,7 +23,6 @@ void TRequests::removeInvalidRequests(Accessor const& accessor) {
         ),
         m_requests.end()
     );
-    ESP_LOGI("TRequests", "removeInvalidRequests <<");
 }
 
 bool TRequests::sendNextPendingGet(Accessor const& accessor) {
@@ -73,7 +71,7 @@ void TRequests::handle(Accessor& accessor, uint32_t can_id, std::vector<uint8_t>
         }
     }
     if (!bHandled) {
-        Utils::log("requests.cpp", "unhandled: can_id<%s> data<%s>", Utils::to_hex(can_id).c_str(), Utils::to_hex(responseData).c_str());
+        Utils::log("unhandled", "can_id<%s> data<%s>", Utils::to_hex(can_id).c_str(), Utils::to_hex(responseData).c_str());
     }
 }
 

@@ -183,7 +183,6 @@ sensor_configuration = [
         "data_size": 2,
         "divider": 10.0
     },
-
     {
         "name": "spreizung_mod_ww",
         "device_class": DEVICE_CLASS_TEMPERATURE,
@@ -196,6 +195,62 @@ sensor_configuration = [
         "data_offset": 5,
         "data_size": 2,
         "divider": 10.0
+    },
+    {
+        "name": "tv",
+        "device_class": DEVICE_CLASS_TEMPERATURE,
+        "unit_of_measurement": UNIT_CELSIUS,
+        "accuracy_decimals": 1,
+        "state_class": STATE_CLASS_MEASUREMENT,
+        "icon": "mdi:thermometer-lines",
+        "data": "31 00 FA C0 FC 00 00",
+        "expected_reponse": "__ __ FA C0 FC __ __",
+        "data_offset": 5,
+        "data_size": 2,
+        "divider": 10.0,
+        "update_entity": "thermal_power"
+    },
+    {
+        "name": "tvbh",
+        "device_class": DEVICE_CLASS_TEMPERATURE,
+        "unit_of_measurement": UNIT_CELSIUS,
+        "accuracy_decimals": 1,
+        "state_class": STATE_CLASS_MEASUREMENT,
+        "icon": "mdi:thermometer-lines",
+        "data": "31 00 FA C1 02 00 00",
+        "expected_reponse": "__ __ FA C1 02 __ __",
+        "data_offset": 5,
+        "data_size": 2,
+        "divider": 10.0,
+        "update_entity": "thermal_power"
+    },
+    {
+        "name": "tr",
+        "device_class": DEVICE_CLASS_TEMPERATURE,
+        "unit_of_measurement": UNIT_CELSIUS,
+        "accuracy_decimals": 1,
+        "state_class": STATE_CLASS_MEASUREMENT,
+        "icon": "mdi:thermometer-lines",
+        "data": "31 00 FA C1 00 00 00",
+        "expected_reponse": "__ __ FA C1 00 __ __",
+        "data_offset": 5,
+        "data_size": 2,
+        "divider": 10.0,
+        "update_entity": "thermal_power"
+    },
+    {
+        "name": "water_flow",
+        "device_class": DEVICE_CLASS_WATER,
+        "unit_of_measurement": UNIT_LITER_PER_HOUR,
+        "accuracy_decimals": 0,
+        "state_class": STATE_CLASS_MEASUREMENT,
+        "icon": "mdi:thermometer-lines",
+        "data": "31 00 FA 01 DA 00 00",
+        "expected_reponse": "__ __ FA 01 DA __ __",
+        "data_offset": 5,
+        "data_size": 2,
+        "divider": 1,
+        "update_entity": "thermal_power"
     }
 ]
 
@@ -212,10 +267,6 @@ CONF_ENTITIES = "entities"
 
 CONF_TARGET_ROOM1_TEMPERATURE = "target_room1_temperature"
 CONF_TARGET_HOT_WATER_TEMPERATURE = "target_hot_water_temperature"
-CONF_TV = "tv"
-CONF_TVBH = "tvbh"
-CONF_TR = "tr"
-CONF_WATER_FLOW = "water_flow"
 CONF_FLOW_TEMPERATURE_DAY = "flow_temperature_day" # Temperatur Vorlauf Tag
 CONF_THERMAL_POWER = "thermal_power" # Thermische Leistung
 CONF_HEATING_CURVE = "heating_curve" # Heizkurve
@@ -291,30 +342,6 @@ entity_schemas = {
                     device_class=DEVICE_CLASS_TEMPERATURE,
                     unit_of_measurement=UNIT_CELSIUS,
                     accuracy_decimals=1,
-                    state_class=STATE_CLASS_MEASUREMENT
-                ).extend(),
-                cv.Optional(CONF_TV): sensor.sensor_schema(
-                    device_class=DEVICE_CLASS_TEMPERATURE,
-                    unit_of_measurement=UNIT_CELSIUS,
-                    accuracy_decimals=1,
-                    state_class=STATE_CLASS_MEASUREMENT
-                ).extend(),
-                cv.Optional(CONF_TVBH): sensor.sensor_schema(
-                    device_class=DEVICE_CLASS_TEMPERATURE,
-                    unit_of_measurement=UNIT_CELSIUS,
-                    accuracy_decimals=1,
-                    state_class=STATE_CLASS_MEASUREMENT
-                ).extend(),
-                cv.Optional(CONF_TR): sensor.sensor_schema(
-                    device_class=DEVICE_CLASS_TEMPERATURE,
-                    unit_of_measurement=UNIT_CELSIUS,
-                    accuracy_decimals=1,
-                    state_class=STATE_CLASS_MEASUREMENT
-                ).extend(),
-                cv.Optional(CONF_WATER_FLOW): sensor.sensor_schema(
-                    device_class=DEVICE_CLASS_WATER,
-                    unit_of_measurement=UNIT_LITER_PER_HOUR,
-                    accuracy_decimals=0,
                     state_class=STATE_CLASS_MEASUREMENT
                 ).extend(),
                 cv.Optional(CONF_FLOW_TEMPERATURE_DAY): sensor.sensor_schema(
@@ -526,6 +553,7 @@ def to_code(config):
                     sens_conf.get("name"),
                     [
                         sens,
+                        sens_conf["name"],
                         sens_conf["data"],
                         sens_conf["expected_reponse"],
                         sens_conf["data_offset"],
@@ -541,22 +569,6 @@ def to_code(config):
         if sensor_conf := entities.get(CONF_TARGET_HOT_WATER_TEMPERATURE):
             sens = yield sensor.new_sensor(sensor_conf)
             cg.add(var.getAccessor().set_target_hot_water_temperature(sens))
-
-        if sensor_conf := entities.get(CONF_TV):
-            sens = yield sensor.new_sensor(sensor_conf)
-            cg.add(var.getAccessor().set_tv(sens))
-
-        if sensor_conf := entities.get(CONF_TVBH):
-            sens = yield sensor.new_sensor(sensor_conf)
-            cg.add(var.getAccessor().set_tvbh(sens))
-
-        if sensor_conf := entities.get(CONF_TR):
-            sens = yield sensor.new_sensor(sensor_conf)
-            cg.add(var.getAccessor().set_tr(sens))
-
-        if sensor_conf := entities.get(CONF_WATER_FLOW):
-            sens = yield sensor.new_sensor(sensor_conf)
-            cg.add(var.getAccessor().set_water_flow(sens))
 
         if sensor_conf := entities.get(CONF_FLOW_TEMPERATURE_DAY):
             sens = yield sensor.new_sensor(sensor_conf)

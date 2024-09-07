@@ -54,6 +54,8 @@ public:
         m_later_calls.push_back({lambda, timestamp + timeout});
     }
 
+    void update_thermal_power();
+
 private:
 
     using TCanbusAutomation = esphome::Automation<std::vector<uint8_t>, uint32_t, bool>;
@@ -69,6 +71,10 @@ private:
     private:
         DaikinRotexCanComponent* m_pParent;
     };
+
+    void updateState(TRequest const& request);
+
+    float getSensorState(std::string const& name);
 
     Accessor m_accessor;
     TRequests m_data_requests;

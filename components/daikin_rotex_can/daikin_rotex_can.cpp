@@ -44,52 +44,8 @@ static const BidiMap<uint8_t, std::string> map_sg = {
 };
 
 const std::vector<TRequest> entity_config = {
-    { // Vorlauftemperatur
-        {0x31, 0x00, 0xFA, 0xC0, 0xFC, 0x00, 0x00},
-        {  DC,   DC, 0xFA, 0xC0, 0xFC,   DC,   DC},
-        [](auto& accessor) -> EntityBase* { return accessor.get_tv(); },
-        [](auto const& data, auto& accessor) -> DataType {
-            const float temp = ((data[5] << 8) + data[6]) / 10.0f;
-            accessor.get_tv()->publish_state(temp);
-            accessor.update_thermal_power();
-            return temp;
-        }
-    },
-    { // Vorlauftemperatur (TVBH)
-        {0x31, 0x00, 0xFA, 0xC1, 0x02, 0x00, 0x00},
-        {  DC,   DC, 0xFA, 0xC1, 0x02,   DC,   DC},
-        [](auto& accessor) -> EntityBase* { return accessor.get_tvbh(); },
-        [](auto const& data, auto& accessor) -> DataType {
-            const float temp = ((data[5] << 8) + data[6]) / 10.0f;
-            accessor.get_tvbh()->publish_state(temp);
-            accessor.update_thermal_power();
-            return temp;
-        }
-    },
-    { // Rücklauftemperatur Heizung
-        {0x31, 0x00, 0xFA, 0xC1, 0x00, 0x00, 0x00},
-        {  DC,   DC, 0xFA, 0xC1, 0x00,   DC,   DC},
-        [](auto& accessor) -> EntityBase* { return accessor.get_tr(); },
-        [](auto const& data, auto& accessor) -> DataType {
-            const float temp = ((data[5] << 8) + data[6]) / 10.0f;
-            accessor.get_tr()->publish_state(temp);
-            accessor.update_thermal_power();
-            return temp;
-        }
-    },
-    { // Durchfluss
-        {0x31, 0x00, 0xFA, 0x01, 0xDA, 0x00, 0x00},
-        {  DC,   DC, 0xFA, 0x01, 0xDA,   DC,   DC},
-        [](auto& accessor) -> EntityBase* { return accessor.get_water_flow(); },
-        [](auto const& data, auto& accessor) -> DataType {
-            const uint32_t flow = (data[5] << 8) + data[6];
-            accessor.get_water_flow()->publish_state(flow);
-            accessor.update_thermal_power();
-            return flow;
-        }
-    },
-
     { // Betriebsmodus
+        "operating_mode",
         {0x31, 0x00, 0xFA, 0x01, 0x12, 0x00, 0x00},
         {  DC,   DC, 0xFA, 0x01, 0x12,   DC,   DC},
         [](auto& accessor) -> EntityBase* { return accessor.get_operating_mode(); },
@@ -105,6 +61,7 @@ const std::vector<TRequest> entity_config = {
         }
     },
     { // Betriebsmodus setzen
+        "operating_mode_select",
         [](auto& accessor) -> EntityBase* { return accessor.get_operating_mode_select(); },
         [](auto const& value) -> std::vector<uint8_t> {
             return {0x30, 0x00, 0xFA, 0x01, 0x12, static_cast<uint8_t>(value), 0x00};
@@ -112,6 +69,7 @@ const std::vector<TRequest> entity_config = {
     },
 
     { // Betriebsart
+        "mode_of_operating",
         {0x31, 0x00, 0xFA, 0xC0, 0xF6, 0x00, 0x00},
         {  DC,   DC, 0xFA, 0xC0, 0xF6,   DC,   DC},
         [](auto& accessor) -> EntityBase* { return accessor.get_mode_of_operating(); },
@@ -122,12 +80,17 @@ const std::vector<TRequest> entity_config = {
             const std::string str_mode = iter != map_betriebsart.end() ? iter->second : "Unknown";
 
             accessor.get_mode_of_operating()->publish_state(str_mode);
-            accessor.update_thermal_power();
+
+            accessor.getDaikinRotexCanComponent()->call_later([&accessor](){
+                accessor.getDaikinRotexCanComponent()->update_thermal_power();
+            });
+
             return str_mode;
         }
     },
 
     { // HK Function
+        "hk_function",
         {0x31, 0x00, 0xFA, 0x01, 0x41, 0x00, 0x00},
         {  DC,   DC, 0xFA, 0x01, 0x41,   DC,   DC},
         [](auto& accessor) -> EntityBase* { return accessor.get_hk_function(); },
@@ -143,6 +106,7 @@ const std::vector<TRequest> entity_config = {
         }
     },
     { // HK Function Einstellen
+        "hk_function_select",
         [](auto& accessor) -> EntityBase* { return accessor.get_hk_function_select(); },
         [](auto const& value) -> std::vector<uint8_t> {
             return { 0x30, 0x00, 0xFA, 0x01, 0x41, 0x00, static_cast<uint8_t>(value)};
@@ -150,6 +114,7 @@ const std::vector<TRequest> entity_config = {
     },
 
     { // Status Kompressor
+        "status_kompressor",
         {0xA1, 0x00, 0x61, 0x00, 0x00, 0x00, 0x00},
         0x500,
         {  DC,   DC, 0x61,   DC,   DC,   DC,   DC},
@@ -162,6 +127,7 @@ const std::vector<TRequest> entity_config = {
     },
 
     { // Status Kessel
+        "status_kesselpumpe",
         {0x31, 0x00, 0xFA, 0x0A, 0x8C, 0x00, 0x00},
         {  DC,   DC, 0xFA, 0x0A, 0x8C,   DC,   DC},
         [](auto& accessor) -> EntityBase* { return accessor.get_status_kesselpumpe(); },
@@ -173,6 +139,7 @@ const std::vector<TRequest> entity_config = {
     },
 
     { // Circulation Pump
+        "circulation_pump_min",
         {0x31, 0x00, 0xFA, 0x06, 0x7F, 0x00, 0x00},
         {  DC,   DC, 0xFA, 0x06, 0x7F,   DC,   DC},
         [](auto& accessor) -> EntityBase* { return accessor.get_circulation_pump_min(); },
@@ -186,6 +153,7 @@ const std::vector<TRequest> entity_config = {
         }
     },
     { // Circulation Pump Min Set
+        "circulation_pump_min",
         [](auto& accessor) -> EntityBase* { return accessor.get_circulation_pump_min(); },
         [](auto const& value) -> std::vector<uint8_t> {
             const uint16_t temp = static_cast<uint16_t>(value);
@@ -196,6 +164,7 @@ const std::vector<TRequest> entity_config = {
     },
 
     { // Umwälzpumpe Max
+        "circulation_pump_max",
         {0x31, 0x00, 0xFA, 0x06, 0x7E, 0x00, 0x00},
         {  DC,   DC, 0xFA, 0x06, 0x7E,   DC,   DC},
         [](auto& accessor) -> EntityBase* { return accessor.get_circulation_pump_max(); },
@@ -209,6 +178,7 @@ const std::vector<TRequest> entity_config = {
         }
     },
     { // Circulation Pump Max Set
+        "circulation_pump_max",
         [](auto& accessor) -> EntityBase* { return accessor.get_circulation_pump_max(); },
         [](auto const& value) -> std::vector<uint8_t> {
             const uint16_t temp = static_cast<uint16_t>(value);
@@ -219,6 +189,7 @@ const std::vector<TRequest> entity_config = {
     },
 
     { // T-WW-Soll1
+        "target_hot_water_temperature",
         {0x31, 0x00, 0x13, 0x00, 0x00, 0x00, 0x00},
         {0xD2, 0x00, 0x13,   DC,   DC, 0x00, 0x00},
         [](auto& accessor) -> EntityBase* { return accessor.get_target_hot_water_temperature(); },
@@ -238,6 +209,7 @@ const std::vector<TRequest> entity_config = {
         }
     },
     { // WW Einstellen
+        "target_hot_water_temperature_set",
         [](auto& accessor) -> EntityBase* { return accessor.get_target_hot_water_temperature_set(); },
         [](auto const& value) -> std::vector<uint8_t> {
             const uint16_t temp = (uint16_t)(value * 10);
@@ -248,6 +220,7 @@ const std::vector<TRequest> entity_config = {
     },
 
     { // T Vorlauf Tag
+        "flow_temperature_day",
         {0x31, 0x00, 0xFA, 0x01, 0x29, 0x00, 0x00},
         {  DC,   DC, 0xFA, 0x01, 0x29,   DC,   DC},
         [](auto& accessor) -> EntityBase* { return accessor.get_flow_temperature_day(); },
@@ -261,6 +234,7 @@ const std::vector<TRequest> entity_config = {
         }
     },
     { // T Vorlauf Tag Einstellen
+        "flow_temperature_day_set",
         [](auto& accessor) -> EntityBase* { return accessor.get_flow_temperature_day_set(); },
         [](auto const& value) -> std::vector<uint8_t> {
             const uint16_t temp = (uint16_t)(value * 10);
@@ -271,6 +245,7 @@ const std::vector<TRequest> entity_config = {
     },
 
     { // Heizkurve
+        "heating_curve",
         {0x31, 0x00, 0xFA, 0x01, 0x0E, 0x00, 0x00},
         {  DC,   DC, 0xFA, 0x01, 0x0E,   DC,   DC},
         [](auto& accessor) -> EntityBase* { return accessor.get_heating_curve(); },
@@ -284,6 +259,7 @@ const std::vector<TRequest> entity_config = {
         }
     },
     { // Heizkurve einstellen
+        "heating_curve_set",
         [](auto& accessor) -> EntityBase* { return accessor.get_heating_curve_set(); },
         [](auto const& value) -> std::vector<uint8_t> {
             const uint16_t hk = (uint16_t)(value * 100);
@@ -294,6 +270,7 @@ const std::vector<TRequest> entity_config = {
     },
 
     { // Min VL Soll
+        "min_target_supply_temperature",
         {0x31, 0x00, 0xFA, 0x01, 0x2B, 0x00, 0x00},
         {  DC,   DC, 0xFA, 0x01, 0x2B,   DC,   DC},
         [](auto& accessor) -> EntityBase* { return accessor.get_min_target_supply_temperature(); },
@@ -307,6 +284,7 @@ const std::vector<TRequest> entity_config = {
         }
     },
     { // Min VL Einstellen
+        "min_target_flow_temp_set",
         [](auto& accessor) -> EntityBase* { return accessor.get_min_target_flow_temp_set(); },
         [](auto const& value) -> std::vector<uint8_t> {
             const uint16_t temp = (uint16_t)(value * 10);
@@ -317,6 +295,7 @@ const std::vector<TRequest> entity_config = {
     },
 
     { // Max VL Soll
+        "max_target_supply_temperature",
         {0x31, 0x00, 0x28, 0x00, 0x00, 0x00, 0x00},
         {  DC,   DC, 0x28,   DC,   DC,   DC,   DC},
         [](auto& accessor) -> EntityBase* { return accessor.get_max_target_supply_temperature(); },
@@ -330,6 +309,7 @@ const std::vector<TRequest> entity_config = {
         }
     },
     { // Max VL Einstellen
+        "max_target_flow_temp_set",
         [](auto& accessor) -> EntityBase* { return accessor.get_max_target_flow_temp_set(); },
         [](auto const& value) -> std::vector<uint8_t> {
             const uint16_t temp = static_cast<uint16_t>(value * 10);
@@ -340,6 +320,7 @@ const std::vector<TRequest> entity_config = {
     },
 
     { // SGModus
+        "sg_mode",
         {0x31, 0x00, 0xFA, 0x06, 0x94, 0x00, 0x00},
         {  DC,   DC, 0xFA, 0x06, 0x94,   DC,   DC},
         [](auto& accessor) -> EntityBase* { return accessor.get_sg_mode(); },
@@ -353,6 +334,7 @@ const std::vector<TRequest> entity_config = {
         }
     },
     {
+        "sg_mode_select",
         [](auto& accessor) -> EntityBase* { return accessor.get_sg_mode_select(); },
         [](auto const& value) -> std::vector<uint8_t> {
             return {0x30, 0x00, 0xFA, 0x06, 0x94, 0x00, static_cast<uint8_t>(value)};
@@ -360,6 +342,7 @@ const std::vector<TRequest> entity_config = {
     },
 
     { // Smart Grid
+        "smart_grid",
         {0x31, 0x00, 0xFA, 0x06, 0x93, 0x00, 0x00},
         {  DC,   DC, 0xFA, 0x06, 0x93,   DC,   DC},
         [](auto& accessor) -> EntityBase* { return accessor.get_smart_grid(); },
@@ -373,6 +356,7 @@ const std::vector<TRequest> entity_config = {
         }
     },
     {
+        "smart_grid_select",
         [](auto& accessor) -> EntityBase* { return accessor.get_smart_grid_select(); },
         [](auto const& value) -> std::vector<uint8_t> {
             return {0x30, 0x00, 0xFA, 0x06, 0x93, 0x00, static_cast<uint8_t>(value)};
@@ -380,6 +364,7 @@ const std::vector<TRequest> entity_config = {
     },
 
     { // Raumsoll 1
+        "target_room1_temperature",
         {0x31, 0x00, 0x05, 0x00, 0x00, 0x00, 0x00},
         {0xD2, 0x00, 0x05,   DC,   DC, 0x00,   DC},
         [](auto& accessor) -> EntityBase* { return accessor.get_target_room1_temperature(); },
@@ -393,6 +378,7 @@ const std::vector<TRequest> entity_config = {
         }
     },
     { // Raumsoll 1 Einstellen
+        "target_room1_temperature_set",
         [](auto& accessor) -> EntityBase* { return accessor.get_target_room1_temperature_set(); },
         [](auto const& value) -> std::vector<uint8_t> {
             const uint16_t temp = static_cast<uint16_t>(value * 10);
@@ -403,6 +389,7 @@ const std::vector<TRequest> entity_config = {
     },
 
     { // Fehlercode
+        "error_code",
         {0x31, 0x00, 0xFA, 0x13, 0x88, 0x00, 0x00},
         {  DC,   DC, 0xFA, 0x13, 0x88,   DC,   DC},
         [](auto& accessor) -> EntityBase* { return accessor.get_error_code(); },
@@ -497,6 +484,7 @@ void DaikinRotexCanComponent::validateConfig() {
         const std::array<uint16_t, 7> expected_response = Utils::str_to_bytes_array16(pair.second.expected_response);
 
         TRequest req = {
+            pair.second.id,
             data,
             expected_response,
             [&](auto& accessor) -> EntityBase* { return pair.second.pSensor; },
@@ -514,12 +502,26 @@ void DaikinRotexCanComponent::validateConfig() {
                         pair.second.pSensor->publish_state(value);
                         break;
                     default:
-                        ESP_LOGE("validateConfig", "Invalid data size: %d", pair.second.data_size);
+                        call_later([pair](){
+                            ESP_LOGE("validateConfig", "Invalid data size: %d", pair.second.data_size);
+                        });
                         break;
                     }
                 } else {
-                    ESP_LOGE("validateConfig", "Invalid data_offset: %d", pair.second.data_offset);
+                    call_later([pair](){
+                        ESP_LOGE("validateConfig", "Invalid data_offset: %d", pair.second.data_offset);
+                    });
                 }
+
+                if (!pair.second.update_entity.empty()) {
+                    TRequest const* pRequest = m_data_requests.get(m_accessor, pair.second.update_entity);
+                    if (pRequest != nullptr) {
+                        call_later([&](){
+                            updateState(*pRequest);
+                        });
+                    }
+                }
+
                 return value;
             }
         };
@@ -532,6 +534,36 @@ void DaikinRotexCanComponent::validateConfig() {
 
 void DaikinRotexCanComponent::setup() {
     ESP_LOGI(TAG, "setup");
+}
+
+void DaikinRotexCanComponent::updateState(TRequest const& request) {
+    ESP_LOGI("update_state", ">>>");
+    if (request.getName(m_accessor) == "thermal_power") {
+        update_thermal_power();
+    }
+    ESP_LOGI("update_state", "<<<");
+}
+
+void DaikinRotexCanComponent::update_thermal_power() {
+    text_sensor::TextSensor* mode_of_operating = m_accessor.get_mode_of_operating();
+    sensor::Sensor* thermal_power = m_accessor.get_thermal_power();
+
+    if (mode_of_operating != nullptr && thermal_power != nullptr) {
+        // TODO: Type-safe casts
+        TRequest const* water_flow_request = m_data_requests.get(m_accessor, "water_flow");
+        sensor::Sensor* water_flow = static_cast<sensor::Sensor*>(water_flow_request->getEntity(m_accessor));
+        sensor::Sensor* tvbh = static_cast<sensor::Sensor*>(m_data_requests.get(m_accessor, "tvbh")->getEntity(m_accessor));
+        sensor::Sensor* tv = static_cast<sensor::Sensor*>(m_data_requests.get(m_accessor, "tv")->getEntity(m_accessor));
+        sensor::Sensor* tr = static_cast<sensor::Sensor*>(m_data_requests.get(m_accessor, "tr")->getEntity(m_accessor));
+
+        if (mode_of_operating->state == "Warmwasserbereitung" && tv != nullptr && tr != nullptr && water_flow != nullptr) {
+            thermal_power->publish_state((tv->state - tr->state) * (4.19 * water_flow->state) / 3600.0f);
+        } else if (mode_of_operating->state == "Heizen" && tvbh != nullptr && tr != nullptr && water_flow != nullptr) {
+            thermal_power->publish_state((tvbh->state - tr->state) * (4.19 * water_flow->state) / 3600.0f);
+        } else if (mode_of_operating->state == "Kühlen" && tvbh != nullptr && tr != nullptr && water_flow != nullptr) {
+            thermal_power->publish_state((tvbh->state - tr->state) * (4.19 * water_flow->state) / 3600.0f);
+        }
+    }
 }
 
 ///////////////// Texts /////////////////

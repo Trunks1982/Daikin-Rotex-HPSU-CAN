@@ -15,11 +15,13 @@ class DaikinRotexCanComponent;
 class Accessor {
     struct TArguments {
         sensor::Sensor* pSensor;
+        std::string id;
         std::string data;
         std::string expected_response;
         uint8_t data_offset;
         uint8_t data_size;
         float divider;
+        std::string update_entity;
     };
     using TSensorMap = std::map<std::string, TArguments>;
 public:
@@ -50,18 +52,6 @@ public:
 
     sensor::Sensor* get_target_hot_water_temperature() const { return m_target_hot_water_temperature; }
     void set_target_hot_water_temperature(sensor::Sensor* pSensor) { m_target_hot_water_temperature = pSensor; }
-
-    sensor::Sensor* get_tv() const { return m_tv; }
-    void set_tv(sensor::Sensor* pSensor) { m_tv = pSensor; }
-
-    sensor::Sensor* get_tvbh() const { return m_tvbh; }
-    void set_tvbh(sensor::Sensor* pSensor) { m_tvbh = pSensor; }
-
-    sensor::Sensor* get_tr() const { return m_tr; }
-    void set_tr(sensor::Sensor* pSensor) { m_tr = pSensor; }
-
-    sensor::Sensor* get_water_flow() const { return m_water_flow; }
-    void set_water_flow(sensor::Sensor* pSensor) { m_water_flow = pSensor; }
 
     sensor::Sensor* get_flow_temperature_day() const { return m_flow_temperature_day; }
     void set_flow_temperature_day(sensor::Sensor* pSensor) { m_flow_temperature_day = pSensor; }
@@ -152,22 +142,6 @@ public:
     number::Number* get_circulation_pump_max_set() const { return m_circulation_pump_max_set; }
     void set_circulation_pump_max_set(number::Number* pNumber) { m_circulation_pump_max_set = pNumber; }
 
-public:
-    void update_thermal_power() {
-        float power = 0.0f;
-        if (get_mode_of_operating() != nullptr && get_water_flow() != nullptr && get_tv() != nullptr && get_tvbh() != nullptr && get_tr() != nullptr) {
-            if (get_mode_of_operating()->state == "Warmwasserbereitung") {
-                power = (get_tv()->state - get_tr()->state) * (4.19 * get_water_flow()->state) / 3600.0f;
-            } else if (get_mode_of_operating()->state == "Heizen") {
-                power = (get_tvbh()->state - get_tr()->state) * (4.19 * get_water_flow()->state) / 3600.0f;
-            } else if (get_mode_of_operating()->state == "Kühlen") {
-                power = (get_tvbh()->state - get_tr()->state) * (4.19 * get_water_flow()->state) / 3600.0f;
-            }
-        }
-
-        get_thermal_power()->publish_state(power);
-    }
-
 private:
     text::Text* m_log_filter;
     text::Text* m_custom_request_text;
@@ -178,10 +152,6 @@ private:
     sensor::Sensor* m_pTemperatureOutsideSensor;
     sensor::Sensor* m_target_room1_temperature;
     sensor::Sensor* m_target_hot_water_temperature;
-    sensor::Sensor* m_tv;
-    sensor::Sensor* m_tvbh;
-    sensor::Sensor* m_tr;
-    sensor::Sensor* m_water_flow;
     sensor::Sensor* m_flow_temperature_day;
     sensor::Sensor* m_thermal_power;
     sensor::Sensor* m_heating_curve;
