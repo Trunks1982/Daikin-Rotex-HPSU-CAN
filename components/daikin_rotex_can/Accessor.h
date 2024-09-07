@@ -63,9 +63,6 @@ public:
     sensor::Sensor* get_water_flow() const { return m_water_flow; }
     void set_water_flow(sensor::Sensor* pSensor) { m_water_flow = pSensor; }
 
-    sensor::Sensor* get_target_supply_temperature() const { return m_target_supply_temperature; }
-    void set_target_supply_temperature(sensor::Sensor* pSensor) { m_target_supply_temperature = pSensor; }
-
     sensor::Sensor* get_flow_temperature_day() const { return m_flow_temperature_day; }
     void set_flow_temperature_day(sensor::Sensor* pSensor) { m_flow_temperature_day = pSensor; }
 
@@ -203,7 +200,6 @@ private:
     sensor::Sensor* m_tvbh;
     sensor::Sensor* m_tr;
     sensor::Sensor* m_water_flow;
-    sensor::Sensor* m_target_supply_temperature;
     sensor::Sensor* m_flow_temperature_day;
     sensor::Sensor* m_thermal_power;
     sensor::Sensor* m_heating_curve;

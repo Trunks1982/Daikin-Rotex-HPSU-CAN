@@ -107,6 +107,18 @@ my_sensors = [
         "data_offset": 5,
         "data_size": 2,
         "divider": 1
+    },
+    {
+        "name": "target_supply_temperature",
+        "device_class": DEVICE_CLASS_TEMPERATURE,
+        "unit_of_measurement": UNIT_CELSIUS,
+        "accuracy_decimals": 1,
+        "state_class": STATE_CLASS_MEASUREMENT,
+        "data": "31 00 02 00 00 00 00",
+        "expected_reponse": "D2 __ 02 __ __ __ __",
+        "data_offset": 3,
+        "data_size": 4,
+        "divider": 10.0
     }
 ]
 
@@ -127,7 +139,6 @@ CONF_TV = "tv"
 CONF_TVBH = "tvbh"
 CONF_TR = "tr"
 CONF_WATER_FLOW = "water_flow"
-CONF_TARGET_SUPPLY_TEMPERATURE = "target_supply_temperature" # Vorlauf Soll
 CONF_FLOW_TEMPERATURE_DAY = "flow_temperature_day" # Temperatur Vorlauf Tag
 CONF_THERMAL_POWER = "thermal_power" # Thermische Leistung
 CONF_HEATING_CURVE = "heating_curve" # Heizkurve
@@ -234,12 +245,6 @@ entity_schemas = {
                     device_class=DEVICE_CLASS_WATER,
                     unit_of_measurement=UNIT_LITER_PER_HOUR,
                     accuracy_decimals=0,
-                    state_class=STATE_CLASS_MEASUREMENT
-                ).extend(),
-                cv.Optional(CONF_TARGET_SUPPLY_TEMPERATURE): sensor.sensor_schema(
-                    device_class=DEVICE_CLASS_TEMPERATURE,
-                    unit_of_measurement=UNIT_CELSIUS,
-                    accuracy_decimals=1,
                     state_class=STATE_CLASS_MEASUREMENT
                 ).extend(),
                 cv.Optional(CONF_FLOW_TEMPERATURE_DAY): sensor.sensor_schema(
@@ -520,10 +525,6 @@ def to_code(config):
         if sensor_conf := entities.get(CONF_WATER_FLOW):
             sens = yield sensor.new_sensor(sensor_conf)
             cg.add(var.getAccessor().set_water_flow(sens))
-
-        if sensor_conf := entities.get(CONF_TARGET_SUPPLY_TEMPERATURE):
-            sens = yield sensor.new_sensor(sensor_conf)
-            cg.add(var.getAccessor().set_target_supply_temperature(sens))
 
         if sensor_conf := entities.get(CONF_FLOW_TEMPERATURE_DAY):
             sens = yield sensor.new_sensor(sensor_conf)
