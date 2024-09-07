@@ -45,9 +45,6 @@ public:
     sensor::Sensor* get_sensor(std::string const& name) const { return m_sensors.at(name).pSensor; }
     void set_sensor(std::string const& name, TArguments const& arg) { m_sensors.insert({name, arg}); }
 
-    sensor::Sensor* get_tdhw1() const { return m_tdhw1; }
-    void set_tdhw1(sensor::Sensor* pSensor) { m_tdhw1 = pSensor; }
-
     sensor::Sensor* get_target_room1_temperature() const { return m_target_room1_temperature; }
     void set_target_room1_temperature(sensor::Sensor* pSensor) { m_target_room1_temperature = pSensor; }
 
@@ -212,7 +209,6 @@ private:
 
     // Sensors
     sensor::Sensor* m_pTemperatureOutsideSensor;
-    sensor::Sensor* m_tdhw1;
     sensor::Sensor* m_target_room1_temperature;
     sensor::Sensor* m_target_hot_water_temperature;
     sensor::Sensor* m_tv;

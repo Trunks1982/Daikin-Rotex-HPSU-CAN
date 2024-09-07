@@ -44,16 +44,6 @@ static const BidiMap<uint8_t, std::string> map_sg = {
 };
 
 const std::vector<TRequest> entity_config = {
-    { // tdhw1
-        {0x31, 0x00, 0xFA, 0x00, 0x0E, 0x00, 0x00},
-        {  DC,   DC, 0xFA, 0x00, 0x0E,   DC,   DC},
-        [](auto& accessor) -> EntityBase* { return accessor.get_tdhw1(); },
-        [](auto const& data, auto& accessor) -> DataType {
-            const float temp = ((data[5] << 8) + data[6]) / 10.0f;
-            accessor.get_tdhw1()->publish_state(temp);
-            return temp;
-        }
-    },
     { // Vorlauftemperatur
         {0x31, 0x00, 0xFA, 0xC0, 0xFC, 0x00, 0x00},
         {  DC,   DC, 0xFA, 0xC0, 0xFC,   DC,   DC},

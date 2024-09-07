@@ -42,6 +42,18 @@ my_sensors = [
         "data_offset": 5,
         "data_size": 2,
         "divider": 10.0
+    },
+    {
+        "name": "tdhw1",
+        "device_class": DEVICE_CLASS_TEMPERATURE,
+        "unit_of_measurement": UNIT_CELSIUS,
+        "accuracy_decimals": 1,
+        "state_class": STATE_CLASS_MEASUREMENT,
+        "data": "31 00 FA 00 0E 00 00",
+        "expected_reponse": "__ __ FA, 00, 0E __ __",
+        "data_offset": 5,
+        "data_size": 2,
+        "divider": 10.0
     }
 ]
 
@@ -59,7 +71,6 @@ CONF_ENTITIES = "entities"
 
 ########## Sensors ##########
 
-CONF_TDHW1 = "tdhw1"
 CONF_TARGET_ROOM1_TEMPERATURE = "target_room1_temperature"
 CONF_TARGET_HOT_WATER_TEMPERATURE = "target_hot_water_temperature"
 CONF_TV = "tv"
@@ -142,12 +153,6 @@ for sensor_conf in my_sensors:
 entity_schemas = {
                 ########## Sensors ##########
 
-                cv.Optional(CONF_TDHW1): sensor.sensor_schema(
-                    device_class=DEVICE_CLASS_TEMPERATURE,
-                    unit_of_measurement=UNIT_CELSIUS,
-                    accuracy_decimals=1,
-                    state_class=STATE_CLASS_MEASUREMENT
-                ).extend(),
                 cv.Optional(CONF_TARGET_ROOM1_TEMPERATURE): sensor.sensor_schema(
                     device_class=DEVICE_CLASS_TEMPERATURE,
                     unit_of_measurement=UNIT_CELSIUS,
@@ -471,10 +476,6 @@ def to_code(config):
                         sens_conf["divider"],
                     ]
                 ))
-
-        if sensor_conf := entities.get(CONF_TDHW1):
-            sens = yield sensor.new_sensor(sensor_conf)
-            cg.add(var.getAccessor().set_tdhw1(sens))
 
         if sensor_conf := entities.get(CONF_TARGET_ROOM1_TEMPERATURE):
             sens = yield sensor.new_sensor(sensor_conf)
