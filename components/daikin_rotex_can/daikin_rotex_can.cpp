@@ -339,27 +339,6 @@ const std::vector<TRequest> entity_config = {
         }
     },
 
-    { // Spreizung MOD HZ
-        {0x31, 0x00, 0xFA, 0x06, 0x83, 0x00, 0x00},
-        {  DC,   DC, 0xFA, 0x06, 0x83,   DC,   DC},
-        [](auto& accessor) -> EntityBase* { return accessor.get_spreizung_mod_hz(); },
-        [](auto const& data, auto& accessor) -> DataType {
-            const float temp = ((data[5] << 8) + data[6]) / 10.0f;
-            accessor.get_spreizung_mod_hz()->publish_state(temp);
-            return temp;
-        }
-    },
-    { // Spreizung MOD WW
-        {0x31, 0x00, 0xFA, 0x06, 0x84, 0x00, 0x00},
-        {  DC,   DC, 0xFA, 0x06, 0x84,   DC,   DC},
-        [](auto& accessor) -> EntityBase* { return accessor.get_spreizung_mod_ww(); },
-        [](auto const& data, auto& accessor) -> DataType {
-            const float temp = ((data[5] << 8) + data[6]) / 10.0f;
-            accessor.get_spreizung_mod_ww()->publish_state(temp);
-            return temp;
-        }
-    },
-
     { // SGModus
         {0x31, 0x00, 0xFA, 0x06, 0x94, 0x00, 0x00},
         {  DC,   DC, 0xFA, 0x06, 0x94,   DC,   DC},

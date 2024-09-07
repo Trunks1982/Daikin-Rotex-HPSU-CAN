@@ -169,6 +169,33 @@ sensor_configuration = [
         "data_offset": 5,
         "data_size": 2,
         "divider": 1
+    },
+    {
+        "name": "spreizung_mod_hz",
+        "device_class": DEVICE_CLASS_TEMPERATURE,
+        "unit_of_measurement": UNIT_KELVIN,
+        "accuracy_decimals": 0,
+        "state_class": STATE_CLASS_MEASUREMENT,
+        "icon": "mdi:thermometer-lines",
+        "data": "31 00 FA 06 83 00 00",
+        "expected_reponse": "__ __ FA 06 83 __ __",
+        "data_offset": 5,
+        "data_size": 2,
+        "divider": 10.0
+    },
+
+    {
+        "name": "spreizung_mod_ww",
+        "device_class": DEVICE_CLASS_TEMPERATURE,
+        "unit_of_measurement": UNIT_KELVIN,
+        "accuracy_decimals": 0,
+        "state_class": STATE_CLASS_MEASUREMENT,
+        "icon": "mdi:thermometer-lines",
+        "data": "31 00 FA 06 84 00 00",
+        "expected_reponse": "__ __ FA 06 84 __ __",
+        "data_offset": 5,
+        "data_size": 2,
+        "divider": 10.0
     }
 ]
 
@@ -194,8 +221,6 @@ CONF_THERMAL_POWER = "thermal_power" # Thermische Leistung
 CONF_HEATING_CURVE = "heating_curve" # Heizkurve
 CONF_MIN_TARGET_SUPPLY_TEMPERATURE = "min_target_supply_temperature" # Min Vorlauf Soll
 CONF_MAX_TARGET_SUPPLY_TEMPERATURE = "max_target_supply_temperature" # Max Vorlauf Soll
-CONF_SPREIZUNG_MOD_HZ = "spreizung_mod_hz"
-CONF_SPREIZUNG_MOD_WW = "spreizung_mod_ww"
 CONF_CIRCULATION_PUMP_MIN = "circulation_pump_min"
 CONF_CIRCULATION_PUMP_MAX = "circulation_pump_max"
 
@@ -321,18 +346,6 @@ entity_schemas = {
                     unit_of_measurement=UNIT_CELSIUS,
                     accuracy_decimals=0,
                     icon="mdi:waves-arrow-right",
-                ).extend(),
-                cv.Optional(CONF_SPREIZUNG_MOD_HZ): sensor.sensor_schema(
-                    device_class=DEVICE_CLASS_TEMPERATURE,
-                    unit_of_measurement=UNIT_KELVIN,
-                    accuracy_decimals=0,
-                    icon="mdi:thermometer-lines",
-                ).extend(),
-                cv.Optional(CONF_SPREIZUNG_MOD_WW): sensor.sensor_schema(
-                    device_class=DEVICE_CLASS_TEMPERATURE,
-                    unit_of_measurement=UNIT_KELVIN,
-                    accuracy_decimals=0,
-                    icon="mdi:thermometer-lines",
                 ).extend(),
                 cv.Optional(CONF_CIRCULATION_PUMP_MIN): sensor.sensor_schema(
                     device_class=DEVICE_CLASS_VOLUME_FLOW_RATE,
@@ -564,14 +577,6 @@ def to_code(config):
         if sensor_conf := entities.get(CONF_MAX_TARGET_SUPPLY_TEMPERATURE):
             sens = yield sensor.new_sensor(sensor_conf)
             cg.add(var.getAccessor().set_max_target_supply_temperature(sens))
-
-        if sensor_conf := entities.get(CONF_SPREIZUNG_MOD_HZ):
-            sens = yield sensor.new_sensor(sensor_conf)
-            cg.add(var.getAccessor().set_spreizung_mod_hz(sens))
-
-        if sensor_conf := entities.get(CONF_SPREIZUNG_MOD_WW):
-            sens = yield sensor.new_sensor(sensor_conf)
-            cg.add(var.getAccessor().set_spreizung_mod_ww(sens))
 
         if sensor_conf := entities.get(CONF_CIRCULATION_PUMP_MIN):
             sens = yield sensor.new_sensor(sensor_conf)
