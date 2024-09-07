@@ -172,17 +172,6 @@ const std::vector<TRequest> entity_config = {
         }
     },
 
-    { // Umwälzpumpe
-        {0x31, 0x00, 0xFA, 0xC0, 0xF7, 0x00, 0x00},
-        {  DC,   DC, 0xFA, 0xC0, 0xF7,   DC,   DC},
-        [](auto& accessor) -> EntityBase* { return accessor.get_circulation_pump(); },
-        [](auto const& data, auto& accessor) -> DataType {
-            const float percent = data[6];
-            accessor.get_circulation_pump()->publish_state(percent);
-            return percent;
-        }
-    },
-
     { // Circulation Pump
         {0x31, 0x00, 0xFA, 0x06, 0x7F, 0x00, 0x00},
         {  DC,   DC, 0xFA, 0x06, 0x7F,   DC,   DC},

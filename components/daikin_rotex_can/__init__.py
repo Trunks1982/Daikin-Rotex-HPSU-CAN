@@ -68,6 +68,19 @@ my_sensors = [
         "data_offset": 3,
         "data_size": 2,
         "divider": 1000.0
+    },
+    {
+        "name": "circulation_pump",
+        "device_class": DEVICE_CLASS_VOLUME_FLOW_RATE,
+        "unit_of_measurement": UNIT_PERCENT,
+        "accuracy_decimals": 0,
+        "state_class": STATE_CLASS_MEASUREMENT,
+        "icon": "mdi:pump",
+        "data": "31 00 FA C0 F7 00 00",
+        "expected_reponse": "__ __ FA C0 F7 __ __",
+        "data_offset": 6,
+        "data_size": 1,
+        "divider": 1
     }
 ]
 
@@ -88,7 +101,6 @@ CONF_TV = "tv"
 CONF_TVBH = "tvbh"
 CONF_TR = "tr"
 CONF_WATER_FLOW = "water_flow"
-CONF_CIRCULATION_PUMP = "circulation_pump"
 CONF_BYPASS_VALVE = "bypass_valve"
 CONF_DHW_MIXER_POSITION = "dhw_mixer_position"
 CONF_TARGET_SUPPLY_TEMPERATURE = "target_supply_temperature" # Vorlauf Soll
@@ -198,13 +210,6 @@ entity_schemas = {
                     unit_of_measurement=UNIT_LITER_PER_HOUR,
                     accuracy_decimals=0,
                     state_class=STATE_CLASS_MEASUREMENT
-                ).extend(),
-                cv.Optional(CONF_CIRCULATION_PUMP): sensor.sensor_schema(
-                    device_class=DEVICE_CLASS_VOLUME_FLOW_RATE,
-                    unit_of_measurement=UNIT_PERCENT,
-                    accuracy_decimals=0,
-                    state_class=STATE_CLASS_MEASUREMENT,
-                    icon="mdi:pump"
                 ).extend(),
                 cv.Optional(CONF_BYPASS_VALVE): sensor.sensor_schema(
                     device_class=DEVICE_CLASS_VOLUME_FLOW_RATE,
@@ -504,10 +509,6 @@ def to_code(config):
         if sensor_conf := entities.get(CONF_WATER_FLOW):
             sens = yield sensor.new_sensor(sensor_conf)
             cg.add(var.getAccessor().set_water_flow(sens))
-
-        if sensor_conf := entities.get(CONF_CIRCULATION_PUMP):
-            sens = yield sensor.new_sensor(sensor_conf)
-            cg.add(var.getAccessor().set_circulation_pump(sens))
 
         if sensor_conf := entities.get(CONF_BYPASS_VALVE):
             sens = yield sensor.new_sensor(sensor_conf)
