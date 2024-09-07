@@ -94,6 +94,35 @@ public:
         return bytes;
     }
 
+    static std::array<uint8_t, 7> str_to_bytes_array8(const std::string& str) {
+        std::array<uint8_t, 7> bytes;
+        std::stringstream ss(str);
+        std::string byteStr;
+
+        uint8_t index = 0;
+        while (ss >> byteStr && index < 7) {
+            const uint8_t byte = static_cast<uint8_t>(std::stoi(byteStr, nullptr, 16));
+            bytes[index++] = byte;
+        }
+
+        return bytes;
+    }
+
+    static std::array<uint16_t, 7> str_to_bytes_array16(const std::string& str) {
+        std::array<uint16_t, 7> words;
+        std::stringstream ss(str);
+        std::string wordStr;
+        const uint16_t DC = 0xFFFF;
+
+        uint8_t index = 0;
+        while (ss >> wordStr && index < 7) {
+            const uint16_t word = (wordStr == "__") ? DC : static_cast<uint16_t>(std::stoi(wordStr, nullptr, 16));
+            words[index++] = word;
+        }
+
+        return words;
+    }
+
     template<typename... Args>
     static void log(std::string const& tag, std::string const& str_format, Args... args) {
         const std::string formated = Utils::format(str_format, args...);

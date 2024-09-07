@@ -44,16 +44,6 @@ static const BidiMap<uint8_t, std::string> map_sg = {
 };
 
 const std::vector<TRequest> entity_config = {
-    { // Aussentemperatur
-        {0x31, 0x00, 0xFA, 0xC0, 0xFF, 0x00, 0x00},
-        {  DC,   DC, 0xFA, 0xC0, 0xFF,   DC,   DC},
-        [](auto& accessor) -> EntityBase* { return accessor.get_temperature_outside(); },
-        [](auto const& data, auto& accessor) -> DataType {
-            const float temp = ((data[5] << 8) + data[6]) / 10.0f;
-            accessor.get_temperature_outside()->publish_state(temp);
-            return temp;
-        }
-    },
     { // tdhw1
         {0x31, 0x00, 0xFA, 0x00, 0x0E, 0x00, 0x00},
         {  DC,   DC, 0xFA, 0x00, 0x0E,   DC,   DC},
@@ -631,6 +621,41 @@ DaikinRotexCanComponent::DaikinRotexCanComponent()
 }
 
 void DaikinRotexCanComponent::validateConfig() {
+    for (auto const& pair : m_accessor.get_sensors()) {
+        const std::array<uint8_t, 7> data = Utils::str_to_bytes_array8(pair.second.data);
+        const std::array<uint16_t, 7> expected_response = Utils::str_to_bytes_array16(pair.second.expected_response);
+
+        TRequest req = {
+            data,
+            expected_response,
+            [&](auto& accessor) -> EntityBase* { return pair.second.pSensor; },
+            [&](auto const& data, auto& accessor) -> DataType {
+                float value = 0;
+
+                if (pair.second.data_offset > 0 && (pair.second.data_offset + pair.second.data_size) <= 7) {
+                    switch (pair.second.data_size) {
+                    case 1:
+                        value = data[pair.second.data_offset] / pair.second.divider;
+                        pair.second.pSensor->publish_state(value);
+                        break;
+                    case 2:
+                        value = ((data[pair.second.data_offset] << 8) + data[pair.second.data_offset + 1]) / pair.second.divider;
+                        pair.second.pSensor->publish_state(value);
+                        break;
+                    default:
+                        ESP_LOGE("validateConfig", "Invalid data size: %d", pair.second.data_size);
+                        break;
+                    }
+                } else {
+                    ESP_LOGE("validateConfig", "Invalid data_offset: %d", pair.second.data_offset);
+                }
+                return value;
+            }
+        };
+
+        m_data_requests.add(req);
+    }
+
     m_data_requests.removeInvalidRequests(m_accessor);
 }
 
@@ -742,10 +767,13 @@ void DaikinRotexCanComponent::run_dhw_lambdas() {
 
 void DaikinRotexCanComponent::loop() {
     m_data_requests.sendNextPendingGet(m_accessor);
-    while (!m_later_calls.empty()) {
-        auto& lambda = m_later_calls.front();
-        lambda();
-        m_later_calls.pop_front();
+    for (auto it = m_later_calls.begin(); it != m_later_calls.end(); ) {
+        if (millis() > it->second) {
+            it->first();
+            it = m_later_calls.erase(it);
+        } else {
+            ++it;
+        }
     }
 }
 

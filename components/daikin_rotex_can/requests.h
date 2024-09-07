@@ -11,6 +11,7 @@ class Accessor;
 class TRequests {
 public:
     TRequests(std::vector<esphome::daikin_rotex_can::TRequest> const& requests);
+    void add(esphome::daikin_rotex_can::TRequest const& request);
 
     void removeInvalidRequests(Accessor const& accessor);
 

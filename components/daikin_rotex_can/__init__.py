@@ -29,6 +29,22 @@ CustomRequestText = daikin_rotex_can_ns.class_("CustomRequestText", text.Text)
 
 DHWRunButton = daikin_rotex_can_ns.class_("DHWRunButton", button.Button)
 
+
+my_sensors = [
+    {
+        "name": "temperature_outside",
+        "device_class": DEVICE_CLASS_TEMPERATURE,
+        "unit_of_measurement": UNIT_CELSIUS,
+        "accuracy_decimals": 1,
+        "state_class": STATE_CLASS_MEASUREMENT,
+        "data": "31 00 FA C0 FF 00 00",
+        "expected_reponse": "__ __ FA C0 FF __ __",
+        "data_offset": 5,
+        "data_size": 2,
+        "divider": 10.0
+    }
+]
+
 DEPENDENCIES = []
 
 UNIT_BAR = "bar"
@@ -43,7 +59,6 @@ CONF_ENTITIES = "entities"
 
 ########## Sensors ##########
 
-CONF_TEMPERATURE_OUTSIDE = "temperature_outside"    # External temperature
 CONF_TDHW1 = "tdhw1"
 CONF_TARGET_ROOM1_TEMPERATURE = "target_room1_temperature"
 CONF_TARGET_HOT_WATER_TEMPERATURE = "target_hot_water_temperature"
@@ -110,36 +125,23 @@ CONF_DHW_RUN = "dhw_run"
 
 ICON_SUN_SNOWFLAKE_VARIANT = "mdi:sun-snowflake-variant"
 
-CONFIG_SCHEMA = cv.Schema(
-    {
-        cv.GenerateID(): cv.declare_id(DaikinRotexCanComponent),
-        cv.Required(CONF_CAN_ID): cv.use_id(CanbusComponent),
+schemas = {}
 
-        ########## Texts ##########
+for sensor_conf in my_sensors:
+    sens = {
+        cv.Optional(sensor_conf.get("name")): sensor.sensor_schema(
+            device_class=sensor_conf.get("device_class"),
+            unit_of_measurement=sensor_conf.get("unit_of_measurement"),
+            accuracy_decimals=sensor_conf.get("accuracy_decimals"),
+            state_class=sensor_conf.get("state_class")
+        ).extend()
+    }
+    schemas.update(sens)
 
-        cv.Optional(CONF_LOG_FILTER_TEXT): text.TEXT_SCHEMA.extend(
-            {
-                cv.GenerateID(): cv.declare_id(LogFilterText),
-                cv.Optional(CONF_MODE, default="TEXT"): cv.enum(text.TEXT_MODES, upper=True),
-            }
-        ),
-        cv.Optional(CONF_CUSTOM_REQUEST_TEXT): text.TEXT_SCHEMA.extend(
-            {
-                cv.GenerateID(): cv.declare_id(CustomRequestText),
-                cv.Optional(CONF_MODE, default="TEXT"): cv.enum(text.TEXT_MODES, upper=True),
-            }
-        ),
 
-        cv.Required(CONF_ENTITIES): cv.Schema(
-            {
+entity_schemas = {
                 ########## Sensors ##########
 
-                cv.Optional(CONF_TEMPERATURE_OUTSIDE): sensor.sensor_schema(
-                    device_class=DEVICE_CLASS_TEMPERATURE,
-                    unit_of_measurement=UNIT_CELSIUS,
-                    accuracy_decimals=1,
-                    state_class=STATE_CLASS_MEASUREMENT
-                ).extend(),
                 cv.Optional(CONF_TDHW1): sensor.sensor_schema(
                     device_class=DEVICE_CLASS_TEMPERATURE,
                     unit_of_measurement=UNIT_CELSIUS,
@@ -402,6 +404,32 @@ CONFIG_SCHEMA = cv.Schema(
                     icon=ICON_SUN_SNOWFLAKE_VARIANT
                 ).extend(),
             }
+
+entity_schemas.update(schemas)
+
+
+CONFIG_SCHEMA = cv.Schema(
+    {
+        cv.GenerateID(): cv.declare_id(DaikinRotexCanComponent),
+        cv.Required(CONF_CAN_ID): cv.use_id(CanbusComponent),
+
+        ########## Texts ##########
+
+        cv.Optional(CONF_LOG_FILTER_TEXT): text.TEXT_SCHEMA.extend(
+            {
+                cv.GenerateID(): cv.declare_id(LogFilterText),
+                cv.Optional(CONF_MODE, default="TEXT"): cv.enum(text.TEXT_MODES, upper=True),
+            }
+        ),
+        cv.Optional(CONF_CUSTOM_REQUEST_TEXT): text.TEXT_SCHEMA.extend(
+            {
+                cv.GenerateID(): cv.declare_id(CustomRequestText),
+                cv.Optional(CONF_MODE, default="TEXT"): cv.enum(text.TEXT_MODES, upper=True),
+            }
+        ),
+
+        cv.Required(CONF_ENTITIES): cv.Schema(
+            entity_schemas
         ),
     }
 ).extend(cv.COMPONENT_SCHEMA)
@@ -429,9 +457,20 @@ def to_code(config):
     if entities := config.get(CONF_ENTITIES):
         ########## Sensors ##########
 
-        if sensor_conf := entities.get(CONF_TEMPERATURE_OUTSIDE):
-            sens = yield sensor.new_sensor(sensor_conf)
-            cg.add(var.getAccessor().set_temperature_outside(sens))
+        for sens_conf in my_sensors:
+            if sensor_conf := entities.get(sens_conf.get("name")):
+                sens = yield sensor.new_sensor(sensor_conf)
+                cg.add(var.getAccessor().set_sensor(
+                    sens_conf.get("name"),
+                    [
+                        sens,
+                        sens_conf["data"],
+                        sens_conf["expected_reponse"],
+                        sens_conf["data_offset"],
+                        sens_conf["data_size"],
+                        sens_conf["divider"],
+                    ]
+                ))
 
         if sensor_conf := entities.get(CONF_TDHW1):
             sens = yield sensor.new_sensor(sensor_conf)

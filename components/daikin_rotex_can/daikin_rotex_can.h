@@ -49,7 +49,10 @@ public:
     void handle(uint32_t can_id, std::vector<uint8_t> const& data);
 
     void run_dhw_lambdas();
-    void call_later(TVoidFunc lambda) { m_later_calls.push_back(lambda); }
+    void call_later(TVoidFunc lambda, uint32_t timeout = 0u) {
+        const uint32_t timestamp = millis();
+        m_later_calls.push_back({lambda, timestamp + timeout});
+    }
 
 private:
 
@@ -72,7 +75,7 @@ private:
     std::shared_ptr<esphome::canbus::CanbusTrigger> m_canbus_trigger;
     std::shared_ptr<TCanbusAutomation> m_canbus_automation;
     std::shared_ptr<MyAction> m_canbus_action;
-    std::list<TVoidFunc> m_later_calls;
+    std::list<std::pair<TVoidFunc, uint32_t>> m_later_calls;
     std::list<TVoidFunc> m_dhw_run_lambdas;
 };
 

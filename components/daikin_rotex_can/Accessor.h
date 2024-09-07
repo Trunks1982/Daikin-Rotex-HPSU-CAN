@@ -13,6 +13,15 @@ namespace daikin_rotex_can {
 class DaikinRotexCanComponent;
 
 class Accessor {
+    struct TArguments {
+        sensor::Sensor* pSensor;
+        std::string data;
+        std::string expected_response;
+        uint8_t data_offset;
+        uint8_t data_size;
+        float divider;
+    };
+    using TSensorMap = std::map<std::string, TArguments>;
 public:
     Accessor(DaikinRotexCanComponent* pDaikinRotexCanComponent)
     : m_pDaikinRotexCanComponent(pDaikinRotexCanComponent) {
@@ -32,8 +41,9 @@ public:
 
     // Sensors
 
-    sensor::Sensor* get_temperature_outside() const { return m_pTemperatureOutsideSensor; }
-    void set_temperature_outside(sensor::Sensor* pSensor) { m_pTemperatureOutsideSensor = pSensor; }
+    TSensorMap const&  get_sensors() const { return m_sensors; }
+    sensor::Sensor* get_sensor(std::string const& name) const { return m_sensors.at(name).pSensor; }
+    void set_sensor(std::string const& name, TArguments const& arg) { m_sensors.insert({name, arg}); }
 
     sensor::Sensor* get_tdhw1() const { return m_tdhw1; }
     void set_tdhw1(sensor::Sensor* pSensor) { m_tdhw1 = pSensor; }
@@ -197,6 +207,8 @@ public:
 private:
     text::Text* m_log_filter;
     text::Text* m_custom_request_text;
+
+    TSensorMap m_sensors;
 
     // Sensors
     sensor::Sensor* m_pTemperatureOutsideSensor;

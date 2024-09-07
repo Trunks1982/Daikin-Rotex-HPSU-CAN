@@ -10,6 +10,10 @@ TRequests::TRequests(std::vector<esphome::daikin_rotex_can::TRequest> const& req
 {
 }
 
+void TRequests::add(esphome::daikin_rotex_can::TRequest const& request) {
+    m_requests.push_back(request);
+}
+
 void TRequests::removeInvalidRequests(Accessor const& accessor) {
     ESP_LOGI("TRequests", "removeInvalidRequests >>");
     m_requests.erase(

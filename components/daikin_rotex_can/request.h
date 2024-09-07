@@ -100,6 +100,14 @@ public:
     bool inProgress() const;
     bool isSetter() const { return m_setter; }
 
+    std::string string(Accessor const& accessor) {
+        return Utils::format(
+            "TRequest<name: %s, data: %s>",
+            m_entity_provider(accessor)->get_name().c_str(),
+            Utils::to_hex(m_data).c_str()
+        );
+    }
+
 private:
     std::array<uint8_t, 7> m_data;
     uint32_t m_response_can_id;
