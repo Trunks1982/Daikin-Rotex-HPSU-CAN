@@ -72,12 +72,6 @@ public:
     sensor::Sensor* get_heating_curve() const { return m_heating_curve; }
     void set_heating_curve(sensor::Sensor* pSensor) { m_heating_curve = pSensor; }
 
-    sensor::Sensor* get_runtime_compressor() const { return m_runtime_compressor; }
-    void set_runtime_compressor(sensor::Sensor* pSensor) { m_runtime_compressor = pSensor; }
-
-    sensor::Sensor* get_runtime_pump() const { return m_runtime_pump; }
-    void set_runtime_pump(sensor::Sensor* pSensor) { m_runtime_pump = pSensor; }
-
     sensor::Sensor* get_min_target_supply_temperature() const { return m_min_target_supply_temperature; }
     void set_min_target_supply_temperature(sensor::Sensor* pSensor) { m_min_target_supply_temperature = pSensor; }
 
@@ -197,8 +191,6 @@ private:
     sensor::Sensor* m_flow_temperature_day;
     sensor::Sensor* m_thermal_power;
     sensor::Sensor* m_heating_curve;
-    sensor::Sensor* m_runtime_compressor;
-    sensor::Sensor* m_runtime_pump;
     sensor::Sensor* m_min_target_supply_temperature;
     sensor::Sensor* m_max_target_supply_temperature;
     sensor::Sensor* m_spreizung_mod_hz;

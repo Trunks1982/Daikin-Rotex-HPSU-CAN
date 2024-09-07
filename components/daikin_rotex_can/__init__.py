@@ -32,7 +32,7 @@ DHWRunButton = daikin_rotex_can_ns.class_("DHWRunButton", button.Button)
 UNIT_BAR = "bar"
 UNIT_LITER_PER_HOUR = "L/h"
 
-my_sensors = [
+sensor_configuration = [
     {
         "name": "temperature_outside",
         "device_class": DEVICE_CLASS_TEMPERATURE,
@@ -145,6 +145,30 @@ my_sensors = [
         "data_offset": 5,
         "data_size": 2,
         "divider": 1
+    },
+    {
+        "name": "runtime_compressor",
+        "unit_of_measurement": UNIT_HOUR,
+        "accuracy_decimals": 0,
+        "state_class": STATE_CLASS_MEASUREMENT,
+        "icon": "mdi:clock-time-two-outline",
+        "data": "31 00 FA 06 A5 00 00",
+        "expected_reponse": "__ __ FA 06 A5 __ __",
+        "data_offset": 5,
+        "data_size": 2,
+        "divider": 1
+    },
+    {
+        "name": "runtime_pump",
+        "unit_of_measurement": UNIT_HOUR,
+        "accuracy_decimals": 0,
+        "state_class": STATE_CLASS_MEASUREMENT,
+        "icon": "mdi:clock-time-two-outline",
+        "data": "31 00 FA 06 A4 00 00",
+        "expected_reponse": "__ __ FA 06 A4 __ __",
+        "data_offset": 5,
+        "data_size": 2,
+        "divider": 1
     }
 ]
 
@@ -168,8 +192,6 @@ CONF_WATER_FLOW = "water_flow"
 CONF_FLOW_TEMPERATURE_DAY = "flow_temperature_day" # Temperatur Vorlauf Tag
 CONF_THERMAL_POWER = "thermal_power" # Thermische Leistung
 CONF_HEATING_CURVE = "heating_curve" # Heizkurve
-CONF_RUNTIME_COMPRESSOR = "runtime_compressor"
-CONF_RUNTIME_PUMP = "runtime_pump"
 CONF_MIN_TARGET_SUPPLY_TEMPERATURE = "min_target_supply_temperature" # Min Vorlauf Soll
 CONF_MAX_TARGET_SUPPLY_TEMPERATURE = "max_target_supply_temperature" # Max Vorlauf Soll
 CONF_SPREIZUNG_MOD_HZ = "spreizung_mod_hz"
@@ -219,10 +241,10 @@ ICON_SUN_SNOWFLAKE_VARIANT = "mdi:sun-snowflake-variant"
 
 schemas = {}
 
-for sensor_conf in my_sensors:
+for sensor_conf in sensor_configuration:
     sens = {
         cv.Optional(sensor_conf.get("name")): sensor.sensor_schema(
-            device_class=sensor_conf.get("device_class"),
+            device_class=(sensor_conf.get("device_class") if sensor_conf.get("device_class") != None else sensor._UNDEF),
             unit_of_measurement=sensor_conf.get("unit_of_measurement"),
             accuracy_decimals=sensor_conf.get("accuracy_decimals"),
             state_class=sensor_conf.get("state_class"),
@@ -230,7 +252,6 @@ for sensor_conf in my_sensors:
         ).extend()
     }
     schemas.update(sens)
-
 
 entity_schemas = {
                 ########## Sensors ##########
@@ -288,18 +309,6 @@ entity_schemas = {
                     icon="mdi:thermometer-lines",
                     accuracy_decimals=2,
                     state_class=STATE_CLASS_MEASUREMENT
-                ).extend(),
-                cv.Optional(CONF_RUNTIME_COMPRESSOR): sensor.sensor_schema(
-                    state_class=STATE_CLASS_MEASUREMENT,
-                    unit_of_measurement=UNIT_HOUR,
-                    accuracy_decimals=0,
-                    icon="mdi:clock-time-two-outline",
-                ).extend(),
-                cv.Optional(CONF_RUNTIME_PUMP): sensor.sensor_schema(
-                    state_class=STATE_CLASS_MEASUREMENT,
-                    unit_of_measurement=UNIT_HOUR,
-                    accuracy_decimals=0,
-                    icon="mdi:clock-time-two-outline",
                 ).extend(),
                 cv.Optional(CONF_MIN_TARGET_SUPPLY_TEMPERATURE): sensor.sensor_schema(
                     device_class=DEVICE_CLASS_TEMPERATURE,
@@ -497,7 +506,7 @@ def to_code(config):
     if entities := config.get(CONF_ENTITIES):
         ########## Sensors ##########
 
-        for sens_conf in my_sensors:
+        for sens_conf in sensor_configuration:
             if sensor_conf := entities.get(sens_conf.get("name")):
                 sens = yield sensor.new_sensor(sensor_conf)
                 cg.add(var.getAccessor().set_sensor(
@@ -547,14 +556,6 @@ def to_code(config):
         if sensor_conf := entities.get(CONF_HEATING_CURVE):
             sens = yield sensor.new_sensor(sensor_conf)
             cg.add(var.getAccessor().set_heating_curve(sens))
-
-        if sensor_conf := entities.get(CONF_RUNTIME_COMPRESSOR):
-            sens = yield sensor.new_sensor(sensor_conf)
-            cg.add(var.getAccessor().set_runtime_compressor(sens))
-
-        if sensor_conf := entities.get(CONF_RUNTIME_PUMP):
-            sens = yield sensor.new_sensor(sensor_conf)
-            cg.add(var.getAccessor().set_runtime_pump(sens))
 
         if sensor_conf := entities.get(CONF_MIN_TARGET_SUPPLY_TEMPERATURE):
             sens = yield sensor.new_sensor(sensor_conf)

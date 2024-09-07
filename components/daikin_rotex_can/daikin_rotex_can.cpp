@@ -293,28 +293,6 @@ const std::vector<TRequest> entity_config = {
         }
     },
 
-    { // Laufzeit Kompressor
-        {0x31, 0x00, 0xFA, 0x06, 0xA5, 0x00, 0x00},
-        {  DC,   DC, 0xFA, 0x06, 0xA5,   DC,   DC},
-        [](auto& accessor) -> EntityBase* { return accessor.get_runtime_compressor(); },
-        [](auto const& data, auto& accessor) -> DataType {
-            const uint32_t hours = (data[5] << 8) + data[6];
-            accessor.get_runtime_compressor()->publish_state(hours);
-            return hours;
-        }
-    },
-
-    { // Laufzeit Pumpe
-        {0x31, 0x00, 0xFA, 0x06, 0xA4, 0x00, 0x00},
-        {  DC,   DC, 0xFA, 0x06, 0xA4,   DC,   DC},
-        [](auto& accessor) -> EntityBase* { return accessor.get_runtime_pump(); },
-        [](auto const& data, auto& accessor) -> DataType {
-            const uint32_t hours = (data[5] << 8) + data[6];
-            accessor.get_runtime_pump()->publish_state(hours);
-            return hours;
-        }
-    },
-
     { // Min VL Soll
         {0x31, 0x00, 0xFA, 0x01, 0x2B, 0x00, 0x00},
         {  DC,   DC, 0xFA, 0x01, 0x2B,   DC,   DC},
