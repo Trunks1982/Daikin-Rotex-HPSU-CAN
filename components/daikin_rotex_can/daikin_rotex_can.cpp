@@ -247,17 +247,6 @@ const std::vector<TRequest> entity_config = {
         }
     },
 
-    { // DHW Mischer Position
-        {0x31, 0x00, 0xFA, 0x06, 0x9B, 0x00, 0x00},
-        {  DC,   DC, 0xFA, 0x06, 0x9B,   DC,   DC},
-        [](auto& accessor) -> EntityBase* { return accessor.get_dhw_mixer_position(); },
-        [](auto const& data, auto& accessor) -> DataType {
-            const uint32_t position = (data[5] << 8) + data[6];
-            accessor.get_dhw_mixer_position()->publish_state(position);
-            return position;
-        }
-    },
-
     { // T Vorlauf Tag
         {0x31, 0x00, 0xFA, 0x01, 0x29, 0x00, 0x00},
         {  DC,   DC, 0xFA, 0x01, 0x29,   DC,   DC},

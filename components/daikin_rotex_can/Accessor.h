@@ -63,12 +63,6 @@ public:
     sensor::Sensor* get_water_flow() const { return m_water_flow; }
     void set_water_flow(sensor::Sensor* pSensor) { m_water_flow = pSensor; }
 
-    sensor::Sensor* get_bypass_valve() const { return m_bypass_valve; }
-    void set_bypass_valve(sensor::Sensor* pSensor) { m_bypass_valve = pSensor; }
-
-    sensor::Sensor* get_dhw_mixer_position() const { return m_dhw_mixer_position; }
-    void set_dhw_mixer_position(sensor::Sensor* pSensor) { m_dhw_mixer_position = pSensor; }
-
     sensor::Sensor* get_target_supply_temperature() const { return m_target_supply_temperature; }
     void set_target_supply_temperature(sensor::Sensor* pSensor) { m_target_supply_temperature = pSensor; }
 
@@ -209,8 +203,6 @@ private:
     sensor::Sensor* m_tvbh;
     sensor::Sensor* m_tr;
     sensor::Sensor* m_water_flow;
-    sensor::Sensor* m_bypass_valve;
-    sensor::Sensor* m_dhw_mixer_position;
     sensor::Sensor* m_target_supply_temperature;
     sensor::Sensor* m_flow_temperature_day;
     sensor::Sensor* m_thermal_power;
