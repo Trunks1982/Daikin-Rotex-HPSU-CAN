@@ -638,6 +638,22 @@ void DaikinRotexCanComponent::setup() {
     ESP_LOGI(TAG, "setup");
 }
 
+///////////////// Texts /////////////////
+void DaikinRotexCanComponent::custom_request(std::string const& value) {
+    const uint32_t can_id = 0x680;
+    const bool use_extended_id = false;
+
+    const std::vector<uint8_t> buffer = Utils::str_to_bytes(value);
+
+    if (!buffer.empty()) {
+        esphome::esp32_can::ESP32Can* pCanbus = m_data_requests.getCanbus();
+        pCanbus->send_data(can_id, use_extended_id, { buffer.begin(), buffer.end() });
+
+        Utils::log("sendGet", "can_id<%s> data<%s>",
+            Utils::to_hex(can_id).c_str(), value.c_str(), Utils::to_hex(buffer).c_str());
+    }
+}
+
 ///////////////// Selects /////////////////
 void DaikinRotexCanComponent::set_operation_mode(std::string const& mode) {
     m_data_requests.sendSet(m_accessor, m_accessor.get_operating_mode_select()->get_name(), map_betriebsmodus.getKey(mode));

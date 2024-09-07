@@ -9,7 +9,12 @@ namespace daikin_rotex_can {
 class LogFilterText : public text::Text, public Parented<DaikinRotexCanComponent> {
 public:
     LogFilterText() = default;
-
+protected:
+    void control(const std::string &value) override;
+};
+class CustomRequestText : public text::Text, public Parented<DaikinRotexCanComponent> {
+public:
+    CustomRequestText() = default;
 protected:
     void control(const std::string &value) override;
 };

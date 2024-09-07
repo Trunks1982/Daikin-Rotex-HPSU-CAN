@@ -25,6 +25,7 @@ CirculationPumpMinNumber = daikin_rotex_can_ns.class_("CirculationPumpMinNumber"
 CirculationPumpMaxNumber = daikin_rotex_can_ns.class_("CirculationPumpMaxNumber", number.Number)
 
 LogFilterText = daikin_rotex_can_ns.class_("LogFilterText", text.Text)
+CustomRequestText = daikin_rotex_can_ns.class_("CustomRequestText", text.Text)
 
 DHWRunButton = daikin_rotex_can_ns.class_("DHWRunButton", button.Button)
 
@@ -37,6 +38,7 @@ AUTO_LOAD = ['binary_sensor', 'button', 'number', 'sensor', 'select', 'text', 't
 
 CONF_CAN_ID = "canbus_id"
 CONF_LOG_FILTER_TEXT = "log_filter"
+CONF_CUSTOM_REQUEST_TEXT = "custom_request"
 CONF_ENTITIES = "entities"
 
 ########## Sensors ##########
@@ -115,10 +117,15 @@ CONFIG_SCHEMA = cv.Schema(
 
         ########## Texts ##########
 
-        cv.Optional(CONF_LOG_FILTER_TEXT): 
-        text.TEXT_SCHEMA.extend(
+        cv.Optional(CONF_LOG_FILTER_TEXT): text.TEXT_SCHEMA.extend(
             {
                 cv.GenerateID(): cv.declare_id(LogFilterText),
+                cv.Optional(CONF_MODE, default="TEXT"): cv.enum(text.TEXT_MODES, upper=True),
+            }
+        ),
+        cv.Optional(CONF_CUSTOM_REQUEST_TEXT): text.TEXT_SCHEMA.extend(
+            {
+                cv.GenerateID(): cv.declare_id(CustomRequestText),
                 cv.Optional(CONF_MODE, default="TEXT"): cv.enum(text.TEXT_MODES, upper=True),
             }
         ),
@@ -410,9 +417,14 @@ def to_code(config):
 
     ########## Texts ##########
 
-    if log_filter := config.get(CONF_LOG_FILTER_TEXT):
-        te = yield text.new_text(log_filter)
-        cg.add(var.getAccessor().set_log_filter(te))
+    if text_conf := config.get(CONF_LOG_FILTER_TEXT):
+        t = yield text.new_text(text_conf)
+        cg.add(var.getAccessor().set_log_filter(t))
+
+    if text_conf := config.get(CONF_CUSTOM_REQUEST_TEXT):
+        t = yield text.new_text(text_conf)
+        yield cg.register_parented(t, var)
+        cg.add(var.getAccessor().set_custom_request_text(t))
 
     if entities := config.get(CONF_ENTITIES):
         ########## Sensors ##########

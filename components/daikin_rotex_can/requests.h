@@ -14,7 +14,8 @@ public:
 
     void removeInvalidRequests(Accessor const& accessor);
 
-    void setCanbus(esphome::esp32_can::ESP32Can* pCanBus);
+    void setCanbus(esphome::esp32_can::ESP32Can* pCanbus);
+    esphome::esp32_can::ESP32Can* getCanbus() const;
 
     uint32_t size() const;
     TRequest const& get(uint32_t index) const;
@@ -28,11 +29,15 @@ private:
     TRequest* getNextRequestToSend();
 
     std::vector<TRequest> m_requests;
-    esphome::esp32_can::ESP32Can* m_pCanBus;
+    esphome::esp32_can::ESP32Can* m_pCanbus;
 };
 
-inline void TRequests::setCanbus(esphome::esp32_can::ESP32Can* pCanBus) {
-    m_pCanBus = pCanBus;
+inline void TRequests::setCanbus(esphome::esp32_can::ESP32Can* pCanbus) {
+    m_pCanbus = pCanbus;
+}
+
+inline esphome::esp32_can::ESP32Can* TRequests::getCanbus() const {
+    return m_pCanbus;
 }
 
 inline uint32_t TRequests::size() const {

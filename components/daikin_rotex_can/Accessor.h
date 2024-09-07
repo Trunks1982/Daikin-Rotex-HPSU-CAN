@@ -27,6 +27,9 @@ public:
     text::Text* get_log_filter() const { return m_log_filter; }
     void set_log_filter(text::Text* pText) { m_log_filter = pText; }
 
+    text::Text* get_custom_request_text() const { return m_custom_request_text; }
+    void set_custom_request_text(text::Text* pText) { m_custom_request_text = pText; }
+
     // Sensors
 
     sensor::Sensor* get_temperature_outside() const { return m_pTemperatureOutsideSensor; }
@@ -193,6 +196,7 @@ public:
 
 private:
     text::Text* m_log_filter;
+    text::Text* m_custom_request_text;
 
     // Sensors
     sensor::Sensor* m_pTemperatureOutsideSensor;

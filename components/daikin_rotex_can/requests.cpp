@@ -6,7 +6,7 @@ namespace daikin_rotex_can {
 
 TRequests::TRequests(std::vector<esphome::daikin_rotex_can::TRequest> const& requests)
 : m_requests(requests)
-, m_pCanBus(nullptr)
+, m_pCanbus(nullptr)
 {
 }
 
@@ -26,7 +26,7 @@ void TRequests::removeInvalidRequests(Accessor const& accessor) {
 bool TRequests::sendNextPendingGet(Accessor const& accessor) {
     TRequest* pRequest = getNextRequestToSend();
     if (pRequest != nullptr) {
-        pRequest->sendGet(accessor, m_pCanBus);
+        pRequest->sendGet(accessor, m_pCanbus);
         return true;
     }
     return false;
@@ -42,7 +42,7 @@ void TRequests::sendGet(Accessor const& accessor, std::string const& request_nam
     );
 
     if (it != m_requests.end()) {
-        it->sendGet(accessor, m_pCanBus);
+        it->sendGet(accessor, m_pCanbus);
     } else {
         Utils::log("requests.cpp", "sendGet(%s) -> Unknown request!", request_name.c_str());
     }
@@ -53,7 +53,7 @@ void TRequests::sendSet(Accessor const& accessor, std::string const& request_nam
         [&request_name, &accessor](auto& request) { return request.isSetter() && request.getName(accessor) == request_name; }
     );
     if (it != m_requests.end()) {
-        it->sendSet(accessor, m_pCanBus, value);
+        it->sendSet(accessor, m_pCanbus, value);
     } else {
         Utils::log("requests.cpp", "sendSet(%s) -> Unknown request!", request_name.c_str());
     }

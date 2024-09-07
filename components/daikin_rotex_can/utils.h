@@ -81,6 +81,19 @@ public:
         return str.str();
     }
 
+    static std::vector<uint8_t> str_to_bytes(const std::string& str) {
+        std::vector<uint8_t> bytes;
+        std::stringstream ss(str);
+        std::string byteStr;
+
+        while (ss >> byteStr) {
+            const uint8_t byte = static_cast<uint8_t>(std::stoi(byteStr, nullptr, 16));
+            bytes.push_back(byte);
+        }
+
+        return bytes;
+    }
+
     template<typename... Args>
     static void log(std::string const& tag, std::string const& str_format, Args... args) {
         const std::string formated = Utils::format(str_format, args...);

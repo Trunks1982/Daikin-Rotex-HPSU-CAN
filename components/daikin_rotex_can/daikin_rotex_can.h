@@ -20,6 +20,9 @@ public:
 
     void set_canbus(esphome::esp32_can::ESP32Can* pCanbus);
 
+    // Texts
+    void custom_request(std::string const& value);
+
     // Selects
     void set_operation_mode(std::string const& state);
     void set_hk_function(std::string const& state);
