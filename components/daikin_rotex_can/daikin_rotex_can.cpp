@@ -247,17 +247,6 @@ const std::vector<TRequest> entity_config = {
         }
     },
 
-    { // BPV
-        {0x31, 0x00, 0xFA, 0xC0, 0xFB, 0x00, 0x00},
-        {  DC,   DC, 0xFA, 0xC0, 0xFB,   DC,   DC},
-        [](auto& accessor) -> EntityBase* { return accessor.get_bypass_valve(); },
-        [](auto const& data, auto& accessor) -> DataType {
-            const uint32_t value = (data[5] << 8) + data[6];
-            accessor.get_bypass_valve()->publish_state(value);
-            return value;
-        }
-    },
-
     { // DHW Mischer Position
         {0x31, 0x00, 0xFA, 0x06, 0x9B, 0x00, 0x00},
         {  DC,   DC, 0xFA, 0x06, 0x9B,   DC,   DC},
