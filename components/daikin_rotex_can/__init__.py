@@ -29,6 +29,8 @@ CustomRequestText = daikin_rotex_can_ns.class_("CustomRequestText", text.Text)
 
 DHWRunButton = daikin_rotex_can_ns.class_("DHWRunButton", button.Button)
 
+UNIT_BAR = "bar"
+UNIT_LITER_PER_HOUR = "L/h"
 
 my_sensors = [
     {
@@ -54,13 +56,22 @@ my_sensors = [
         "data_offset": 5,
         "data_size": 2,
         "divider": 10.0
+    },
+    {
+        "name": "water_pressure",
+        "device_class": DEVICE_CLASS_PRESSURE,
+        "unit_of_measurement": UNIT_BAR,
+        "accuracy_decimals": 2,
+        "state_class": STATE_CLASS_MEASUREMENT,
+        "data": "31 00 1C 00 00 00 00",
+        "expected_reponse": "D2 __ 1C __ __ __ __",
+        "data_offset": 3,
+        "data_size": 2,
+        "divider": 1000.0
     }
 ]
 
 DEPENDENCIES = []
-
-UNIT_BAR = "bar"
-UNIT_LITER_PER_HOUR = "L/h"
 
 AUTO_LOAD = ['binary_sensor', 'button', 'number', 'sensor', 'select', 'text', 'text_sensor']
 
@@ -76,7 +87,6 @@ CONF_TARGET_HOT_WATER_TEMPERATURE = "target_hot_water_temperature"
 CONF_TV = "tv"
 CONF_TVBH = "tvbh"
 CONF_TR = "tr"
-CONF_WATER_PRESSURE = "water_pressure"
 CONF_WATER_FLOW = "water_flow"
 CONF_CIRCULATION_PUMP = "circulation_pump"
 CONF_BYPASS_VALVE = "bypass_valve"
@@ -181,12 +191,6 @@ entity_schemas = {
                     device_class=DEVICE_CLASS_TEMPERATURE,
                     unit_of_measurement=UNIT_CELSIUS,
                     accuracy_decimals=1,
-                    state_class=STATE_CLASS_MEASUREMENT
-                ).extend(),
-                cv.Optional(CONF_WATER_PRESSURE): sensor.sensor_schema(
-                    device_class=DEVICE_CLASS_PRESSURE,
-                    unit_of_measurement=UNIT_BAR,
-                    accuracy_decimals=2,
                     state_class=STATE_CLASS_MEASUREMENT
                 ).extend(),
                 cv.Optional(CONF_WATER_FLOW): sensor.sensor_schema(
@@ -496,10 +500,6 @@ def to_code(config):
         if sensor_conf := entities.get(CONF_TR):
             sens = yield sensor.new_sensor(sensor_conf)
             cg.add(var.getAccessor().set_tr(sens))
-
-        if sensor_conf := entities.get(CONF_WATER_PRESSURE):
-            sens = yield sensor.new_sensor(sensor_conf)
-            cg.add(var.getAccessor().set_water_pressure(sens))
 
         if sensor_conf := entities.get(CONF_WATER_FLOW):
             sens = yield sensor.new_sensor(sensor_conf)

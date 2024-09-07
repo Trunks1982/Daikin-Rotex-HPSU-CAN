@@ -60,9 +60,6 @@ public:
     sensor::Sensor* get_tr() const { return m_tr; }
     void set_tr(sensor::Sensor* pSensor) { m_tr = pSensor; }
 
-    sensor::Sensor* get_water_pressure() const { return m_water_pressure; }
-    void set_water_pressure(sensor::Sensor* pSensor) { m_water_pressure = pSensor; }
-
     sensor::Sensor* get_water_flow() const { return m_water_flow; }
     void set_water_flow(sensor::Sensor* pSensor) { m_water_flow = pSensor; }
 
@@ -214,7 +211,6 @@ private:
     sensor::Sensor* m_tv;
     sensor::Sensor* m_tvbh;
     sensor::Sensor* m_tr;
-    sensor::Sensor* m_water_pressure;
     sensor::Sensor* m_water_flow;
     sensor::Sensor* m_circulation_pump;
     sensor::Sensor* m_bypass_valve;

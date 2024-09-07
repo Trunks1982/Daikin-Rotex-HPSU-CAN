@@ -77,16 +77,6 @@ const std::vector<TRequest> entity_config = {
             return temp;
         }
     },
-    { // Water Pressure
-        {0x31, 0x00, 0x1C, 0x00, 0x00, 0x00, 0x00},
-        {0xD2,   DC, 0x1C,   DC,   DC,   DC,   DC},
-        [](auto& accessor) -> EntityBase* { return accessor.get_water_pressure(); },
-        [](auto const& data, auto& accessor) -> DataType {
-            const float pressure = (((data[3]) << 8) + data[4]) / 1000.0f;
-            accessor.get_water_pressure()->publish_state(pressure);
-            return pressure;
-        }
-    },
     { // Durchfluss
         {0x31, 0x00, 0xFA, 0x01, 0xDA, 0x00, 0x00},
         {  DC,   DC, 0xFA, 0x01, 0xDA,   DC,   DC},
