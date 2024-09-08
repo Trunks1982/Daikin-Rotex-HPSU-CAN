@@ -515,6 +515,28 @@ text_sensor_configuration = [
     }
 ]
 
+########## Text Sensor Configuration ##########
+
+binary_sensor_configuration = [
+    {
+        "name": "status_kompressor" ,
+        "icon": "mdi:pump",
+        "can_id": 0x500,
+        "data": "A1 00 61 00 00 00 00",
+        "expected_reponse": "__ __ 61 __ __ __ __",
+        "data_offset": 3,
+        "data_size": 1
+    },
+    {
+        "name": "status_kesselpumpe" ,
+        "icon": "mdi:pump",
+        "data": "31 00 FA 0A 8C 00 00",
+        "expected_reponse": "__ __ FA 0A 8C __ __",
+        "data_offset": 6,
+        "data_size": 1
+    }
+]
+
 DEPENDENCIES = []
 
 AUTO_LOAD = ['binary_sensor', 'button', 'number', 'sensor', 'select', 'text', 'text_sensor']
@@ -527,11 +549,6 @@ CONF_ENTITIES = "entities"
 ########## Sensors ##########
 
 CONF_THERMAL_POWER = "thermal_power" # Thermische Leistung
-
-########## Binary Sensors ##########
-
-CONF_STATUS_KOMPRESSOR = "status_kompressor"
-CONF_STATUS_KESSELPUMPE = "status_kesselpumpe"
 
 ########## Selects ##########
 
@@ -569,6 +586,15 @@ for sensor_conf in sensor_configuration:
     }
     sensor_schemas.update(sens)
 
+binary_sensor_schemas = {}
+for sensor_conf in binary_sensor_configuration:
+    sens = {
+        cv.Optional(sensor_conf.get("name")): binary_sensor.binary_sensor_schema(
+            icon=(sensor_conf.get("icon") if sensor_conf.get("icon") != None else sensor._UNDEF)
+        ).extend()
+    }
+    binary_sensor_schemas.update(sens)
+
 text_sensor_schemas = {}
 for sensor_conf in text_sensor_configuration:
     sens = {
@@ -586,15 +612,6 @@ entity_schemas = {
                     unit_of_measurement=UNIT_KILOWATT,
                     accuracy_decimals=2,
                     state_class=STATE_CLASS_MEASUREMENT
-                ).extend(),
-
-                ########## Binary Sensors ##########
-
-                cv.Optional(CONF_STATUS_KOMPRESSOR): binary_sensor.binary_sensor_schema(
-                    icon="mdi:pump"
-                ).extend(),
-                cv.Optional(CONF_STATUS_KESSELPUMPE): binary_sensor.binary_sensor_schema(
-                    icon="mdi:pump"
                 ).extend(),
 
                 ########## Selects ##########
@@ -673,6 +690,7 @@ entity_schemas = {
             }
 
 entity_schemas.update(sensor_schemas)
+entity_schemas.update(binary_sensor_schemas)
 entity_schemas.update(text_sensor_schemas)
 
 
@@ -748,6 +766,27 @@ def to_code(config):
             sens = yield sensor.new_sensor(sensor_conf)
             cg.add(var.getAccessor().set_thermal_power(sens))
 
+        ######## Binary Sensors ########
+
+        for sens_conf in binary_sensor_configuration:
+            if sensor_conf := entities.get(sens_conf.get("name")):
+                sens = yield binary_sensor.new_binary_sensor(sensor_conf)
+
+                cg.add(var.getAccessor().set_binary_sensor(
+                    sens_conf.get("name"),
+                    [
+                        sens,
+                        sens_conf.get("name"),
+                        sens_conf.get("can_id", 0x180),
+                        sens_conf.get("data"),
+                        sens_conf.get("expected_reponse"),
+                        sens_conf.get("data_offset"),
+                        sens_conf.get("data_size"),
+                        sens_conf.get("update_entity", ""),
+                        sens_conf.get("set_entity", "")
+                    ]
+                ))
+
         ######## Text Sensors ########
 
         for sens_conf in text_sensor_configuration:
@@ -768,16 +807,6 @@ def to_code(config):
                         sens_conf.get("set_entity", "")
                     ]
                 ))
-
-        ######## Binary Sensors ########
-
-        if sensor_conf := entities.get(CONF_STATUS_KOMPRESSOR):
-            sens = yield binary_sensor.new_binary_sensor(sensor_conf)
-            cg.add(var.getAccessor().set_status_kompressor(sens))
-
-        if sensor_conf := entities.get(CONF_STATUS_KESSELPUMPE):
-            sens = yield binary_sensor.new_binary_sensor(sensor_conf)
-            cg.add(var.getAccessor().set_status_kesselpumpe(sens))
 
         ########## Selects ##########
 

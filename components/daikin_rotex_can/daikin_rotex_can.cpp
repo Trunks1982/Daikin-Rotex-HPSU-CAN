@@ -60,31 +60,6 @@ const std::vector<TRequest> entity_config = {
         }
     },
 
-    { // Status Kompressor
-        "status_kompressor",
-        {0xA1, 0x00, 0x61, 0x00, 0x00, 0x00, 0x00},
-        0x500,
-        {  DC,   DC, 0x61,   DC,   DC,   DC,   DC},
-        [](auto& accessor) -> EntityBase* { return accessor.get_status_kompressor(); },
-        [](auto const& data, auto& accessor) -> DataType {
-            const uint8_t state = data[3];
-            accessor.get_status_kompressor()->publish_state(state);
-            return state;
-        }
-    },
-
-    { // Status Kessel
-        "status_kesselpumpe",
-        {0x31, 0x00, 0xFA, 0x0A, 0x8C, 0x00, 0x00},
-        {  DC,   DC, 0xFA, 0x0A, 0x8C,   DC,   DC},
-        [](auto& accessor) -> EntityBase* { return accessor.get_status_kesselpumpe(); },
-        [](auto const& data, auto& accessor) -> DataType {
-            const float state = data[6];
-            accessor.get_status_kesselpumpe()->publish_state(state);
-            return state;
-        }
-    },
-
     { // Circulation Pump Min Set
         "circulation_pump_min_set",
         [](auto& accessor) -> EntityBase* { return accessor.get_circulation_pump_min_set(); },
@@ -259,6 +234,42 @@ void DaikinRotexCanComponent::validateConfig() {
                 if (pair.second.id == "target_hot_water_temperature") {
                     call_later([&accessor](){
                         accessor.getDaikinRotexCanComponent()->run_dhw_lambdas();
+                    });
+                }
+
+                return value;
+            }
+        });
+    }
+
+    for (auto const& pair : m_accessor.get_binary_sensors()) {
+        const std::array<uint8_t, 7> data = Utils::str_to_bytes_array8(pair.second.data);
+        const std::array<uint16_t, 7> expected_response = Utils::str_to_bytes_array16(pair.second.expected_response);
+
+        m_data_requests.add({
+            pair.second.id,
+            data,
+            pair.second.can_id,
+            expected_response,
+            [pair](auto& accessor) -> EntityBase* { return pair.second.pBinarySensor; },
+            [pair, this](auto const& data, auto& accessor) -> DataType {
+                bool value;
+
+                if (pair.second.data_offset > 0 && (pair.second.data_offset + pair.second.data_size) <= 7) {
+                    switch (pair.second.data_size) {
+                    case 1: {
+                        value = data[pair.second.data_offset];
+                        pair.second.pBinarySensor->publish_state(value);
+                        break;
+                    }
+                    default:
+                        call_later([pair](){
+                            ESP_LOGE("validateConfig", "Invalid data size: %d", pair.second.data_size);
+                        });
+                    }
+                } else {
+                    call_later([pair](){
+                        ESP_LOGE("validateConfig", "Invalid data_offset: %d", pair.second.data_offset);
                     });
                 }
 

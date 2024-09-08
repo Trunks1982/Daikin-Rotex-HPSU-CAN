@@ -32,6 +32,8 @@ bool TRequest::handle(Accessor& accessor, uint32_t can_id, std::vector<uint8_t> 
             value = std::to_string(std::get<uint8_t>(variant));
         } else if (std::holds_alternative<float>(variant)) {
             value = std::to_string(std::get<float>(variant));
+        } else if (std::holds_alternative<bool>(variant)) {
+            value = std::get<bool>(variant);
         } else if (std::holds_alternative<std::string>(variant)) {
             value = std::get<std::string>(variant);
         } else {

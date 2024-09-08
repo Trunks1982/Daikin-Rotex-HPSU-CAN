@@ -28,6 +28,19 @@ class Accessor {
     };
     using TSensorMap = std::map<std::string, TArguments>;
 
+    struct TBinaryArguments {
+        binary_sensor::BinarySensor* pBinarySensor;
+        std::string id;
+        uint32_t can_id;
+        std::string data;
+        std::string expected_response;
+        uint8_t data_offset;
+        uint8_t data_size;
+        std::string update_entity;
+        std::string set_entity;
+    };
+    using TBinarySensorMap = std::map<std::string, TBinaryArguments>;
+
     struct TTextArguments {
         text_sensor::TextSensor* pTextSensor;
         std::string id;
@@ -82,24 +95,21 @@ public:
     // Sensors
 
     TSensorMap const&  get_sensors() const { return m_sensors; }
-    sensor::Sensor* get_sensor(std::string const& name) const { return m_sensors.at(name).pSensor; }
+    //sensor::Sensor* get_sensor(std::string const& name) const { return m_sensors.at(name).pSensor; }
     void set_sensor(std::string const& name, TArguments const& arg) { m_sensors.insert({name, arg}); }
 
     sensor::Sensor* get_thermal_power() const { return m_thermal_power; }
     void set_thermal_power(sensor::Sensor* pSensor) { m_thermal_power = pSensor; }
 
-    // Text Sensors
-
-    TTextSensorMap const&  get_text_sensors() const { return m_text_sensors; }
-    void set_text_sensor(std::string const& name, TTextArguments const& arg) { m_text_sensors.insert({name, arg}); }
-
     // Binary Sensors
 
-    binary_sensor::BinarySensor* get_status_kompressor() const { return m_status_kompressor; }
-    void set_status_kompressor(binary_sensor::BinarySensor* pSensor) { m_status_kompressor = pSensor; }
+    TBinarySensorMap const& get_binary_sensors() const { return m_binary_sensors; }
+    void set_binary_sensor(std::string const& name, TBinaryArguments const& arg) { m_binary_sensors.insert({name, arg}); }
 
-    binary_sensor::BinarySensor* get_status_kesselpumpe() const { return m_status_kesselpumpe; }
-    void set_status_kesselpumpe(binary_sensor::BinarySensor* pSensor) { m_status_kesselpumpe = pSensor; }
+    // Text Sensors
+
+    TTextSensorMap const& get_text_sensors() const { return m_text_sensors; }
+    void set_text_sensor(std::string const& name, TTextArguments const& arg) { m_text_sensors.insert({name, arg}); }
 
     // Selects
 
@@ -146,14 +156,11 @@ private:
     text::Text* m_custom_request_text;
 
     TSensorMap m_sensors;
+    TBinarySensorMap m_binary_sensors;
     TTextSensorMap m_text_sensors;
 
     // Sensors
     sensor::Sensor* m_thermal_power;
-
-    // Binary Sensors
-    binary_sensor::BinarySensor* m_status_kompressor;
-    binary_sensor::BinarySensor* m_status_kesselpumpe;
 
     // Selects
     select::Select* m_operating_mode_select;
