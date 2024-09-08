@@ -138,23 +138,9 @@ const std::vector<TRequest> entity_config = {
         }
     },
 
-    { // Circulation Pump
-        "circulation_pump_min",
-        {0x31, 0x00, 0xFA, 0x06, 0x7F, 0x00, 0x00},
-        {  DC,   DC, 0xFA, 0x06, 0x7F,   DC,   DC},
-        [](auto& accessor) -> EntityBase* { return accessor.get_circulation_pump_min(); },
-        [](auto const& data, auto& accessor) -> DataType {
-            const float percent = data[6];
-            accessor.get_circulation_pump_min()->publish_state(percent);
-            if (accessor.get_circulation_pump_min_set() != nullptr) {
-                accessor.get_circulation_pump_min_set()->publish_state(percent);
-            }
-            return percent;
-        }
-    },
     { // Circulation Pump Min Set
-        "circulation_pump_min",
-        [](auto& accessor) -> EntityBase* { return accessor.get_circulation_pump_min(); },
+        "circulation_pump_min_set",
+        [](auto& accessor) -> EntityBase* { return accessor.get_circulation_pump_min_set(); },
         [](auto const& value) -> std::vector<uint8_t> {
             const uint16_t temp = static_cast<uint16_t>(value);
             const uint8_t hi_byte = temp >> 8;
@@ -163,23 +149,9 @@ const std::vector<TRequest> entity_config = {
         }
     },
 
-    { // Umwälzpumpe Max
-        "circulation_pump_max",
-        {0x31, 0x00, 0xFA, 0x06, 0x7E, 0x00, 0x00},
-        {  DC,   DC, 0xFA, 0x06, 0x7E,   DC,   DC},
-        [](auto& accessor) -> EntityBase* { return accessor.get_circulation_pump_max(); },
-        [](auto const& data, auto& accessor) -> DataType {
-            const float percent = data[6];
-            accessor.get_circulation_pump_max()->publish_state(percent);
-            if (accessor.get_circulation_pump_max_set() != nullptr) {
-                accessor.get_circulation_pump_max_set()->publish_state(percent);
-            }
-            return percent;
-        }
-    },
     { // Circulation Pump Max Set
-        "circulation_pump_max",
-        [](auto& accessor) -> EntityBase* { return accessor.get_circulation_pump_max(); },
+        "circulation_pump_max_set",
+        [](auto& accessor) -> EntityBase* { return accessor.get_circulation_pump_max_set(); },
         [](auto const& value) -> std::vector<uint8_t> {
             const uint16_t temp = static_cast<uint16_t>(value);
             const uint8_t hi_byte = temp >> 8;
@@ -632,12 +604,14 @@ void DaikinRotexCanComponent::set_heating_curve(float heating_curve) {
 
 void DaikinRotexCanComponent::set_circulation_pump_min(uint8_t percent) {
     m_data_requests.sendSet(m_accessor, m_accessor.get_circulation_pump_min_set()->get_name(), percent);
-    m_data_requests.sendGet(m_accessor, m_accessor.get_circulation_pump_min()->get_name());
+    TRequest const* pRequest = m_data_requests.get("circulation_pump_min");
+    m_data_requests.sendGet(m_accessor, pRequest->getName(m_accessor));
 }
 
 void DaikinRotexCanComponent::set_circulation_pump_max(uint8_t percent) {
     m_data_requests.sendSet(m_accessor, m_accessor.get_circulation_pump_max_set()->get_name(), percent);
-    m_data_requests.sendGet(m_accessor, m_accessor.get_circulation_pump_max()->get_name());
+    TRequest const* pRequest = m_data_requests.get("circulation_pump_max");
+    m_data_requests.sendGet(m_accessor, pRequest->getName(m_accessor));
 }
 
 

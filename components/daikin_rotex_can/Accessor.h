@@ -66,12 +66,6 @@ public:
     sensor::Sensor* get_max_target_supply_temperature() const { return m_max_target_supply_temperature; }
     void set_max_target_supply_temperature(sensor::Sensor* pSensor) { m_max_target_supply_temperature = pSensor; }
 
-    sensor::Sensor* get_circulation_pump_min() const { return m_circulation_pump_min; }
-    void set_circulation_pump_min(sensor::Sensor* pSensor) { m_circulation_pump_min = pSensor; }
-
-    sensor::Sensor* get_circulation_pump_max() const { return m_circulation_pump_max; }
-    void set_circulation_pump_max(sensor::Sensor* pSensor) { m_circulation_pump_max = pSensor; }
-
     // Text Sensors
 
     text_sensor::TextSensor* get_operating_mode() const { return m_operating_mode; }
@@ -154,8 +148,6 @@ private:
     sensor::Sensor* m_heating_curve;
     sensor::Sensor* m_min_target_supply_temperature;
     sensor::Sensor* m_max_target_supply_temperature;
-    sensor::Sensor* m_circulation_pump_min;
-    sensor::Sensor* m_circulation_pump_max;
 
     // Text Sensors
     text_sensor::TextSensor* m_operating_mode;

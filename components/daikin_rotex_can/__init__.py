@@ -83,6 +83,34 @@ sensor_configuration = [
         "divider": 1
     },
     {
+        "name": "circulation_pump_min",
+        "device_class": DEVICE_CLASS_VOLUME_FLOW_RATE,
+        "unit_of_measurement": UNIT_PERCENT,
+        "accuracy_decimals": 0,
+        "state_class": STATE_CLASS_MEASUREMENT,
+        "icon": "mdi:waves-arrow-left",
+        "data": "31 00 FA 06 7F 00 00",
+        "expected_reponse": "__ __ FA 06 7F __ __",
+        "data_offset": 6,
+        "data_size": 1,
+        "divider": 1,
+        "set_entity": "circulation_pump_min_set"
+    },
+    {
+        "name": "circulation_pump_max",
+        "device_class": DEVICE_CLASS_VOLUME_FLOW_RATE,
+        "unit_of_measurement": UNIT_PERCENT,
+        "accuracy_decimals": 0,
+        "state_class": STATE_CLASS_MEASUREMENT,
+        "icon": "mdi:waves-arrow-right",
+        "data": "31 00 FA 06 7E 00 00",
+        "expected_reponse": "__ __ FA 06 7E __ __",
+        "data_offset": 6,
+        "data_size": 1,
+        "divider": 1,
+        "set_entity": "circulation_pump_max_set"
+    },
+    {
         "name": "bypass_valve",
         "device_class": DEVICE_CLASS_VOLUME_FLOW_RATE,
         "unit_of_measurement": UNIT_PERCENT,
@@ -285,8 +313,6 @@ CONF_THERMAL_POWER = "thermal_power" # Thermische Leistung
 CONF_HEATING_CURVE = "heating_curve" # Heizkurve
 CONF_MIN_TARGET_SUPPLY_TEMPERATURE = "min_target_supply_temperature" # Min Vorlauf Soll
 CONF_MAX_TARGET_SUPPLY_TEMPERATURE = "max_target_supply_temperature" # Max Vorlauf Soll
-CONF_CIRCULATION_PUMP_MIN = "circulation_pump_min"
-CONF_CIRCULATION_PUMP_MAX = "circulation_pump_max"
 
 ########## Text Sensors ##########
 
@@ -380,20 +406,6 @@ entity_schemas = {
                     unit_of_measurement=UNIT_CELSIUS,
                     accuracy_decimals=0,
                     icon="mdi:waves-arrow-right",
-                ).extend(),
-                cv.Optional(CONF_CIRCULATION_PUMP_MIN): sensor.sensor_schema(
-                    device_class=DEVICE_CLASS_VOLUME_FLOW_RATE,
-                    unit_of_measurement=UNIT_PERCENT,
-                    accuracy_decimals=0,
-                    state_class=STATE_CLASS_MEASUREMENT,
-                    icon="mdi:waves-arrow-left"
-                ).extend(),
-                cv.Optional(CONF_CIRCULATION_PUMP_MAX): sensor.sensor_schema(
-                    device_class=DEVICE_CLASS_VOLUME_FLOW_RATE,
-                    unit_of_measurement=UNIT_PERCENT,
-                    accuracy_decimals=0,
-                    state_class=STATE_CLASS_MEASUREMENT,
-                    icon="mdi:waves-arrow-left"
                 ).extend(),
 
                 ######## Text Sensors ########
@@ -595,15 +607,6 @@ def to_code(config):
         if sensor_conf := entities.get(CONF_MAX_TARGET_SUPPLY_TEMPERATURE):
             sens = yield sensor.new_sensor(sensor_conf)
             cg.add(var.getAccessor().set_max_target_supply_temperature(sens))
-
-        if sensor_conf := entities.get(CONF_CIRCULATION_PUMP_MIN):
-            sens = yield sensor.new_sensor(sensor_conf)
-            cg.add(var.getAccessor().set_circulation_pump_min(sens))
-
-        if sensor_conf := entities.get(CONF_CIRCULATION_PUMP_MAX):
-            sens = yield sensor.new_sensor(sensor_conf)
-            cg.add(var.getAccessor().set_circulation_pump_max(sens))
-
 
         ######## Text Sensors ########
 
