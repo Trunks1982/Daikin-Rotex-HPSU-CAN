@@ -99,6 +99,12 @@ daikin_rotex_can:
       name: "Betriebsmodus"
     operating_mode_select:
       name: "Betriebsmodus setzen"
+    qboh:
+      name: "EHS für DHW"
+    qch:
+      name: "Energie Heizung"
+    qdhw:
+      name: "Energie für WW"
     runtime_compressor:
       name: "Laufzeit Compressor"
     runtime_pump:
@@ -135,6 +141,8 @@ daikin_rotex_can:
       name: "Heizkreis Vorlauf (TV)"
     tvbh:
       name: "Vorlauftemperatur Heizung (TVBH)"
+    t_hs:
+      name: "T-WE"
     water_flow:
       name: "Durchfluss"
     water_pressure:

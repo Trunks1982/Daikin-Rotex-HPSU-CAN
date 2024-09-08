@@ -39,6 +39,18 @@ ICON_SUN_SNOWFLAKE_VARIANT = "mdi:sun-snowflake-variant"
 
 sensor_configuration = [
     {
+        "name": "t_hs",
+        "device_class": DEVICE_CLASS_TEMPERATURE,
+        "unit_of_measurement": UNIT_CELSIUS,
+        "accuracy_decimals": 1,
+        "state_class": STATE_CLASS_MEASUREMENT,
+        "data": "31 00 FA 01 D6 00 00",
+        "expected_reponse": "__ __ FA 01 D6 __ __",
+        "data_offset": 5,
+        "data_size": 2,
+        "divider": 10.0
+    },
+    {
         "name": "temperature_outside",
         "device_class": DEVICE_CLASS_TEMPERATURE,
         "unit_of_measurement": UNIT_CELSIUS,
