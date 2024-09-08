@@ -159,9 +159,48 @@ sensor_configuration = [
         "unit_of_measurement": UNIT_KILOWATT_HOURS,
         "accuracy_decimals": 0,
         "state_class": STATE_CLASS_MEASUREMENT,
-        "icon": "mdi:thermometer-lines",
+        "icon": "mdi:transmission-tower",
         "data": "31 00 FA 09 20 00 00",
         "expected_reponse": "__ __ FA 09 20 __ __",
+        "data_offset": 5,
+        "data_size": 2,
+        "divider": 1
+    },
+    {
+        "name": "qch",
+        "device_class": DEVICE_CLASS_ENERGY_STORAGE,
+        "unit_of_measurement": UNIT_KILOWATT_HOURS,
+        "accuracy_decimals": 0,
+        "state_class": STATE_CLASS_MEASUREMENT,
+        "icon": "mdi:transmission-tower",
+        "data": "31 00 FA 06 A7 00 00",
+        "expected_reponse": "__ __ FA 06 A7 __ __",
+        "data_offset": 5,
+        "data_size": 2,
+        "divider": 1
+    },
+    {
+        "name": "qboh",
+        "device_class": DEVICE_CLASS_ENERGY_STORAGE,
+        "unit_of_measurement": UNIT_KILOWATT_HOURS,
+        "accuracy_decimals": 0,
+        "state_class": STATE_CLASS_MEASUREMENT,
+        "icon": "mdi:transmission-tower",
+        "data": "31 00 FA 09 1C 00 00",
+        "expected_reponse": "__ __ FA 09 1C __ __",
+        "data_offset": 5,
+        "data_size": 2,
+        "divider": 1
+    },
+    {
+        "name": "qdhw",
+        "device_class": DEVICE_CLASS_ENERGY_STORAGE,
+        "unit_of_measurement": UNIT_KILOWATT_HOURS,
+        "accuracy_decimals": 0,
+        "state_class": STATE_CLASS_MEASUREMENT,
+        "icon": "mdi:transmission-tower",
+        "data": "31 00 FA 09 2C 00 00",
+        "expected_reponse": "__ __ FA 09 2C __ __",
         "data_offset": 5,
         "data_size": 2,
         "divider": 1
@@ -172,7 +211,7 @@ sensor_configuration = [
         "unit_of_measurement": UNIT_KILOWATT_HOURS,
         "accuracy_decimals": 0,
         "state_class": STATE_CLASS_MEASUREMENT,
-        "icon": "mdi:thermometer-lines",
+        "icon": "mdi:transmission-tower",
         "data": "31 00 FA 09 30 00 00",
         "expected_reponse": "__ __ FA 09 30 __ __",
         "data_offset": 5,
@@ -537,6 +576,22 @@ binary_sensor_configuration = [
     }
 ]
 
+########## Select Configuration ##########
+
+select_configuration = [
+    #{
+    #    "name": "operating_mode_select" ,
+    #    "icon": ICON_SUN_SNOWFLAKE_VARIANT,
+    #    "data": "31 00 FA 01 12 00 00",
+    #    "expected_reponse": "__ __ FA 01 12 __ __",
+    #    "data_offset": 5,
+    #    "data_size": 1,
+    #    "options": ["Bereitschaft", "Heizen", "Absenken", "Sommer", "Kühlen", "Automatik 1", "Automatik 2"]
+    #    "select_class": OperationModeSelect,
+    #    "set_entity": "operating_mode_select"
+    #}
+]
+
 DEPENDENCIES = []
 
 AUTO_LOAD = ['binary_sensor', 'button', 'number', 'sensor', 'select', 'text', 'text_sensor']
@@ -603,6 +658,16 @@ for sensor_conf in text_sensor_configuration:
         ).extend()
     }
     text_sensor_schemas.update(sens)
+
+select_schemas = {}
+for select_conf in select_configuration:
+    select_schemas.update({
+        cv.Optional(select_conf.get("name")): select.select_schema(
+            select_conf.get("select_class"),
+            entity_category=ENTITY_CATEGORY_CONFIG,
+            icon=select_conf.get("icon")
+        ).extend()
+    })
 
 entity_schemas = {
                 ########## Sensors ##########
@@ -815,6 +880,26 @@ def to_code(config):
             sel = yield select.new_select(select_conf, options = options)
             yield cg.register_parented(sel, var)
             cg.add(var.getAccessor().set_operating_mode_select(sel))
+
+        for sel_conf in select_configuration:
+            if select_conf := entities.get(sel_conf.get("name")):
+                sel = yield select.new_select(select_conf, options = sel_conf.get("options"))
+                yield cg.register_parented(sel, var)
+
+                cg.add(var.getAccessor().set_select(
+                    sel_conf.get("name"),
+                    [
+                        sel,
+                        sel_conf.get("name"),
+                        sel_conf.get("data"),
+                        sel_conf.get("expected_reponse"),
+                        sel_conf.get("data_offset"),
+                        sel_conf.get("data_size"),
+                        "|".join([f"0x{key:02X}:{value}" for key, value in sel_conf.get("map").items()]),
+                        sel_conf.get("update_entity", ""),
+                        sel_conf.get("set_entity", "")
+                    ]
+                ))
 
         if select_conf := entities.get(CONF_HK_FUNCTION_SELECT):
             options = ["Witterungsgeführt", "Fest"]
