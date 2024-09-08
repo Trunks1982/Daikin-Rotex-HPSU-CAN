@@ -378,7 +378,15 @@ text_sensor_configuration = [
         "expected_reponse": "__ __ FA 01 12 __ __",
         "data_offset": 5,
         "data_size": 1,
-        "map": "0x01:Bereitschaft|0x03:Heizen|0x04:Absenken|0x05:Sommer|0x11:Kühlen|0x0B:Automatik 1|0x0C:Automatik 2",
+        "map": {
+            0x01: "Bereitschaft",
+            0x03: "Heizen",
+            0x04: "Absenken",
+            0x05: "Sommer",
+            0x11: "Kühlen",
+            0x0B: "Automatik 1",
+            0x0C: "Automatik 2"
+        },
         "set_entity": "operating_mode_select"
     },
     {
@@ -388,7 +396,13 @@ text_sensor_configuration = [
         "expected_reponse": "__ __ FA C0 F6 __ __",
         "data_offset": 5,
         "data_size": 2,
-        "map": "0x00:Standby|0x01:Heizen|0x02:Kühlen|0x03:Abtauen|0x04:Warmwasserbereitung",
+        "map": {
+            0x00: "Standby",
+            0x01: "Heizen",
+            0x02: "Kühlen",
+            0x03: "Abtauen",
+            0x04: "Warmwasserbereitung"
+        },
         "update_entity": "thermal_power"
     },
     {
@@ -398,8 +412,38 @@ text_sensor_configuration = [
         "expected_reponse": "__ __ FA 01 41 __ __",
         "data_offset": 6,
         "data_size": 1,
-        "map": "0x00:Witterungsgeführt|0x01:Fest",
+        "map": {
+            0x00: "Witterungsgeführt",
+            0x01: "Fest"
+        },
         "set_entity": "hk_function_select"
+    },
+    {
+        "name": "sg_mode" ,
+        "icon": "mdi:weather-partly-cloudy",
+        "data": "31 00 FA 06 94 00 00",
+        "expected_reponse": "__ __ FA 06 94 __ __",
+        "data_offset": 6,
+        "data_size": 1,
+        "map": {
+            0x00: "Aus",
+            0x01: "SG Modus 1",
+            0x02: "SG Modus 2"
+        },
+        "set_entity": "sg_mode_select"
+    },
+    {
+        "name": "smart_grid" ,
+        "icon": "mdi:weather-partly-cloudy",
+        "data": "31 00 FA 06 93 00 00",
+        "expected_reponse": "__ __ FA 06 93 __ __",
+        "data_offset": 6,
+        "data_size": 1,
+        "map": {
+            0x00: "Aus",
+            0x01: "An"
+        },
+        "set_entity": "smart_grid_select"
     }
 ]
 
@@ -418,8 +462,6 @@ CONF_THERMAL_POWER = "thermal_power" # Thermische Leistung
 
 ########## Text Sensors ##########
 
-CONF_SG_MODE = "sg_mode"
-CONF_SMART_GRID = "smart_grid"
 CONF_ERROR_CODE = "error_code"
 
 ########## Binary Sensors ##########
@@ -486,12 +528,6 @@ entity_schemas = {
 
                 cv.Optional(CONF_ERROR_CODE): text_sensor.text_sensor_schema(
                     icon="mdi:alert"
-                ).extend(),
-                cv.Optional(CONF_SG_MODE): text_sensor.text_sensor_schema(
-                    icon="mdi:thermometer-lines",
-                ).extend(),
-                cv.Optional(CONF_SMART_GRID): text_sensor.text_sensor_schema(
-                    icon="mdi:thermometer-lines",
                 ).extend(),
 
                 ########## Binary Sensors ##########
@@ -669,7 +705,7 @@ def to_code(config):
                         sens_conf.get("expected_reponse"),
                         sens_conf.get("data_offset"),
                         sens_conf.get("data_size"),
-                        sens_conf.get("map"),
+                        "|".join([f"0x{key:02X}:{value}" for key, value in sens_conf.get("map").items()]),
                         sens_conf.get("update_entity", ""),
                         sens_conf.get("set_entity", "")
                     ]
@@ -678,14 +714,6 @@ def to_code(config):
         if sensor_conf := entities.get(CONF_ERROR_CODE):
             sens = yield text_sensor.new_text_sensor(sensor_conf)
             cg.add(var.getAccessor().set_error_code(sens))
-
-        if sensor_conf := entities.get(CONF_SG_MODE):
-            sens = yield text_sensor.new_text_sensor(sensor_conf)
-            cg.add(var.getAccessor().set_sg_mode(sens))
-
-        if sensor_conf := entities.get(CONF_SMART_GRID):
-            sens = yield text_sensor.new_text_sensor(sensor_conf)
-            cg.add(var.getAccessor().set_smart_grid(sens))
 
         ######## Binary Sensors ########
 

@@ -93,12 +93,6 @@ public:
     TTextSensorMap const&  get_text_sensors() const { return m_text_sensors; }
     void set_text_sensor(std::string const& name, TTextArguments const& arg) { m_text_sensors.insert({name, arg}); }
 
-    text_sensor::TextSensor* get_sg_mode() const { return m_sg_mode; }
-    void set_sg_mode(text_sensor::TextSensor* pSensor) { m_sg_mode = pSensor; }
-
-    text_sensor::TextSensor* get_smart_grid() const { return m_smart_grid; }
-    void set_smart_grid(text_sensor::TextSensor* pSensor) { m_smart_grid = pSensor; }
-
     text_sensor::TextSensor* get_error_code() const { return m_error_code; }
     void set_error_code(text_sensor::TextSensor* pSensor) { m_error_code = pSensor; }
 
@@ -161,8 +155,6 @@ private:
     sensor::Sensor* m_thermal_power;
 
     // Text Sensors
-    text_sensor::TextSensor* m_sg_mode;
-    text_sensor::TextSensor* m_smart_grid;
     text_sensor::TextSensor* m_error_code;
 
     // Binary Sensors
