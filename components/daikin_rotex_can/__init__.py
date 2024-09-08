@@ -444,6 +444,74 @@ text_sensor_configuration = [
             0x01: "An"
         },
         "set_entity": "smart_grid_select"
+    },
+    {
+        "name": "error_code" ,
+        "icon": "mdi:alert",
+        "data": "31 00 FA 13 88 00 00",
+        "expected_reponse": "__ __ FA 13 88 __ __",
+        "data_offset": 5,
+        "data_size": 2,
+        "map": {
+            0: "Kein Fehler",
+            9001: "E9001 Rücklauffühler",
+            9002: "E9002 Vorlauffühler",
+            9003: "E9003 Frostschutzfunktion",
+            9004: "E9004 Durchfluss",
+            9005: "E9005 Vorlauftemperaturfühler",
+            9006: "E9006 Vorlauftemperaturfühler",
+            9007: "E9007 Platine IG defekt",
+            9008: "E9008 Kältemitteltemperatur außerhalb des Bereiches",
+            9009: "E9009 STB Fehler",
+            9010: "E9010 STB Fehler",
+            9011: "E9011 Fehler Flowsensor",
+            9012: "E9012 Fehler Vorlauffühler",
+            9013: "E9013 Platine AG defekt",
+            9014: "E9014 P-Kältemittel hoch",
+            9015: "E9015 P-Kältemittel niedrig",
+            9016: "E9016 Lastschutz Verdichter",
+            9017: "E9017 Ventilator blockiert",
+            9018: "E9018 Expansionsventil",
+            9019: "E9019 Warmwassertemperatur > 85°C",
+            9020: "E9020 T-Verdampfer hoch",
+            9021: "E9021 HPS-System",
+            9022: "E9022 Fehler AT-Fühler",
+            9023: "E9023 Fehler WW-Fühler",
+            9024: "E9024 Drucksensor",
+            9025: "E9025 Fehler Rücklauffühler",
+            9026: "E9026 Drucksensor",
+            9027: "E9027 Aircoil-Fühler Defrost",
+            9028: "E9028 Aircoil-Fühler temp",
+            9029: "E9029 Fehler Kältefühler AG",
+            9030: "E9030 Defekt elektrisch",
+            9031: "E9031 Defekt elektrisch",
+            9032: "E9032 Defekt elektrisch",
+            9033: "E9033 Defekt elektrisch",
+            9034: "E9034 Defekt elektrisch",
+            9035: "E9035 Platine AG defekt",
+            9036: "E9036 Defekt elektrisch",
+            9037: "E9037 Einstellung Leistung",
+            9038: "E9038 Kältemittel Leck",
+            9039: "E9039 Unter/Überspannung",
+            9041: "E9041 Übertragungsfehler",
+            9042: "E9042 Übertragungsfehler",
+            9043: "E9043 Übertragungsfehler",
+            9044: "E9044 Übertragungsfehler",
+            75: "E75 Fehler Außentemperaturfühler",
+            76: "E76 Fehler Speichertemperaturfühler",
+            81: "E81 Kommunikationsfehler Rocon",
+            88: "E88 Kommunikationsfehler Rocon Handbuch",
+            91: "E91 Kommunikationsfehler Rocon Handbuch",
+            128: "E128 Fehler Rücklauftemperaturfühler",
+            129: "E129 Fehler Drucksensor",
+            198: "E198 Durchflussmessung nicht plausibel",
+            200: "E200 Kommunikationsfehler",
+            8005: "E8005 Wasserdruck in Heizungsanlage zu gering",
+            8100: "E8100 Kommunikation",
+            9000: "E9000 Interne vorübergehende Meldung",
+            8006: "W8006 Warnung Druckverlust",
+            8007: "W8007 Wasserdruck in Anlage zu hoch"
+        }
     }
 ]
 
@@ -459,10 +527,6 @@ CONF_ENTITIES = "entities"
 ########## Sensors ##########
 
 CONF_THERMAL_POWER = "thermal_power" # Thermische Leistung
-
-########## Text Sensors ##########
-
-CONF_ERROR_CODE = "error_code"
 
 ########## Binary Sensors ##########
 
@@ -522,12 +586,6 @@ entity_schemas = {
                     unit_of_measurement=UNIT_KILOWATT,
                     accuracy_decimals=2,
                     state_class=STATE_CLASS_MEASUREMENT
-                ).extend(),
-
-                ######## Text Sensors ########
-
-                cv.Optional(CONF_ERROR_CODE): text_sensor.text_sensor_schema(
-                    icon="mdi:alert"
                 ).extend(),
 
                 ########## Binary Sensors ##########
@@ -710,10 +768,6 @@ def to_code(config):
                         sens_conf.get("set_entity", "")
                     ]
                 ))
-
-        if sensor_conf := entities.get(CONF_ERROR_CODE):
-            sens = yield text_sensor.new_text_sensor(sensor_conf)
-            cg.add(var.getAccessor().set_error_code(sens))
 
         ######## Binary Sensors ########
 

@@ -93,9 +93,6 @@ public:
     TTextSensorMap const&  get_text_sensors() const { return m_text_sensors; }
     void set_text_sensor(std::string const& name, TTextArguments const& arg) { m_text_sensors.insert({name, arg}); }
 
-    text_sensor::TextSensor* get_error_code() const { return m_error_code; }
-    void set_error_code(text_sensor::TextSensor* pSensor) { m_error_code = pSensor; }
-
     // Binary Sensors
 
     binary_sensor::BinarySensor* get_status_kompressor() const { return m_status_kompressor; }
@@ -153,9 +150,6 @@ private:
 
     // Sensors
     sensor::Sensor* m_thermal_power;
-
-    // Text Sensors
-    text_sensor::TextSensor* m_error_code;
 
     // Binary Sensors
     binary_sensor::BinarySensor* m_status_kompressor;
