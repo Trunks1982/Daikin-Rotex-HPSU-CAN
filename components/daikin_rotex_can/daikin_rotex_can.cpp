@@ -44,22 +44,6 @@ static const BidiMap<uint8_t, std::string> map_sg = {
 };
 
 const std::vector<TRequest> entity_config = {
-    { // Betriebsmodus
-        "operating_mode",
-        {0x31, 0x00, 0xFA, 0x01, 0x12, 0x00, 0x00},
-        {  DC,   DC, 0xFA, 0x01, 0x12,   DC,   DC},
-        [](auto& accessor) -> EntityBase* { return accessor.get_operating_mode(); },
-        [](auto const& data, auto& accessor) -> DataType {
-            const std::string mode = map_betriebsmodus.getValue(data[5]);
-            if (accessor.get_operating_mode() != nullptr) {
-                accessor.get_operating_mode()->publish_state(mode);
-            }
-            if (accessor.get_operating_mode_select() != nullptr) {
-                accessor.get_operating_mode_select()->publish_state(mode);
-            }
-            return mode;
-        }
-    },
     { // Betriebsmodus setzen
         "operating_mode_select",
         [](auto& accessor) -> EntityBase* { return accessor.get_operating_mode_select(); },
@@ -407,6 +391,9 @@ void DaikinRotexCanComponent::validateConfig() {
                             EntityBase* pEntity = pRequest->getEntity(accessor);
                             if (number::Number* pNumber = dynamic_cast<number::Number*>(pEntity)) {
                                 pNumber->publish_state(value);
+                            } else {
+                                ESP_LOGE("handle ", "id<%s>.set_entity<%s> has unsupported type!", 
+                                    pair.second.id.c_str(), pair.second.set_entity.c_str());
                             }
                         } else {
                             ESP_LOGE("handle ", "id<%s>.set_entity<%s> is invalid!", 
@@ -422,6 +409,68 @@ void DaikinRotexCanComponent::validateConfig() {
                 }
 
                 return value;
+            }
+        });
+    }
+
+    for (auto const& pair : m_accessor.get_text_sensors()) {
+        const std::array<uint8_t, 7> data = Utils::str_to_bytes_array8(pair.second.data);
+        const std::array<uint16_t, 7> expected_response = Utils::str_to_bytes_array16(pair.second.expected_response);
+
+        m_data_requests.add({
+            pair.second.id,
+            data,
+            expected_response,
+            [pair](auto& accessor) -> EntityBase* { return pair.second.pTextSensor; },
+            [pair, this](auto const& data, auto& accessor) -> DataType {
+                std::string str;
+
+                if (pair.second.data_offset > 0 && (pair.second.data_offset + pair.second.data_size) <= 7) {
+                    switch (pair.second.data_size) {
+                    case 1: {
+                        const uint32_t value = data[pair.second.data_offset];
+                        str = pair.second.map.getValue(value);
+
+                        pair.second.pTextSensor->publish_state(str);
+                        break;
+                    }
+                    case 2: {
+                        const uint32_t value = (data[pair.second.data_offset] << 8) + data[pair.second.data_offset + 1];
+                        str = pair.second.map.getValue(value);
+
+                        pair.second.pTextSensor->publish_state(str);
+                        break;
+                    }
+                    default:
+                        call_later([pair](){
+                            ESP_LOGE("validateConfig", "Invalid data size: %d", pair.second.data_size);
+                        });
+                    }
+                } else {
+                    call_later([pair](){
+                        ESP_LOGE("validateConfig", "Invalid data_offset: %d", pair.second.data_offset);
+                    });
+                }
+
+                call_later([pair, str, &accessor, this](){
+                    if (!pair.second.set_entity.empty()) {
+                        TRequest const* pRequest = m_data_requests.get(pair.second.set_entity);
+                        if (pRequest != nullptr) {
+                            EntityBase* pEntity = pRequest->getEntity(accessor);
+                            if (select::Select* pSelect = dynamic_cast<select::Select*>(pEntity)) {
+                                pSelect->publish_state(str);
+                            } else {
+                                ESP_LOGE("handle ", "id<%s>.set_entity<%s> has unsupported type!", 
+                                    pair.second.id.c_str(), pair.second.set_entity.c_str());
+                            }
+                        } else {
+                            ESP_LOGE("handle ", "id<%s>.set_entity<%s> is invalid!", 
+                                pair.second.id.c_str(), pair.second.set_entity.c_str());
+                        }
+                    }
+                });
+
+                return str;
             }
         });
     }

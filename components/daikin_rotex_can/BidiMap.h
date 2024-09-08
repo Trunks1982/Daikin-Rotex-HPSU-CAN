@@ -14,6 +14,13 @@ public:
         }
     }
 
+    BidiMap(const std::map<KeyType, ValueType>& map)
+    : key_to_value(map) {
+        for (const auto& pair : map) {
+            value_to_key[pair.second] = pair.first;
+        }
+    }
+
     Iterator findByKey(const KeyType& key) const {
         return key_to_value.find(key);
     }

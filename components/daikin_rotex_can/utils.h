@@ -7,6 +7,7 @@
 #include <vector>
 #include <variant>
 #include <memory>
+#include <map>
 
 namespace esphome {
 namespace daikin_rotex_can {
@@ -121,6 +122,26 @@ public:
         }
 
         return words;
+    }
+
+    static std::map<uint8_t, std::string> str_to_map(const std::string& input) {
+        std::map<uint8_t, std::string> result;
+        std::stringstream ss(input);
+        std::string pair;
+
+        while (std::getline(ss, pair, '|')) {
+            size_t pos = pair.find(':');
+            if (pos != std::string::npos) {
+                std::string keyStr = pair.substr(0, pos);
+                std::string value = pair.substr(pos + 1);
+
+                uint8_t key = static_cast<uint8_t>(std::strtoul(keyStr.c_str(), nullptr, 16));
+
+                result[key] = value;
+            }
+        }
+
+        return result;
     }
 
     template<typename... Args>

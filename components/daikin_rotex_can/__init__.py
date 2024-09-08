@@ -32,6 +32,11 @@ DHWRunButton = daikin_rotex_can_ns.class_("DHWRunButton", button.Button)
 UNIT_BAR = "bar"
 UNIT_LITER_PER_HOUR = "L/h"
 
+########## Icons ##########
+ICON_SUN_SNOWFLAKE_VARIANT = "mdi:sun-snowflake-variant"
+
+########## Sensor Configuration ##########
+
 sensor_configuration = [
     {
         "name": "temperature_outside",
@@ -363,6 +368,21 @@ sensor_configuration = [
     }
 ]
 
+########## Text Sensor Configuration ##########
+
+text_sensor_configuration = [
+    {
+        "name": "operating_mode" ,
+        "icon": ICON_SUN_SNOWFLAKE_VARIANT,
+        "data": "31 00 FA 01 12 00 00",
+        "expected_reponse": "__ __ FA 01 12 __ __",
+        "data_offset": 5,
+        "data_size": 1,
+        "map": "0x01:Bereitschaft|0x03:Heizen|0x04:Absenken|0x05:Sommer|0x11:Kühlen|0x0B:Automatik 1|0x0C:Automatik 2",
+        "set_entity": "operating_mode_select"
+    }
+]
+
 DEPENDENCIES = []
 
 AUTO_LOAD = ['binary_sensor', 'button', 'number', 'sensor', 'select', 'text', 'text_sensor']
@@ -378,7 +398,6 @@ CONF_THERMAL_POWER = "thermal_power" # Thermische Leistung
 
 ########## Text Sensors ##########
 
-CONF_OPERATING_MODE = "operating_mode"
 CONF_MODE_OF_OPERATING = "mode_of_operation"
 CONF_HK_FUNCTION = "hk_function"
 CONF_SG_MODE = "sg_mode"
@@ -412,12 +431,8 @@ CONF_CIRCULATION_PUMP_MAX_SET = "circulation_pump_max_set"
 
 CONF_DHW_RUN = "dhw_run"
 
-########## Icons ##########
 
-ICON_SUN_SNOWFLAKE_VARIANT = "mdi:sun-snowflake-variant"
-
-schemas = {}
-
+sensor_schemas = {}
 for sensor_conf in sensor_configuration:
     sens = {
         cv.Optional(sensor_conf.get("name")): sensor.sensor_schema(
@@ -428,7 +443,16 @@ for sensor_conf in sensor_configuration:
             icon=(sensor_conf.get("icon") if sensor_conf.get("icon") != None else sensor._UNDEF)
         ).extend()
     }
-    schemas.update(sens)
+    sensor_schemas.update(sens)
+
+text_sensor_schemas = {}
+for sensor_conf in text_sensor_configuration:
+    sens = {
+        cv.Optional(sensor_conf.get("name")): text_sensor.text_sensor_schema(
+            icon=sensor_conf.get("icon")
+        ).extend()
+    }
+    text_sensor_schemas.update(sens)
 
 entity_schemas = {
                 ########## Sensors ##########
@@ -442,9 +466,6 @@ entity_schemas = {
 
                 ######## Text Sensors ########
 
-                cv.Optional(CONF_OPERATING_MODE): text_sensor.text_sensor_schema(
-                    icon=ICON_SUN_SNOWFLAKE_VARIANT
-                ).extend(),
                 cv.Optional(CONF_MODE_OF_OPERATING): text_sensor.text_sensor_schema(
                     icon=ICON_SUN_SNOWFLAKE_VARIANT
                 ).extend(),
@@ -545,7 +566,8 @@ entity_schemas = {
                 ).extend(),
             }
 
-entity_schemas.update(schemas)
+entity_schemas.update(sensor_schemas)
+entity_schemas.update(text_sensor_schemas)
 
 
 CONFIG_SCHEMA = cv.Schema(
@@ -622,9 +644,24 @@ def to_code(config):
 
         ######## Text Sensors ########
 
-        if sensor_conf := entities.get(CONF_OPERATING_MODE):
-            sens = yield text_sensor.new_text_sensor(sensor_conf)
-            cg.add(var.getAccessor().set_operating_mode(sens))
+        for sens_conf in text_sensor_configuration:
+            if sensor_conf := entities.get(sens_conf.get("name")):
+                sens = yield text_sensor.new_text_sensor(sensor_conf)
+
+                cg.add(var.getAccessor().set_text_sensor(
+                    sens_conf.get("name"),
+                    [
+                        sens,
+                        sens_conf.get("name"),
+                        sens_conf.get("data"),
+                        sens_conf.get("expected_reponse"),
+                        sens_conf.get("data_offset"),
+                        sens_conf.get("data_size"),
+                        sens_conf.get("map"),
+                        sens_conf.get("update_entity", ""),
+                        sens_conf.get("set_entity", "")
+                    ]
+                ))
 
         if sensor_conf := entities.get(CONF_MODE_OF_OPERATING):
             sens = yield text_sensor.new_text_sensor(sensor_conf)

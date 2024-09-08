@@ -6,6 +6,8 @@
 #include "esphome/components/number/number.h"
 #include "esphome/components/text/text.h"
 #include "esphome/components/text_sensor/text_sensor.h"
+#include "esphome/components/daikin_rotex_can/BidiMap.h"
+#include "esphome/components/daikin_rotex_can/utils.h"
 
 namespace esphome {
 namespace daikin_rotex_can {
@@ -25,6 +27,41 @@ class Accessor {
         std::string set_entity;
     };
     using TSensorMap = std::map<std::string, TArguments>;
+
+    struct TTextArguments {
+        text_sensor::TextSensor* pTextSensor;
+        std::string id;
+        std::string data;
+        std::string expected_response;
+        uint8_t data_offset;
+        uint8_t data_size;
+        BidiMap<uint8_t, std::string> map;
+        std::string update_entity;
+        std::string set_entity;
+
+        TTextArguments(
+            text_sensor::TextSensor* _pTextSensor,
+            std::string _id,
+            std::string _data,
+            std::string _expected_response,
+            uint8_t _data_offset,
+            uint8_t _data_size,
+            std::string const& _map,
+            std::string const& _update_entity,
+            std::string const& _set_entity
+        )
+        : pTextSensor(_pTextSensor)
+        , id(_id)
+        , data(_data)
+        , expected_response(_expected_response)
+        , data_offset(_data_offset)
+        , data_size(_data_size)
+        , map(Utils::str_to_map(_map))
+        , update_entity(_update_entity)
+        , set_entity(_set_entity)
+        {}
+    };
+    using TTextSensorMap = std::map<std::string, TTextArguments>;
 public:
     Accessor(DaikinRotexCanComponent* pDaikinRotexCanComponent)
     : m_pDaikinRotexCanComponent(pDaikinRotexCanComponent) {
@@ -52,6 +89,9 @@ public:
     void set_thermal_power(sensor::Sensor* pSensor) { m_thermal_power = pSensor; }
 
     // Text Sensors
+
+    TTextSensorMap const&  get_text_sensors() const { return m_text_sensors; }
+    void set_text_sensor(std::string const& name, TTextArguments const& arg) { m_text_sensors.insert({name, arg}); }
 
     text_sensor::TextSensor* get_operating_mode() const { return m_operating_mode; }
     void set_operating_mode(text_sensor::TextSensor* pSensor) { m_operating_mode = pSensor; }
@@ -124,6 +164,7 @@ private:
     text::Text* m_custom_request_text;
 
     TSensorMap m_sensors;
+    TTextSensorMap m_text_sensors;
 
     // Sensors
     sensor::Sensor* m_thermal_power;
