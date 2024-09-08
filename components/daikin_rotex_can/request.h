@@ -14,7 +14,7 @@ const uint16_t DC = 0xFFFF; // Don't care
 class TRequest
 {
 public:
-    using TEntityProvider = std::function<EntityBase*(const Accessor&)>;
+    using TEntityProvider = std::function<EntityBase*(const Accessor&)>; // TODO: Remove Accessor after config moved to python!!!!!!
     using TGetLambda = std::function<DataType(std::vector<uint8_t> const&, Accessor&)>;
     using TSetLambda = std::function<std::vector<uint8_t>(float const&)>;
 public:
@@ -89,6 +89,10 @@ public:
 
     EntityBase* getEntity(Accessor const& accessor) const {
         return m_entity_provider(accessor);
+    }
+
+    sensor::Sensor* get_sensor(Accessor const& accessor) const {
+        return static_cast<sensor::Sensor*>(m_entity_provider(accessor));
     }
 
     bool isGetSupported(Accessor const& accessor) const {

@@ -22,6 +22,7 @@ class Accessor {
         uint8_t data_size;
         float divider;
         std::string update_entity;
+        std::string set_entity;
     };
     using TSensorMap = std::map<std::string, TArguments>;
 public:
@@ -46,9 +47,6 @@ public:
     TSensorMap const&  get_sensors() const { return m_sensors; }
     sensor::Sensor* get_sensor(std::string const& name) const { return m_sensors.at(name).pSensor; }
     void set_sensor(std::string const& name, TArguments const& arg) { m_sensors.insert({name, arg}); }
-
-    sensor::Sensor* get_target_room1_temperature() const { return m_target_room1_temperature; }
-    void set_target_room1_temperature(sensor::Sensor* pSensor) { m_target_room1_temperature = pSensor; }
 
     sensor::Sensor* get_target_hot_water_temperature() const { return m_target_hot_water_temperature; }
     void set_target_hot_water_temperature(sensor::Sensor* pSensor) { m_target_hot_water_temperature = pSensor; }
@@ -150,7 +148,6 @@ private:
 
     // Sensors
     sensor::Sensor* m_pTemperatureOutsideSensor;
-    sensor::Sensor* m_target_room1_temperature;
     sensor::Sensor* m_target_hot_water_temperature;
     sensor::Sensor* m_flow_temperature_day;
     sensor::Sensor* m_thermal_power;

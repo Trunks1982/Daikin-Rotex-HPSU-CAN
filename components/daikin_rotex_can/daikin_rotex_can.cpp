@@ -363,20 +363,6 @@ const std::vector<TRequest> entity_config = {
         }
     },
 
-    { // Raumsoll 1
-        "target_room1_temperature",
-        {0x31, 0x00, 0x05, 0x00, 0x00, 0x00, 0x00},
-        {0xD2, 0x00, 0x05,   DC,   DC, 0x00,   DC},
-        [](auto& accessor) -> EntityBase* { return accessor.get_target_room1_temperature(); },
-        [](auto const& data, auto& accessor) -> DataType {
-            const float temp = ((data[3] << 8) + data[4]) / 10.0f;
-            accessor.get_target_room1_temperature()->publish_state(temp);
-            if (accessor.get_target_room1_temperature_set() != nullptr) {
-                accessor.get_target_room1_temperature_set()->publish_state(temp);
-            }
-            return temp;
-        }
-    },
     { // Raumsoll 1 Einstellen
         "target_room1_temperature_set",
         [](auto& accessor) -> EntityBase* { return accessor.get_target_room1_temperature_set(); },
@@ -483,12 +469,12 @@ void DaikinRotexCanComponent::validateConfig() {
         const std::array<uint8_t, 7> data = Utils::str_to_bytes_array8(pair.second.data);
         const std::array<uint16_t, 7> expected_response = Utils::str_to_bytes_array16(pair.second.expected_response);
 
-        TRequest req = {
+        m_data_requests.add({
             pair.second.id,
             data,
             expected_response,
-            [&](auto& accessor) -> EntityBase* { return pair.second.pSensor; },
-            [&](auto const& data, auto& accessor) -> DataType {
+            [pair](auto& accessor) -> EntityBase* { return pair.second.pSensor; },
+            [pair, this](auto const& data, auto& accessor) -> DataType {
                 float value = 0;
 
                 if (pair.second.data_offset > 0 && (pair.second.data_offset + pair.second.data_size) <= 7) {
@@ -505,7 +491,6 @@ void DaikinRotexCanComponent::validateConfig() {
                         call_later([pair](){
                             ESP_LOGE("validateConfig", "Invalid data size: %d", pair.second.data_size);
                         });
-                        break;
                     }
                 } else {
                     call_later([pair](){
@@ -513,20 +498,30 @@ void DaikinRotexCanComponent::validateConfig() {
                     });
                 }
 
-                if (!pair.second.update_entity.empty()) {
-                    TRequest const* pRequest = m_data_requests.get(m_accessor, pair.second.update_entity);
-                    if (pRequest != nullptr) {
-                        call_later([&](){
-                            updateState(*pRequest);
-                        });
+                call_later([pair, value, this](){
+                    if (!pair.second.update_entity.empty()) {
+                        updateState(pair.second.update_entity);
                     }
-                }
+                });
+
+                call_later([pair, value, &accessor, this](){
+                    if (!pair.second.set_entity.empty()) {
+                        TRequest const* pRequest = m_data_requests.get(pair.second.set_entity);
+                        if (pRequest != nullptr) {
+                            EntityBase* pEntity = pRequest->getEntity(accessor);
+                            if (number::Number* pNumber = dynamic_cast<number::Number*>(pEntity)) {
+                                pNumber->publish_state(value);
+                            }
+                        } else {
+                            ESP_LOGE("handle ", "id<%s>.set_entity<%s> is invalid!", 
+                                pair.second.id.c_str(), pair.second.set_entity.c_str());
+                        }
+                    }
+                });
 
                 return value;
             }
-        };
-
-        m_data_requests.add(req);
+        });
     }
 
     m_data_requests.removeInvalidRequests(m_accessor);
@@ -536,12 +531,10 @@ void DaikinRotexCanComponent::setup() {
     ESP_LOGI(TAG, "setup");
 }
 
-void DaikinRotexCanComponent::updateState(TRequest const& request) {
-    ESP_LOGI("update_state", ">>>");
-    if (request.getName(m_accessor) == "thermal_power") {
+void DaikinRotexCanComponent::updateState(std::string const& id) {
+    if (id == "thermal_power") {
         update_thermal_power();
     }
-    ESP_LOGI("update_state", "<<<");
 }
 
 void DaikinRotexCanComponent::update_thermal_power() {
@@ -550,19 +543,21 @@ void DaikinRotexCanComponent::update_thermal_power() {
 
     if (mode_of_operating != nullptr && thermal_power != nullptr) {
         // TODO: Type-safe casts
-        TRequest const* water_flow_request = m_data_requests.get(m_accessor, "water_flow");
+        TRequest const* water_flow_request = m_data_requests.get("water_flow");
         sensor::Sensor* water_flow = static_cast<sensor::Sensor*>(water_flow_request->getEntity(m_accessor));
-        sensor::Sensor* tvbh = static_cast<sensor::Sensor*>(m_data_requests.get(m_accessor, "tvbh")->getEntity(m_accessor));
-        sensor::Sensor* tv = static_cast<sensor::Sensor*>(m_data_requests.get(m_accessor, "tv")->getEntity(m_accessor));
-        sensor::Sensor* tr = static_cast<sensor::Sensor*>(m_data_requests.get(m_accessor, "tr")->getEntity(m_accessor));
+        sensor::Sensor* tvbh = static_cast<sensor::Sensor*>(m_data_requests.get("tvbh")->getEntity(m_accessor));
+        sensor::Sensor* tv = static_cast<sensor::Sensor*>(m_data_requests.get("tv")->getEntity(m_accessor));
+        sensor::Sensor* tr = static_cast<sensor::Sensor*>(m_data_requests.get("tr")->getEntity(m_accessor));
 
+        float value = 0;
         if (mode_of_operating->state == "Warmwasserbereitung" && tv != nullptr && tr != nullptr && water_flow != nullptr) {
-            thermal_power->publish_state((tv->state - tr->state) * (4.19 * water_flow->state) / 3600.0f);
+            value = (tv->state - tr->state) * (4.19 * water_flow->state) / 3600.0f;
         } else if (mode_of_operating->state == "Heizen" && tvbh != nullptr && tr != nullptr && water_flow != nullptr) {
-            thermal_power->publish_state((tvbh->state - tr->state) * (4.19 * water_flow->state) / 3600.0f);
+            value = (tvbh->state - tr->state) * (4.19 * water_flow->state) / 3600.0f;
         } else if (mode_of_operating->state == "Kühlen" && tvbh != nullptr && tr != nullptr && water_flow != nullptr) {
-            thermal_power->publish_state((tvbh->state - tr->state) * (4.19 * water_flow->state) / 3600.0f);
+            value = (tvbh->state - tr->state) * (4.19 * water_flow->state) / 3600.0f;
         }
+        thermal_power->publish_state(value);
     }
 }
 
@@ -611,7 +606,8 @@ void DaikinRotexCanComponent::set_target_hot_water_temperature(float temperature
 
 void DaikinRotexCanComponent::set_target_room1_temperature(float temperature) {
     m_data_requests.sendSet(m_accessor, m_accessor.get_target_room1_temperature_set()->get_name(), temperature);
-    m_data_requests.sendGet(m_accessor, m_accessor.get_target_room1_temperature()->get_name());
+    TRequest const* pRequest = m_data_requests.get("target_room1_temperature");
+    m_data_requests.sendGet(m_accessor, pRequest->getName(m_accessor));
 }
 
 void DaikinRotexCanComponent::set_flow_temperature_day(float temperature) {

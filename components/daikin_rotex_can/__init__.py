@@ -251,6 +251,20 @@ sensor_configuration = [
         "data_size": 2,
         "divider": 1,
         "update_entity": "thermal_power"
+    },
+    {
+        "name": "target_room1_temperature",
+        "device_class": DEVICE_CLASS_TEMPERATURE,
+        "unit_of_measurement": UNIT_CELSIUS,
+        "accuracy_decimals": 1,
+        "state_class": STATE_CLASS_MEASUREMENT,
+        "icon": "mdi:thermometer-lines",
+        "data": "31 00 05 00 00 00 00",
+        "expected_reponse": "D2 00 05 __ __ 00 __",
+        "data_offset": 3,
+        "data_size": 2,
+        "divider": 10.0,
+        "set_entity": "target_room1_temperature_set"
     }
 ]
 
@@ -265,7 +279,6 @@ CONF_ENTITIES = "entities"
 
 ########## Sensors ##########
 
-CONF_TARGET_ROOM1_TEMPERATURE = "target_room1_temperature"
 CONF_TARGET_HOT_WATER_TEMPERATURE = "target_hot_water_temperature"
 CONF_FLOW_TEMPERATURE_DAY = "flow_temperature_day" # Temperatur Vorlauf Tag
 CONF_THERMAL_POWER = "thermal_power" # Thermische Leistung
@@ -332,12 +345,6 @@ for sensor_conf in sensor_configuration:
 entity_schemas = {
                 ########## Sensors ##########
 
-                cv.Optional(CONF_TARGET_ROOM1_TEMPERATURE): sensor.sensor_schema(
-                    device_class=DEVICE_CLASS_TEMPERATURE,
-                    unit_of_measurement=UNIT_CELSIUS,
-                    accuracy_decimals=1,
-                    state_class=STATE_CLASS_MEASUREMENT
-                ).extend(),
                 cv.Optional(CONF_TARGET_HOT_WATER_TEMPERATURE): sensor.sensor_schema(
                     device_class=DEVICE_CLASS_TEMPERATURE,
                     unit_of_measurement=UNIT_CELSIUS,
@@ -549,22 +556,21 @@ def to_code(config):
         for sens_conf in sensor_configuration:
             if sensor_conf := entities.get(sens_conf.get("name")):
                 sens = yield sensor.new_sensor(sensor_conf)
+
                 cg.add(var.getAccessor().set_sensor(
                     sens_conf.get("name"),
                     [
                         sens,
-                        sens_conf["name"],
-                        sens_conf["data"],
-                        sens_conf["expected_reponse"],
-                        sens_conf["data_offset"],
-                        sens_conf["data_size"],
-                        sens_conf["divider"],
+                        sens_conf.get("name"),
+                        sens_conf.get("data"),
+                        sens_conf.get("expected_reponse"),
+                        sens_conf.get("data_offset"),
+                        sens_conf.get("data_size"),
+                        sens_conf.get("divider"),
+                        sens_conf.get("update_entity", ""),
+                        sens_conf.get("set_entity", "")
                     ]
                 ))
-
-        if sensor_conf := entities.get(CONF_TARGET_ROOM1_TEMPERATURE):
-            sens = yield sensor.new_sensor(sensor_conf)
-            cg.add(var.getAccessor().set_target_room1_temperature(sens))
 
         if sensor_conf := entities.get(CONF_TARGET_HOT_WATER_TEMPERATURE):
             sens = yield sensor.new_sensor(sensor_conf)

@@ -72,7 +72,7 @@ private:
         DaikinRotexCanComponent* m_pParent;
     };
 
-    void updateState(TRequest const& request);
+    void updateState(std::string const& id);
 
     float getSensorState(std::string const& name);
 
