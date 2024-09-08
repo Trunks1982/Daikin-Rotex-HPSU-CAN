@@ -51,14 +51,8 @@ public:
     sensor::Sensor* get_target_hot_water_temperature() const { return m_target_hot_water_temperature; }
     void set_target_hot_water_temperature(sensor::Sensor* pSensor) { m_target_hot_water_temperature = pSensor; }
 
-    sensor::Sensor* get_flow_temperature_day() const { return m_flow_temperature_day; }
-    void set_flow_temperature_day(sensor::Sensor* pSensor) { m_flow_temperature_day = pSensor; }
-
     sensor::Sensor* get_thermal_power() const { return m_thermal_power; }
     void set_thermal_power(sensor::Sensor* pSensor) { m_thermal_power = pSensor; }
-
-    sensor::Sensor* get_heating_curve() const { return m_heating_curve; }
-    void set_heating_curve(sensor::Sensor* pSensor) { m_heating_curve = pSensor; }
 
     sensor::Sensor* get_min_target_supply_temperature() const { return m_min_target_supply_temperature; }
     void set_min_target_supply_temperature(sensor::Sensor* pSensor) { m_min_target_supply_temperature = pSensor; }
@@ -143,9 +137,7 @@ private:
     // Sensors
     sensor::Sensor* m_pTemperatureOutsideSensor;
     sensor::Sensor* m_target_hot_water_temperature;
-    sensor::Sensor* m_flow_temperature_day;
     sensor::Sensor* m_thermal_power;
-    sensor::Sensor* m_heating_curve;
     sensor::Sensor* m_min_target_supply_temperature;
     sensor::Sensor* m_max_target_supply_temperature;
 

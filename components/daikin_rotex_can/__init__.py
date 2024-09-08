@@ -286,13 +286,38 @@ sensor_configuration = [
         "unit_of_measurement": UNIT_CELSIUS,
         "accuracy_decimals": 1,
         "state_class": STATE_CLASS_MEASUREMENT,
-        "icon": "mdi:thermometer-lines",
         "data": "31 00 05 00 00 00 00",
         "expected_reponse": "D2 00 05 __ __ 00 __",
         "data_offset": 3,
         "data_size": 2,
         "divider": 10.0,
         "set_entity": "target_room1_temperature_set"
+    },
+    {
+        "name": "flow_temperature_day",
+        "device_class": DEVICE_CLASS_TEMPERATURE,
+        "unit_of_measurement": UNIT_CELSIUS,
+        "accuracy_decimals": 1,
+        "state_class": STATE_CLASS_MEASUREMENT,
+        "data": "31 00 FA 01 29 00 00",
+        "expected_reponse": "__ __ FA 01 29 __ __",
+        "data_offset": 5,
+        "data_size": 2,
+        "divider": 10.0,
+        "set_entity": "flow_temperature_day_set"
+    },
+    {
+        "name": "heating_curve",
+        "device_class": DEVICE_CLASS_TEMPERATURE,
+        "unit_of_measurement": UNIT_CELSIUS,
+        "accuracy_decimals": 2,
+        "state_class": STATE_CLASS_MEASUREMENT,
+        "data": "31 00 FA 01 0E 00 00",
+        "expected_reponse": "__ __ FA 01 0E __ __",
+        "data_offset": 5,
+        "data_size": 2,
+        "divider": 100.0,
+        "set_entity": "heating_curve_set"
     }
 ]
 
@@ -308,9 +333,7 @@ CONF_ENTITIES = "entities"
 ########## Sensors ##########
 
 CONF_TARGET_HOT_WATER_TEMPERATURE = "target_hot_water_temperature"
-CONF_FLOW_TEMPERATURE_DAY = "flow_temperature_day" # Temperatur Vorlauf Tag
 CONF_THERMAL_POWER = "thermal_power" # Thermische Leistung
-CONF_HEATING_CURVE = "heating_curve" # Heizkurve
 CONF_MIN_TARGET_SUPPLY_TEMPERATURE = "min_target_supply_temperature" # Min Vorlauf Soll
 CONF_MAX_TARGET_SUPPLY_TEMPERATURE = "max_target_supply_temperature" # Max Vorlauf Soll
 
@@ -377,21 +400,9 @@ entity_schemas = {
                     accuracy_decimals=1,
                     state_class=STATE_CLASS_MEASUREMENT
                 ).extend(),
-                cv.Optional(CONF_FLOW_TEMPERATURE_DAY): sensor.sensor_schema(
-                    device_class=DEVICE_CLASS_TEMPERATURE,
-                    unit_of_measurement=UNIT_CELSIUS,
-                    accuracy_decimals=1,
-                    state_class=STATE_CLASS_MEASUREMENT
-                ).extend(),
                 cv.Optional(CONF_THERMAL_POWER): sensor.sensor_schema(
                     device_class=DEVICE_CLASS_POWER,
                     unit_of_measurement=UNIT_KILOWATT,
-                    accuracy_decimals=2,
-                    state_class=STATE_CLASS_MEASUREMENT
-                ).extend(),
-                cv.Optional(CONF_HEATING_CURVE): sensor.sensor_schema(
-                    device_class=DEVICE_CLASS_TEMPERATURE,
-                    icon="mdi:thermometer-lines",
                     accuracy_decimals=2,
                     state_class=STATE_CLASS_MEASUREMENT
                 ).extend(),
@@ -588,17 +599,9 @@ def to_code(config):
             sens = yield sensor.new_sensor(sensor_conf)
             cg.add(var.getAccessor().set_target_hot_water_temperature(sens))
 
-        if sensor_conf := entities.get(CONF_FLOW_TEMPERATURE_DAY):
-            sens = yield sensor.new_sensor(sensor_conf)
-            cg.add(var.getAccessor().set_flow_temperature_day(sens))
-
         if sensor_conf := entities.get(CONF_THERMAL_POWER):
             sens = yield sensor.new_sensor(sensor_conf)
             cg.add(var.getAccessor().set_thermal_power(sens))
-
-        if sensor_conf := entities.get(CONF_HEATING_CURVE):
-            sens = yield sensor.new_sensor(sensor_conf)
-            cg.add(var.getAccessor().set_heating_curve(sens))
 
         if sensor_conf := entities.get(CONF_MIN_TARGET_SUPPLY_TEMPERATURE):
             sens = yield sensor.new_sensor(sensor_conf)
