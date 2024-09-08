@@ -93,7 +93,7 @@ daikin_rotex_can:
       name: "Max VL Einstellen"
     min_target_flow_temp_set:
       name: "Min VL Einstellen"
-    mode_of_operation:
+    mode_of_operating:
       name: "Betriebsart"
     operating_mode:
       name: "Betriebsmodus"

@@ -52,27 +52,6 @@ const std::vector<TRequest> entity_config = {
         }
     },
 
-    { // Betriebsart
-        "mode_of_operating",
-        {0x31, 0x00, 0xFA, 0xC0, 0xF6, 0x00, 0x00},
-        {  DC,   DC, 0xFA, 0xC0, 0xF6,   DC,   DC},
-        [](auto& accessor) -> EntityBase* { return accessor.get_mode_of_operating(); },
-        [](auto const& data, auto& accessor) -> DataType {
-            const uint32_t mode = uint32_t(data[6] + data[5]);
-
-            const auto iter = map_betriebsart.findByKey(mode);
-            const std::string str_mode = iter != map_betriebsart.end() ? iter->second : "Unknown";
-
-            accessor.get_mode_of_operating()->publish_state(str_mode);
-
-            accessor.getDaikinRotexCanComponent()->call_later([&accessor](){
-                accessor.getDaikinRotexCanComponent()->update_thermal_power();
-            });
-
-            return str_mode;
-        }
-    },
-
     { // HK Function
         "hk_function",
         {0x31, 0x00, 0xFA, 0x01, 0x41, 0x00, 0x00},
@@ -378,7 +357,7 @@ void DaikinRotexCanComponent::validateConfig() {
                     });
                 }
 
-                call_later([pair, value, this](){
+                call_later([pair, this](){
                     if (!pair.second.update_entity.empty()) {
                         updateState(pair.second.update_entity);
                     }
@@ -452,6 +431,12 @@ void DaikinRotexCanComponent::validateConfig() {
                     });
                 }
 
+                call_later([pair, this](){
+                    if (!pair.second.update_entity.empty()) {
+                        updateState(pair.second.update_entity);
+                    }
+                });
+
                 call_later([pair, str, &accessor, this](){
                     if (!pair.second.set_entity.empty()) {
                         TRequest const* pRequest = m_data_requests.get(pair.second.set_entity);
@@ -489,16 +474,14 @@ void DaikinRotexCanComponent::updateState(std::string const& id) {
 }
 
 void DaikinRotexCanComponent::update_thermal_power() {
-    text_sensor::TextSensor* mode_of_operating = m_accessor.get_mode_of_operating();
+    text_sensor::TextSensor* mode_of_operating = m_data_requests.get_text_sensor(m_accessor, "mode_of_operating");
     sensor::Sensor* thermal_power = m_accessor.get_thermal_power();
 
     if (mode_of_operating != nullptr && thermal_power != nullptr) {
-        // TODO: Type-safe casts
-        TRequest const* water_flow_request = m_data_requests.get("water_flow");
-        sensor::Sensor* water_flow = static_cast<sensor::Sensor*>(water_flow_request->getEntity(m_accessor));
-        sensor::Sensor* tvbh = static_cast<sensor::Sensor*>(m_data_requests.get("tvbh")->getEntity(m_accessor));
-        sensor::Sensor* tv = static_cast<sensor::Sensor*>(m_data_requests.get("tv")->getEntity(m_accessor));
-        sensor::Sensor* tr = static_cast<sensor::Sensor*>(m_data_requests.get("tr")->getEntity(m_accessor));
+        sensor::Sensor* water_flow = m_data_requests.get_sensor(m_accessor, "water_flow");
+        sensor::Sensor* tvbh = m_data_requests.get_sensor(m_accessor, "tvbh");
+        sensor::Sensor* tv = m_data_requests.get_sensor(m_accessor, "tv");
+        sensor::Sensor* tr = m_data_requests.get_sensor(m_accessor, "tr");
 
         float value = 0;
         if (mode_of_operating->state == "Warmwasserbereitung" && tv != nullptr && tr != nullptr && water_flow != nullptr) {
@@ -531,7 +514,7 @@ void DaikinRotexCanComponent::custom_request(std::string const& value) {
 ///////////////// Selects /////////////////
 void DaikinRotexCanComponent::set_operation_mode(std::string const& mode) {
     m_data_requests.sendSet(m_accessor, m_accessor.get_operating_mode_select()->get_name(), map_betriebsmodus.getKey(mode));
-    m_data_requests.sendGet(m_accessor, m_accessor.get_operating_mode()->get_name());
+    m_data_requests.sendGet(m_accessor, m_data_requests.get_entity(m_accessor, "operating_mode")->get_name());
 }
 
 void DaikinRotexCanComponent::set_hk_function(std::string const& mode) {

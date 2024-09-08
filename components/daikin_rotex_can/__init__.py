@@ -380,6 +380,16 @@ text_sensor_configuration = [
         "data_size": 1,
         "map": "0x01:Bereitschaft|0x03:Heizen|0x04:Absenken|0x05:Sommer|0x11:Kühlen|0x0B:Automatik 1|0x0C:Automatik 2",
         "set_entity": "operating_mode_select"
+    },
+    {
+        "name": "mode_of_operating" ,
+        "icon": ICON_SUN_SNOWFLAKE_VARIANT,
+        "data": "31 00 FA C0 F6 00 00",
+        "expected_reponse": "__ __ FA C0 F6 __ __",
+        "data_offset": 5,
+        "data_size": 2,
+        "map": "0x00:Standby|0x01:Heizen|0x02:Kühlen|0x03:Abtauen|0x04:Warmwasserbereitung",
+        "update_entity": "thermal_power"
     }
 ]
 
@@ -398,7 +408,6 @@ CONF_THERMAL_POWER = "thermal_power" # Thermische Leistung
 
 ########## Text Sensors ##########
 
-CONF_MODE_OF_OPERATING = "mode_of_operation"
 CONF_HK_FUNCTION = "hk_function"
 CONF_SG_MODE = "sg_mode"
 CONF_SMART_GRID = "smart_grid"
@@ -466,9 +475,6 @@ entity_schemas = {
 
                 ######## Text Sensors ########
 
-                cv.Optional(CONF_MODE_OF_OPERATING): text_sensor.text_sensor_schema(
-                    icon=ICON_SUN_SNOWFLAKE_VARIANT
-                ).extend(),
                 cv.Optional(CONF_HK_FUNCTION): text_sensor.text_sensor_schema(
                     icon="mdi:weather-partly-cloudy"
                 ).extend(),
@@ -662,10 +668,6 @@ def to_code(config):
                         sens_conf.get("set_entity", "")
                     ]
                 ))
-
-        if sensor_conf := entities.get(CONF_MODE_OF_OPERATING):
-            sens = yield text_sensor.new_text_sensor(sensor_conf)
-            cg.add(var.getAccessor().set_mode_of_operating(sens))
 
         if sensor_conf := entities.get(CONF_HK_FUNCTION):
             sens = yield text_sensor.new_text_sensor(sensor_conf)
