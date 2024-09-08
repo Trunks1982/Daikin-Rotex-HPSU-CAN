@@ -48,9 +48,6 @@ public:
     sensor::Sensor* get_sensor(std::string const& name) const { return m_sensors.at(name).pSensor; }
     void set_sensor(std::string const& name, TArguments const& arg) { m_sensors.insert({name, arg}); }
 
-    sensor::Sensor* get_target_hot_water_temperature() const { return m_target_hot_water_temperature; }
-    void set_target_hot_water_temperature(sensor::Sensor* pSensor) { m_target_hot_water_temperature = pSensor; }
-
     sensor::Sensor* get_thermal_power() const { return m_thermal_power; }
     void set_thermal_power(sensor::Sensor* pSensor) { m_thermal_power = pSensor; }
 
@@ -129,8 +126,6 @@ private:
     TSensorMap m_sensors;
 
     // Sensors
-    sensor::Sensor* m_pTemperatureOutsideSensor;
-    sensor::Sensor* m_target_hot_water_temperature;
     sensor::Sensor* m_thermal_power;
 
     // Text Sensors

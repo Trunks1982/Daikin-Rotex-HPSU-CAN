@@ -346,6 +346,20 @@ sensor_configuration = [
         "data_size": 2,
         "divider": 10.0,
         "set_entity": "max_target_flow_temp_set"
+    },
+    {
+        "name": "target_hot_water_temperature",
+        "device_class": DEVICE_CLASS_TEMPERATURE,
+        "unit_of_measurement": UNIT_CELSIUS,
+        "accuracy_decimals": 1,
+        "state_class": STATE_CLASS_MEASUREMENT,
+        "icon": "mdi:waves-arrow-right",
+        "data": "31 00 13 00 00 00 00",
+        "expected_reponse": "D2 00 13 __ __ 00 00",
+        "data_offset": 3,
+        "data_size": 2,
+        "divider": 10.0,
+        "set_entity": "target_hot_water_temperature_set"
     }
 ]
 
@@ -360,7 +374,6 @@ CONF_ENTITIES = "entities"
 
 ########## Sensors ##########
 
-CONF_TARGET_HOT_WATER_TEMPERATURE = "target_hot_water_temperature"
 CONF_THERMAL_POWER = "thermal_power" # Thermische Leistung
 
 ########## Text Sensors ##########
@@ -420,12 +433,6 @@ for sensor_conf in sensor_configuration:
 entity_schemas = {
                 ########## Sensors ##########
 
-                cv.Optional(CONF_TARGET_HOT_WATER_TEMPERATURE): sensor.sensor_schema(
-                    device_class=DEVICE_CLASS_TEMPERATURE,
-                    unit_of_measurement=UNIT_CELSIUS,
-                    accuracy_decimals=1,
-                    state_class=STATE_CLASS_MEASUREMENT
-                ).extend(),
                 cv.Optional(CONF_THERMAL_POWER): sensor.sensor_schema(
                     device_class=DEVICE_CLASS_POWER,
                     unit_of_measurement=UNIT_KILOWATT,
@@ -608,10 +615,6 @@ def to_code(config):
                         sens_conf.get("set_entity", "")
                     ]
                 ))
-
-        if sensor_conf := entities.get(CONF_TARGET_HOT_WATER_TEMPERATURE):
-            sens = yield sensor.new_sensor(sensor_conf)
-            cg.add(var.getAccessor().set_target_hot_water_temperature(sens))
 
         if sensor_conf := entities.get(CONF_THERMAL_POWER):
             sens = yield sensor.new_sensor(sensor_conf)

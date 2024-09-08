@@ -160,26 +160,6 @@ const std::vector<TRequest> entity_config = {
         }
     },
 
-    { // T-WW-Soll1
-        "target_hot_water_temperature",
-        {0x31, 0x00, 0x13, 0x00, 0x00, 0x00, 0x00},
-        {0xD2, 0x00, 0x13,   DC,   DC, 0x00, 0x00},
-        [](auto& accessor) -> EntityBase* { return accessor.get_target_hot_water_temperature(); },
-        [](auto const& data, auto& accessor) -> DataType {
-            const float temp = ((data[3] << 8) + data[4]) / 10.0f;
-
-            accessor.get_target_hot_water_temperature()->publish_state(temp);
-            if (accessor.get_target_hot_water_temperature_set() != nullptr) {
-                accessor.get_target_hot_water_temperature_set()->publish_state(temp);
-            }
-
-            accessor.getDaikinRotexCanComponent()->call_later([&](){
-                accessor.getDaikinRotexCanComponent()->run_dhw_lambdas();
-            });
-
-            return temp;
-        }
-    },
     { // WW Einstellen
         "target_hot_water_temperature_set",
         [](auto& accessor) -> EntityBase* { return accessor.get_target_hot_water_temperature_set(); },
@@ -435,6 +415,12 @@ void DaikinRotexCanComponent::validateConfig() {
                     }
                 });
 
+                if (pair.second.id == "target_hot_water_temperature") {
+                    call_later([&accessor](){
+                        accessor.getDaikinRotexCanComponent()->run_dhw_lambdas();
+                    });
+                }
+
                 return value;
             }
         });
@@ -517,7 +503,8 @@ void DaikinRotexCanComponent::set_smart_grid(std::string const& mode) {
 ///////////////// Numbers /////////////////
 void DaikinRotexCanComponent::set_target_hot_water_temperature(float temperature) {
     m_data_requests.sendSet(m_accessor, m_accessor.get_target_hot_water_temperature_set()->get_name(), temperature);
-    m_data_requests.sendGet(m_accessor, m_accessor.get_target_hot_water_temperature()->get_name());
+    TRequest const* pRequest = m_data_requests.get("target_hot_water_temperature");
+    m_data_requests.sendGet(m_accessor, pRequest->getName(m_accessor));
 }
 
 void DaikinRotexCanComponent::set_target_room1_temperature(float temperature) {
@@ -562,17 +549,20 @@ void DaikinRotexCanComponent::set_circulation_pump_max(uint8_t percent) {
     m_data_requests.sendGet(m_accessor, pRequest->getName(m_accessor));
 }
 
-
 ///////////////// Buttons /////////////////
 void DaikinRotexCanComponent::dhw_run() {
-    const float temp = m_accessor.get_target_hot_water_temperature()->get_raw_state();
+    TRequest const* pRequest = m_data_requests.get("target_hot_water_temperature");
+
+    const float temp = pRequest->get_sensor(m_accessor)->get_raw_state();
+
+    const std::string name = pRequest->getName(m_accessor);
 
     m_data_requests.sendSet(m_accessor, m_accessor.get_target_hot_water_temperature_set()->get_name(), 70);
-    m_data_requests.sendGet(m_accessor, m_accessor.get_target_hot_water_temperature()->get_name());
+    m_data_requests.sendGet(m_accessor, name);
 
-    m_dhw_run_lambdas.push_back([temp, this]() {
+    m_dhw_run_lambdas.push_back([temp, name, this]() {
         m_data_requests.sendSet(m_accessor, m_accessor.get_target_hot_water_temperature_set()->get_name(), temp);
-        m_data_requests.sendGet(m_accessor, m_accessor.get_target_hot_water_temperature()->get_name());
+        m_data_requests.sendGet(m_accessor, name);
     });
 }
 
