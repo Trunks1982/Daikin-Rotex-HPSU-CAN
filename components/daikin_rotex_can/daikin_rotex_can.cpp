@@ -52,22 +52,6 @@ const std::vector<TRequest> entity_config = {
         }
     },
 
-    { // HK Function
-        "hk_function",
-        {0x31, 0x00, 0xFA, 0x01, 0x41, 0x00, 0x00},
-        {  DC,   DC, 0xFA, 0x01, 0x41,   DC,   DC},
-        [](auto& accessor) -> EntityBase* { return accessor.get_hk_function(); },
-        [](auto const& data, auto& accessor) -> DataType {
-            const auto iter = map_hk_function.findByKey(data[6]);
-            const std::string str_mode = iter != map_hk_function.end() ? iter->second : "Unknown";
-
-            accessor.get_hk_function()->publish_state(str_mode);
-            if (accessor.get_hk_function_select() != nullptr) {
-                accessor.get_hk_function_select()->publish_state(str_mode);
-            }
-            return str_mode;
-        }
-    },
     { // HK Function Einstellen
         "hk_function_select",
         [](auto& accessor) -> EntityBase* { return accessor.get_hk_function_select(); },
@@ -519,7 +503,7 @@ void DaikinRotexCanComponent::set_operation_mode(std::string const& mode) {
 
 void DaikinRotexCanComponent::set_hk_function(std::string const& mode) {
     m_data_requests.sendSet(m_accessor, m_accessor.get_hk_function_select()->get_name(), map_hk_function.getKey(mode));
-    m_data_requests.sendGet(m_accessor, m_accessor.get_hk_function()->get_name());
+    m_data_requests.sendGet(m_accessor, m_data_requests.get_entity(m_accessor, "hk_function")->get_name());
 }
 
 void DaikinRotexCanComponent::set_sg_mode(std::string const& mode) {

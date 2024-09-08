@@ -390,6 +390,16 @@ text_sensor_configuration = [
         "data_size": 2,
         "map": "0x00:Standby|0x01:Heizen|0x02:Kühlen|0x03:Abtauen|0x04:Warmwasserbereitung",
         "update_entity": "thermal_power"
+    },
+    {
+        "name": "hk_function" ,
+        "icon": "mdi:weather-partly-cloudy",
+        "data": "31 00 FA 01 41 00 00",
+        "expected_reponse": "__ __ FA 01 41 __ __",
+        "data_offset": 6,
+        "data_size": 1,
+        "map": "0x00:Witterungsgeführt|0x01:Fest",
+        "set_entity": "hk_function_select"
     }
 ]
 
@@ -408,7 +418,6 @@ CONF_THERMAL_POWER = "thermal_power" # Thermische Leistung
 
 ########## Text Sensors ##########
 
-CONF_HK_FUNCTION = "hk_function"
 CONF_SG_MODE = "sg_mode"
 CONF_SMART_GRID = "smart_grid"
 CONF_ERROR_CODE = "error_code"
@@ -475,9 +484,6 @@ entity_schemas = {
 
                 ######## Text Sensors ########
 
-                cv.Optional(CONF_HK_FUNCTION): text_sensor.text_sensor_schema(
-                    icon="mdi:weather-partly-cloudy"
-                ).extend(),
                 cv.Optional(CONF_ERROR_CODE): text_sensor.text_sensor_schema(
                     icon="mdi:alert"
                 ).extend(),
@@ -668,10 +674,6 @@ def to_code(config):
                         sens_conf.get("set_entity", "")
                     ]
                 ))
-
-        if sensor_conf := entities.get(CONF_HK_FUNCTION):
-            sens = yield text_sensor.new_text_sensor(sensor_conf)
-            cg.add(var.getAccessor().set_hk_function(sens))
 
         if sensor_conf := entities.get(CONF_ERROR_CODE):
             sens = yield text_sensor.new_text_sensor(sensor_conf)
