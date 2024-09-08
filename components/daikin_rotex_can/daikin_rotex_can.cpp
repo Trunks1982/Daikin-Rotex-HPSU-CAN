@@ -213,20 +213,6 @@ const std::vector<TRequest> entity_config = {
         }
     },
 
-    { // Min VL Soll
-        "min_target_supply_temperature",
-        {0x31, 0x00, 0xFA, 0x01, 0x2B, 0x00, 0x00},
-        {  DC,   DC, 0xFA, 0x01, 0x2B,   DC,   DC},
-        [](auto& accessor) -> EntityBase* { return accessor.get_min_target_supply_temperature(); },
-        [](auto const& data, auto& accessor) -> DataType {
-            const float temp = ((data[5] << 8) + data[6]) / 10.0f;
-            accessor.get_min_target_supply_temperature()->publish_state(temp);
-            if (accessor.get_min_target_flow_temp_set() != nullptr) {
-                accessor.get_min_target_flow_temp_set()->publish_state(temp);
-            }
-            return temp;
-        }
-    },
     { // Min VL Einstellen
         "min_target_flow_temp_set",
         [](auto& accessor) -> EntityBase* { return accessor.get_min_target_flow_temp_set(); },
@@ -238,20 +224,6 @@ const std::vector<TRequest> entity_config = {
         }
     },
 
-    { // Max VL Soll
-        "max_target_supply_temperature",
-        {0x31, 0x00, 0x28, 0x00, 0x00, 0x00, 0x00},
-        {  DC,   DC, 0x28,   DC,   DC,   DC,   DC},
-        [](auto& accessor) -> EntityBase* { return accessor.get_max_target_supply_temperature(); },
-        [](auto const& data, auto& accessor) -> DataType {
-            const float temp = ((data[3] << 8) + data[4]) / 10.0f;
-            accessor.get_max_target_supply_temperature()->publish_state(temp);
-            if (accessor.get_max_target_flow_temp_set() != nullptr) {
-                accessor.get_max_target_flow_temp_set()->publish_state(temp);
-            }
-            return temp;
-        }
-    },
     { // Max VL Einstellen
         "max_target_flow_temp_set",
         [](auto& accessor) -> EntityBase* { return accessor.get_max_target_flow_temp_set(); },
@@ -562,12 +534,14 @@ void DaikinRotexCanComponent::set_flow_temperature_day(float temperature) {
 
 void DaikinRotexCanComponent::set_max_target_flow_temp(float temperature) {
     m_data_requests.sendSet(m_accessor, m_accessor.get_max_target_flow_temp_set()->get_name(), temperature);
-    m_data_requests.sendGet(m_accessor, m_accessor.get_max_target_supply_temperature()->get_name());
+    TRequest const* pRequest = m_data_requests.get("max_target_supply_temperature");
+    m_data_requests.sendGet(m_accessor, pRequest->getName(m_accessor));
 }
 
 void DaikinRotexCanComponent::set_min_target_flow_temp(float temperature) {
     m_data_requests.sendSet(m_accessor, m_accessor.get_min_target_flow_temp_set()->get_name(), temperature);
-    m_data_requests.sendGet(m_accessor, m_accessor.get_min_target_supply_temperature()->get_name());
+    TRequest const* pRequest = m_data_requests.get("min_target_supply_temperature");
+    m_data_requests.sendGet(m_accessor, pRequest->getName(m_accessor));
 }
 
 void DaikinRotexCanComponent::set_heating_curve(float heating_curve) {

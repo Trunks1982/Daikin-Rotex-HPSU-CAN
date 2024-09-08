@@ -318,6 +318,34 @@ sensor_configuration = [
         "data_size": 2,
         "divider": 100.0,
         "set_entity": "heating_curve_set"
+    },
+    {
+        "name": "min_target_supply_temperature",
+        "device_class": DEVICE_CLASS_TEMPERATURE,
+        "unit_of_measurement": UNIT_CELSIUS,
+        "accuracy_decimals": 0,
+        "state_class": STATE_CLASS_MEASUREMENT,
+        "icon": "mdi:waves-arrow-left",
+        "data": "31 00 FA 01 2B 00 00",
+        "expected_reponse": "__ __ FA 01 2B __ __",
+        "data_offset": 5,
+        "data_size": 2,
+        "divider": 10.0,
+        "set_entity": "min_target_flow_temp_set"
+    },
+    {
+        "name": "max_target_supply_temperature",
+        "device_class": DEVICE_CLASS_TEMPERATURE,
+        "unit_of_measurement": UNIT_CELSIUS,
+        "accuracy_decimals": 0,
+        "state_class": STATE_CLASS_MEASUREMENT,
+        "icon": "mdi:waves-arrow-right",
+        "data": "31 00 28 00 00 00 00",
+        "expected_reponse": "__ __ 28 __ __ __ __",
+        "data_offset": 3,
+        "data_size": 2,
+        "divider": 10.0,
+        "set_entity": "max_target_flow_temp_set"
     }
 ]
 
@@ -334,8 +362,6 @@ CONF_ENTITIES = "entities"
 
 CONF_TARGET_HOT_WATER_TEMPERATURE = "target_hot_water_temperature"
 CONF_THERMAL_POWER = "thermal_power" # Thermische Leistung
-CONF_MIN_TARGET_SUPPLY_TEMPERATURE = "min_target_supply_temperature" # Min Vorlauf Soll
-CONF_MAX_TARGET_SUPPLY_TEMPERATURE = "max_target_supply_temperature" # Max Vorlauf Soll
 
 ########## Text Sensors ##########
 
@@ -405,18 +431,6 @@ entity_schemas = {
                     unit_of_measurement=UNIT_KILOWATT,
                     accuracy_decimals=2,
                     state_class=STATE_CLASS_MEASUREMENT
-                ).extend(),
-                cv.Optional(CONF_MIN_TARGET_SUPPLY_TEMPERATURE): sensor.sensor_schema(
-                    device_class=DEVICE_CLASS_TEMPERATURE,
-                    unit_of_measurement=UNIT_CELSIUS,
-                    accuracy_decimals=0,
-                    icon="mdi:waves-arrow-left",
-                ).extend(),
-                cv.Optional(CONF_MAX_TARGET_SUPPLY_TEMPERATURE): sensor.sensor_schema(
-                    device_class=DEVICE_CLASS_TEMPERATURE,
-                    unit_of_measurement=UNIT_CELSIUS,
-                    accuracy_decimals=0,
-                    icon="mdi:waves-arrow-right",
                 ).extend(),
 
                 ######## Text Sensors ########
@@ -602,14 +616,6 @@ def to_code(config):
         if sensor_conf := entities.get(CONF_THERMAL_POWER):
             sens = yield sensor.new_sensor(sensor_conf)
             cg.add(var.getAccessor().set_thermal_power(sens))
-
-        if sensor_conf := entities.get(CONF_MIN_TARGET_SUPPLY_TEMPERATURE):
-            sens = yield sensor.new_sensor(sensor_conf)
-            cg.add(var.getAccessor().set_min_target_supply_temperature(sens))
-
-        if sensor_conf := entities.get(CONF_MAX_TARGET_SUPPLY_TEMPERATURE):
-            sens = yield sensor.new_sensor(sensor_conf)
-            cg.add(var.getAccessor().set_max_target_supply_temperature(sens))
 
         ######## Text Sensors ########
 

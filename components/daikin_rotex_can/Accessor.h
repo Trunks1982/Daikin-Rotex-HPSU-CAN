@@ -54,12 +54,6 @@ public:
     sensor::Sensor* get_thermal_power() const { return m_thermal_power; }
     void set_thermal_power(sensor::Sensor* pSensor) { m_thermal_power = pSensor; }
 
-    sensor::Sensor* get_min_target_supply_temperature() const { return m_min_target_supply_temperature; }
-    void set_min_target_supply_temperature(sensor::Sensor* pSensor) { m_min_target_supply_temperature = pSensor; }
-
-    sensor::Sensor* get_max_target_supply_temperature() const { return m_max_target_supply_temperature; }
-    void set_max_target_supply_temperature(sensor::Sensor* pSensor) { m_max_target_supply_temperature = pSensor; }
-
     // Text Sensors
 
     text_sensor::TextSensor* get_operating_mode() const { return m_operating_mode; }
@@ -138,8 +132,6 @@ private:
     sensor::Sensor* m_pTemperatureOutsideSensor;
     sensor::Sensor* m_target_hot_water_temperature;
     sensor::Sensor* m_thermal_power;
-    sensor::Sensor* m_min_target_supply_temperature;
-    sensor::Sensor* m_max_target_supply_temperature;
 
     // Text Sensors
     text_sensor::TextSensor* m_operating_mode;
