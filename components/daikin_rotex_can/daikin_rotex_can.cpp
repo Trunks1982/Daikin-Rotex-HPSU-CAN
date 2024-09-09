@@ -249,7 +249,6 @@ void DaikinRotexCanComponent::validateConfig() {
         m_data_requests.add({
             pair.second.id,
             data,
-            pair.second.can_id,
             expected_response,
             [pair](auto& accessor) -> EntityBase* { return pair.second.pBinarySensor; },
             [pair, this](auto const& data, auto& accessor) -> DataType {

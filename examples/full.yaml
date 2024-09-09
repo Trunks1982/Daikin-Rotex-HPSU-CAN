@@ -135,6 +135,8 @@ daikin_rotex_can:
       name: "Warmwassertemperatur"
     temperature_outside:
       name: "Aussentemperatur"
+    t_ext:
+      name: "T-Aussen"
     tr:
       name: "Ruecklauftemperatur Heizung"
     tv:

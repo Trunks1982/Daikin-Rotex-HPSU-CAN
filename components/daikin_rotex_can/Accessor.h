@@ -31,7 +31,6 @@ class Accessor {
     struct TBinaryArguments {
         binary_sensor::BinarySensor* pBinarySensor;
         std::string id;
-        uint32_t can_id;
         std::string data;
         std::string expected_response;
         uint8_t data_offset;

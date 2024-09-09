@@ -21,7 +21,6 @@ public:
     TRequest(
         std::string const& id,
         std::array<uint8_t, 7> const& data,
-        uint32_t response_can_id,
         std::array<uint16_t, 7> const& expected_reponse,
         TEntityProvider entity_provider,
         TGetLambda lambda,
@@ -29,7 +28,6 @@ public:
         bool setter)
     : m_id(id)
     , m_data(data)
-    , m_response_can_id(response_can_id)
     , m_expected_reponse(expected_reponse)
     , m_entity_provider(entity_provider)
     , m_lambda(lambda)
@@ -43,11 +41,10 @@ public:
     TRequest(
         std::string const& id,
         std::array<uint8_t, 7> const& data,
-        uint32_t response_can_id,
         std::array<uint16_t, 7> const& expected_reponse,
         TEntityProvider entity_provider,
         TGetLambda lambda)
-    : TRequest(id, data, response_can_id, expected_reponse, entity_provider, lambda, [](float) -> std::vector<uint8_t> { return {}; }, false)
+    : TRequest(id, data, expected_reponse, entity_provider, lambda, [](float) -> std::vector<uint8_t> { return {}; }, false)
     {
     }
 
@@ -58,17 +55,7 @@ public:
         TEntityProvider entity_provider,
         TGetLambda lambda,
         TSetLambda setLambda)
-    : TRequest(id, data, 0x180, expected_reponse, entity_provider, lambda, setLambda, true)
-    {
-    }
-
-    TRequest(
-        std::string const& id,
-        std::array<uint8_t, 7> const& data,
-        std::array<uint16_t, 7> const& expected_reponse,
-        TEntityProvider entity_provider,
-        TGetLambda lambda)
-    : TRequest(id, data, 0x180, expected_reponse, entity_provider, lambda)
+    : TRequest(id, data, expected_reponse, entity_provider, lambda, setLambda, true)
     {
     }
 
@@ -76,7 +63,7 @@ public:
         std::string const& id,
         TEntityProvider entity_provider,
         TSetLambda setLambda)
-    : TRequest(id, {}, 0x00, {}, entity_provider, [](auto const&, Accessor&) -> DataType { return 0u; }, setLambda, true)
+    : TRequest(id, {}, {}, entity_provider, [](auto const&, Accessor&) -> DataType { return 0u; }, setLambda, true)
     {
     }
 
@@ -104,7 +91,11 @@ public:
     }
 
     bool hasSendGet() const {
-        return m_response_can_id != 0x00;
+        return get_response_canid() != 0x00;
+    }
+
+    uint16_t get_response_canid() const {
+        return m_data.size() >= 7 ? (m_data[0] & 0xF0) * 8 + (m_data[1] & 0x0F) : 0x00;
     }
 
     bool isMatch(uint32_t can_id, std::vector<uint8_t> const& responseData) const;
@@ -127,7 +118,6 @@ public:
 private:
     std::string m_id;
     std::array<uint8_t, 7> m_data;
-    uint32_t m_response_can_id;
     std::array<uint16_t, 7> m_expected_reponse;
     TEntityProvider m_entity_provider;
     TGetLambda m_lambda;

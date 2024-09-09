@@ -63,6 +63,18 @@ sensor_configuration = [
         "divider": 10.0
     },
     {
+        "name": "t_ext",
+        "device_class": DEVICE_CLASS_TEMPERATURE,
+        "unit_of_measurement": UNIT_CELSIUS,
+        "accuracy_decimals": 1,
+        "state_class": STATE_CLASS_MEASUREMENT,
+        "data": "61 00 FA 0A 0C 00 00",
+        "expected_reponse": "__ __ FA 0A 0C __ __",
+        "data_offset": 5,
+        "data_size": 2,
+        "divider": 10.0
+    },
+    {
         "name": "tdhw1",
         "device_class": DEVICE_CLASS_TEMPERATURE,
         "unit_of_measurement": UNIT_CELSIUS,
@@ -572,7 +584,6 @@ binary_sensor_configuration = [
     {
         "name": "status_kompressor" ,
         "icon": "mdi:pump",
-        "can_id": 0x500,
         "data": "A1 00 61 00 00 00 00",
         "expected_reponse": "__ __ 61 __ __ __ __",
         "data_offset": 3,
@@ -854,7 +865,6 @@ def to_code(config):
                     [
                         sens,
                         sens_conf.get("name"),
-                        sens_conf.get("can_id", 0x180),
                         sens_conf.get("data"),
                         sens_conf.get("expected_reponse"),
                         sens_conf.get("data_offset"),
