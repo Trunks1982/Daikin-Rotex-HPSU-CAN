@@ -509,6 +509,19 @@ text_sensor_configuration = [
         "set_entity": "smart_grid_select"
     },
     {
+        "name": "quiet" ,
+        "icon": "mdi:weather-partly-cloudy",
+        "data": "31 00 FA 06 96",
+        "expected_reponse": "__ __ FA 06 96 __ __",
+        "data_offset": 6,
+        "data_size": 1,
+        "map": {
+            0x00: "Aus",
+            0x01: "An",
+            0x02: "Nur bei Nacht"
+        }
+    },
+    {
         "name": "error_code" ,
         "icon": "mdi:alert",
         "data": "31 00 FA 13 88 00 00",

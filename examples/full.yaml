@@ -105,6 +105,8 @@ daikin_rotex_can:
       name: "Energie Heizung"
     qdhw:
       name: "Energie für WW"
+    quiet:
+      name: "Flüsterbetrieb"
     runtime_compressor:
       name: "Laufzeit Compressor"
     runtime_pump:
