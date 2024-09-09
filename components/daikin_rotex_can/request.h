@@ -2,8 +2,8 @@
 
 #include "esphome/components/daikin_rotex_can/types.h"
 #include "esphome/components/daikin_rotex_can/utils.h"
-#include "esphome/components/daikin_rotex_can/Accessor.h"
 #include "esphome/components/esp32_can/esp32_can.h"
+#include "esphome/components/sensor/sensor.h"
 #include <functional>
 
 namespace esphome {
@@ -14,8 +14,8 @@ const uint16_t DC = 0xFFFF; // Don't care
 class TRequest
 {
 public:
-    using TEntityProvider = std::function<EntityBase*(const Accessor&)>; // TODO: Remove Accessor after config moved to python!!!!!!
-    using TGetLambda = std::function<DataType(std::vector<uint8_t> const&, Accessor&)>;
+    using TEntityProvider = std::function<EntityBase*()>;
+    using TGetLambda = std::function<DataType(std::vector<uint8_t> const&)>;
     using TSetLambda = std::function<std::vector<uint8_t>(float const&)>;
 public:
     TRequest(
@@ -63,27 +63,27 @@ public:
         std::string const& id,
         TEntityProvider entity_provider,
         TSetLambda setLambda)
-    : TRequest(id, {}, {}, entity_provider, [](auto const&, Accessor&) -> DataType { return 0u; }, setLambda, true)
+    : TRequest(id, {}, {}, entity_provider, [](auto const&) -> DataType { return 0u; }, setLambda, true)
     {
     }
 
     std::string const& get_id() const { return m_id; }
 
-    std::string getName(Accessor const& accessor) const {
-        EntityBase* pEntity = m_entity_provider(accessor);
-        return pEntity->get_name().str();
+    std::string getName() const {
+        EntityBase* pEntity = m_entity_provider();
+        return pEntity != nullptr ? pEntity->get_name().str() : "<INVALID>";
     }
 
-    EntityBase* getEntity(Accessor const& accessor) const {
-        return m_entity_provider(accessor);
+    EntityBase* getEntity() const {
+        return m_entity_provider();
     }
 
-    sensor::Sensor* get_sensor(Accessor const& accessor) const {
-        return static_cast<sensor::Sensor*>(m_entity_provider(accessor));
+    sensor::Sensor* get_sensor() const {
+        return dynamic_cast<sensor::Sensor*>(m_entity_provider());
     }
 
-    bool isGetSupported(Accessor const& accessor) const {
-        return m_entity_provider(accessor) != nullptr;
+    bool isGetSupported() const {
+        return m_entity_provider() != nullptr;
     }
 
     uint32_t getLastUpdate() const {
@@ -99,18 +99,18 @@ public:
     }
 
     bool isMatch(uint32_t can_id, std::vector<uint8_t> const& responseData) const;
-    bool handle(Accessor&, uint32_t can_id, std::vector<uint8_t> const& responseData, uint32_t timestamp);
+    bool handle(uint32_t can_id, std::vector<uint8_t> const& responseData, uint32_t timestamp);
 
-    void sendGet(Accessor const& accessor, esphome::esp32_can::ESP32Can* pCanBus);
-    void sendSet(Accessor const& accessor, esphome::esp32_can::ESP32Can* pCanBus, float value);
+    void sendGet(esphome::esp32_can::ESP32Can* pCanBus);
+    void sendSet(esphome::esp32_can::ESP32Can* pCanBus, float value);
 
     bool inProgress() const;
     bool isSetter() const { return m_setter; }
 
-    std::string string(Accessor const& accessor) {
+    std::string string() {
         return Utils::format(
             "TRequest<name: %s, data: %s>",
-            getName(accessor).c_str(),
+            getName().c_str(),
             Utils::to_hex(m_data).c_str()
         );
     }

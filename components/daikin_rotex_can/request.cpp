@@ -1,5 +1,4 @@
 #include "esphome/components/daikin_rotex_can/request.h"
-#include "esphome/components/daikin_rotex_can/Accessor.h"   // ?
 #include "esphome/core/hal.h"
 
 namespace esphome {
@@ -22,9 +21,9 @@ bool TRequest::isMatch(uint32_t can_id, std::vector<uint8_t> const& responseData
     return false;
 }
 
-bool TRequest::handle(Accessor& accessor, uint32_t can_id, std::vector<uint8_t> const& responseData, uint32_t timestamp) {
+bool TRequest::handle(uint32_t can_id, std::vector<uint8_t> const& responseData, uint32_t timestamp) {
     if (isMatch(can_id, responseData)) {
-        DataType variant = m_lambda(responseData, accessor);
+        DataType variant = m_lambda(responseData);
         std::string value;
         if (std::holds_alternative<uint32_t>(variant)) {
             value = std::to_string(std::get<uint32_t>(variant));
@@ -40,7 +39,7 @@ bool TRequest::handle(Accessor& accessor, uint32_t can_id, std::vector<uint8_t> 
             value = "Unsupported value type!";
         }
         Utils::log("handle ", "%s<%s> can_id<%s> data<%s>",
-            getName(accessor).c_str(), value.c_str(), Utils::to_hex(can_id).c_str(), Utils::to_hex(responseData).c_str());
+            getName().c_str(), value.c_str(), Utils::to_hex(can_id).c_str(), Utils::to_hex(responseData).c_str());
 
         m_last_update = timestamp;
         return true;
@@ -48,7 +47,7 @@ bool TRequest::handle(Accessor& accessor, uint32_t can_id, std::vector<uint8_t> 
     return false;
 }
 
-void TRequest::sendGet(Accessor const& accessor, esphome::esp32_can::ESP32Can* pCanBus) {
+void TRequest::sendGet(esphome::esp32_can::ESP32Can* pCanBus) {
     if (pCanBus == nullptr) {
         ESP_LOGE("sendGet", "pCanbus is null!");
         return;
@@ -59,13 +58,13 @@ void TRequest::sendGet(Accessor const& accessor, esphome::esp32_can::ESP32Can* p
 
         pCanBus->send_data(can_id, use_extended_id, { m_data.begin(), m_data.end() });
         Utils::log("sendGet", "%s can_id<%s> data<%s>",
-            getName(accessor).c_str(), Utils::to_hex(can_id).c_str(), Utils::to_hex(m_data).c_str());
+            getName().c_str(), Utils::to_hex(can_id).c_str(), Utils::to_hex(m_data).c_str());
 
         m_last_request = millis();
     }
 }
 
-void TRequest::sendSet(Accessor const& accessor, esphome::esp32_can::ESP32Can* pCanBus, float value) {
+void TRequest::sendSet(esphome::esp32_can::ESP32Can* pCanBus, float value) {
     if (pCanBus == nullptr) {
         ESP_LOGE("sendSet", "pCanbus is null!");
         return;
@@ -78,9 +77,9 @@ void TRequest::sendSet(Accessor const& accessor, esphome::esp32_can::ESP32Can* p
 
     pCanBus->send_data(can_id, use_extended_id, { data.begin(), data.end() });
     Utils::log("sendSet", "name<%s> value<%f> can_id<%s> data<%s>",
-        getName(accessor).c_str(), value, Utils::to_hex(can_id).c_str(), Utils::to_hex(data).c_str());
+        getName().c_str(), value, Utils::to_hex(can_id).c_str(), Utils::to_hex(data).c_str());
 
-    sendGet(accessor, pCanBus);
+    sendGet(pCanBus);
 }
 
 }

@@ -26,8 +26,8 @@ void DaikinRotexCanComponent::validateConfig() {
             pair.second.id,
             data,
             expected_response,
-            [pair](auto& accessor) -> EntityBase* { return pair.second.pSensor; },
-            [pair, this](auto const& data, auto& accessor) -> DataType {
+            [pair]() -> EntityBase* { return pair.second.pSensor; },
+            [pair, this](auto const& data) -> DataType {
                 float value = 0;
 
                 if (pair.second.data_offset > 0 && (pair.second.data_offset + pair.second.data_size) <= 7) {
@@ -57,11 +57,11 @@ void DaikinRotexCanComponent::validateConfig() {
                     }
                 });
 
-                call_later([pair, value, &accessor, this](){
+                call_later([pair, value, this](){
                     if (!pair.second.set_entity.empty()) {
                         TRequest const* pRequest = m_data_requests.get(pair.second.set_entity);
                         if (pRequest != nullptr) {
-                            EntityBase* pEntity = pRequest->getEntity(accessor);
+                            EntityBase* pEntity = pRequest->getEntity();
                             if (number::Number* pNumber = dynamic_cast<number::Number*>(pEntity)) {
                                 pNumber->publish_state(value);
                             } else {
@@ -76,8 +76,8 @@ void DaikinRotexCanComponent::validateConfig() {
                 });
 
                 if (pair.second.id == "target_hot_water_temperature") {
-                    call_later([&accessor](){
-                        accessor.getDaikinRotexCanComponent()->run_dhw_lambdas();
+                    call_later([this](){
+                        run_dhw_lambdas();
                     });
                 }
 
@@ -95,8 +95,8 @@ void DaikinRotexCanComponent::validateConfig() {
             pair.second.id,
             data,
             expected_response,
-            [pair](auto& accessor) -> EntityBase* { return pair.second.pBinarySensor; },
-            [pair, this](auto const& data, auto& accessor) -> DataType {
+            [pair]() -> EntityBase* { return pair.second.pBinarySensor; },
+            [pair, this](auto const& data) -> DataType {
                 bool value;
 
                 if (pair.second.data_offset > 0 && (pair.second.data_offset + pair.second.data_size) <= 7) {
@@ -131,8 +131,8 @@ void DaikinRotexCanComponent::validateConfig() {
             pair.second.id,
             data,
             expected_response,
-            [pair](auto& accessor) -> EntityBase* { return pair.second.pTextSensor; },
-            [pair, this](auto const& data, auto& accessor) -> DataType {
+            [pair]() -> EntityBase* { return pair.second.pTextSensor; },
+            [pair, this](auto const& data) -> DataType {
                 std::string str;
 
                 if (pair.second.data_offset > 0 && (pair.second.data_offset + pair.second.data_size) <= 7) {
@@ -168,11 +168,11 @@ void DaikinRotexCanComponent::validateConfig() {
                     }
                 });
 
-                call_later([pair, str, &accessor, this](){
+                call_later([pair, str, this](){
                     if (!pair.second.set_entity.empty()) {
                         TRequest const* pRequest = m_data_requests.get(pair.second.set_entity);
                         if (pRequest != nullptr) {
-                            EntityBase* pEntity = pRequest->getEntity(accessor);
+                            EntityBase* pEntity = pRequest->getEntity();
                             if (select::Select* pSelect = dynamic_cast<select::Select*>(pEntity)) {
                                 //ESP_LOGE("validateConfig", "set select: %s", pair.second.set_entity.c_str());
                                 pSelect->publish_state(str);
@@ -201,8 +201,8 @@ void DaikinRotexCanComponent::validateConfig() {
             pair.second.id,
             data,
             expected_response,
-            [pair](auto& accessor) -> EntityBase* { return pair.second.pSelect; },
-            [pair, this](auto const& data, auto& accessor) -> DataType {
+            [pair]() -> EntityBase* { return pair.second.pSelect; },
+            [pair, this](auto const& data) -> DataType {
                 std::string str;
 
                 if (pair.second.data_offset > 0 && (pair.second.data_offset + pair.second.data_size) <= 7) {
@@ -243,10 +243,6 @@ void DaikinRotexCanComponent::validateConfig() {
                 return data;
             }
         });
-
-        call_later([pair](){
-            ESP_LOGE("add", "select: %s", pair.second.id.c_str());
-        }, 15*1000);
     }
 
     /////////////////////// Numbers ///////////////////////
@@ -258,8 +254,8 @@ void DaikinRotexCanComponent::validateConfig() {
             pair.second.id,
             data,
             expected_response,
-            [pair](auto& accessor) -> EntityBase* { return pair.second.pNumber; },
-            [pair, this](auto const& data, auto& accessor) -> DataType {
+            [pair]() -> EntityBase* { return pair.second.pNumber; },
+            [pair, this](auto const& data) -> DataType {
                 float value;
 
                 if (pair.second.data_offset > 0 && (pair.second.data_offset + pair.second.data_size) <= 7) {
@@ -290,13 +286,9 @@ void DaikinRotexCanComponent::validateConfig() {
                 return Utils::replace_placeholders(pair.second.set, esphome::daikin_rotex_can::DC, static_cast<uint16_t>(value));
             }
         });
-
-        call_later([pair](){
-            ESP_LOGE("add", "select: %s", pair.second.id.c_str());
-        }, 15*1000);
     }
 
-    m_data_requests.removeInvalidRequests(m_accessor);
+    m_data_requests.removeInvalidRequests();
 }
 
 void DaikinRotexCanComponent::setup() {
@@ -310,14 +302,14 @@ void DaikinRotexCanComponent::updateState(std::string const& id) {
 }
 
 void DaikinRotexCanComponent::update_thermal_power() {
-    text_sensor::TextSensor* mode_of_operating = m_data_requests.get_text_sensor(m_accessor, "mode_of_operating");
+    text_sensor::TextSensor* mode_of_operating = m_data_requests.get_text_sensor("mode_of_operating");
     sensor::Sensor* thermal_power = m_accessor.get_thermal_power();
 
     if (mode_of_operating != nullptr && thermal_power != nullptr) {
-        sensor::Sensor* water_flow = m_data_requests.get_sensor(m_accessor, "water_flow");
-        sensor::Sensor* tvbh = m_data_requests.get_sensor(m_accessor, "tvbh");
-        sensor::Sensor* tv = m_data_requests.get_sensor(m_accessor, "tv");
-        sensor::Sensor* tr = m_data_requests.get_sensor(m_accessor, "tr");
+        sensor::Sensor* water_flow = m_data_requests.get_sensor("water_flow");
+        sensor::Sensor* tvbh = m_data_requests.get_sensor("tvbh");
+        sensor::Sensor* tv = m_data_requests.get_sensor("tv");
+        sensor::Sensor* tr = m_data_requests.get_sensor("tr");
 
         float value = 0;
         if (mode_of_operating->state == "Warmwasserbereitung" && tv != nullptr && tr != nullptr && water_flow != nullptr) {
@@ -351,7 +343,7 @@ void DaikinRotexCanComponent::custom_request(std::string const& value) {
 void DaikinRotexCanComponent::set_generic_select(std::string const& id, std::string const& state) {
     for (auto& pair : m_accessor.get_selects()) {
         if (pair.second.id == id) {
-            m_data_requests.sendSet(m_accessor, pair.second.pSelect->get_name(), pair.second.map.getKey(state));
+            m_data_requests.sendSet(pair.second.pSelect->get_name(), pair.second.map.getKey(state));
             break;
         }
     }
@@ -361,7 +353,7 @@ void DaikinRotexCanComponent::set_generic_select(std::string const& id, std::str
 void DaikinRotexCanComponent::set_generic_number(std::string const& id, float value) {
     for (auto& pair : m_accessor.get_selects()) {
         if (pair.second.id == id) {
-            m_data_requests.sendSet(m_accessor, pair.second.pSelect->get_name(), value);
+            m_data_requests.sendSet(pair.second.pSelect->get_name(), value);
             break;
         }
     }
@@ -371,14 +363,13 @@ void DaikinRotexCanComponent::set_generic_number(std::string const& id, float va
 void DaikinRotexCanComponent::dhw_run() {
     TRequest const* pRequest = m_data_requests.get("target_hot_water_temperature");
 
-    const float temp = pRequest->get_sensor(m_accessor)->get_raw_state();
+    const float temp = pRequest->get_sensor()->get_raw_state();
+    const std::string name = pRequest->getName();
 
-    const std::string name = pRequest->getName(m_accessor);
-
-    m_data_requests.sendSet(m_accessor, name, 70);
+    m_data_requests.sendSet(name, 70);
 
     m_dhw_run_lambdas.push_back([temp, name, this]() {
-        m_data_requests.sendSet(m_accessor, name, temp);
+        m_data_requests.sendSet(name, temp);
     });
 }
 
@@ -393,7 +384,7 @@ void DaikinRotexCanComponent::run_dhw_lambdas() {
 }
 
 void DaikinRotexCanComponent::loop() {
-    m_data_requests.sendNextPendingGet(m_accessor);
+    m_data_requests.sendNextPendingGet();
     for (auto it = m_later_calls.begin(); it != m_later_calls.end(); ) {
         if (millis() > it->second) {
             it->first();
@@ -405,7 +396,7 @@ void DaikinRotexCanComponent::loop() {
 }
 
 void DaikinRotexCanComponent::handle(uint32_t can_id, std::vector<uint8_t> const& data) {
-    m_data_requests.handle(m_accessor, can_id, data);
+    m_data_requests.handle(can_id, data);
 }
 
 void DaikinRotexCanComponent::dump_config() {

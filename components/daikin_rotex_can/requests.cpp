@@ -14,59 +14,59 @@ void TRequests::add(esphome::daikin_rotex_can::TRequest const& request) {
     m_requests.push_back(request);
 }
 
-void TRequests::removeInvalidRequests(Accessor const& accessor) {
+void TRequests::removeInvalidRequests() {
     m_requests.erase(
         std::remove_if(
             m_requests.begin(),
             m_requests.end(),
-            [&accessor](TRequest const& request) { return !request.isGetSupported(accessor); }
+            [](TRequest const& request) { return !request.isGetSupported(); }
         ),
         m_requests.end()
     );
 }
 
-bool TRequests::sendNextPendingGet(Accessor const& accessor) {
+bool TRequests::sendNextPendingGet() {
     TRequest* pRequest = getNextRequestToSend();
     if (pRequest != nullptr) {
-        pRequest->sendGet(accessor, m_pCanbus);
+        pRequest->sendGet(m_pCanbus);
         return true;
     }
     return false;
 }
 
-void TRequests::sendGet(Accessor const& accessor, std::string const& request_name) {
+void TRequests::sendGet(std::string const& request_name) {
     const auto it = std::find_if(
         m_requests.begin(),
         m_requests.end(),
-        [& request_name, & accessor](auto& request) {
-            return request.getName(accessor) == request_name && request.isGetSupported(accessor);
+        [& request_name](auto& request) {
+            return request.getName() == request_name && request.isGetSupported();
         }
     );
 
     if (it != m_requests.end()) {
-        it->sendGet(accessor, m_pCanbus);
+        it->sendGet(m_pCanbus);
     } else {
         ESP_LOGE("sendGet", "Unknown request: %s", request_name.c_str());
     }
 }
 
-void TRequests::sendSet(Accessor const& accessor, std::string const& request_name, float value) {
+void TRequests::sendSet(std::string const& request_name, float value) {
     const auto it = std::find_if(m_requests.begin(), m_requests.end(),
-        [&request_name, &accessor](auto& request) { return request.isSetter() && request.getName(accessor) == request_name; }
+        [&request_name](auto& request) { return request.isSetter() && request.getName() == request_name; }
     );
     if (it != m_requests.end()) {
-        it->sendSet(accessor, m_pCanbus, value);
+        it->sendSet(m_pCanbus, value);
     } else {
         ESP_LOGE("sendSet", "Unknown request: %s", request_name.c_str());
     }
 }
 
-void TRequests::handle(Accessor& accessor, uint32_t can_id, std::vector<uint8_t> const& responseData) {
+void TRequests::handle(uint32_t can_id, std::vector<uint8_t> const& responseData) {
     bool bHandled = false;
     const uint32_t timestamp = millis();
     for (auto& request : m_requests) {
         if (request.isMatch(can_id, responseData)) {
-            request.handle(accessor, can_id, responseData, timestamp);
+            request.handle(can_id, responseData, timestamp);
             bHandled = true;
         }
     }

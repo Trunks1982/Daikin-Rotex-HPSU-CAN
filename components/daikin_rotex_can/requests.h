@@ -1,19 +1,18 @@
 #pragma once
 
 #include "esphome/components/daikin_rotex_can/request.h"
+#include "esphome/components/text_sensor/text_sensor.h"
 #include <vector>
 
 namespace esphome {
 namespace daikin_rotex_can {
-
-class Accessor;
 
 class TRequests {
 public:
     TRequests();
     void add(esphome::daikin_rotex_can::TRequest const& request);
 
-    void removeInvalidRequests(Accessor const& accessor);
+    void removeInvalidRequests();
 
     void setCanbus(esphome::esp32_can::ESP32Can* pCanbus);
     esphome::esp32_can::ESP32Can* getCanbus() const;
@@ -22,14 +21,14 @@ public:
     TRequest const& get(uint32_t index) const;
     TRequest const* get(std::string const& id) const;
 
-    EntityBase* get_entity(Accessor const& accessor, std::string const& id);
-    sensor::Sensor* get_sensor(Accessor const& accessor, std::string const& id);
-    text_sensor::TextSensor* get_text_sensor(Accessor const& accessor, std::string const& id);
+    EntityBase* get_entity(std::string const& id);
+    sensor::Sensor* get_sensor(std::string const& id);
+    text_sensor::TextSensor* get_text_sensor(std::string const& id);
 
-    bool sendNextPendingGet(Accessor const& accessor);
-    void sendGet(Accessor const& accessor, std::string const& request_name);
-    void sendSet(Accessor const& accessor, std::string const& request_name, float value);
-    void handle(Accessor&, uint32_t can_id, std::vector<uint8_t> const& responseData);
+    bool sendNextPendingGet();
+    void sendGet(std::string const& request_name);
+    void sendSet(std::string const& request_name, float value);
+    void handle(uint32_t can_id, std::vector<uint8_t> const& responseData);
 
 private:
     TRequest* getNextRequestToSend();
@@ -63,26 +62,17 @@ inline TRequest const* TRequests::get(std::string const& id) const {
     return nullptr;
 }
 
-inline EntityBase* TRequests::get_entity(Accessor const& accessor, std::string const& id) {
+inline EntityBase* TRequests::get_entity(std::string const& id) {
     TRequest const* pRequest = get(id);
-    if (pRequest != nullptr) {
-        return pRequest->getEntity(accessor);
-    }
-    return nullptr;
+    return pRequest != nullptr ? pRequest->getEntity() : nullptr;
 }
 
-inline sensor::Sensor* TRequests::get_sensor(Accessor const& accessor, std::string const& id) {
-    if (sensor::Sensor* pSensor = dynamic_cast<sensor::Sensor*>(get_entity(accessor, id))) {
-        return pSensor;
-    }
-    return nullptr;
+inline sensor::Sensor* TRequests::get_sensor(std::string const& id) {
+    return dynamic_cast<sensor::Sensor*>(get_entity(id));
 }
 
-inline text_sensor::TextSensor* TRequests::get_text_sensor(Accessor const& accessor, std::string const& id) {
-    if (text_sensor::TextSensor* pTextSensor = dynamic_cast<text_sensor::TextSensor*>(get_entity(accessor, id))) {
-        return pTextSensor;
-    }
-    return nullptr;
+inline text_sensor::TextSensor* TRequests::get_text_sensor(std::string const& id) {
+    return dynamic_cast<text_sensor::TextSensor*>(get_entity(id));
 }
 
 
