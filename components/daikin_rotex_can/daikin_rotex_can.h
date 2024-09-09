@@ -24,20 +24,10 @@ public:
     void custom_request(std::string const& value);
 
     // Selects
-    void set_operation_mode(std::string const& state);
-    void set_hk_function(std::string const& state);
-    void set_sg_mode(std::string const& state);
-    void set_smart_grid(std::string const& state);
+    void set_generic_select(std::string const& id, std::string const& state);
 
     // Numbers
-    void set_target_hot_water_temperature(float temperature);
-    void set_target_room1_temperature(float temperature);
-    void set_flow_temperature_day(float temperature);
-    void set_max_target_flow_temp(float temperature);
-    void set_min_target_flow_temp(float temperature);
-    void set_heating_curve(float heating_curve);
-    void set_circulation_pump_min(uint8_t percent);
-    void set_circulation_pump_max(uint8_t percent);
+    void set_generic_number(std::string const& id, float value);
 
     // Buttons
     void dhw_run();

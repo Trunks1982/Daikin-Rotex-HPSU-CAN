@@ -74,6 +74,68 @@ class Accessor {
         {}
     };
     using TTextSensorMap = std::map<std::string, TTextArguments>;
+
+    struct TSelectArguments {
+        select::Select* pSelect;
+        std::string id;
+        std::string data;
+        std::string expected_response;
+        uint8_t data_offset;
+        uint8_t data_size;
+        BidiMap<uint8_t, std::string> map;
+        std::array<uint16_t, 7> set;
+
+        TSelectArguments(
+            select::Select* _pSelect,
+            std::string _id,
+            std::string _data,
+            std::string _expected_response,
+            uint8_t _data_offset,
+            uint8_t _data_size,
+            std::string const& _map,
+            std::string _set
+        )
+        : pSelect(_pSelect)
+        , id(_id)
+        , data(_data)
+        , expected_response(_expected_response)
+        , data_offset(_data_offset)
+        , data_size(_data_size)
+        , map(Utils::str_to_map(_map))
+        , set(Utils::str_to_bytes_array16(_set))
+        {}
+    };
+    using TSelectMap = std::map<std::string, TSelectArguments>;
+    struct TNumberArguments {
+        number::Number* pNumber;
+        std::string id;
+        std::string data;
+        std::string expected_response;
+        uint8_t data_offset;
+        uint8_t data_size;
+        float divider;
+        std::array<uint16_t, 7> set;
+        TNumberArguments(
+            number::Number* _pNumber,
+            std::string _id,
+            std::string _data,
+            std::string _expected_response,
+            uint8_t _data_offset,
+            uint8_t _data_size,
+            float _divider,
+            std::string _set
+        )
+        : pNumber(_pNumber)
+        , id(_id)
+        , data(_data)
+        , expected_response(_expected_response)
+        , data_offset(_data_offset)
+        , data_size(_data_size)
+        , divider(_divider)
+        , set(Utils::str_to_bytes_array16(_set))
+        {}
+    };
+    using TNumberMap = std::map<std::string, TNumberArguments>;
 public:
     Accessor(DaikinRotexCanComponent* pDaikinRotexCanComponent)
     : m_pDaikinRotexCanComponent(pDaikinRotexCanComponent) {
@@ -94,7 +156,6 @@ public:
     // Sensors
 
     TSensorMap const&  get_sensors() const { return m_sensors; }
-    //sensor::Sensor* get_sensor(std::string const& name) const { return m_sensors.at(name).pSensor; }
     void set_sensor(std::string const& name, TArguments const& arg) { m_sensors.insert({name, arg}); }
 
     sensor::Sensor* get_thermal_power() const { return m_thermal_power; }
@@ -112,43 +173,12 @@ public:
 
     // Selects
 
-    select::Select* get_operating_mode_select() const { return m_operating_mode_select; }
-    void set_operating_mode_select(select::Select* pSelect) { m_operating_mode_select = pSelect; }
-
-    select::Select* get_hk_function_select() const { return m_hk_function_select; }
-    void set_hk_function_select(select::Select* pSelect) { m_hk_function_select = pSelect; }
-
-    select::Select* get_sg_mode_select() const { return m_sg_mode_select; }
-    void set_sg_mode_select(select::Select* pSelect) { m_sg_mode_select = pSelect; }
-
-    select::Select* get_smart_grid_select() const { return m_smart_grid_select; }
-    void set_smart_grid_select(select::Select* pSelect) { m_smart_grid_select = pSelect; }
+    TSelectMap const&  get_selects() const { return m_selects; }
+    void set_select(std::string const& name, TSelectArguments const& arg) { m_selects.insert({name, arg}); }
 
     // Numbers
-
-    number::Number* get_target_hot_water_temperature_set() const { return m_target_hot_water_temperature_set; }
-    void set_target_hot_water_temperature_set(number::Number* pNumber) { m_target_hot_water_temperature_set = pNumber; }
-
-    number::Number* get_target_room1_temperature_set() const { return m_target_room1_temperature_set; }
-    void set_target_room1_temperature_set(number::Number* pSensor) { m_target_room1_temperature_set = pSensor; }
-
-    number::Number* get_flow_temperature_day_set() const { return m_flow_temperature_day_set; }
-    void set_flow_temperature_day_set(number::Number* pNumber) { m_flow_temperature_day_set = pNumber; }
-
-    number::Number* get_max_target_flow_temp_set() const { return m_max_target_flow_temp_set; }
-    void set_max_target_flow_temp_set(number::Number* pNumber) { m_max_target_flow_temp_set = pNumber; }
-
-    number::Number* get_min_target_flow_temp_set() const { return m_min_target_flow_temp_set; }
-    void set_min_target_flow_temp_set(number::Number* pNumber) { m_min_target_flow_temp_set = pNumber; }
-
-    number::Number* get_heating_curve_set() const { return m_heating_curve_set; }
-    void set_heating_curve_set(number::Number* pNumber) { m_heating_curve_set = pNumber; }
-
-    number::Number* get_circulation_pump_min_set() const { return m_circulation_pump_min_set; }
-    void set_circulation_pump_min_set(number::Number* pNumber) { m_circulation_pump_min_set = pNumber; }
-
-    number::Number* get_circulation_pump_max_set() const { return m_circulation_pump_max_set; }
-    void set_circulation_pump_max_set(number::Number* pNumber) { m_circulation_pump_max_set = pNumber; }
+    TNumberMap const&  get_numbers() const { return m_numbers; }
+    void set_number(std::string const& name, TNumberArguments const& arg) { m_numbers.insert({name, arg}); }
 
 private:
     text::Text* m_log_filter;
@@ -157,25 +187,11 @@ private:
     TSensorMap m_sensors;
     TBinarySensorMap m_binary_sensors;
     TTextSensorMap m_text_sensors;
+    TSelectMap m_selects;
+    TNumberMap m_numbers;
 
     // Sensors
     sensor::Sensor* m_thermal_power;
-
-    // Selects
-    select::Select* m_operating_mode_select;
-    select::Select* m_hk_function_select;
-    select::Select* m_sg_mode_select;
-    select::Select* m_smart_grid_select;
-
-    // Numbers
-    number::Number* m_target_hot_water_temperature_set;
-    number::Number* m_target_room1_temperature_set;
-    number::Number* m_flow_temperature_day_set;
-    number::Number* m_max_target_flow_temp_set;
-    number::Number* m_min_target_flow_temp_set;
-    number::Number* m_heating_curve_set;
-    number::Number* m_circulation_pump_min_set;
-    number::Number* m_circulation_pump_max_set;
 
     DaikinRotexCanComponent* m_pDaikinRotexCanComponent;
 };

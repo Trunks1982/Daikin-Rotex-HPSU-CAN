@@ -6,60 +6,14 @@
 namespace esphome {
 namespace daikin_rotex_can {
 
-class TargetHotWaterTemperatureNumber : public number::Number, public Parented<DaikinRotexCanComponent> {
+class GenericNumber : public number::Number, public Parented<DaikinRotexCanComponent> {
 public:
-    TargetHotWaterTemperatureNumber() = default;
+    GenericNumber() = default;
+    void set_id(std::string const& id) { m_id = id; }
 protected:
     void control(float value) override;
-};
-
-class TargetRoom1TemperatureNumber : public number::Number, public Parented<DaikinRotexCanComponent> {
-public:
-    TargetRoom1TemperatureNumber() = default;
-protected:
-    void control(float value) override;
-};
-
-class FlowTemperatureDayNumber : public number::Number, public Parented<DaikinRotexCanComponent> {
-public:
-    FlowTemperatureDayNumber() = default;
-protected:
-    void control(float value) override;
-};
-
-class MaxTargetFlowTempNumber : public number::Number, public Parented<DaikinRotexCanComponent> {
-public:
-    MaxTargetFlowTempNumber() = default;
-protected:
-    void control(float value) override;
-};
-
-class MinTargetFlowTempNumber : public number::Number, public Parented<DaikinRotexCanComponent> {
-public:
-    MinTargetFlowTempNumber() = default;
-protected:
-    void control(float value) override;
-};
-
-class HeatingCurveNumber : public number::Number, public Parented<DaikinRotexCanComponent> {
-public:
-    HeatingCurveNumber() = default;
-protected:
-    void control(float value) override;
-};
-
-class CirculationPumpMinNumber : public number::Number, public Parented<DaikinRotexCanComponent> {
-public:
-    CirculationPumpMinNumber() = default;
-protected:
-    void control(float value) override;
-};
-
-class CirculationPumpMaxNumber : public number::Number, public Parented<DaikinRotexCanComponent> {
-public:
-    CirculationPumpMaxNumber() = default;
-protected:
-    void control(float value) override;
+private:
+    std::string m_id;
 };
 
 }

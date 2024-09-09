@@ -109,6 +109,72 @@ std::map<uint8_t, std::string> Utils::str_to_map(const std::string& input) {
     return result;
 }
 
+std::vector<uint8_t> Utils::str_to_bytes(const std::string& str, uint16_t value) {
+    std::vector<uint8_t> result;
+    std::stringstream ss(str);
+    std::string byteStr;
+
+    // High- und Low-Bytes des Werts berechnen
+    uint8_t high_byte = (value >> 8) & 0xFF;  // High byte
+    uint8_t low_byte = value & 0xFF;          // Low byte
+
+    bool replaced_double_placeholder = false;
+
+    // String in Byte-Blöcke zerlegen
+    while (ss >> byteStr) {
+        if (byteStr == "__") {
+            if (!replaced_double_placeholder) {
+                // Prüfen, ob ein weiterer "__" folgt (doppelter Platzhalter)
+                std::string next_byte_str;
+                std::streampos pos = ss.tellg();  // Position speichern
+                if (ss >> next_byte_str && next_byte_str == "__") {
+                    // Doppelte Platzhalter gefunden, durch High- und Low-Byte ersetzen
+                    result.push_back(high_byte);
+                    result.push_back(low_byte);
+                    replaced_double_placeholder = true;
+                } else {
+                    // Einzelner Platzhalter, rückgängig machen und nur ein Byte ersetzen
+                    result.push_back(high_byte);  // oder ein anderes byte
+                    replaced_double_placeholder = true;
+                    ss.seekg(pos);  // Position zurücksetzen, um den nächsten Wert zu verarbeiten
+                }
+            } else {
+                // Einzelner Platzhalter, nur ein Byte ersetzen
+                result.push_back(low_byte);
+            }
+        } else {
+            // Konvertiere Hex-Strings in uint8_t und füge sie dem Ergebnis hinzu
+            uint8_t byte = static_cast<uint8_t>(std::stoi(byteStr, nullptr, 16));
+            result.push_back(byte);
+        }
+    }
+
+    return result;
+}
+
+std::vector<uint8_t> Utils::replace_placeholders(const std::array<uint16_t, 7>& arr, uint16_t token, uint16_t value) {
+    std::vector<uint8_t> result;
+
+    uint8_t high_byte = (value >> 8) & 0xFF;
+    uint8_t low_byte = value & 0xFF;
+
+    for (size_t i = 0; i < arr.size(); ++i) {
+        if (arr[i] == token) {
+            if (i + 1 < arr.size() && arr[i + 1] == token) {
+                result.push_back(high_byte);
+                result.push_back(low_byte);
+                ++i;
+            } else {
+                result.push_back(low_byte);
+            }
+        } else {
+            result.push_back(arr[i]);
+        }
+    }
+
+    return result;
+}
+
 
 }
 }

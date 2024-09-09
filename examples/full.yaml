@@ -61,10 +61,6 @@ daikin_rotex_can:
       name: "Umwälzpumpe Min"
     circulation_pump_max:
       name: "Umwälzpumpe Max"
-    circulation_pump_min_set:
-      name: "Umwälzpumpe Min"
-    circulation_pump_max_set:
-      name: "Umwälzpumpe Max"
     dhw_mixer_position:
       name: "DHW Mischer Position"
     dhw_run:
@@ -75,30 +71,18 @@ daikin_rotex_can:
       name: "Fehlercode"
     flow_temperature_day:
       name: "T Vorlauf Tag"
-    flow_temperature_day_set:
-      name: "T Vorlauf Tag Einstellen"
     heating_curve:
       name: "Heizkurve"
-    heating_curve_set:
-      name: "Heizkurve Einstellen"
     hk_function:
-      name: "HK-Funktion"
-    hk_function_select:
       name: "HK Funktion"
-    max_target_supply_temperature:
+    max_target_flow_temp:
       name: "Max VL Soll"
-    min_target_supply_temperature:
+    min_target_flow_temp:
       name: "Min VL Soll"
-    max_target_flow_temp_set:
-      name: "Max VL Einstellen"
-    min_target_flow_temp_set:
-      name: "Min VL Einstellen"
     mode_of_operating:
       name: "Betriebsart"
     operating_mode:
       name: "Betriebsmodus"
-    operating_mode_select:
-      name: "Betriebsmodus setzen"
     qboh:
       name: "EHS für DHW"
     qch:
@@ -115,10 +99,6 @@ daikin_rotex_can:
       name: "SG Modus"
     smart_grid:
       name: "Smart Grid"
-    sg_mode_select:
-      name: "SG Modus"
-    smart_grid_select:
-      name: "Smart Grid"
     spreizung_mod_hz:
       name: "Spreizung MOD HZ"
     spreizung_mod_ww:
@@ -127,12 +107,8 @@ daikin_rotex_can:
       name: "Status Kesselpumpe"
     status_kompressor:
       name: "Status Kompressor"
-    target_hot_water_temperature_set:
-      name: "WW Einstellen"
     target_room1_temperature:
       name: "Raumsoll 1"
-    target_room1_temperature_set:
-      name: "Raumsoll 1 Einstellen"
     tdhw1:
       name: "Warmwassertemperatur"
     temperature_outside:

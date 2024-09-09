@@ -10,19 +10,8 @@ from esphome.components.canbus import CanbusComponent
 daikin_rotex_can_ns = cg.esphome_ns.namespace('daikin_rotex_can')
 DaikinRotexCanComponent = daikin_rotex_can_ns.class_('DaikinRotexCanComponent', cg.Component)
 
-OperationModeSelect = daikin_rotex_can_ns.class_("OperationModeSelect", select.Select)
-HKFunctionSelect = daikin_rotex_can_ns.class_("HKFunctionSelect", select.Select)
-SGModeSelect = daikin_rotex_can_ns.class_("SGModeSelect", select.Select)
-SmartGridSelect = daikin_rotex_can_ns.class_("SmartGridSelect", select.Select)
-
-TargetHotWaterTemperatureNumber = daikin_rotex_can_ns.class_("TargetHotWaterTemperatureNumber", number.Number)
-TargetRoom1TemperatureNumber =  daikin_rotex_can_ns.class_("TargetRoom1TemperatureNumber", number.Number)
-FlowTemperatureDayNumber = daikin_rotex_can_ns.class_("FlowTemperatureDayNumber", number.Number)
-MaxTargetFlowTempNumber = daikin_rotex_can_ns.class_("MaxTargetFlowTempNumber", number.Number)
-MinTargetFlowTempNumber = daikin_rotex_can_ns.class_("MinTargetFlowTempNumber", number.Number)
-HeatingCurveNumber = daikin_rotex_can_ns.class_("HeatingCurveNumber", number.Number)
-CirculationPumpMinNumber = daikin_rotex_can_ns.class_("CirculationPumpMinNumber", number.Number)
-CirculationPumpMaxNumber = daikin_rotex_can_ns.class_("CirculationPumpMaxNumber", number.Number)
+GenericSelect = daikin_rotex_can_ns.class_("GenericSelect", select.Select)
+GenericNumber = daikin_rotex_can_ns.class_("GenericNumber", number.Number)
 
 LogFilterText = daikin_rotex_can_ns.class_("LogFilterText", text.Text)
 CustomRequestText = daikin_rotex_can_ns.class_("CustomRequestText", text.Text)
@@ -35,10 +24,12 @@ UNIT_LITER_PER_HOUR = "L/h"
 ########## Icons ##########
 ICON_SUN_SNOWFLAKE_VARIANT = "mdi:sun-snowflake-variant"
 
-########## Sensor Configuration ##########
+########## Configuration of Sensors, TextSensors, BinarySensors, Selects and Numbers ##########
 
 sensor_configuration = [
+    ####################### Sensors #######################
     {
+        "type": "sensor",
         "name": "t_hs",
         "device_class": DEVICE_CLASS_TEMPERATURE,
         "unit_of_measurement": UNIT_CELSIUS,
@@ -51,6 +42,7 @@ sensor_configuration = [
         "divider": 10.0
     },
     {
+        "type": "sensor",
         "name": "temperature_outside",
         "device_class": DEVICE_CLASS_TEMPERATURE,
         "unit_of_measurement": UNIT_CELSIUS,
@@ -63,6 +55,7 @@ sensor_configuration = [
         "divider": 10.0
     },
     {
+        "type": "sensor",
         "name": "t_ext",
         "device_class": DEVICE_CLASS_TEMPERATURE,
         "unit_of_measurement": UNIT_CELSIUS,
@@ -75,6 +68,7 @@ sensor_configuration = [
         "divider": 10.0
     },
     {
+        "type": "sensor",
         "name": "tdhw1",
         "device_class": DEVICE_CLASS_TEMPERATURE,
         "unit_of_measurement": UNIT_CELSIUS,
@@ -87,6 +81,7 @@ sensor_configuration = [
         "divider": 10.0
     },
     {
+        "type": "sensor",
         "name": "water_pressure",
         "device_class": DEVICE_CLASS_PRESSURE,
         "unit_of_measurement": UNIT_BAR,
@@ -99,6 +94,7 @@ sensor_configuration = [
         "divider": 1000.0
     },
     {
+        "type": "sensor",
         "name": "circulation_pump",
         "device_class": DEVICE_CLASS_VOLUME_FLOW_RATE,
         "unit_of_measurement": UNIT_PERCENT,
@@ -112,34 +108,43 @@ sensor_configuration = [
         "divider": 1
     },
     {
+        "type": "number",
         "name": "circulation_pump_min",
         "device_class": DEVICE_CLASS_VOLUME_FLOW_RATE,
         "unit_of_measurement": UNIT_PERCENT,
         "accuracy_decimals": 0,
         "state_class": STATE_CLASS_MEASUREMENT,
         "icon": "mdi:waves-arrow-left",
+        "min_value": 40,
+        "max_value": 100,
+        "step": 1,
         "data": "31 00 FA 06 7F 00 00",
         "expected_reponse": "__ __ FA 06 7F __ __",
         "data_offset": 6,
         "data_size": 1,
         "divider": 1,
-        "set_entity": "circulation_pump_min_set"
+        "set": "30 00 FA 06 7F __ __"
     },
     {
+        "type": "number",
         "name": "circulation_pump_max",
         "device_class": DEVICE_CLASS_VOLUME_FLOW_RATE,
         "unit_of_measurement": UNIT_PERCENT,
         "accuracy_decimals": 0,
         "state_class": STATE_CLASS_MEASUREMENT,
         "icon": "mdi:waves-arrow-right",
+        "min_value": 60,
+        "max_value": 100,
+        "step": 1,
         "data": "31 00 FA 06 7E 00 00",
         "expected_reponse": "__ __ FA 06 7E __ __",
         "data_offset": 6,
         "data_size": 1,
         "divider": 1,
-        "set_entity": "circulation_pump_max_set"
+        "set": "30 00 FA 06 7E __ __"
     },
     {
+        "type": "sensor",
         "name": "bypass_valve",
         "device_class": DEVICE_CLASS_VOLUME_FLOW_RATE,
         "unit_of_measurement": UNIT_PERCENT,
@@ -153,6 +158,7 @@ sensor_configuration = [
         "divider": 1
     },
     {
+        "type": "sensor",
         "name": "dhw_mixer_position",
         "device_class": DEVICE_CLASS_VOLUME_FLOW_RATE,
         "unit_of_measurement": UNIT_PERCENT,
@@ -166,6 +172,7 @@ sensor_configuration = [
         "divider": 1
     },
     {
+        "type": "sensor",
         "name": "target_supply_temperature",
         "device_class": DEVICE_CLASS_TEMPERATURE,
         "unit_of_measurement": UNIT_CELSIUS,
@@ -178,6 +185,7 @@ sensor_configuration = [
         "divider": 10.0
     },
     {
+        "type": "sensor",
         "name": "ehs_for_ch",
         "device_class": DEVICE_CLASS_ENERGY_STORAGE,
         "unit_of_measurement": UNIT_KILOWATT_HOURS,
@@ -191,6 +199,7 @@ sensor_configuration = [
         "divider": 1
     },
     {
+        "type": "sensor",
         "name": "qch",
         "device_class": DEVICE_CLASS_ENERGY_STORAGE,
         "unit_of_measurement": UNIT_KILOWATT_HOURS,
@@ -204,6 +213,7 @@ sensor_configuration = [
         "divider": 1
     },
     {
+        "type": "sensor",
         "name": "qboh",
         "device_class": DEVICE_CLASS_ENERGY_STORAGE,
         "unit_of_measurement": UNIT_KILOWATT_HOURS,
@@ -217,6 +227,7 @@ sensor_configuration = [
         "divider": 1
     },
     {
+        "type": "sensor",
         "name": "qdhw",
         "device_class": DEVICE_CLASS_ENERGY_STORAGE,
         "unit_of_measurement": UNIT_KILOWATT_HOURS,
@@ -230,6 +241,7 @@ sensor_configuration = [
         "divider": 1
     },
     {
+        "type": "sensor",
         "name": "total_energy_produced",
         "device_class": DEVICE_CLASS_ENERGY_STORAGE,
         "unit_of_measurement": UNIT_KILOWATT_HOURS,
@@ -243,6 +255,7 @@ sensor_configuration = [
         "divider": 1
     },
     {
+        "type": "sensor",
         "name": "runtime_compressor",
         "unit_of_measurement": UNIT_HOUR,
         "accuracy_decimals": 0,
@@ -255,6 +268,7 @@ sensor_configuration = [
         "divider": 1
     },
     {
+        "type": "sensor",
         "name": "runtime_pump",
         "unit_of_measurement": UNIT_HOUR,
         "accuracy_decimals": 0,
@@ -267,6 +281,7 @@ sensor_configuration = [
         "divider": 1
     },
     {
+        "type": "sensor",
         "name": "spreizung_mod_hz",
         "device_class": DEVICE_CLASS_TEMPERATURE,
         "unit_of_measurement": UNIT_KELVIN,
@@ -280,6 +295,7 @@ sensor_configuration = [
         "divider": 10.0
     },
     {
+        "type": "sensor",
         "name": "spreizung_mod_ww",
         "device_class": DEVICE_CLASS_TEMPERATURE,
         "unit_of_measurement": UNIT_KELVIN,
@@ -293,6 +309,7 @@ sensor_configuration = [
         "divider": 10.0
     },
     {
+        "type": "sensor",
         "name": "tv",
         "device_class": DEVICE_CLASS_TEMPERATURE,
         "unit_of_measurement": UNIT_CELSIUS,
@@ -307,6 +324,7 @@ sensor_configuration = [
         "update_entity": "thermal_power"
     },
     {
+        "type": "sensor",
         "name": "tvbh",
         "device_class": DEVICE_CLASS_TEMPERATURE,
         "unit_of_measurement": UNIT_CELSIUS,
@@ -321,6 +339,7 @@ sensor_configuration = [
         "update_entity": "thermal_power"
     },
     {
+        "type": "sensor",
         "name": "tr",
         "device_class": DEVICE_CLASS_TEMPERATURE,
         "unit_of_measurement": UNIT_CELSIUS,
@@ -335,6 +354,7 @@ sensor_configuration = [
         "update_entity": "thermal_power"
     },
     {
+        "type": "sensor",
         "name": "water_flow",
         "device_class": DEVICE_CLASS_WATER,
         "unit_of_measurement": UNIT_LITER_PER_HOUR,
@@ -349,110 +369,113 @@ sensor_configuration = [
         "update_entity": "thermal_power"
     },
     {
+        "type": "number",
         "name": "target_room1_temperature",
         "device_class": DEVICE_CLASS_TEMPERATURE,
         "unit_of_measurement": UNIT_CELSIUS,
         "accuracy_decimals": 1,
         "state_class": STATE_CLASS_MEASUREMENT,
+        "min_value": 15,
+        "max_value": 25,
+        "step": 0.1,
         "data": "31 00 05 00 00 00 00",
         "expected_reponse": "D2 00 05 __ __ 00 __",
         "data_offset": 3,
         "data_size": 2,
         "divider": 10.0,
-        "set_entity": "target_room1_temperature_set"
+        "set": "30 00 05 __ __ 00 00"
     },
     {
+        "type": "number",
         "name": "flow_temperature_day",
         "device_class": DEVICE_CLASS_TEMPERATURE,
         "unit_of_measurement": UNIT_CELSIUS,
         "accuracy_decimals": 1,
         "state_class": STATE_CLASS_MEASUREMENT,
+        "min_value": 25,
+        "max_value": 60,
+        "step": 1,
         "data": "31 00 FA 01 29 00 00",
         "expected_reponse": "__ __ FA 01 29 __ __",
         "data_offset": 5,
         "data_size": 2,
         "divider": 10.0,
-        "set_entity": "flow_temperature_day_set"
+        "set": "30 00 FA 01 29 __ __"
     },
     {
+        "type": "number",
         "name": "heating_curve",
         "device_class": DEVICE_CLASS_TEMPERATURE,
         "unit_of_measurement": UNIT_CELSIUS,
         "accuracy_decimals": 2,
         "state_class": STATE_CLASS_MEASUREMENT,
+        "min_value": 0,
+        "max_value": 2.55,
+        "step": 0.01,
         "data": "31 00 FA 01 0E 00 00",
         "expected_reponse": "__ __ FA 01 0E __ __",
         "data_offset": 5,
         "data_size": 2,
         "divider": 100.0,
-        "set_entity": "heating_curve_set"
+        "set": "30 00 FA 01 0E __ __"
     },
     {
-        "name": "min_target_supply_temperature",
+        "type": "number",
+        "name": "min_target_flow_temp",
         "device_class": DEVICE_CLASS_TEMPERATURE,
         "unit_of_measurement": UNIT_CELSIUS,
         "accuracy_decimals": 0,
         "state_class": STATE_CLASS_MEASUREMENT,
         "icon": "mdi:waves-arrow-left",
+        "min_value": 25,
+        "max_value": 40,
+        "step": 1,
         "data": "31 00 FA 01 2B 00 00",
         "expected_reponse": "__ __ FA 01 2B __ __",
         "data_offset": 5,
         "data_size": 2,
         "divider": 10.0,
-        "set_entity": "min_target_flow_temp_set"
+        "set": "30 00 FA 01 2B __ __"
     },
     {
-        "name": "max_target_supply_temperature",
+        "type": "number",
+        "name": "max_target_flow_temp",
         "device_class": DEVICE_CLASS_TEMPERATURE,
         "unit_of_measurement": UNIT_CELSIUS,
         "accuracy_decimals": 0,
         "state_class": STATE_CLASS_MEASUREMENT,
         "icon": "mdi:waves-arrow-right",
+        "min_value": 25,
+        "max_value": 60,
+        "step": 1,
         "data": "31 00 28 00 00 00 00",
         "expected_reponse": "__ __ 28 __ __ __ __",
         "data_offset": 3,
         "data_size": 2,
         "divider": 10.0,
-        "set_entity": "max_target_flow_temp_set"
+        "set": "30 00 28 __ __ 00 00"
     },
     {
+        "type": "number",
         "name": "target_hot_water_temperature",
         "device_class": DEVICE_CLASS_TEMPERATURE,
         "unit_of_measurement": UNIT_CELSIUS,
         "accuracy_decimals": 1,
         "state_class": STATE_CLASS_MEASUREMENT,
         "icon": "mdi:waves-arrow-right",
+        "min_value": 35,
+        "max_value": 70,
+        "step": 1,
         "data": "31 00 13 00 00 00 00",
         "expected_reponse": "D2 00 13 __ __ 00 00",
         "data_offset": 3,
         "data_size": 2,
         "divider": 10.0,
-        "set_entity": "target_hot_water_temperature_set"
-    }
-]
-
-########## Text Sensor Configuration ##########
-
-text_sensor_configuration = [
-    {
-        "name": "operating_mode" ,
-        "icon": ICON_SUN_SNOWFLAKE_VARIANT,
-        "data": "31 00 FA 01 12 00 00",
-        "expected_reponse": "__ __ FA 01 12 __ __",
-        "data_offset": 5,
-        "data_size": 1,
-        "map": {
-            0x01: "Bereitschaft",
-            0x03: "Heizen",
-            0x04: "Absenken",
-            0x05: "Sommer",
-            0x11: "Kühlen",
-            0x0B: "Automatik 1",
-            0x0C: "Automatik 2"
-        },
-        "set_entity": "operating_mode_select"
+        "set": "30 00 13 __ __ 00 00"
     },
+    ####################### Text sensors #######################
     {
+        "type": "text_sensor",
         "name": "mode_of_operating" ,
         "icon": ICON_SUN_SNOWFLAKE_VARIANT,
         "data": "31 00 FA C0 F6 00 00",
@@ -469,46 +492,7 @@ text_sensor_configuration = [
         "update_entity": "thermal_power"
     },
     {
-        "name": "hk_function" ,
-        "icon": "mdi:weather-partly-cloudy",
-        "data": "31 00 FA 01 41 00 00",
-        "expected_reponse": "__ __ FA 01 41 __ __",
-        "data_offset": 6,
-        "data_size": 1,
-        "map": {
-            0x00: "Witterungsgeführt",
-            0x01: "Fest"
-        },
-        "set_entity": "hk_function_select"
-    },
-    {
-        "name": "sg_mode" ,
-        "icon": "mdi:weather-partly-cloudy",
-        "data": "31 00 FA 06 94 00 00",
-        "expected_reponse": "__ __ FA 06 94 __ __",
-        "data_offset": 6,
-        "data_size": 1,
-        "map": {
-            0x00: "Aus",
-            0x01: "SG Modus 1",
-            0x02: "SG Modus 2"
-        },
-        "set_entity": "sg_mode_select"
-    },
-    {
-        "name": "smart_grid" ,
-        "icon": "mdi:weather-partly-cloudy",
-        "data": "31 00 FA 06 93 00 00",
-        "expected_reponse": "__ __ FA 06 93 __ __",
-        "data_offset": 6,
-        "data_size": 1,
-        "map": {
-            0x00: "Aus",
-            0x01: "An"
-        },
-        "set_entity": "smart_grid_select"
-    },
-    {
+        "type": "text_sensor",
         "name": "quiet" ,
         "icon": "mdi:weather-partly-cloudy",
         "data": "31 00 FA 06 96",
@@ -522,6 +506,7 @@ text_sensor_configuration = [
         }
     },
     {
+        "type": "text_sensor",
         "name": "error_code" ,
         "icon": "mdi:alert",
         "data": "31 00 FA 13 88 00 00",
@@ -588,13 +573,10 @@ text_sensor_configuration = [
             8006: "W8006 Warnung Druckverlust",
             8007: "W8007 Wasserdruck in Anlage zu hoch"
         }
-    }
-]
-
-########## Text Sensor Configuration ##########
-
-binary_sensor_configuration = [
+    },
+    ####################### Binary sensors #######################
     {
+        "type": "binary_sensor",
         "name": "status_kompressor" ,
         "icon": "mdi:pump",
         "data": "A1 00 61 00 00 00 00",
@@ -603,29 +585,77 @@ binary_sensor_configuration = [
         "data_size": 1
     },
     {
+        "type": "binary_sensor",
         "name": "status_kesselpumpe" ,
         "icon": "mdi:pump",
         "data": "31 00 FA 0A 8C 00 00",
         "expected_reponse": "__ __ FA 0A 8C __ __",
         "data_offset": 6,
         "data_size": 1
+    },
+    ####################### Selects #######################
+    {
+        "type": "select",
+        "name": "operating_mode" ,
+        "icon": ICON_SUN_SNOWFLAKE_VARIANT,
+        "data": "31 00 FA 01 12 00 00",
+        "expected_reponse": "__ __ FA 01 12 __ __",
+        "data_offset": 5,
+        "data_size": 1,
+        "map": {
+            0x01: "Bereitschaft",
+            0x03: "Heizen",
+            0x04: "Absenken",
+            0x05: "Sommer",
+            0x11: "Kühlen",
+            0x0B: "Automatik 1",
+            0x0C: "Automatik 2"
+        },
+        "set": "30 00 FA 01 12 __ 00"
+    },
+    {
+        "type": "select",
+        "name": "hk_function" ,
+        "icon": "mdi:weather-partly-cloudy",
+        "data": "31 00 FA 01 41 00 00",
+        "expected_reponse": "__ __ FA 01 41 __ __",
+        "data_offset": 6,
+        "data_size": 1,
+        "map": {
+            0x00: "Witterungsgeführt",
+            0x01: "Fest"
+        },
+        "set": "30 00 FA 01 41 00 __"
+    },
+    {
+        "type": "select",
+        "name": "sg_mode" ,
+        "icon": "mdi:weather-partly-cloudy",
+        "data": "31 00 FA 06 94 00 00",
+        "expected_reponse": "__ __ FA 06 94 __ __",
+        "data_offset": 6,
+        "data_size": 1,
+        "map": {
+            0x00: "Aus",
+            0x01: "SG Modus 1",
+            0x02: "SG Modus 2"
+        },
+        "set": "30 00 FA 06 94 00 __"
+    },
+    {
+        "type": "select",
+        "name": "smart_grid" ,
+        "icon": "mdi:weather-partly-cloudy",
+        "data": "31 00 FA 06 93 00 00",
+        "expected_reponse": "__ __ FA 06 93 __ __",
+        "data_offset": 6,
+        "data_size": 1,
+        "map": {
+            0x00: "Aus",
+            0x01: "An"
+        },
+        "set": "30 00 FA 06 93 00, __"
     }
-]
-
-########## Select Configuration ##########
-
-select_configuration = [
-    #{
-    #    "name": "operating_mode_select" ,
-    #    "icon": ICON_SUN_SNOWFLAKE_VARIANT,
-    #    "data": "31 00 FA 01 12 00 00",
-    #    "expected_reponse": "__ __ FA 01 12 __ __",
-    #    "data_offset": 5,
-    #    "data_size": 1,
-    #    "options": ["Bereitschaft", "Heizen", "Absenken", "Sommer", "Kühlen", "Automatik 1", "Automatik 2"]
-    #    "select_class": OperationModeSelect,
-    #    "set_entity": "operating_mode_select"
-    #}
 ]
 
 DEPENDENCIES = []
@@ -641,71 +671,53 @@ CONF_ENTITIES = "entities"
 
 CONF_THERMAL_POWER = "thermal_power" # Thermische Leistung
 
-########## Selects ##########
-
-CONF_OPERATING_MODE_SELECT = "operating_mode_select"
-CONF_HK_FUNCTION_SELECT = "hk_function_select"
-CONF_SG_MODE_SELECT = "sg_mode_select"
-CONF_SMART_GRID_SELECT = "smart_grid_select"
-
-########## Numbers ##########
-
-CONF_TARGET_HOT_WATER_TEMPERATURE_SET = "target_hot_water_temperature_set"
-CONF_TARGET_ROOM1_TEMPERATURE_SET = "target_room1_temperature_set"
-CONF_FLOW_TEMPERATURE_DAY_SET = "flow_temperature_day_set"
-CONF_MAX_TARGET_FLOW_TEMP_SET = "max_target_flow_temp_set"
-CONF_MIN_TARGET_FLOW_TEMP_SET = "min_target_flow_temp_set"
-CONF_HEATING_CURVE_SET = "heating_curve_set" # Heizkurve setzen
-CONF_CIRCULATION_PUMP_MIN_SET = "circulation_pump_min_set"
-CONF_CIRCULATION_PUMP_MAX_SET = "circulation_pump_max_set"
-
-########## Numbers ##########
-
 CONF_DHW_RUN = "dhw_run"
 
 
-sensor_schemas = {}
+entity_schemas = {}
 for sensor_conf in sensor_configuration:
-    sens = {
-        cv.Optional(sensor_conf.get("name")): sensor.sensor_schema(
-            device_class=(sensor_conf.get("device_class") if sensor_conf.get("device_class") != None else sensor._UNDEF),
-            unit_of_measurement=sensor_conf.get("unit_of_measurement"),
-            accuracy_decimals=sensor_conf.get("accuracy_decimals"),
-            state_class=sensor_conf.get("state_class"),
-            icon=(sensor_conf.get("icon") if sensor_conf.get("icon") != None else sensor._UNDEF)
-        ).extend()
-    }
-    sensor_schemas.update(sens)
+    match sensor_conf.get("type"):
+        case "sensor":
+            entity_schemas.update({
+                cv.Optional(sensor_conf.get("name")): sensor.sensor_schema(
+                    device_class=(sensor_conf.get("device_class") if sensor_conf.get("device_class") != None else sensor._UNDEF),
+                    unit_of_measurement=sensor_conf.get("unit_of_measurement"),
+                    accuracy_decimals=sensor_conf.get("accuracy_decimals"),
+                    state_class=sensor_conf.get("state_class"),
+                    icon=(sensor_conf.get("icon") if sensor_conf.get("icon") != None else sensor._UNDEF)
+                ).extend()
+            })
+        case "text_sensor":
+            entity_schemas.update({
+                cv.Optional(sensor_conf.get("name")): text_sensor.text_sensor_schema(
+                    icon=sensor_conf.get("icon")
+                ).extend()
+            })
+        case "binary_sensor":
+            entity_schemas.update({
+                cv.Optional(sensor_conf.get("name")): binary_sensor.binary_sensor_schema(
+                    icon=(sensor_conf.get("icon") if sensor_conf.get("icon") != None else sensor._UNDEF)
+                ).extend()
+            })
+        case "select":
+            entity_schemas.update({
+                cv.Optional(sensor_conf.get("name")): select.select_schema(
+                    GenericSelect,
+                    entity_category=ENTITY_CATEGORY_CONFIG,
+                    icon=sensor_conf.get("icon")
+                ).extend()
+            })
+        case "number":
+            entity_schemas.update({
+                cv.Optional(sensor_conf.get("name")): number.number_schema(
+                    GenericNumber,
+                    entity_category=ENTITY_CATEGORY_CONFIG,
+                    icon=ICON_SUN_SNOWFLAKE_VARIANT
+                ).extend(),
+            })
 
-binary_sensor_schemas = {}
-for sensor_conf in binary_sensor_configuration:
-    sens = {
-        cv.Optional(sensor_conf.get("name")): binary_sensor.binary_sensor_schema(
-            icon=(sensor_conf.get("icon") if sensor_conf.get("icon") != None else sensor._UNDEF)
-        ).extend()
-    }
-    binary_sensor_schemas.update(sens)
 
-text_sensor_schemas = {}
-for sensor_conf in text_sensor_configuration:
-    sens = {
-        cv.Optional(sensor_conf.get("name")): text_sensor.text_sensor_schema(
-            icon=sensor_conf.get("icon")
-        ).extend()
-    }
-    text_sensor_schemas.update(sens)
-
-select_schemas = {}
-for select_conf in select_configuration:
-    select_schemas.update({
-        cv.Optional(select_conf.get("name")): select.select_schema(
-            select_conf.get("select_class"),
-            entity_category=ENTITY_CATEGORY_CONFIG,
-            icon=select_conf.get("icon")
-        ).extend()
-    })
-
-entity_schemas = {
+entity_schemas.update({
                 ########## Sensors ##########
 
                 cv.Optional(CONF_THERMAL_POWER): sensor.sensor_schema(
@@ -715,72 +727,6 @@ entity_schemas = {
                     state_class=STATE_CLASS_MEASUREMENT
                 ).extend(),
 
-                ########## Selects ##########
-
-                cv.Optional(CONF_OPERATING_MODE_SELECT): select.select_schema(
-                    OperationModeSelect,
-                    entity_category=ENTITY_CATEGORY_CONFIG,
-                    icon=ICON_SUN_SNOWFLAKE_VARIANT
-                ).extend(),
-                cv.Optional(CONF_HK_FUNCTION_SELECT): select.select_schema(
-                    HKFunctionSelect,
-                    entity_category=ENTITY_CATEGORY_CONFIG,
-                    icon="mdi:weather-partly-snowy"
-                ).extend(),
-                cv.Optional(CONF_SG_MODE_SELECT): select.select_schema(
-                    SGModeSelect,
-                    entity_category=ENTITY_CATEGORY_CONFIG,
-                    icon="mdi:weather-partly-snowy"
-                ).extend(),
-                cv.Optional(CONF_SMART_GRID_SELECT): select.select_schema(
-                    SmartGridSelect,
-                    entity_category=ENTITY_CATEGORY_CONFIG,
-                    icon="mdi:weather-partly-snowy"
-                ).extend(),
-
-                ########## Number ##########
-
-                cv.Optional(CONF_TARGET_HOT_WATER_TEMPERATURE_SET): number.number_schema(
-                    TargetHotWaterTemperatureNumber,
-                    entity_category=ENTITY_CATEGORY_CONFIG,
-                    icon=ICON_SUN_SNOWFLAKE_VARIANT
-                ).extend(),
-                cv.Optional(CONF_TARGET_ROOM1_TEMPERATURE_SET): number.number_schema(
-                    TargetRoom1TemperatureNumber,
-                    entity_category=ENTITY_CATEGORY_CONFIG,
-                    icon=ICON_SUN_SNOWFLAKE_VARIANT
-                ).extend(),
-                cv.Optional(CONF_FLOW_TEMPERATURE_DAY_SET): number.number_schema(
-                    FlowTemperatureDayNumber,
-                    entity_category=ENTITY_CATEGORY_CONFIG,
-                    icon=ICON_SUN_SNOWFLAKE_VARIANT
-                ).extend(),
-                cv.Optional(CONF_MAX_TARGET_FLOW_TEMP_SET): number.number_schema(
-                    MaxTargetFlowTempNumber,
-                    entity_category=ENTITY_CATEGORY_CONFIG,
-                    icon=ICON_SUN_SNOWFLAKE_VARIANT
-                ).extend(),
-                cv.Optional(CONF_MIN_TARGET_FLOW_TEMP_SET): number.number_schema(
-                    MinTargetFlowTempNumber,
-                    entity_category=ENTITY_CATEGORY_CONFIG,
-                    icon=ICON_SUN_SNOWFLAKE_VARIANT
-                ).extend(),
-                cv.Optional(CONF_HEATING_CURVE_SET): number.number_schema(
-                    HeatingCurveNumber,
-                    entity_category=ENTITY_CATEGORY_CONFIG,
-                    icon=ICON_SUN_SNOWFLAKE_VARIANT
-                ).extend(),
-                cv.Optional(CONF_CIRCULATION_PUMP_MIN_SET): number.number_schema(
-                    CirculationPumpMinNumber,
-                    entity_category=ENTITY_CATEGORY_CONFIG,
-                    icon=ICON_SUN_SNOWFLAKE_VARIANT
-                ).extend(),
-                cv.Optional(CONF_CIRCULATION_PUMP_MAX_SET): number.number_schema(
-                    CirculationPumpMaxNumber,
-                    entity_category=ENTITY_CATEGORY_CONFIG,
-                    icon=ICON_SUN_SNOWFLAKE_VARIANT
-                ).extend(),
-
                 ########## Buttons ##########
 
                 cv.Optional(CONF_DHW_RUN): button.button_schema(
@@ -788,12 +734,7 @@ entity_schemas = {
                     entity_category=ENTITY_CATEGORY_CONFIG,
                     icon=ICON_SUN_SNOWFLAKE_VARIANT
                 ).extend(),
-            }
-
-entity_schemas.update(sensor_schemas)
-entity_schemas.update(binary_sensor_schemas)
-entity_schemas.update(text_sensor_schemas)
-
+            })
 
 CONFIG_SCHEMA = cv.Schema(
     {
@@ -842,201 +783,106 @@ def to_code(config):
         cg.add(var.getAccessor().set_custom_request_text(t))
 
     if entities := config.get(CONF_ENTITIES):
+        for sens_conf in sensor_configuration:
+            if yaml_sensor_conf := entities.get(sens_conf.get("name")):
+                match sens_conf.get("type"):
+                    case "sensor":
+                        sens = yield sensor.new_sensor(yaml_sensor_conf)
+
+                        cg.add(var.getAccessor().set_sensor(
+                            sens_conf.get("name"),
+                            [
+                                sens,
+                                sens_conf.get("name"),
+                                sens_conf.get("data"),
+                                sens_conf.get("expected_reponse"),
+                                sens_conf.get("data_offset"),
+                                sens_conf.get("data_size"),
+                                sens_conf.get("divider"),
+                                sens_conf.get("update_entity", ""),
+                                sens_conf.get("set_entity", "")
+                            ]
+                        ))
+                    case "text_sensor":
+                        sens = yield text_sensor.new_text_sensor(yaml_sensor_conf)
+
+                        cg.add(var.getAccessor().set_text_sensor(
+                            sens_conf.get("name"),
+                            [
+                                sens,
+                                sens_conf.get("name"),
+                                sens_conf.get("data"),
+                                sens_conf.get("expected_reponse"),
+                                sens_conf.get("data_offset"),
+                                sens_conf.get("data_size"),
+                                "|".join([f"0x{key:02X}:{value}" for key, value in sens_conf.get("map").items()]),
+                                sens_conf.get("update_entity", ""),
+                                sens_conf.get("set_entity", "")
+                            ]
+                        ))
+                    case "binary_sensor":
+                        sens = yield binary_sensor.new_binary_sensor(yaml_sensor_conf)
+
+                        cg.add(var.getAccessor().set_binary_sensor(
+                            sens_conf.get("name"),
+                            [
+                                sens,
+                                sens_conf.get("name"),
+                                sens_conf.get("data"),
+                                sens_conf.get("expected_reponse"),
+                                sens_conf.get("data_offset"),
+                                sens_conf.get("data_size"),
+                                sens_conf.get("update_entity", ""),
+                                sens_conf.get("set_entity", "")
+                            ]
+                        ))
+                    case "select":
+                        sel = yield select.new_select(yaml_sensor_conf, options = list(sens_conf.get("map").values()))
+                        cg.add(sel.set_id(sens_conf.get("name")))
+                        yield cg.register_parented(sel, var)
+
+                        cg.add(var.getAccessor().set_select(
+                            sens_conf.get("name"),
+                            [
+                                sel,
+                                sens_conf.get("name"),
+                                sens_conf.get("data"),
+                                sens_conf.get("expected_reponse"),
+                                sens_conf.get("data_offset"),
+                                sens_conf.get("data_size"),
+                                "|".join([f"0x{key:02X}:{value}" for key, value in sens_conf.get("map").items()]),
+                                sens_conf.get("set")
+                            ]
+                        ))
+                    case "number":
+                        num = yield number.new_number(
+                            yaml_sensor_conf,
+                            min_value=sens_conf.get("min_value"),
+                            max_value=sens_conf.get("max_value"),
+                            step=sens_conf.get("step"),
+                        )
+                        yield cg.register_parented(num, var)
+                        cg.add(var.getAccessor().set_number(
+                            sens_conf.get("name"),
+                            [
+                                num,
+                                sens_conf.get("name"),
+                                sens_conf.get("data"),
+                                sens_conf.get("expected_reponse"),
+                                sens_conf.get("data_offset"),
+                                sens_conf.get("data_size"),
+                                sens_conf.get("divider"),
+                                sens_conf.get("set")
+                            ]
+                        ))
+
         ########## Sensors ##########
 
-        for sens_conf in sensor_configuration:
-            if sensor_conf := entities.get(sens_conf.get("name")):
-                sens = yield sensor.new_sensor(sensor_conf)
-
-                cg.add(var.getAccessor().set_sensor(
-                    sens_conf.get("name"),
-                    [
-                        sens,
-                        sens_conf.get("name"),
-                        sens_conf.get("data"),
-                        sens_conf.get("expected_reponse"),
-                        sens_conf.get("data_offset"),
-                        sens_conf.get("data_size"),
-                        sens_conf.get("divider"),
-                        sens_conf.get("update_entity", ""),
-                        sens_conf.get("set_entity", "")
-                    ]
-                ))
-
-        if sensor_conf := entities.get(CONF_THERMAL_POWER):
-            sens = yield sensor.new_sensor(sensor_conf)
+        if yaml_sensor_conf := entities.get(CONF_THERMAL_POWER):
+            sens = yield sensor.new_sensor(yaml_sensor_conf)
             cg.add(var.getAccessor().set_thermal_power(sens))
 
-        ######## Binary Sensors ########
-
-        for sens_conf in binary_sensor_configuration:
-            if sensor_conf := entities.get(sens_conf.get("name")):
-                sens = yield binary_sensor.new_binary_sensor(sensor_conf)
-
-                cg.add(var.getAccessor().set_binary_sensor(
-                    sens_conf.get("name"),
-                    [
-                        sens,
-                        sens_conf.get("name"),
-                        sens_conf.get("data"),
-                        sens_conf.get("expected_reponse"),
-                        sens_conf.get("data_offset"),
-                        sens_conf.get("data_size"),
-                        sens_conf.get("update_entity", ""),
-                        sens_conf.get("set_entity", "")
-                    ]
-                ))
-
-        ######## Text Sensors ########
-
-        for sens_conf in text_sensor_configuration:
-            if sensor_conf := entities.get(sens_conf.get("name")):
-                sens = yield text_sensor.new_text_sensor(sensor_conf)
-
-                cg.add(var.getAccessor().set_text_sensor(
-                    sens_conf.get("name"),
-                    [
-                        sens,
-                        sens_conf.get("name"),
-                        sens_conf.get("data"),
-                        sens_conf.get("expected_reponse"),
-                        sens_conf.get("data_offset"),
-                        sens_conf.get("data_size"),
-                        "|".join([f"0x{key:02X}:{value}" for key, value in sens_conf.get("map").items()]),
-                        sens_conf.get("update_entity", ""),
-                        sens_conf.get("set_entity", "")
-                    ]
-                ))
-
-        ########## Selects ##########
-
-        if select_conf := entities.get(CONF_OPERATING_MODE_SELECT):
-            options = ["Bereitschaft", "Heizen", "Absenken", "Sommer", "Kühlen", "Automatik 1", "Automatik 2"]
-            sel = yield select.new_select(select_conf, options = options)
-            yield cg.register_parented(sel, var)
-            cg.add(var.getAccessor().set_operating_mode_select(sel))
-
-        for sel_conf in select_configuration:
-            if select_conf := entities.get(sel_conf.get("name")):
-                sel = yield select.new_select(select_conf, options = sel_conf.get("options"))
-                yield cg.register_parented(sel, var)
-
-                cg.add(var.getAccessor().set_select(
-                    sel_conf.get("name"),
-                    [
-                        sel,
-                        sel_conf.get("name"),
-                        sel_conf.get("data"),
-                        sel_conf.get("expected_reponse"),
-                        sel_conf.get("data_offset"),
-                        sel_conf.get("data_size"),
-                        "|".join([f"0x{key:02X}:{value}" for key, value in sel_conf.get("map").items()]),
-                        sel_conf.get("update_entity", ""),
-                        sel_conf.get("set_entity", "")
-                    ]
-                ))
-
-        if select_conf := entities.get(CONF_HK_FUNCTION_SELECT):
-            options = ["Witterungsgeführt", "Fest"]
-            sel = yield select.new_select(select_conf, options = options)
-            yield cg.register_parented(sel, var)
-            cg.add(var.getAccessor().set_hk_function_select(sel))
-
-        if select_conf := entities.get(CONF_SG_MODE_SELECT):
-            options = ["Aus", "SG Modus 1", "SG Modus 2"]
-            sel = yield select.new_select(select_conf, options = options)
-            yield cg.register_parented(sel, var)
-            cg.add(var.getAccessor().set_sg_mode_select(sel))
-
-        if select_conf := entities.get(CONF_SMART_GRID_SELECT):
-            options = ["Aus", "An"]
-            sel = yield select.new_select(select_conf, options = options)
-            yield cg.register_parented(sel, var)
-            cg.add(var.getAccessor().set_smart_grid_select(sel))
-
-        ########## Numbers ##########
-
-        if number_conf := entities.get(CONF_TARGET_HOT_WATER_TEMPERATURE_SET):
-            num = yield number.new_number(
-                number_conf,
-                min_value=35,
-                max_value=70,
-                step=1
-            )
-            yield cg.register_parented(num, var)
-            cg.add(var.getAccessor().set_target_hot_water_temperature_set(num))
-
-        if number_conf := entities.get(CONF_TARGET_ROOM1_TEMPERATURE_SET):
-            num = yield number.new_number(
-                number_conf,
-                min_value=15,
-                max_value=25,
-                step=0.1
-            )
-            yield cg.register_parented(num, var)
-            cg.add(var.getAccessor().set_target_room1_temperature_set(num))
-
-        if number_conf := entities.get(CONF_FLOW_TEMPERATURE_DAY_SET):
-            num = yield number.new_number(
-                number_conf,
-                min_value=25,
-                max_value=60,
-                step=1
-            )
-            yield cg.register_parented(num, var)
-            cg.add(var.getAccessor().set_flow_temperature_day_set(num))
-
-        if number_conf := entities.get(CONF_MAX_TARGET_FLOW_TEMP_SET):
-            num = yield number.new_number(
-                number_conf,
-                min_value=25,
-                max_value=60,
-                step=1
-            )
-            yield cg.register_parented(num, var)
-            cg.add(var.getAccessor().set_max_target_flow_temp_set(num))
-
-        if number_conf := entities.get(CONF_MIN_TARGET_FLOW_TEMP_SET):
-            num = yield number.new_number(
-                number_conf,
-                min_value=25,
-                max_value=40,
-                step=1
-            )
-            yield cg.register_parented(num, var)
-            cg.add(var.getAccessor().set_min_target_flow_temp_set(num))
-
-        if number_conf := entities.get(CONF_HEATING_CURVE_SET):
-            num = yield number.new_number(
-                number_conf,
-                min_value=0,
-                max_value=2.55,
-                step=0.01
-            )
-            yield cg.register_parented(num, var)
-            cg.add(var.getAccessor().set_heating_curve_set(num))
-
-        if number_conf := entities.get(CONF_CIRCULATION_PUMP_MIN_SET):
-            num = yield number.new_number(
-                number_conf,
-                min_value=40,
-                max_value=100,
-                step=1
-            )
-            yield cg.register_parented(num, var)
-            cg.add(var.getAccessor().set_circulation_pump_min_set(num))
-
-        if number_conf := entities.get(CONF_CIRCULATION_PUMP_MAX_SET):
-            num = yield number.new_number(
-                number_conf,
-                min_value=60,
-                max_value=100,
-                step=1
-            )
-            yield cg.register_parented(num, var)
-            cg.add(var.getAccessor().set_circulation_pump_max_set(num))
-
-        ########## Numbers ##########
+        ########## Buttons ##########
 
         if button_conf := entities.get(CONF_DHW_RUN):
             but = yield button.new_button(button_conf)

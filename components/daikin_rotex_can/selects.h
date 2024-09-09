@@ -6,32 +6,14 @@
 namespace esphome {
 namespace daikin_rotex_can {
 
-class OperationModeSelect : public select::Select, public Parented<DaikinRotexCanComponent> {
+class GenericSelect : public select::Select, public Parented<DaikinRotexCanComponent> {
 public:
-    OperationModeSelect() = default;
+    GenericSelect() = default;
+    void set_id(std::string const& id) { m_id = id; }
 protected:
     void control(const std::string &value) override;
-};
-
-class HKFunctionSelect : public select::Select, public Parented<DaikinRotexCanComponent> {
-public:
-    HKFunctionSelect() = default;
-protected:
-    void control(const std::string &value) override;
-};
-
-class SGModeSelect : public select::Select, public Parented<DaikinRotexCanComponent> {
-public:
-    SGModeSelect() = default;
-protected:
-    void control(const std::string &value) override;
-};
-
-class SmartGridSelect : public select::Select, public Parented<DaikinRotexCanComponent> {
-public:
-    SmartGridSelect() = default;
-protected:
-    void control(const std::string &value) override;
+private:
+    std::string m_id;
 };
 
 }  // namespace ld2410
