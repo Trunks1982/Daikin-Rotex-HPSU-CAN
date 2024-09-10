@@ -162,15 +162,23 @@ void DaikinRotexCanComponent::set_generic_number(std::string const& id, float va
 ///////////////// Buttons /////////////////
 void DaikinRotexCanComponent::dhw_run() {
     TRequest const* pRequest = m_data_requests.get("target_hot_water_temperature");
+    if (pRequest != nullptr) {
+        number::Number* pNumber = pRequest->get_number();
+        if (pNumber != nullptr) {
+            const float temp = pNumber->state;
+            const std::string name = pRequest->getName();
 
-    const float temp = pRequest->get_sensor()->get_raw_state();
-    const std::string name = pRequest->getName();
+            m_data_requests.sendSet(name, 70);
 
-    m_data_requests.sendSet(name, 70);
-
-    m_dhw_run_lambdas.push_back([temp, name, this]() {
-        m_data_requests.sendSet(name, temp);
-    });
+            call_later([name, temp, this](){
+                m_data_requests.sendSet(name, temp);
+            }, 10*1000);
+        } else {
+            ESP_LOGE("dhw_rum", "Request doesn't have a Number!");
+        }
+    } else {
+        ESP_LOGE("dhw_rum", "Request couldn't be found!");
+    }
 }
 
 void DaikinRotexCanComponent::run_dhw_lambdas() {
