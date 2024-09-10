@@ -4,10 +4,9 @@ esphome:
     platformio_options:
         build_unflags:
             - "-std=gnu++11"
-            - "-fno-exceptions"
+            - "-fno-rtti"
         build_flags:
             - "-std=gnu++17"
-            - "-fexceptions"
 
 esp32:
   board: esp32-s3-devkitc-1
@@ -52,6 +51,8 @@ daikin_rotex_can:
   canbus_id: can_bus
   log_filter:
     name: "Log Filter"
+  custom_request:
+    name: "Custom Request"
   entities:
     bypass_valve:
       name: "BPV"
