@@ -27,7 +27,6 @@ ICON_SUN_SNOWFLAKE_VARIANT = "mdi:sun-snowflake-variant"
 ########## Configuration of Sensors, TextSensors, BinarySensors, Selects and Numbers ##########
 
 sensor_configuration = [
-    ####################### Sensors #######################
     {
         "type": "sensor",
         "name": "t_hs",
@@ -123,7 +122,7 @@ sensor_configuration = [
         "data_offset": 6,
         "data_size": 1,
         "divider": 1,
-        "set": "30 00 FA 06 7F __ __"
+        "setter": "30 00 FA 06 7F __ __"
     },
     {
         "type": "number",
@@ -141,7 +140,7 @@ sensor_configuration = [
         "data_offset": 6,
         "data_size": 1,
         "divider": 1,
-        "set": "30 00 FA 06 7E __ __"
+        "setter": "30 00 FA 06 7E __ __"
     },
     {
         "type": "sensor",
@@ -383,7 +382,7 @@ sensor_configuration = [
         "data_offset": 3,
         "data_size": 2,
         "divider": 10.0,
-        "set": "30 00 05 __ __ 00 00"
+        "setter": "30 00 05 __ __ 00 00"
     },
     {
         "type": "number",
@@ -400,7 +399,7 @@ sensor_configuration = [
         "data_offset": 5,
         "data_size": 2,
         "divider": 10.0,
-        "set": "30 00 FA 01 29 __ __"
+        "setter": "30 00 FA 01 29 __ __"
     },
     {
         "type": "number",
@@ -417,7 +416,7 @@ sensor_configuration = [
         "data_offset": 5,
         "data_size": 2,
         "divider": 100.0,
-        "set": "30 00 FA 01 0E __ __"
+        "setter": "30 00 FA 01 0E __ __"
     },
     {
         "type": "number",
@@ -435,7 +434,7 @@ sensor_configuration = [
         "data_offset": 5,
         "data_size": 2,
         "divider": 10.0,
-        "set": "30 00 FA 01 2B __ __"
+        "setter": "30 00 FA 01 2B __ __"
     },
     {
         "type": "number",
@@ -453,7 +452,7 @@ sensor_configuration = [
         "data_offset": 3,
         "data_size": 2,
         "divider": 10.0,
-        "set": "30 00 28 __ __ 00 00"
+        "setter": "30 00 28 __ __ 00 00"
     },
     {
         "type": "number",
@@ -471,9 +470,8 @@ sensor_configuration = [
         "data_offset": 3,
         "data_size": 2,
         "divider": 10.0,
-        "set": "30 00 13 __ __ 00 00"
+        "setter": "30 00 13 __ __ 00 00"
     },
-    ####################### Text sensors #######################
     {
         "type": "text_sensor",
         "name": "mode_of_operating" ,
@@ -574,7 +572,6 @@ sensor_configuration = [
             8007: "W8007 Wasserdruck in Anlage zu hoch"
         }
     },
-    ####################### Binary sensors #######################
     {
         "type": "binary_sensor",
         "name": "status_kompressor" ,
@@ -593,7 +590,6 @@ sensor_configuration = [
         "data_offset": 6,
         "data_size": 1
     },
-    ####################### Selects #######################
     {
         "type": "select",
         "name": "operating_mode" ,
@@ -611,7 +607,7 @@ sensor_configuration = [
             0x0B: "Automatik 1",
             0x0C: "Automatik 2"
         },
-        "set": "30 00 FA 01 12 __ 00"
+        "setter": "30 00 FA 01 12 __ 00"
     },
     {
         "type": "select",
@@ -625,7 +621,7 @@ sensor_configuration = [
             0x00: "Witterungsgeführt",
             0x01: "Fest"
         },
-        "set": "30 00 FA 01 41 00 __"
+        "setter": "30 00 FA 01 41 00 __"
     },
     {
         "type": "select",
@@ -640,7 +636,7 @@ sensor_configuration = [
             0x01: "SG Modus 1",
             0x02: "SG Modus 2"
         },
-        "set": "30 00 FA 06 94 00 __"
+        "setter": "30 00 FA 06 94 00 __"
     },
     {
         "type": "select",
@@ -654,7 +650,7 @@ sensor_configuration = [
             0x00: "Aus",
             0x01: "An"
         },
-        "set": "30 00 FA 06 93 00, __"
+        "setter": "30 00 FA 06 93 00, __"
     }
 ]
 
@@ -785,96 +781,42 @@ def to_code(config):
     if entities := config.get(CONF_ENTITIES):
         for sens_conf in sensor_configuration:
             if yaml_sensor_conf := entities.get(sens_conf.get("name")):
+                entity = None
                 match sens_conf.get("type"):
                     case "sensor":
-                        sens = yield sensor.new_sensor(yaml_sensor_conf)
-
-                        cg.add(var.getAccessor().set_sensor(
-                            sens_conf.get("name"),
-                            [
-                                sens,
-                                sens_conf.get("name"),
-                                sens_conf.get("data"),
-                                sens_conf.get("expected_reponse"),
-                                sens_conf.get("data_offset"),
-                                sens_conf.get("data_size"),
-                                sens_conf.get("divider"),
-                                sens_conf.get("update_entity", ""),
-                                sens_conf.get("set_entity", "")
-                            ]
-                        ))
+                        entity = yield sensor.new_sensor(yaml_sensor_conf)
                     case "text_sensor":
-                        sens = yield text_sensor.new_text_sensor(yaml_sensor_conf)
-
-                        cg.add(var.getAccessor().set_text_sensor(
-                            sens_conf.get("name"),
-                            [
-                                sens,
-                                sens_conf.get("name"),
-                                sens_conf.get("data"),
-                                sens_conf.get("expected_reponse"),
-                                sens_conf.get("data_offset"),
-                                sens_conf.get("data_size"),
-                                "|".join([f"0x{key:02X}:{value}" for key, value in sens_conf.get("map").items()]),
-                                sens_conf.get("update_entity", ""),
-                                sens_conf.get("set_entity", "")
-                            ]
-                        ))
+                        entity = yield text_sensor.new_text_sensor(yaml_sensor_conf)
                     case "binary_sensor":
-                        sens = yield binary_sensor.new_binary_sensor(yaml_sensor_conf)
-
-                        cg.add(var.getAccessor().set_binary_sensor(
-                            sens_conf.get("name"),
-                            [
-                                sens,
-                                sens_conf.get("name"),
-                                sens_conf.get("data"),
-                                sens_conf.get("expected_reponse"),
-                                sens_conf.get("data_offset"),
-                                sens_conf.get("data_size"),
-                                sens_conf.get("update_entity", ""),
-                                sens_conf.get("set_entity", "")
-                            ]
-                        ))
+                        entity = yield binary_sensor.new_binary_sensor(yaml_sensor_conf)
                     case "select":
-                        sel = yield select.new_select(yaml_sensor_conf, options = list(sens_conf.get("map").values()))
-                        cg.add(sel.set_id(sens_conf.get("name")))
-                        yield cg.register_parented(sel, var)
-
-                        cg.add(var.getAccessor().set_select(
-                            sens_conf.get("name"),
-                            [
-                                sel,
-                                sens_conf.get("name"),
-                                sens_conf.get("data"),
-                                sens_conf.get("expected_reponse"),
-                                sens_conf.get("data_offset"),
-                                sens_conf.get("data_size"),
-                                "|".join([f"0x{key:02X}:{value}" for key, value in sens_conf.get("map").items()]),
-                                sens_conf.get("set")
-                            ]
-                        ))
+                        entity = yield select.new_select(yaml_sensor_conf, options = list(sens_conf.get("map").values()))
+                        cg.add(entity.set_id(sens_conf.get("name")))
+                        yield cg.register_parented(entity, var)
                     case "number":
-                        num = yield number.new_number(
+                        entity = yield number.new_number(
                             yaml_sensor_conf,
                             min_value=sens_conf.get("min_value"),
                             max_value=sens_conf.get("max_value"),
-                            step=sens_conf.get("step"),
+                            step=sens_conf.get("step")
                         )
-                        yield cg.register_parented(num, var)
-                        cg.add(var.getAccessor().set_number(
-                            sens_conf.get("name"),
-                            [
-                                num,
-                                sens_conf.get("name"),
-                                sens_conf.get("data"),
-                                sens_conf.get("expected_reponse"),
-                                sens_conf.get("data_offset"),
-                                sens_conf.get("data_size"),
-                                sens_conf.get("divider"),
-                                sens_conf.get("set")
-                            ]
-                        ))
+                        cg.add(entity.set_id(sens_conf.get("name")))
+                        yield cg.register_parented(entity, var)
+                    case _:
+                        raise Exception("Unknown type: " + sens_conf.get("type"))
+
+                cg.add(var.getAccessor().set_entity(sens_conf.get("name"), [
+                    entity,
+                    sens_conf.get("name"),
+                    sens_conf.get("data"),
+                    sens_conf.get("expected_reponse"),
+                    sens_conf.get("data_offset"),
+                    sens_conf.get("data_size"),
+                    sens_conf.get("divider", 1.0),
+                    "|".join([f"0x{key:02X}:{value}" for key, value in sens_conf.get("map", {}).items()]), # map
+                    sens_conf.get("update_entity", ""),
+                    sens_conf.get("setter", "")
+                ]))
 
         ########## Sensors ##########
 
@@ -887,5 +829,3 @@ def to_code(config):
         if button_conf := entities.get(CONF_DHW_RUN):
             but = yield button.new_button(button_conf)
             yield cg.register_parented(but, var)
-
-    cg.add(var.validateConfig())

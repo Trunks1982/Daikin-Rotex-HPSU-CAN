@@ -26,7 +26,6 @@ public:
     text_sensor::TextSensor* get_text_sensor(std::string const& id);
 
     bool sendNextPendingGet();
-    void sendGet(std::string const& request_name);
     void sendSet(std::string const& request_name, float value);
     void handle(uint32_t can_id, std::vector<uint8_t> const& responseData);
 
@@ -68,11 +67,11 @@ inline EntityBase* TRequests::get_entity(std::string const& id) {
 }
 
 inline sensor::Sensor* TRequests::get_sensor(std::string const& id) {
-    return dynamic_cast<sensor::Sensor*>(get_entity(id));
+    return Utils::toSensor(get_entity(id));
 }
 
 inline text_sensor::TextSensor* TRequests::get_text_sensor(std::string const& id) {
-    return dynamic_cast<text_sensor::TextSensor*>(get_entity(id));
+    return Utils::toTextSensor(get_entity(id));
 }
 
 

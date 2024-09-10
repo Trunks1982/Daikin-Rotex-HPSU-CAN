@@ -28,26 +28,9 @@ void TRequests::removeInvalidRequests() {
 bool TRequests::sendNextPendingGet() {
     TRequest* pRequest = getNextRequestToSend();
     if (pRequest != nullptr) {
-        pRequest->sendGet(m_pCanbus);
-        return true;
+        return pRequest->sendGet(m_pCanbus);
     }
     return false;
-}
-
-void TRequests::sendGet(std::string const& request_name) {
-    const auto it = std::find_if(
-        m_requests.begin(),
-        m_requests.end(),
-        [& request_name](auto& request) {
-            return request.getName() == request_name && request.isGetSupported();
-        }
-    );
-
-    if (it != m_requests.end()) {
-        it->sendGet(m_pCanbus);
-    } else {
-        ESP_LOGE("sendGet", "Unknown request: %s", request_name.c_str());
-    }
 }
 
 void TRequests::sendSet(std::string const& request_name, float value) {
@@ -78,6 +61,12 @@ void TRequests::handle(uint32_t can_id, std::vector<uint8_t> const& responseData
 TRequest* TRequests::getNextRequestToSend() {
     const uint32_t timestamp = millis();
     const uint32_t interval = static_cast<uint32_t>(10/*id(update_interval).state*/) * 1000;
+
+    for (auto& request : m_requests) {
+        if (request.hasSendGet() && request.inProgress()) {
+            return nullptr;
+        }
+    }
 
     for (auto& request : m_requests) {
         if (request.hasSendGet()) {

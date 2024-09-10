@@ -1,5 +1,10 @@
 #pragma once
 
+#include "esphome/components/sensor/sensor.h"
+#include "esphome/components/binary_sensor/binary_sensor.h"
+#include "esphome/components/text_sensor/text_sensor.h"
+#include "esphome/components/select/select.h"
+#include "esphome/components/number/number.h"
 #include "esphome/core/log.h"
 #include <algorithm>
 #include <sstream>
@@ -46,14 +51,12 @@ public:
 
     static bool find(std::string const& haystack, std::string const& needle);
     static std::vector<std::string> split(std::string const& str);
-    static bool is_number(const std::string& str);
     static std::string to_hex(uint32_t value);
     static std::vector<uint8_t> str_to_bytes(const std::string& str);
     static std::array<uint8_t, 7> str_to_bytes_array8(const std::string& str);
     static std::array<uint16_t, 7> str_to_bytes_array16(const std::string& str);
     static std::map<uint8_t, std::string> str_to_map(const std::string& input);
     static std::vector<uint8_t> str_to_bytes(const std::string& str, uint16_t value);
-    static std::vector<uint8_t> replace_placeholders(const std::array<uint16_t, 7>& arr, uint16_t token, uint16_t value);
 
     template<typename... Args>
     static void log(std::string const& tag, std::string const& str_format, Args... args) {
@@ -72,6 +75,12 @@ public:
             ESP_LOGI(tag.c_str(), formated.c_str(), "");
         }
     }
+
+    static sensor::Sensor* toSensor(EntityBase*);
+    static text_sensor::TextSensor* toTextSensor(EntityBase*);
+    static binary_sensor::BinarySensor* toBinarySensor(EntityBase*);
+    static select::Select* toSelect(EntityBase*);
+    static number::Number* toNumber(EntityBase*);
 
     static std::string g_log_filter;
 };

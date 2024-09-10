@@ -32,8 +32,6 @@ public:
     // Buttons
     void dhw_run();
 
-    void validateConfig();
-
     Accessor& getAccessor() { return m_accessor; }
 
     void handle(uint32_t can_id, std::vector<uint8_t> const& data);

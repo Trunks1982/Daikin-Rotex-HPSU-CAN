@@ -1,5 +1,6 @@
 #pragma once
 
+#include <sstream>  
 #include <map>
 
 template<typename KeyType, typename ValueType>
@@ -33,24 +34,16 @@ public:
         return key_to_value.end();
     }
 
-    KeyType getKey(const ValueType& value) const {
-        auto it = findByValue(value);
-        if (it != key_to_value.end()) {
-            return it->first;
-        }
-        throw std::runtime_error("Value not found");
-    }
-
-    ValueType getValue(const KeyType& key) const {
-        auto it = findByKey(key);
-        if (it != key_to_value.end()) {
-            return it->second;
-        }
-        throw std::runtime_error("Key not found");
-    }
-
     Iterator end() const {
         return key_to_value.end();
+    }
+
+    std::string string() const {
+        std::stringstream ss;
+        for (const auto& pair : key_to_value) {
+            ss << "{" << std::to_string(pair.first) << ", " << pair.second << "} ";
+        }
+        return ss.str();
     }
 
 private:

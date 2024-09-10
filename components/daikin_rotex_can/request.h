@@ -3,7 +3,6 @@
 #include "esphome/components/daikin_rotex_can/types.h"
 #include "esphome/components/daikin_rotex_can/utils.h"
 #include "esphome/components/esp32_can/esp32_can.h"
-#include "esphome/components/sensor/sensor.h"
 #include <functional>
 
 namespace esphome {
@@ -14,7 +13,6 @@ const uint16_t DC = 0xFFFF; // Don't care
 class TRequest
 {
 public:
-    using TEntityProvider = std::function<EntityBase*()>;
     using TGetLambda = std::function<DataType(std::vector<uint8_t> const&)>;
     using TSetLambda = std::function<std::vector<uint8_t>(float const&)>;
 public:
@@ -22,14 +20,14 @@ public:
         std::string const& id,
         std::array<uint8_t, 7> const& data,
         std::array<uint16_t, 7> const& expected_reponse,
-        TEntityProvider entity_provider,
+        EntityBase* entity,
         TGetLambda lambda,
         TSetLambda setLambda,
         bool setter)
     : m_id(id)
     , m_data(data)
     , m_expected_reponse(expected_reponse)
-    , m_entity_provider(entity_provider)
+    , m_entity(entity)
     , m_lambda(lambda)
     , m_set_lambda(setLambda)
     , m_last_update(0u)
@@ -38,52 +36,22 @@ public:
     {
     }
 
-    TRequest(
-        std::string const& id,
-        std::array<uint8_t, 7> const& data,
-        std::array<uint16_t, 7> const& expected_reponse,
-        TEntityProvider entity_provider,
-        TGetLambda lambda)
-    : TRequest(id, data, expected_reponse, entity_provider, lambda, [](float) -> std::vector<uint8_t> { return {}; }, false)
-    {
-    }
-
-    TRequest(
-        std::string const& id,
-        std::array<uint8_t, 7> const& data,
-        std::array<uint16_t, 7> const& expected_reponse,
-        TEntityProvider entity_provider,
-        TGetLambda lambda,
-        TSetLambda setLambda)
-    : TRequest(id, data, expected_reponse, entity_provider, lambda, setLambda, true)
-    {
-    }
-
-    TRequest(
-        std::string const& id,
-        TEntityProvider entity_provider,
-        TSetLambda setLambda)
-    : TRequest(id, {}, {}, entity_provider, [](auto const&) -> DataType { return 0u; }, setLambda, true)
-    {
-    }
-
     std::string const& get_id() const { return m_id; }
 
     std::string getName() const {
-        EntityBase* pEntity = m_entity_provider();
-        return pEntity != nullptr ? pEntity->get_name().str() : "<INVALID>";
+        return m_entity != nullptr ? m_entity->get_name().str() : "<INVALID>";
     }
 
     EntityBase* getEntity() const {
-        return m_entity_provider();
+        return m_entity;
     }
 
     sensor::Sensor* get_sensor() const {
-        return dynamic_cast<sensor::Sensor*>(m_entity_provider());
+        return dynamic_cast<sensor::Sensor*>(m_entity);
     }
 
     bool isGetSupported() const {
-        return m_entity_provider() != nullptr;
+        return m_entity != nullptr;
     }
 
     uint32_t getLastUpdate() const {
@@ -101,8 +69,8 @@ public:
     bool isMatch(uint32_t can_id, std::vector<uint8_t> const& responseData) const;
     bool handle(uint32_t can_id, std::vector<uint8_t> const& responseData, uint32_t timestamp);
 
-    void sendGet(esphome::esp32_can::ESP32Can* pCanBus);
-    void sendSet(esphome::esp32_can::ESP32Can* pCanBus, float value);
+    bool sendGet(esphome::esp32_can::ESP32Can* pCanBus);
+    bool sendSet(esphome::esp32_can::ESP32Can* pCanBus, float value);
 
     bool inProgress() const;
     bool isSetter() const { return m_setter; }
@@ -119,7 +87,7 @@ private:
     std::string m_id;
     std::array<uint8_t, 7> m_data;
     std::array<uint16_t, 7> m_expected_reponse;
-    TEntityProvider m_entity_provider;
+    EntityBase* m_entity;
     TGetLambda m_lambda;
     std::function<std::vector<uint8_t>(float const&)> m_set_lambda;
     uint32_t m_last_update;

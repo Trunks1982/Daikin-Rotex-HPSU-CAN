@@ -16,283 +16,80 @@ DaikinRotexCanComponent::DaikinRotexCanComponent()
 {
 }
 
-void DaikinRotexCanComponent::validateConfig() {
-    for (auto const& pair : m_accessor.get_sensors()) {
-        const std::array<uint8_t, 7> data = Utils::str_to_bytes_array8(pair.second.data);
-        const std::array<uint16_t, 7> expected_response = Utils::str_to_bytes_array16(pair.second.expected_response);
+void DaikinRotexCanComponent::setup() {
+    ESP_LOGI(TAG, "setup");
 
-        /////////////////////// Sensors ///////////////////////
+    for (auto const& entity_conf : m_accessor.get_entities()) {
+        const std::array<uint8_t, 7> data = Utils::str_to_bytes_array8(entity_conf.data);
+        const std::array<uint16_t, 7> expected_response = Utils::str_to_bytes_array16(entity_conf.expected_response);
+
         m_data_requests.add({
-            pair.second.id,
+            entity_conf.id,
             data,
             expected_response,
-            [pair]() -> EntityBase* { return pair.second.pSensor; },
-            [pair, this](auto const& data) -> DataType {
-                float value = 0;
+            entity_conf.pEntity,
+            [entity_conf, this](auto const& data) -> DataType {
+                DataType variant;
 
-                if (pair.second.data_offset > 0 && (pair.second.data_offset + pair.second.data_size) <= 7) {
-                    switch (pair.second.data_size) {
-                    case 1:
-                        value = data[pair.second.data_offset] / pair.second.divider;
-                        pair.second.pSensor->publish_state(value);
-                        break;
-                    case 2:
-                        value = ((data[pair.second.data_offset] << 8) + data[pair.second.data_offset + 1]) / pair.second.divider;
-                        pair.second.pSensor->publish_state(value);
-                        break;
-                    default:
-                        call_later([pair](){
-                            ESP_LOGE("validateConfig", "Invalid data size: %d", pair.second.data_size);
+                if (entity_conf.data_offset > 0 && (entity_conf.data_offset + entity_conf.data_size) <= 7) {
+                    if (entity_conf.data_size >= 1 && entity_conf.data_size <= 2) {
+                        const float value = entity_conf.data_size == 2 ?
+                            (((data[entity_conf.data_offset] << 8) + data[entity_conf.data_offset + 1]) / entity_conf.divider) :
+                            (data[entity_conf.data_offset] / entity_conf.divider);
+
+                        if (dynamic_cast<sensor::Sensor*>(entity_conf.pEntity) != nullptr) {
+                            Utils::toSensor(entity_conf.pEntity)->publish_state(value);
+                            variant = value;
+                        } else if (dynamic_cast<binary_sensor::BinarySensor*>(entity_conf.pEntity) != nullptr) {
+                            Utils::toBinarySensor(entity_conf.pEntity)->publish_state(value);
+                            variant = value;
+                        } else if (dynamic_cast<text_sensor::TextSensor*>(entity_conf.pEntity) != nullptr) {
+                            auto it = entity_conf.map.findByKey(value);
+                            const std::string str = it != entity_conf.map.end() ? it->second : "INVALID";
+                            Utils::toTextSensor(entity_conf.pEntity)->publish_state(str);
+                            variant = str;
+                        } else if (dynamic_cast<select::Select*>(entity_conf.pEntity) != nullptr) {
+                            auto it = entity_conf.map.findByKey(value);
+                            const std::string str = it != entity_conf.map.end() ? it->second : "INVALID";
+                            Utils::toSelect(entity_conf.pEntity)->publish_state(str);
+                            variant = str;
+                        } else if (dynamic_cast<number::Number*>(entity_conf.pEntity) != nullptr) {
+                            Utils::toNumber(entity_conf.pEntity)->publish_state(value);
+                            variant = value;
+                        }
+                    } else {
+                        call_later([entity_conf](){
+                            ESP_LOGE("validateConfig", "Invalid data size: %d", entity_conf.data_size);
                         });
                     }
                 } else {
-                    call_later([pair](){
-                        ESP_LOGE("validateConfig", "Invalid data_offset: %d", pair.second.data_offset);
+                    call_later([entity_conf](){
+                        ESP_LOGE("validateConfig", "Invalid data_offset: %d", entity_conf.data_offset);
                     });
                 }
 
-                call_later([pair, this](){
-                    if (!pair.second.update_entity.empty()) {
-                        updateState(pair.second.update_entity);
+                call_later([entity_conf, this](){
+                    if (!entity_conf.update_entity.empty()) {
+                        updateState(entity_conf.update_entity);
                     }
                 });
 
-                call_later([pair, value, this](){
-                    if (!pair.second.set_entity.empty()) {
-                        TRequest const* pRequest = m_data_requests.get(pair.second.set_entity);
-                        if (pRequest != nullptr) {
-                            EntityBase* pEntity = pRequest->getEntity();
-                            if (number::Number* pNumber = dynamic_cast<number::Number*>(pEntity)) {
-                                pNumber->publish_state(value);
-                            } else {
-                                ESP_LOGE("handle ", "id<%s>.set_entity<%s> has unsupported type!", 
-                                    pair.second.id.c_str(), pair.second.set_entity.c_str());
-                            }
-                        } else {
-                            ESP_LOGE("handle ", "id<%s>.set_entity<%s> is invalid!", 
-                                pair.second.id.c_str(), pair.second.set_entity.c_str());
-                        }
-                    }
-                });
-
-                if (pair.second.id == "target_hot_water_temperature") {
+                if (entity_conf.id == "target_hot_water_temperature") {
                     call_later([this](){
                         run_dhw_lambdas();
                     });
                 }
 
-                return value;
-            }
-        });
-    }
-
-    /////////////////////// Binary Sensors ///////////////////////
-    for (auto const& pair : m_accessor.get_binary_sensors()) {
-        const std::array<uint8_t, 7> data = Utils::str_to_bytes_array8(pair.second.data);
-        const std::array<uint16_t, 7> expected_response = Utils::str_to_bytes_array16(pair.second.expected_response);
-
-        m_data_requests.add({
-            pair.second.id,
-            data,
-            expected_response,
-            [pair]() -> EntityBase* { return pair.second.pBinarySensor; },
-            [pair, this](auto const& data) -> DataType {
-                bool value;
-
-                if (pair.second.data_offset > 0 && (pair.second.data_offset + pair.second.data_size) <= 7) {
-                    switch (pair.second.data_size) {
-                    case 1: {
-                        value = data[pair.second.data_offset];
-                        pair.second.pBinarySensor->publish_state(value);
-                        break;
-                    }
-                    default:
-                        call_later([pair](){
-                            ESP_LOGE("validateConfig", "Invalid data size: %d", pair.second.data_size);
-                        });
-                    }
-                } else {
-                    call_later([pair](){
-                        ESP_LOGE("validateConfig", "Invalid data_offset: %d", pair.second.data_offset);
-                    });
-                }
-
-                return value;
-            }
-        });
-    }
-
-    /////////////////////// Text Sensors ///////////////////////
-    for (auto const& pair : m_accessor.get_text_sensors()) {
-        const std::array<uint8_t, 7> data = Utils::str_to_bytes_array8(pair.second.data);
-        const std::array<uint16_t, 7> expected_response = Utils::str_to_bytes_array16(pair.second.expected_response);
-
-        m_data_requests.add({
-            pair.second.id,
-            data,
-            expected_response,
-            [pair]() -> EntityBase* { return pair.second.pTextSensor; },
-            [pair, this](auto const& data) -> DataType {
-                std::string str;
-
-                if (pair.second.data_offset > 0 && (pair.second.data_offset + pair.second.data_size) <= 7) {
-                    switch (pair.second.data_size) {
-                    case 1: {
-                        const uint32_t value = data[pair.second.data_offset];
-                        str = pair.second.map.getValue(value);
-
-                        pair.second.pTextSensor->publish_state(str);
-                        break;
-                    }
-                    case 2: {
-                        const uint32_t value = (data[pair.second.data_offset] << 8) + data[pair.second.data_offset + 1];
-                        str = pair.second.map.getValue(value);
-
-                        pair.second.pTextSensor->publish_state(str);
-                        break;
-                    }
-                    default:
-                        call_later([pair](){
-                            ESP_LOGE("validateConfig", "Invalid data size: %d", pair.second.data_size);
-                        });
-                    }
-                } else {
-                    call_later([pair](){
-                        ESP_LOGE("validateConfig", "Invalid data_offset: %d", pair.second.data_offset);
-                    });
-                }
-
-                call_later([pair, this](){
-                    if (!pair.second.update_entity.empty()) {
-                        updateState(pair.second.update_entity);
-                    }
-                });
-
-                call_later([pair, str, this](){
-                    if (!pair.second.set_entity.empty()) {
-                        TRequest const* pRequest = m_data_requests.get(pair.second.set_entity);
-                        if (pRequest != nullptr) {
-                            EntityBase* pEntity = pRequest->getEntity();
-                            if (select::Select* pSelect = dynamic_cast<select::Select*>(pEntity)) {
-                                //ESP_LOGE("validateConfig", "set select: %s", pair.second.set_entity.c_str());
-                                pSelect->publish_state(str);
-                            } else {
-                                ESP_LOGE("handle ", "id<%s>.set_entity<%s> has unsupported type!", 
-                                    pair.second.id.c_str(), pair.second.set_entity.c_str());
-                            }
-                        } else {
-                            ESP_LOGE("handle ", "id<%s>.set_entity<%s> is invalid!", 
-                                pair.second.id.c_str(), pair.second.set_entity.c_str());
-                        }
-                    }
-                });
-
-                return str;
-            }
-        });
-    }
-
-    /////////////////////// Selects ///////////////////////
-    for (auto const& pair : m_accessor.get_selects()) {
-        const std::array<uint8_t, 7> data = Utils::str_to_bytes_array8(pair.second.data);
-        const std::array<uint16_t, 7> expected_response = Utils::str_to_bytes_array16(pair.second.expected_response);
-
-        m_data_requests.add({
-            pair.second.id,
-            data,
-            expected_response,
-            [pair]() -> EntityBase* { return pair.second.pSelect; },
-            [pair, this](auto const& data) -> DataType {
-                std::string str;
-
-                if (pair.second.data_offset > 0 && (pair.second.data_offset + pair.second.data_size) <= 7) {
-                    switch (pair.second.data_size) {
-                    case 1: {
-                        const uint32_t value = data[pair.second.data_offset];
-                        str = pair.second.map.getValue(value);
-
-                        pair.second.pSelect->publish_state(str);
-                        break;
-                    }
-                    case 2: {
-                        const uint32_t value = (data[pair.second.data_offset] << 8) + data[pair.second.data_offset + 1];
-                        str = pair.second.map.getValue(value);
-
-                        pair.second.pSelect->publish_state(str);
-                        break;
-                    }
-                    default:
-                        call_later([pair](){
-                            ESP_LOGE("validateConfig", "Invalid data size: %d", pair.second.data_size);
-                        });
-                    }
-                } else {
-                    call_later([pair](){
-                        ESP_LOGE("validateConfig", "Invalid data_offset: %d", pair.second.data_offset);
-                    });
-                }
-
-                return str;
+                return variant;
             },
-            [pair](auto const& value) -> std::vector<uint8_t> {
-                std::vector<uint8_t> data;
-                uint8_t index = 0;
-                for (uint16_t word : pair.second.set) {
-                    data.push_back(word == esphome::daikin_rotex_can::DC ? value : static_cast<uint8_t>(word));
-                }
-                return data;
-            }
-        });
-    }
-
-    /////////////////////// Numbers ///////////////////////
-    for (auto const& pair : m_accessor.get_numbers()) {
-        const std::array<uint8_t, 7> data = Utils::str_to_bytes_array8(pair.second.data);
-        const std::array<uint16_t, 7> expected_response = Utils::str_to_bytes_array16(pair.second.expected_response);
-
-        m_data_requests.add({
-            pair.second.id,
-            data,
-            expected_response,
-            [pair]() -> EntityBase* { return pair.second.pNumber; },
-            [pair, this](auto const& data) -> DataType {
-                float value;
-
-                if (pair.second.data_offset > 0 && (pair.second.data_offset + pair.second.data_size) <= 7) {
-                    switch (pair.second.data_size) {
-                    case 1: {
-                        value = data[pair.second.data_offset] / pair.second.divider;
-                        pair.second.pNumber->publish_state(value);
-                        break;
-                    case 2:
-                        value = ((data[pair.second.data_offset] << 8) + data[pair.second.data_offset + 1]) / pair.second.divider;
-                        pair.second.pNumber->publish_state(value);
-                        break;
-                    }
-                    default:
-                        call_later([pair](){
-                            ESP_LOGE("validateConfig", "Invalid data size: %d", pair.second.data_size);
-                        });
-                    }
-                } else {
-                    call_later([pair](){
-                        ESP_LOGE("validateConfig", "Invalid data_offset: %d", pair.second.data_offset);
-                    });
-                }
-
-                return value;
+            [entity_conf](float const& value) -> std::vector<uint8_t> {
+                return Utils::str_to_bytes(entity_conf.setter, value * entity_conf.divider);
             },
-            [pair](auto const& value) -> std::vector<uint8_t> {
-                return Utils::replace_placeholders(pair.second.set, esphome::daikin_rotex_can::DC, static_cast<uint16_t>(value));
-            }
+            !entity_conf.setter.empty()
         });
     }
 
     m_data_requests.removeInvalidRequests();
-}
-
-void DaikinRotexCanComponent::setup() {
-    ESP_LOGI(TAG, "setup");
 }
 
 void DaikinRotexCanComponent::updateState(std::string const& id) {
@@ -314,9 +111,7 @@ void DaikinRotexCanComponent::update_thermal_power() {
         float value = 0;
         if (mode_of_operating->state == "Warmwasserbereitung" && tv != nullptr && tr != nullptr && water_flow != nullptr) {
             value = (tv->state - tr->state) * (4.19 * water_flow->state) / 3600.0f;
-        } else if (mode_of_operating->state == "Heizen" && tvbh != nullptr && tr != nullptr && water_flow != nullptr) {
-            value = (tvbh->state - tr->state) * (4.19 * water_flow->state) / 3600.0f;
-        } else if (mode_of_operating->state == "Kühlen" && tvbh != nullptr && tr != nullptr && water_flow != nullptr) {
+        } else if ((mode_of_operating->state == "Heizen" || mode_of_operating->state == "Kühlen") && tvbh != nullptr && tr != nullptr && water_flow != nullptr) {
             value = (tvbh->state - tr->state) * (4.19 * water_flow->state) / 3600.0f;
         }
         thermal_power->publish_state(value);
@@ -341,9 +136,14 @@ void DaikinRotexCanComponent::custom_request(std::string const& value) {
 
 ///////////////// Selects /////////////////
 void DaikinRotexCanComponent::set_generic_select(std::string const& id, std::string const& state) {
-    for (auto& pair : m_accessor.get_selects()) {
-        if (pair.second.id == id) {
-            m_data_requests.sendSet(pair.second.pSelect->get_name(), pair.second.map.getKey(state));
+    for (auto& entity_conf : m_accessor.get_entities()) {
+        if (entity_conf.id == id && dynamic_cast<select::Select*>(entity_conf.pEntity) != nullptr) {
+            auto it = entity_conf.map.findByValue(state);
+            if (it != entity_conf.map.end()) {
+                m_data_requests.sendSet(entity_conf.pEntity->get_name(), it->first);
+            } else {
+                ESP_LOGE(TAG, "set_generic_select(%s, %s) => Invalid value!", id.c_str(), state.c_str());
+            }
             break;
         }
     }
@@ -351,9 +151,9 @@ void DaikinRotexCanComponent::set_generic_select(std::string const& id, std::str
 
 ///////////////// Numbers /////////////////
 void DaikinRotexCanComponent::set_generic_number(std::string const& id, float value) {
-    for (auto& pair : m_accessor.get_selects()) {
-        if (pair.second.id == id) {
-            m_data_requests.sendSet(pair.second.pSelect->get_name(), value);
+    for (auto& entity_conf : m_accessor.get_entities()) {
+        if (entity_conf.id == id && dynamic_cast<number::Number*>(entity_conf.pEntity) != nullptr) {
+            m_data_requests.sendSet(entity_conf.pEntity->get_name(), value);
             break;
         }
     }
