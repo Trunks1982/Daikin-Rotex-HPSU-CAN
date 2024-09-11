@@ -2,33 +2,35 @@
 [![en](https://img.shields.io/badge/lang-en-red.svg)](README.en.md)
 [![de](https://img.shields.io/badge/lang-de-blue.svg)](README.md)
 
-# Warnung!
+# Warning!
 
-Die Nutzung von esphome-daikin-rotex-can kann bei unsachgemäßer Anwendung zu Schäden an der Heizungsanlage führen.
-Die Verwendung erfolgt auf eigenes Risiko, und der Entwickler übernimmt keine Haftung für etwaige Schäden.
-Der Einsatz dieser Software kann zum Verlust von Garantieansprüchen und Hersteller-Support führen.
-Es wird darauf hingewiesen, dass diese Software nicht vom Hersteller unterstützt wird.
+The use of esphome-daikin-rotex-can may cause damage to the heating system if used improperly.
+Usage is at your own risk, and the developer assumes no responsibility for any damages.
+Using this software may void your warranty and manufacturer support.
+Please note that this software is not supported by the manufacturer.
+<br>
+<br>
 
 ## Software requirements
- * [ESPHome](https://esphome.io/) installiert
+ * [ESPHome](https://esphome.io/) installed
 
-# Installationsanleitung
+# How to setup
 
-1. `ESPHome Dashboard` öffnen.
-2. Rechts unten auf `NEW DEVICE` klicken.
-3. Auf die Schaltfläche `CONTINUE` klicken.
-4. Einen beliebigen Name für die Konfiguration eingeben (z.B. Rotex) und mit `NEXT` bestätigen.
-5. `ESP32-S3` wählen.
-6. Mit `SKIP` die Erstellung der Grundkonfiguration abschließen.
-7. Bei der neu erstellten Konfiguration auf `EDIT` klicken
-8. Aus [examples/full.yaml](examples/full.yaml) folgende drei Sektionen übernehmen:
-    - `esphome` → `platformio_options` (Sehr wichtig, damit die spätere Kompilation funktioniert)
-    - canbus (GPIOs den eigenen Bedürfnissen anpassen)
-    - daikin_rotex_can (Nicht benötigte Entities können entfernt werden)
-9. Im ESPHome Dashboard bei der Konfiguration rechts unten auf die drei senkrechten Punkte klicken und anschliessend auf `Install`
+1. Open the `ESPHome Dashboard`.
+2. Click on `NEW DEVICE` in the bottom right corner.
+3. Click the `CONTINUE` button.
+4. Enter any name for the configuration (e.g., Rotex) and confirm with `NEXT`.
+5. Select `ESP32-S3`.
+6. Complete the basic configuration by clicking `SKIP`.
+7. Click `EDIT` on the newly created configuration.
+8. Copy the following three sections from [examples/full.yaml](examples/full.yaml):
+    - `esphome` → `platformio_options` (Very important to ensure successful compilation later)
+    - canbus (Adjust GPIOs according to your needs)
+    - daikin_rotex_can (Unnecessary entities can be removed)
+9. In the ESPHome Dashboard, click on the three vertical dots in the bottom right corner of the configuration and then click `Install`.
 
 
-Unterstützte Sensoren und Schalter:
+Supported sensors and controls:
 ------------------------
 
 |ID                              |Empfohlener Name                  |Beschreibubg                                     |

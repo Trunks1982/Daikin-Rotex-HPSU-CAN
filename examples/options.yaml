@@ -10,4 +10,4 @@ daikin_rotex_can:
       update_interval: 10             # Overwrites the global update interval with 10 seconds. The global interval applies if not set here
     circulation_pump_max:
       name: "Umwälzpumpe Max"
-      mode: "SLIDER"                  # Displays the number control as a slider
+      mode: "SLIDER"                  # Displays the circulation_pump_max number control as a slider

@@ -13,16 +13,16 @@ esp32:
   framework:
     type: arduino
 
-external_components:
+external_components:      # Automatically loads the *esphome-daikin-rotex-can* component from github during compilation
   - source: github://wrfz/esphome-daikin-rotex-can
 
-canbus:
+canbus:                   # Required for communication with the Daikin or Rotex heat pump
   - platform: esp32_can
     id: can_bus
     can_id: 0x680
     rx_pin: GPIO2
     tx_pin: GPIO3
-    bit_rate: 20kbps
+    bit_rate: 20kbps    # HPSU heat pumps require a mandatory baud rate of 20kbs!
 
 daikin_rotex_can:
   id: rotext_hpsu
