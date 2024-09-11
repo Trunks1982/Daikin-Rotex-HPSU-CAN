@@ -711,7 +711,10 @@ for sensor_conf in sensor_configuration:
                     GenericNumber,
                     entity_category=ENTITY_CATEGORY_CONFIG,
                     icon=ICON_SUN_SNOWFLAKE_VARIANT
-                ).extend({cv.Optional(CONF_UPDATE_INTERVAL): cv.uint16_t}),
+                ).extend({
+                    cv.Optional(CONF_UPDATE_INTERVAL): cv.uint16_t,
+                    cv.Optional(CONF_MODE, default="BOX"): cv.enum(number.NUMBER_MODES, upper=True)
+                })
             })
 
 entity_schemas.update({
