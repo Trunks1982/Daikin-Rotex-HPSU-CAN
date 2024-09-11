@@ -64,10 +64,6 @@ public:
         return m_last_update;
     }
 
-    bool hasSendGet() const {
-        return get_response_canid() != 0x00;
-    }
-
     uint16_t get_response_canid() const {
         return m_data.size() >= 7 ? (m_data[0] & 0xF0) * 8 + (m_data[1] & 0x0F) : 0x00;
     }

@@ -23,6 +23,12 @@ void DaikinRotexCanComponent::setup() {
         const std::array<uint8_t, 7> data = Utils::str_to_bytes_array8(entity_conf.data);
         const std::array<uint16_t, 7> expected_response = Utils::str_to_bytes_array16(entity_conf.expected_response);
 
+        const uint32_t response_can_id = data.size() >= 7 ? (data[0] & 0xF0) * 8 + (data[1] & 0x0F) : 0x00;
+        if (response_can_id == 0x0) {
+            throwPeriodicError(Utils::format("Response can_id can't be calculated: %s", entity_conf.id.c_str()));
+            return;
+        }
+
         m_data_requests.add({
             entity_conf.id,
             data,
@@ -212,6 +218,13 @@ void DaikinRotexCanComponent::handle(uint32_t can_id, std::vector<uint8_t> const
 
 void DaikinRotexCanComponent::dump_config() {
     ESP_LOGCONFIG(TAG, "DaikinRotexCanComponent");
+}
+
+void DaikinRotexCanComponent::throwPeriodicError(std::string const& message) {
+    call_later([message, this]() {
+        ESP_LOGE(TAG, message.c_str());
+        throwPeriodicError(message);
+    }, 15 * 1000);
 }
 
 } // namespace daikin_rotex_can

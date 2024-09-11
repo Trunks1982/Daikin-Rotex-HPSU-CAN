@@ -72,18 +72,16 @@ TRequest* TRequests::getNextRequestToSend() {
     const uint32_t timestamp = millis();
 
     for (auto& request : m_requests) {
-        if (request.hasSendGet() && request.inProgress()) { // any in progress?
+        if (request.inProgress()) {
             return nullptr;
         }
     }
 
     for (auto& request : m_requests) {
-        if (request.hasSendGet()) {
-            const uint32_t update_interval = request.get_update_interval() * 1000;
+        const uint32_t update_interval = request.get_update_interval() * 1000;
 
-            if ((timestamp > (request.getLastUpdate() + update_interval)) && !request.inProgress()) {
-                return &request;
-            }
+        if (request.getLastUpdate() == 0 || (timestamp > (request.getLastUpdate() + update_interval))) {
+            return &request;
         }
     }
     return nullptr;

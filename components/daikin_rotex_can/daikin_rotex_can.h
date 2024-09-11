@@ -64,6 +64,7 @@ private:
     void updateState(std::string const& id);
 
     float getSensorState(std::string const& name);
+    void throwPeriodicError(std::string const& message);
 
     Accessor m_accessor;
     TRequests m_data_requests;
