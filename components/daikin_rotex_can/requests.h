@@ -61,11 +61,6 @@ inline TRequest const* TRequests::get(std::string const& id) const {
     return nullptr;
 }
 
-inline EntityBase* TRequests::get_entity(std::string const& id) {
-    TRequest const* pRequest = get(id);
-    return pRequest != nullptr ? pRequest->getEntity() : nullptr;
-}
-
 inline sensor::Sensor* TRequests::get_sensor(std::string const& id) {
     return Utils::toSensor(get_entity(id));
 }

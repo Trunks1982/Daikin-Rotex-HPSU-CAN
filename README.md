@@ -38,7 +38,7 @@ Unterstützte Sensoren und Schalter:
 |**circulation_pump_min**        |Umwälzpumpe Min                   |Minimale Betriebsstufe der Umwälzpumpe           |
 |**circulation_pump_max**        |Umwälzpumpe Max                   |Maximale Betriebsstufe der Umwälzpumpe           |
 |**delta_temp_ch**               |Spreizung MOD HZ                  |Temperaturdifferenz im Heizbetrieb               |
-|**delta_temp_ww**               |Spreizung MOD WW                  |Temperaturdifferenz bei der Warmwasserbereitung  |
+|**delta_temp_dhw**              |Spreizung MOD WW                  |Temperaturdifferenz bei der Warmwasserbereitung  |
 |**dhw_mixer_position**          |DHW Mischer Position              |Position des Warmwassermischers                  |
 |**dhw_run**                     |Warmwasser bereiten               |Steuerung zur Aktivierung der Warmwasserbereitung|
 |**ehs_for_ch**                  |EHS fuer CH                       |Externes Heizsystem für die Heizung              |

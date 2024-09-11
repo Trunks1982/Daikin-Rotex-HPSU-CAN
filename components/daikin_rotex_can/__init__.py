@@ -354,7 +354,7 @@ sensor_configuration = [
     },
     {
         "type": "sensor",
-        "name": "water_flow",
+        "name": "flow_rate",
         "device_class": DEVICE_CLASS_WATER,
         "unit_of_measurement": UNIT_LITER_PER_HOUR,
         "accuracy_decimals": 0,

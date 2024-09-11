@@ -25,6 +25,16 @@ void TRequests::removeInvalidRequests() {
     );
 }
 
+EntityBase* TRequests::get_entity(std::string const& id) {
+    TRequest const* pRequest = get(id);
+    if (pRequest != nullptr) {
+        return pRequest->getEntity();
+    } else {
+        ESP_LOGE("get_entity", "Entity not found: %s", id.c_str());
+    }
+    return nullptr;
+}
+
 bool TRequests::sendNextPendingGet() {
     TRequest* pRequest = getNextRequestToSend();
     if (pRequest != nullptr) {

@@ -68,11 +68,11 @@ void DaikinRotexCanComponent::setup() {
                     });
                 }
 
-                call_later([entity_conf, this](){
-                    if (!entity_conf.update_entity.empty()) {
+                if (!entity_conf.update_entity.empty()) {
+                    call_later([entity_conf, this](){
                         updateState(entity_conf.update_entity);
-                    }
-                });
+                    });
+                }
 
                 if (entity_conf.id == "target_hot_water_temperature") {
                     call_later([this](){
@@ -104,18 +104,20 @@ void DaikinRotexCanComponent::update_thermal_power() {
     sensor::Sensor* thermal_power = m_accessor.get_thermal_power();
 
     if (mode_of_operating != nullptr && thermal_power != nullptr) {
-        sensor::Sensor* water_flow = m_data_requests.get_sensor("water_flow");
-        sensor::Sensor* tvbh = m_data_requests.get_sensor("tvbh");
-        sensor::Sensor* tv = m_data_requests.get_sensor("tv");
-        sensor::Sensor* tr = m_data_requests.get_sensor("tr");
+        sensor::Sensor* flow_rate = m_data_requests.get_sensor("flow_rate");
+        if (flow_rate != nullptr) {
+            sensor::Sensor* tvbh = m_data_requests.get_sensor("tvbh");
+            sensor::Sensor* tv = m_data_requests.get_sensor("tv");
+            sensor::Sensor* tr = m_data_requests.get_sensor("tr");
 
-        float value = 0;
-        if (mode_of_operating->state == "Warmwasserbereitung" && tv != nullptr && tr != nullptr && water_flow != nullptr) {
-            value = (tv->state - tr->state) * (4.19 * water_flow->state) / 3600.0f;
-        } else if ((mode_of_operating->state == "Heizen" || mode_of_operating->state == "Kühlen") && tvbh != nullptr && tr != nullptr && water_flow != nullptr) {
-            value = (tvbh->state - tr->state) * (4.19 * water_flow->state) / 3600.0f;
+            float value = 0;
+            if (mode_of_operating->state == "Warmwasserbereitung" && tv != nullptr && tr != nullptr) {
+                value = (tv->state - tr->state) * (4.19 * flow_rate->state) / 3600.0f;
+            } else if ((mode_of_operating->state == "Heizen" || mode_of_operating->state == "Kühlen") && tvbh != nullptr && tr != nullptr) {
+                value = (tvbh->state - tr->state) * (4.19 * flow_rate->state) / 3600.0f;
+            }
+            thermal_power->publish_state(value);
         }
-        thermal_power->publish_state(value);
     }
 }
 
