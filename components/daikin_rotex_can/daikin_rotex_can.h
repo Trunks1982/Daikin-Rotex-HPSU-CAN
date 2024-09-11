@@ -19,6 +19,7 @@ public:
     void dump_config() override;
 
     void set_canbus(esphome::esp32_can::ESP32Can* pCanbus);
+    void set_update_interval(uint16_t seconds) {} // dummy
 
     // Texts
     void custom_request(std::string const& value);

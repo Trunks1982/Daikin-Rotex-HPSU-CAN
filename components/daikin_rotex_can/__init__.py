@@ -659,6 +659,7 @@ DEPENDENCIES = []
 AUTO_LOAD = ['binary_sensor', 'button', 'number', 'sensor', 'select', 'text', 'text_sensor']
 
 CONF_CAN_ID = "canbus_id"
+CONF_UPDATE_INTERVAL = "update_interval"
 CONF_LOG_FILTER_TEXT = "log_filter"
 CONF_CUSTOM_REQUEST_TEXT = "custom_request"
 CONF_ENTITIES = "entities"
@@ -669,6 +670,7 @@ CONF_THERMAL_POWER = "thermal_power" # Thermische Leistung
 
 CONF_DHW_RUN = "dhw_run"
 
+DEFAULT_UPDATE_INTERVAL = 30 # seconds
 
 entity_schemas = {}
 for sensor_conf in sensor_configuration:
@@ -681,19 +683,19 @@ for sensor_conf in sensor_configuration:
                     accuracy_decimals=sensor_conf.get("accuracy_decimals"),
                     state_class=sensor_conf.get("state_class"),
                     icon=(sensor_conf.get("icon") if sensor_conf.get("icon") != None else sensor._UNDEF)
-                ).extend()
+                ).extend({cv.Optional(CONF_UPDATE_INTERVAL): cv.uint16_t}),
             })
         case "text_sensor":
             entity_schemas.update({
                 cv.Optional(sensor_conf.get("name")): text_sensor.text_sensor_schema(
                     icon=sensor_conf.get("icon")
-                ).extend()
+                ).extend({cv.Optional(CONF_UPDATE_INTERVAL): cv.uint16_t}),
             })
         case "binary_sensor":
             entity_schemas.update({
                 cv.Optional(sensor_conf.get("name")): binary_sensor.binary_sensor_schema(
                     icon=(sensor_conf.get("icon") if sensor_conf.get("icon") != None else sensor._UNDEF)
-                ).extend()
+                ).extend({cv.Optional(CONF_UPDATE_INTERVAL): cv.uint16_t}),
             })
         case "select":
             entity_schemas.update({
@@ -701,7 +703,7 @@ for sensor_conf in sensor_configuration:
                     GenericSelect,
                     entity_category=ENTITY_CATEGORY_CONFIG,
                     icon=sensor_conf.get("icon")
-                ).extend()
+                ).extend({cv.Optional(CONF_UPDATE_INTERVAL): cv.uint16_t}),
             })
         case "number":
             entity_schemas.update({
@@ -709,33 +711,33 @@ for sensor_conf in sensor_configuration:
                     GenericNumber,
                     entity_category=ENTITY_CATEGORY_CONFIG,
                     icon=ICON_SUN_SNOWFLAKE_VARIANT
-                ).extend(),
+                ).extend({cv.Optional(CONF_UPDATE_INTERVAL): cv.uint16_t}),
             })
-
 
 entity_schemas.update({
-                ########## Sensors ##########
+    ########## Sensors ##########
 
-                cv.Optional(CONF_THERMAL_POWER): sensor.sensor_schema(
-                    device_class=DEVICE_CLASS_POWER,
-                    unit_of_measurement=UNIT_KILOWATT,
-                    accuracy_decimals=2,
-                    state_class=STATE_CLASS_MEASUREMENT
-                ).extend(),
+    cv.Optional(CONF_THERMAL_POWER): sensor.sensor_schema(
+        device_class=DEVICE_CLASS_POWER,
+        unit_of_measurement=UNIT_KILOWATT,
+        accuracy_decimals=2,
+        state_class=STATE_CLASS_MEASUREMENT
+    ).extend(),
 
-                ########## Buttons ##########
+    ########## Buttons ##########
 
-                cv.Optional(CONF_DHW_RUN): button.button_schema(
-                    DHWRunButton,
-                    entity_category=ENTITY_CATEGORY_CONFIG,
-                    icon=ICON_SUN_SNOWFLAKE_VARIANT
-                ).extend(),
-            })
+    cv.Optional(CONF_DHW_RUN): button.button_schema(
+        DHWRunButton,
+        entity_category=ENTITY_CATEGORY_CONFIG,
+        icon=ICON_SUN_SNOWFLAKE_VARIANT
+    ).extend(),
+})
 
 CONFIG_SCHEMA = cv.Schema(
     {
         cv.GenerateID(): cv.declare_id(DaikinRotexCanComponent),
         cv.Required(CONF_CAN_ID): cv.use_id(CanbusComponent),
+        cv.Optional(CONF_UPDATE_INTERVAL, default=DEFAULT_UPDATE_INTERVAL): cv.uint16_t,
 
         ########## Texts ##########
 
@@ -805,6 +807,9 @@ def to_code(config):
                     case _:
                         raise Exception("Unknown type: " + sens_conf.get("type"))
 
+                update_interval = yaml_sensor_conf.get(CONF_UPDATE_INTERVAL, -1)
+                if update_interval < 0:
+                    update_interval = config[CONF_UPDATE_INTERVAL]
                 cg.add(var.getAccessor().set_entity(sens_conf.get("name"), [
                     entity,
                     sens_conf.get("name"),
@@ -815,7 +820,8 @@ def to_code(config):
                     sens_conf.get("divider", 1.0),
                     "|".join([f"0x{key:02X}:{value}" for key, value in sens_conf.get("map", {}).items()]), # map
                     sens_conf.get("update_entity", ""),
-                    sens_conf.get("setter", "")
+                    sens_conf.get("setter", ""),
+                    update_interval
                 ]))
 
         ########## Sensors ##########

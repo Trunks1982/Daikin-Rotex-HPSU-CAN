@@ -85,7 +85,8 @@ void DaikinRotexCanComponent::setup() {
             [entity_conf](float const& value) -> std::vector<uint8_t> {
                 return Utils::str_to_bytes(entity_conf.setter, value * entity_conf.divider);
             },
-            !entity_conf.setter.empty()
+            !entity_conf.setter.empty(),
+            entity_conf.update_interval
         });
     }
 

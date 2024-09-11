@@ -4,10 +4,9 @@ esphome:
     platformio_options:
         build_unflags:
             - "-std=gnu++11"
-            - "-fno-exceptions"
+            - "-fno-rtti"
         build_flags:
             - "-std=gnu++17"
-            - "-fexceptions"
 
 esp32:
   board: esp32-s3-devkitc-1
@@ -28,6 +27,10 @@ canbus:
 daikin_rotex_can:
   id: rotext_hpsu
   canbus_id: can_bus
+  update_interval: 60 # The standard update frequency is 60 seconds
   entities:
     tdhw1:
       name: "Warmwassertemperatur"
+    water_flow:
+      name: "Durchfluss"
+      update_interval: 10 # Request update every 10 seconds

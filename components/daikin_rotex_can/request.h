@@ -23,7 +23,8 @@ public:
         EntityBase* entity,
         TGetLambda lambda,
         TSetLambda setLambda,
-        bool setter)
+        bool setter,
+        uint16_t update_interval)
     : m_id(id)
     , m_data(data)
     , m_expected_reponse(expected_reponse)
@@ -33,6 +34,7 @@ public:
     , m_last_update(0u)
     , m_last_request(0u)
     , m_setter(setter)
+    , m_update_interval(update_interval)
     {
     }
 
@@ -48,6 +50,10 @@ public:
 
     sensor::Sensor* get_sensor() const {
         return dynamic_cast<sensor::Sensor*>(m_entity);
+    }
+
+    number::Number* get_number() const {
+        return dynamic_cast<number::Number*>(m_entity);
     }
 
     bool isGetSupported() const {
@@ -74,6 +80,7 @@ public:
 
     bool inProgress() const;
     bool isSetter() const { return m_setter; }
+    uint16_t get_update_interval() const { return m_update_interval; }
 
     std::string string() {
         return Utils::format(
@@ -93,6 +100,7 @@ private:
     uint32_t m_last_update;
     uint32_t m_last_request;
     bool m_setter;
+    uint16_t m_update_interval;
 };
 
 }

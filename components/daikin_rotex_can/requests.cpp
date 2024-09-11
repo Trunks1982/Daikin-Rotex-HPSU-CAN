@@ -60,17 +60,18 @@ void TRequests::handle(uint32_t can_id, std::vector<uint8_t> const& responseData
 
 TRequest* TRequests::getNextRequestToSend() {
     const uint32_t timestamp = millis();
-    const uint32_t interval = static_cast<uint32_t>(10/*id(update_interval).state*/) * 1000;
 
     for (auto& request : m_requests) {
-        if (request.hasSendGet() && request.inProgress()) {
+        if (request.hasSendGet() && request.inProgress()) { // any in progress?
             return nullptr;
         }
     }
 
     for (auto& request : m_requests) {
         if (request.hasSendGet()) {
-            if ((timestamp > (request.getLastUpdate() + interval)) && !request.inProgress()) {
+            const uint32_t update_interval = request.get_update_interval() * 1000;
+
+            if ((timestamp > (request.getLastUpdate() + update_interval)) && !request.inProgress()) {
                 return &request;
             }
         }

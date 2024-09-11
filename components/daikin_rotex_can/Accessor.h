@@ -24,6 +24,7 @@ class Accessor {
         BidiMap<uint8_t, std::string> map;
         std::string update_entity;
         std::string setter;
+        uint16_t update_interval;
         TEntityArguments(
             EntityBase* _pEntity,
             std::string const& _id,
@@ -34,7 +35,8 @@ class Accessor {
             float _divider,
             std::string const& _map,
             std::string const& _update_entity,
-            std::string const& _setter
+            std::string const& _setter,
+            uint16_t _update_interval
         )
         : pEntity(_pEntity)
         , id(_id)
@@ -46,6 +48,7 @@ class Accessor {
         , map(Utils::str_to_map(_map))
         , update_entity(_update_entity)
         , setter(_setter)
+        , update_interval(_update_interval)
         {}
     };
     using TEntityArgumentsList = std::list<TEntityArguments>;
