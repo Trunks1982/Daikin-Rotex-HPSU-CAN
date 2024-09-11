@@ -281,7 +281,7 @@ sensor_configuration = [
     },
     {
         "type": "sensor",
-        "name": "spreizung_mod_hz",
+        "name": "delta_temp_ch",
         "device_class": DEVICE_CLASS_TEMPERATURE,
         "unit_of_measurement": UNIT_KELVIN,
         "accuracy_decimals": 0,
@@ -295,7 +295,7 @@ sensor_configuration = [
     },
     {
         "type": "sensor",
-        "name": "spreizung_mod_ww",
+        "name": "delta_temp_dhw",
         "device_class": DEVICE_CLASS_TEMPERATURE,
         "unit_of_measurement": UNIT_KELVIN,
         "accuracy_decimals": 0,
