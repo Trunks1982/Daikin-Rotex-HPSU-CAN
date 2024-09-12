@@ -47,43 +47,177 @@ canbus:
     bit_rate: 20kbps
 
 daikin_rotex_can:
-  id: rotext_hpsu_compact_508
+  id: rotext_hpsu
   canbus_id: can_bus
-  update_interval: 60
+  update_interval: 30
   log_filter:
     name: "Log Filter"
   custom_request:
     name: "Custom Request"
   entities:
+
+# Info
+
+#Übersicht
+    water_pressure:
+      name: "Wasserdruck"
+    t_hs:
+      name: "T-WE"
+#T-WE Soll
+    t_ext:  # Oder gehört hier temperature_outside rein?
+      name: "T-Aussen"
+#T-WW
+#T-WW Soll
+#T-Rücklauf
+    flow_rate:
+      name: "Durchfluss"
+      update_interval: 5
+#T-HK
+#T-HK Soll
+    status_kesselpumpe:
+      name: "Status Kesselpumpe"
+    runtime_compressor:
+      name: "Laufzeit Compressor"
+    runtime_pump:
+      name: "Laufzeit Pump"
+    dhw_mixer_position:
+      name: "DHW Mischer Position"
+    qboh:
+      name: "EHS für DHW"
+    ehs_for_ch:
+      name: "EHS fuer CH"
+#Energie Kühlung
+    qch:
+      name: "Energie Heizung"
+    total_energy_produced:
+      name: "Erzeugte Energie Gesamt"
+    qdhw:
+      name: "Energie für WW"
+#WE Typ
+#SwNr B1/U1
+#SwNr Regler
+#SwNr RTXRT
+
+#Konfiguration
+
+#Konfiguration -> Installation
+#...
+#Aussengerät
+#Innengerät
+#Funktion EHS
+#HZ Unterstützung
+#Bivalenzfunktion
+    smart_grid:
+      name: "Smart Grid"
+    sg_mode:
+      name: "SG Modus"
+#HT/NT Funktion
+#HT/NT Anschluss
+#Raumthermostat
+#Interlinkfunktion
+#Konfig MFR 1
+#Entlüftungsfunktion
+#PWM Konfig
+#...
+#Sensor Konfig
+#AF Anspassung
+#Terminal Adresse
+#Konfig System
+
+#Konfiguration -> Anlagenkonfiguration
+
+#Leistung WW
+#Leistung EHS Stufe 1
+#Leistung EHS Stufe 2
+#Leistung BIV
+    tdiff_dhw_ch:
+      name: "TDiff-WW HZU"
+#Max Temp Heizung
+#Bivalenztemperatur
+    quiet:
+      name: "Flüsterbetrieb"
+#Sonderfunkt Schaltk
+#Wartezeit Sonderfunkt
+    t_dhw_1_min:
+      name: "Schaltschwelle TDHW"
+    delta_temp_ch:
+      name: "Spreizung MOD HZ"
+#Durchfluss Ber
+#Anpassung T-VL Heizen
+#Anpassung T-VL Kühlen
+#Min Druck
+#Max Druck
+#Soll Druck
+#Max Druckverlust
+#Relaistest
+
+# Konfiguration -> HZK Konfig
+    hk_function:
+      name: "HK Funktion"
+#T-Frostschutz
+#Gebäudedämumng
+#Estrich
+#Estrichprogramm
+
+# Konfiguration -> HZK Konfig -> Heizen
+
+#Heizgrenze Tag
+#Heizgrenze Nacht
+    heating_curve:
+      name: "Heizkurve"
+#Raumeinfluss
+#RF Anpassung
+    flow_temperature_day:
+      name: "T Vorlauf Tag"
+#T-Vorlauf Nacht
+#Max T-Vorlauf
+#Min T-Vorlauf
+#Heizk Adaption
+
+# Konfiguration -> HZK Konfig -> Kühlen
+
+#StartKühlen A-Temp
+#MaxKühlen A-Temp
+#VL-SollStartKühlen
+#VL-SollMaxKühlen
+#MinVL-SollKühlen
+#T-VLKühlen
+#T_H/K Umschaltung
+#KühlsollwertKorr
+
+#Konfiguration -> WW Konfig
+
+#name: "Zirk mit WW-Prog"
+#name: "ZirkInterval"
+#name: "AntilegTag"
+#name: "AntilegZeit"
+#name: "AntilegTemp"
+
+    max_dhw_loading:
+      name: "Max WW Ladezeit"
+    dhw_off_time:
+      name: "WW Sperrzeit"
+
+# Others
+    thermal_power:
+      name: "Thermische Leistung"
+
+# To be categorized
+
     bypass_valve:
       name: "BPV"
     circulation_pump:
       name: "Umwaelzpumpe"
-      update_interval: 10 # Request update every 10 seconds
     circulation_pump_min:
       name: "Umwälzpumpe Min"
     circulation_pump_max:
       name: "Umwälzpumpe Max"
-    delta_temp_ch:
-      name: "Spreizung MOD HZ"
     delta_temp_dhw:
       name: "Spreizung MOD WW"
-    dhw_mixer_position:
-      name: "DHW Mischer Position"
     dhw_run:
       name: "Warmwasser bereiten"
-    ehs_for_ch:
-      name: "EHS fuer CH"
     error_code:
       name: "Fehlercode"
-    flow_rate:
-      name: "Durchfluss"
-    flow_temperature_day:
-      name: "T Vorlauf Tag"
-    heating_curve:
-      name: "Heizkurve"
-    hk_function:
-      name: "HK Funktion"
     max_target_flow_temp:
       name: "Max VL Soll"
     min_target_flow_temp:
@@ -92,24 +226,6 @@ daikin_rotex_can:
       name: "Betriebsart"
     operating_mode:
       name: "Betriebsmodus"
-    qboh:
-      name: "EHS für DHW"
-    qch:
-      name: "Energie Heizung"
-    qdhw:
-      name: "Energie für WW"
-    quiet:
-      name: "Flüsterbetrieb"
-    runtime_compressor:
-      name: "Laufzeit Compressor"
-    runtime_pump:
-      name: "Laufzeit Pump"
-    sg_mode:
-      name: "SG Modus"
-    smart_grid:
-      name: "Smart Grid"
-    status_kesselpumpe:
-      name: "Status Kesselpumpe"
     status_kompressor:
       name: "Status Kompressor"
     target_room1_temperature:
@@ -118,23 +234,13 @@ daikin_rotex_can:
       name: "Warmwassertemperatur"
     temperature_outside:
       name: "Aussentemperatur"
-    t_ext:
-      name: "T-Aussen"
     tr:
       name: "Ruecklauftemperatur Heizung"
     tv:
       name: "Heizkreis Vorlauf (TV)"
     tvbh:
       name: "Vorlauftemperatur Heizung (TVBH)"
-    t_hs:
-      name: "T-WE"
-    water_pressure:
-      name: "Wasserdruck"
     target_hot_water_temperature:
       name: "T-WW-Soll1"
     target_supply_temperature:
       name: "Vorlauf Soll"
-    thermal_power:
-      name: "Thermische Leistung"
-    total_energy_produced:
-      name: "Erzeugte Energie Gesamt"
