@@ -32,7 +32,7 @@ sensor_configuration = [
         "type": "select",
         "name": "outdoor_unit" ,
         "icon": ICON_SUN_SNOWFLAKE_VARIANT,
-        "data": "31 00 FA 06 9A 00 00",
+        "command": "31 00 FA 06 9A 00 00",
         "data_offset": 6,
         "data_size": 1,
         "map": {
@@ -49,7 +49,7 @@ sensor_configuration = [
         "type": "select",
         "name": "indoor_unit" ,
         "icon": ICON_SUN_SNOWFLAKE_VARIANT,
-        "data": "31 00 FA 06 99 00 00",
+        "command": "31 00 FA 06 99 00 00",
         "data_offset": 6,
         "data_size": 1,
         "map": {
@@ -70,7 +70,7 @@ sensor_configuration = [
         "min_value": 60,
         "max_value": 75,
         "step": 1,
-        "data": "31 00 FA 05 87 00 00",
+        "command": "31 00 FA 05 87 00 00",
         "data_offset": 5,
         "data_size": 2,
         "divider": 10.0
@@ -79,7 +79,7 @@ sensor_configuration = [
         "type": "select",
         "name": "antileg_day" ,
         "icon": ICON_SUN_SNOWFLAKE_VARIANT,
-        "data": "31 00 FA 01 01 00 00",
+        "command": "31 00 FA 01 01 00 00",
         "data_offset": 5,
         "data_size": 1,
         "map": {
@@ -103,7 +103,7 @@ sensor_configuration = [
         "min_value": 0,
         "max_value": 15,
         "step": 1,
-        "data": "31 00 FA 06 5E 00 00",
+        "command": "31 00 FA 06 5E 00 00",
         "data_offset": 5,
         "data_size": 2,
         "divider": 1
@@ -117,7 +117,7 @@ sensor_configuration = [
         "min_value": 0,
         "max_value": 15,
         "step": 1,
-        "data": "31 00 FA 06 5F 00 00",
+        "command": "31 00 FA 06 5F 00 00",
         "data_offset": 5,
         "data_size": 2,
         "divider": 1
@@ -126,7 +126,7 @@ sensor_configuration = [
         "type": "select",
         "name": "circulation_with_dhw_program" ,
         "icon": ICON_SUN_SNOWFLAKE_VARIANT,
-        "data": "31 00 FA 01 82 00 00",
+        "command": "31 00 FA 01 82 00 00",
         "data_offset": 6,
         "data_size": 1,
         "map": {
@@ -144,7 +144,7 @@ sensor_configuration = [
         "min_value": 20,
         "max_value": 85,
         "step": 1,
-        "data": "31 00 FA 06 73 00 00",
+        "command": "31 00 FA 06 73 00 00",
         "data_offset": 5,
         "data_size": 2,
         "divider": 10.0
@@ -158,7 +158,7 @@ sensor_configuration = [
         "min_value": 10,
         "max_value": 240,
         "step": 1,
-        "data": "31 00 FA 01 80 00 00",
+        "command": "31 00 FA 01 80 00 00",
         "data_offset": 5,
         "data_size": 2,
         "divider": 1
@@ -172,7 +172,7 @@ sensor_configuration = [
         "min_value": 0,
         "max_value": 180,
         "step": 1,
-        "data": "31 00 FA 4E 3F 00 00",
+        "command": "31 00 FA 4E 3F 00 00",
         "data_offset": 5,
         "data_size": 2,
         "divider": 1
@@ -187,7 +187,7 @@ sensor_configuration = [
         "min_value": 2,
         "max_value": 15,
         "step": 1,
-        "data": "31 00 FA 06 6D 00 00",
+        "command": "31 00 FA 06 6D 00 00",
         "data_offset": 5,
         "data_size": 2,
         "divider": 10.0
@@ -199,7 +199,7 @@ sensor_configuration = [
         "unit_of_measurement": UNIT_CELSIUS,
         "accuracy_decimals": 1,
         "state_class": STATE_CLASS_MEASUREMENT,
-        "data": "31 00 FA 01 D6 00 00",
+        "command": "31 00 FA 01 D6 00 00",
         "data_offset": 5,
         "data_size": 2,
         "divider": 10.0
@@ -211,7 +211,7 @@ sensor_configuration = [
         "unit_of_measurement": UNIT_CELSIUS,
         "accuracy_decimals": 1,
         "state_class": STATE_CLASS_MEASUREMENT,
-        "data": "31 00 FA C0 FF 00 00",
+        "command": "31 00 FA C0 FF 00 00",
         "data_offset": 5,
         "data_size": 2,
         "divider": 10.0
@@ -223,7 +223,7 @@ sensor_configuration = [
         "unit_of_measurement": UNIT_CELSIUS,
         "accuracy_decimals": 1,
         "state_class": STATE_CLASS_MEASUREMENT,
-        "data": "61 00 FA 0A 0C 00 00",
+        "command": "61 00 FA 0A 0C 00 00",
         "data_offset": 5,
         "data_size": 2,
         "divider": 10.0
@@ -235,7 +235,7 @@ sensor_configuration = [
         "unit_of_measurement": UNIT_CELSIUS,
         "accuracy_decimals": 1,
         "state_class": STATE_CLASS_MEASUREMENT,
-        "data": "31 00 FA 00 0E 00 00",
+        "command": "31 00 FA 00 0E 00 00",
         "data_offset": 5,
         "data_size": 2,
         "divider": 10.0
@@ -247,7 +247,7 @@ sensor_configuration = [
         "unit_of_measurement": UNIT_BAR,
         "accuracy_decimals": 2,
         "state_class": STATE_CLASS_MEASUREMENT,
-        "data": "31 00 1C 00 00 00 00",
+        "command": "31 00 1C 00 00 00 00",
         "data_offset": 3,
         "data_size": 2,
         "divider": 1000.0
@@ -260,7 +260,7 @@ sensor_configuration = [
         "accuracy_decimals": 0,
         "state_class": STATE_CLASS_MEASUREMENT,
         "icon": "mdi:pump",
-        "data": "31 00 FA C0 F7 00 00",
+        "command": "31 00 FA C0 F7 00 00",
         "data_offset": 6,
         "data_size": 1,
         "divider": 1
@@ -276,7 +276,7 @@ sensor_configuration = [
         "min_value": 40,
         "max_value": 100,
         "step": 1,
-        "data": "31 00 FA 06 7F 00 00",
+        "command": "31 00 FA 06 7F 00 00",
         "data_offset": 6,
         "data_size": 1,
         "divider": 1
@@ -292,7 +292,7 @@ sensor_configuration = [
         "min_value": 60,
         "max_value": 100,
         "step": 1,
-        "data": "31 00 FA 06 7E 00 00",
+        "command": "31 00 FA 06 7E 00 00",
         "data_offset": 6,
         "data_size": 1,
         "divider": 1
@@ -305,7 +305,7 @@ sensor_configuration = [
         "accuracy_decimals": 0,
         "state_class": STATE_CLASS_MEASUREMENT,
         "icon": "mdi:waves-arrow-left",
-        "data": "31 00 FA C0 FB 00 00",
+        "command": "31 00 FA C0 FB 00 00",
         "data_offset": 5,
         "data_size": 2,
         "divider": 1
@@ -318,7 +318,7 @@ sensor_configuration = [
         "accuracy_decimals": 0,
         "state_class": STATE_CLASS_MEASUREMENT,
         "icon": "mdi:waves-arrow-left",
-        "data": "31 00 FA 06 9B 00 00",
+        "command": "31 00 FA 06 9B 00 00",
         "data_offset": 5,
         "data_size": 2,
         "divider": 1
@@ -330,7 +330,7 @@ sensor_configuration = [
         "unit_of_measurement": UNIT_CELSIUS,
         "accuracy_decimals": 1,
         "state_class": STATE_CLASS_MEASUREMENT,
-        "data": "31 00 02 00 00 00 00",
+        "command": "31 00 02 00 00 00 00",
         "data_offset": 3,
         "data_size": 2,
         "divider": 10.0
@@ -343,7 +343,7 @@ sensor_configuration = [
         "accuracy_decimals": 0,
         "state_class": STATE_CLASS_MEASUREMENT,
         "icon": "mdi:transmission-tower",
-        "data": "31 00 FA 09 20 00 00",
+        "command": "31 00 FA 09 20 00 00",
         "data_offset": 5,
         "data_size": 2,
         "divider": 1
@@ -356,7 +356,7 @@ sensor_configuration = [
         "accuracy_decimals": 0,
         "state_class": STATE_CLASS_MEASUREMENT,
         "icon": "mdi:transmission-tower",
-        "data": "31 00 FA 06 A7 00 00",
+        "command": "31 00 FA 06 A7 00 00",
         "data_offset": 5,
         "data_size": 2,
         "divider": 1
@@ -369,7 +369,7 @@ sensor_configuration = [
         "accuracy_decimals": 0,
         "state_class": STATE_CLASS_MEASUREMENT,
         "icon": "mdi:transmission-tower",
-        "data": "31 00 FA 09 1C 00 00",
+        "command": "31 00 FA 09 1C 00 00",
         "data_offset": 5,
         "data_size": 2,
         "divider": 1
@@ -382,7 +382,7 @@ sensor_configuration = [
         "accuracy_decimals": 0,
         "state_class": STATE_CLASS_MEASUREMENT,
         "icon": "mdi:transmission-tower",
-        "data": "31 00 FA 09 2C 00 00",
+        "command": "31 00 FA 09 2C 00 00",
         "data_offset": 5,
         "data_size": 2,
         "divider": 1
@@ -395,7 +395,7 @@ sensor_configuration = [
         "accuracy_decimals": 0,
         "state_class": STATE_CLASS_MEASUREMENT,
         "icon": "mdi:transmission-tower",
-        "data": "31 00 FA 09 30 00 00",
+        "command": "31 00 FA 09 30 00 00",
         "data_offset": 5,
         "data_size": 2,
         "divider": 1
@@ -407,7 +407,7 @@ sensor_configuration = [
         "accuracy_decimals": 0,
         "state_class": STATE_CLASS_MEASUREMENT,
         "icon": "mdi:clock-time-two-outline",
-        "data": "31 00 FA 06 A5 00 00",
+        "command": "31 00 FA 06 A5 00 00",
         "data_offset": 5,
         "data_size": 2,
         "divider": 1
@@ -419,7 +419,7 @@ sensor_configuration = [
         "accuracy_decimals": 0,
         "state_class": STATE_CLASS_MEASUREMENT,
         "icon": "mdi:clock-time-two-outline",
-        "data": "31 00 FA 06 A4 00 00",
+        "command": "31 00 FA 06 A4 00 00",
         "data_offset": 5,
         "data_size": 2,
         "divider": 1
@@ -432,7 +432,7 @@ sensor_configuration = [
         "accuracy_decimals": 0,
         "state_class": STATE_CLASS_MEASUREMENT,
         "icon": "mdi:thermometer-lines",
-        "data": "31 00 FA 06 83 00 00",
+        "command": "31 00 FA 06 83 00 00",
         "data_offset": 5,
         "data_size": 2,
         "divider": 10.0
@@ -445,7 +445,7 @@ sensor_configuration = [
         "accuracy_decimals": 0,
         "state_class": STATE_CLASS_MEASUREMENT,
         "icon": "mdi:thermometer-lines",
-        "data": "31 00 FA 06 84 00 00",
+        "command": "31 00 FA 06 84 00 00",
         "data_offset": 5,
         "data_size": 2,
         "divider": 10.0
@@ -458,7 +458,7 @@ sensor_configuration = [
         "accuracy_decimals": 1,
         "state_class": STATE_CLASS_MEASUREMENT,
         "icon": "mdi:thermometer-lines",
-        "data": "31 00 FA C0 FC 00 00",
+        "command": "31 00 FA C0 FC 00 00",
         "data_offset": 5,
         "data_size": 2,
         "divider": 10.0,
@@ -472,7 +472,7 @@ sensor_configuration = [
         "accuracy_decimals": 1,
         "state_class": STATE_CLASS_MEASUREMENT,
         "icon": "mdi:thermometer-lines",
-        "data": "31 00 FA C1 02 00 00",
+        "command": "31 00 FA C1 02 00 00",
         "data_offset": 5,
         "data_size": 2,
         "divider": 10.0,
@@ -486,7 +486,7 @@ sensor_configuration = [
         "accuracy_decimals": 1,
         "state_class": STATE_CLASS_MEASUREMENT,
         "icon": "mdi:thermometer-lines",
-        "data": "31 00 FA C1 00 00 00",
+        "command": "31 00 FA C1 00 00 00",
         "data_offset": 5,
         "data_size": 2,
         "divider": 10.0,
@@ -500,7 +500,7 @@ sensor_configuration = [
         "accuracy_decimals": 0,
         "state_class": STATE_CLASS_MEASUREMENT,
         "icon": "mdi:thermometer-lines",
-        "data": "31 00 FA 01 DA 00 00",
+        "command": "31 00 FA 01 DA 00 00",
         "data_offset": 5,
         "data_size": 2,
         "divider": 1,
@@ -516,7 +516,7 @@ sensor_configuration = [
         "min_value": 15,
         "max_value": 25,
         "step": 0.1,
-        "data": "31 00 05 00 00 00 00",
+        "command": "31 00 05 00 00 00 00",
         "data_offset": 3,
         "data_size": 2,
         "divider": 10.0
@@ -531,7 +531,7 @@ sensor_configuration = [
         "min_value": 25,
         "max_value": 60,
         "step": 1,
-        "data": "31 00 FA 01 29 00 00",
+        "command": "31 00 FA 01 29 00 00",
         "data_offset": 5,
         "data_size": 2,
         "divider": 10.0
@@ -546,7 +546,7 @@ sensor_configuration = [
         "min_value": 0,
         "max_value": 2.55,
         "step": 0.01,
-        "data": "31 00 FA 01 0E 00 00",
+        "command": "31 00 FA 01 0E 00 00",
         "data_offset": 5,
         "data_size": 2,
         "divider": 100.0
@@ -562,7 +562,7 @@ sensor_configuration = [
         "min_value": 25,
         "max_value": 40,
         "step": 1,
-        "data": "31 00 FA 01 2B 00 00",
+        "command": "31 00 FA 01 2B 00 00",
         "data_offset": 5,
         "data_size": 2,
         "divider": 10.0
@@ -578,7 +578,7 @@ sensor_configuration = [
         "min_value": 25,
         "max_value": 60,
         "step": 1,
-        "data": "31 00 28 00 00 00 00",
+        "command": "31 00 28 00 00 00 00",
         "data_offset": 3,
         "data_size": 2,
         "divider": 10.0
@@ -594,7 +594,7 @@ sensor_configuration = [
         "min_value": 35,
         "max_value": 70,
         "step": 1,
-        "data": "31 00 13 00 00 00 00",
+        "command": "31 00 13 00 00 00 00",
         "data_offset": 3,
         "data_size": 2,
         "divider": 10.0
@@ -603,7 +603,7 @@ sensor_configuration = [
         "type": "text_sensor",
         "name": "mode_of_operating" ,
         "icon": ICON_SUN_SNOWFLAKE_VARIANT,
-        "data": "31 00 FA C0 F6 00 00",
+        "command": "31 00 FA C0 F6 00 00",
         "data_offset": 5,
         "data_size": 2,
         "map": {
@@ -619,7 +619,7 @@ sensor_configuration = [
         "type": "text_sensor",
         "name": "quiet" ,
         "icon": "mdi:weather-partly-cloudy",
-        "data": "31 00 FA 06 96",
+        "command": "31 00 FA 06 96",
         "data_offset": 6,
         "data_size": 1,
         "map": {
@@ -632,7 +632,7 @@ sensor_configuration = [
         "type": "text_sensor",
         "name": "error_code" ,
         "icon": "mdi:alert",
-        "data": "31 00 FA 13 88 00 00",
+        "command": "31 00 FA 13 88 00 00",
         "data_offset": 5,
         "data_size": 2,
         "map": {
@@ -700,7 +700,7 @@ sensor_configuration = [
         "type": "binary_sensor",
         "name": "status_kompressor" ,
         "icon": "mdi:pump",
-        "data": "A1 00 61 00 00 00 00",
+        "command": "A1 00 61 00 00 00 00",
         "data_offset": 3,
         "data_size": 1
     },
@@ -708,7 +708,7 @@ sensor_configuration = [
         "type": "binary_sensor",
         "name": "status_kesselpumpe" ,
         "icon": "mdi:pump",
-        "data": "31 00 FA 0A 8C 00 00",
+        "command": "31 00 FA 0A 8C 00 00",
         "data_offset": 6,
         "data_size": 1
     },
@@ -716,7 +716,7 @@ sensor_configuration = [
         "type": "select",
         "name": "operating_mode" ,
         "icon": ICON_SUN_SNOWFLAKE_VARIANT,
-        "data": "31 00 FA 01 12 00 00",
+        "command": "31 00 FA 01 12 00 00",
         "data_offset": 5,
         "data_size": 1,
         "map": {
@@ -733,7 +733,7 @@ sensor_configuration = [
         "type": "select",
         "name": "hk_function" ,
         "icon": "mdi:weather-partly-cloudy",
-        "data": "31 00 FA 01 41 00 00",
+        "command": "31 00 FA 01 41 00 00",
         "data_offset": 6,
         "data_size": 1,
         "map": {
@@ -745,7 +745,7 @@ sensor_configuration = [
         "type": "select",
         "name": "sg_mode" ,
         "icon": "mdi:weather-partly-cloudy",
-        "data": "31 00 FA 06 94 00 00",
+        "command": "31 00 FA 06 94 00 00",
         "data_offset": 6,
         "data_size": 1,
         "map": {
@@ -758,7 +758,7 @@ sensor_configuration = [
         "type": "select",
         "name": "smart_grid" ,
         "icon": "mdi:weather-partly-cloudy",
-        "data": "31 00 FA 06 93 00 00",
+        "command": "31 00 FA 06 93 00 00",
         "data_offset": 6,
         "data_size": 1,
         "map": {
@@ -940,7 +940,7 @@ def to_code(config):
                 cg.add(var.getAccessor().set_entity(sens_conf.get("name"), [
                     entity,
                     sens_conf.get("name"),
-                    sens_conf.get("data"),
+                    sens_conf.get("command"),
                     sens_conf.get("data_offset"),
                     sens_conf.get("data_size"),
                     sens_conf.get("divider", 1.0),

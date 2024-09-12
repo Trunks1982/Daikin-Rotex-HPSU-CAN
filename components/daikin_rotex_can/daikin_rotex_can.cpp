@@ -21,7 +21,7 @@ void DaikinRotexCanComponent::setup() {
 
     for (auto const& entity_conf : m_accessor.get_entities()) {
 
-        const uint32_t response_can_id = entity_conf.data.size() >= 7 ? (entity_conf.data[0] & 0xF0) * 8 + (entity_conf.data[1] & 0x0F) : 0x00;
+        const uint32_t response_can_id = entity_conf.command.size() >= 7 ? (entity_conf.command[0] & 0xF0) * 8 + (entity_conf.command[1] & 0x0F) : 0x00;
         if (response_can_id == 0x0) {
             throwPeriodicError(Utils::format("Response can_id can't be calculated: %s", entity_conf.id.c_str()));
             return;
@@ -29,7 +29,7 @@ void DaikinRotexCanComponent::setup() {
 
         m_data_requests.add({
             entity_conf.id,
-            entity_conf.data,
+            entity_conf.command,
             entity_conf.pEntity,
             [entity_conf, this](auto const& data) -> DataType {
                 DataType variant;
@@ -86,7 +86,7 @@ void DaikinRotexCanComponent::setup() {
                 return variant;
             },
             [&entity_conf](float const& value) -> TMessage {
-                TMessage message = TMessage(entity_conf.data);
+                TMessage message = TMessage(entity_conf.command);
                 message[0] = 0x30;
                 message[1] = 0x00;
                 Utils::setBytes(message, value * entity_conf.divider, entity_conf.data_offset, entity_conf.data_size);

@@ -73,10 +73,10 @@ bool TRequest::sendGet(esphome::esp32_can::ESP32Can* pCanBus) {
     const uint32_t can_id = 0x680;
     const bool use_extended_id = false;
 
-    pCanBus->send_data(can_id, use_extended_id, { m_data.begin(), m_data.end() });
+    pCanBus->send_data(can_id, use_extended_id, { m_command.begin(), m_command.end() });
 
-    Utils::log("sendGet", "%s can_id<%s> data<%s>",
-        getName().c_str(), Utils::to_hex(can_id).c_str(), Utils::to_hex(m_data).c_str());
+    Utils::log("sendGet", "%s can_id<%s> command<%s>",
+        getName().c_str(), Utils::to_hex(can_id).c_str(), Utils::to_hex(m_command).c_str());
 
     m_last_get_timestamp = millis();
     return true;
@@ -91,11 +91,11 @@ bool TRequest::sendSet(esphome::esp32_can::ESP32Can* pCanBus, float value) {
     const uint32_t can_id = 0x680;
     const bool use_extended_id = false;
 
-    auto data = m_set_lambda(value);
+    auto command = m_set_lambda(value);
 
-    pCanBus->send_data(can_id, use_extended_id, { data.begin(), data.end() });
-    Utils::log("sendSet", "name<%s> value<%f> can_id<%s> data<%s>",
-        getName().c_str(), value, Utils::to_hex(can_id).c_str(), Utils::to_hex(data).c_str());
+    pCanBus->send_data(can_id, use_extended_id, { command.begin(), command.end() });
+    Utils::log("sendSet", "name<%s> value<%f> can_id<%s> command<%s>",
+        getName().c_str(), value, Utils::to_hex(can_id).c_str(), Utils::to_hex(command).c_str());
 
     sendGet(pCanBus);
 

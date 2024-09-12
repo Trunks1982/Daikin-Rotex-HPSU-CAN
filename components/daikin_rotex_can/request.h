@@ -18,14 +18,14 @@ public:
 public:
     TRequest(
         std::string const& id,
-        TMessage const& data,
+        TMessage const& command,
         EntityBase* entity,
         TGetLambda lambda,
         TSetLambda setLambda,
         uint16_t update_interval)
     : m_id(id)
-    , m_data(data)
-    , m_expected_reponse(TRequest::calculate_reponse(data))
+    , m_command(command)
+    , m_expected_reponse(TRequest::calculate_reponse(command))
     , m_entity(entity)
     , m_lambda(lambda)
     , m_set_lambda(setLambda)
@@ -62,7 +62,7 @@ public:
     }
 
     uint16_t get_response_canid() const {
-        return m_data.size() >= 7 ? (m_data[0] & 0xF0) * 8 + (m_data[1] & 0x0F) : 0x00;
+        return m_command.size() >= 7 ? (m_command[0] & 0xF0) * 8 + (m_command[1] & 0x0F) : 0x00;
     }
 
     bool isMatch(uint32_t can_id, TMessage const& responseData) const;
@@ -80,15 +80,15 @@ public:
 
     std::string string() {
         return Utils::format(
-            "TRequest<name: %s, data: %s>",
+            "TRequest<name: %s, command: %s>",
             getName().c_str(),
-            Utils::to_hex(m_data).c_str()
+            Utils::to_hex(m_command).c_str()
         );
     }
 
 private:
     std::string m_id;
-    TMessage m_data;
+    TMessage m_command;
     std::array<uint16_t, 7> m_expected_reponse;
     EntityBase* m_entity;
     TGetLambda m_lambda;
