@@ -28,6 +28,42 @@ ICON_SUN_SNOWFLAKE_VARIANT = "mdi:sun-snowflake-variant"
 ########## Configuration of Sensors, TextSensors, BinarySensors, Selects and Numbers ##########
 
 sensor_configuration = [
+   {
+        "type": "select",
+        "name": "outdoor_unit" ,
+        "icon": ICON_SUN_SNOWFLAKE_VARIANT,
+        "data": "31 00 FA 06 9A 00 00",
+        "expected_reponse": "__ __ FA 06 9A __ __",
+        "data_offset": 6,
+        "data_size": 1,
+        "map": {
+            0x00: "--",
+            0x01: "4",
+            0x02: "6",
+            0x03: "8",
+            0x04: "11",
+            0x05: "14",
+            0x06: "16"
+        },
+        "setter": "30 00 FA 06 9A 00 __"
+    },
+   {
+        "type": "select",
+        "name": "indoor_unit" ,
+        "icon": ICON_SUN_SNOWFLAKE_VARIANT,
+        "data": "31 00 FA 06 99 00 00",
+        "expected_reponse": "__ __ FA 06 99 __ __",
+        "data_offset": 6,
+        "data_size": 1,
+        "map": {
+            0x00: "--",
+            0x01: "304",
+            0x02: "308",
+            0x03: "508",
+            0x04: "516"
+        },
+        "setter": "30 00 FA 06 99 00 __"
+    },
     {
         "type": "number",
         "name": "antileg_temp",

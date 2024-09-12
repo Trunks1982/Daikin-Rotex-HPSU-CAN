@@ -102,8 +102,10 @@ daikin_rotex_can:
 
 #Konfiguration -> Installation
 #...
-#Aussengerät
-#Innengerät
+    outdoor_unit:
+      name: "Aussengerät"
+    indoor_unit:
+      name: "Innengerät"
 #Funktion EHS
 #HZ Unterstützung
 #Bivalenzfunktion
