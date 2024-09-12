@@ -54,7 +54,7 @@ void TRequests::sendSet(std::string const& request_name, float value) {
     }
 }
 
-void TRequests::handle(uint32_t can_id, std::vector<uint8_t> const& responseData) {
+void TRequests::handle(uint32_t can_id, TMessage const& responseData) {
     bool bHandled = false;
     const uint32_t timestamp = millis();
     for (auto& request : m_requests) {

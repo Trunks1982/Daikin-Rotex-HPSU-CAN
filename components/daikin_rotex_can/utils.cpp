@@ -37,21 +37,22 @@ std::string Utils::to_hex(uint32_t value) {
     return std::string(hex_string);
 }
 
-std::vector<uint8_t> Utils::str_to_bytes(const std::string& str) {
-    std::vector<uint8_t> bytes;
+TMessage Utils::str_to_bytes(const std::string& str) {
+    TMessage bytes;
     std::stringstream ss(str);
     std::string byteStr;
 
+    uint8_t index = 0;
     while (ss >> byteStr) {
         const uint8_t byte = static_cast<uint8_t>(std::stoi(byteStr, nullptr, 16));
-        bytes.push_back(byte);
+        bytes[index++] = byte;
     }
 
     return bytes;
 }
 
-std::array<uint8_t, 7> Utils::str_to_bytes_array8(const std::string& str) {
-    std::array<uint8_t, 7> byte_array{};
+TMessage Utils::str_to_bytes_array8(const std::string& str) {
+    TMessage byte_array{};
 
     std::string cleaned_str = std::regex_replace(str, std::regex("[^0-9A-Fa-f\\s]+"), "");
     cleaned_str = std::regex_replace(cleaned_str, std::regex("\\s+"), " ");
@@ -102,7 +103,7 @@ std::map<uint8_t, std::string> Utils::str_to_map(const std::string& input) {
     return result;
 }
 
-void Utils::setBytes(std::array<uint8_t, 7>& data, uint16_t value, uint8_t offset, uint8_t len) {
+void Utils::setBytes(TMessage& data, uint16_t value, uint8_t offset, uint8_t len) {
     if (len == 1) {
         data[offset] = value & 0xFF;
     } else if (len == 2) {
@@ -111,40 +112,6 @@ void Utils::setBytes(std::array<uint8_t, 7>& data, uint16_t value, uint8_t offse
     } else {
         ESP_LOGE("write", "Invalid len: %d", len);
     }
-}
-
-std::vector<uint8_t> Utils::str_to_bytes(const std::string& input, uint16_t value) {
-    std::vector<uint8_t> result;
-    std::istringstream stream(input);
-    std::string byteStr;
-
-    uint8_t hiByte = (value >> 8) & 0xFF;
-    uint8_t loByte = value & 0xFF;
-
-    int placeholderCount = 0;
-
-    while (stream >> byteStr) {
-        if (byteStr == "__") {
-            ++placeholderCount;
-            if (placeholderCount == 2) {
-                result.push_back(hiByte);
-                result.push_back(loByte);
-                placeholderCount = 0;
-            }
-        } else {
-            if (placeholderCount == 1) {
-                result.push_back(loByte);
-                placeholderCount = 0;
-            }
-            result.push_back(static_cast<uint8_t>(std::stoi(byteStr, nullptr, 16)));
-        }
-    }
-
-    if (placeholderCount == 1) {
-        result.push_back(loByte);
-    }
-
-    return result;
 }
 
 sensor::Sensor* Utils::toSensor(EntityBase* pEntity) {

@@ -13,12 +13,12 @@ const uint16_t DC = 0xFFFF; // Don't care
 class TRequest
 {
 public:
-    using TGetLambda = std::function<DataType(std::vector<uint8_t> const&)>;
-    using TSetLambda = std::function<std::array<uint8_t, 7>(float const&)>;
+    using TGetLambda = std::function<DataType(TMessage const&)>;
+    using TSetLambda = std::function<TMessage(float const&)>;
 public:
     TRequest(
         std::string const& id,
-        std::array<uint8_t, 7> const& data,
+        TMessage const& data,
         std::array<uint16_t, 7> const& expected_reponse,
         EntityBase* entity,
         TGetLambda lambda,
@@ -66,8 +66,8 @@ public:
         return m_data.size() >= 7 ? (m_data[0] & 0xF0) * 8 + (m_data[1] & 0x0F) : 0x00;
     }
 
-    bool isMatch(uint32_t can_id, std::vector<uint8_t> const& responseData) const;
-    bool handle(uint32_t can_id, std::vector<uint8_t> const& responseData, uint32_t timestamp);
+    bool isMatch(uint32_t can_id, TMessage const& responseData) const;
+    bool handle(uint32_t can_id, TMessage const& responseData, uint32_t timestamp);
 
     bool sendGet(esphome::esp32_can::ESP32Can* pCanBus);
     bool sendSet(esphome::esp32_can::ESP32Can* pCanBus, float value);
@@ -87,7 +87,7 @@ public:
 
 private:
     std::string m_id;
-    std::array<uint8_t, 7> m_data;
+    TMessage m_data;
     std::array<uint16_t, 7> m_expected_reponse;
     EntityBase* m_entity;
     TGetLambda m_lambda;

@@ -87,12 +87,12 @@ void DaikinRotexCanComponent::setup() {
 
                 return variant;
             },
-            [&entity_conf](float const& value) -> std::array<uint8_t, 7> {
-                std::array<uint8_t, 7> data = std::array<uint8_t, 7>(entity_conf.data);
-                data[0] = 0x30;
-                data[1] = 0x00;
-                Utils::setBytes(data, value * entity_conf.divider, entity_conf.data_offset, entity_conf.data_size);
-                return data;
+            [&entity_conf](float const& value) -> TMessage {
+                TMessage message = TMessage(entity_conf.data);
+                message[0] = 0x30;
+                message[1] = 0x00;
+                Utils::setBytes(message, value * entity_conf.divider, entity_conf.data_offset, entity_conf.data_size);
+                return message;
             },
             entity_conf.update_interval
         });
@@ -134,7 +134,7 @@ void DaikinRotexCanComponent::custom_request(std::string const& value) {
     const uint32_t can_id = 0x680;
     const bool use_extended_id = false;
 
-    const std::vector<uint8_t> buffer = Utils::str_to_bytes(value);
+    const TMessage buffer = Utils::str_to_bytes(value);
 
     if (!buffer.empty()) {
         esphome::esp32_can::ESP32Can* pCanbus = m_data_requests.getCanbus();
@@ -244,7 +244,9 @@ void DaikinRotexCanComponent::loop() {
 }
 
 void DaikinRotexCanComponent::handle(uint32_t can_id, std::vector<uint8_t> const& data) {
-    m_data_requests.handle(can_id, data);
+    TMessage message;
+    std::copy_n(data.begin(), 7, message.begin());
+    m_data_requests.handle(can_id, message);
 }
 
 void DaikinRotexCanComponent::dump_config() {

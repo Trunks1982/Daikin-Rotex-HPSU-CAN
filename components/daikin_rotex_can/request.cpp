@@ -10,7 +10,7 @@ bool TRequest::isGetInProgress() const {
     return m_last_get_timestamp > m_last_handle_timestamp && ((mil - m_last_get_timestamp) < 3*1000); // Consider 3 sek => package is lost
 }
 
-bool TRequest::isMatch(uint32_t can_id, std::vector<uint8_t> const& responseData) const {
+bool TRequest::isMatch(uint32_t can_id, TMessage const& responseData) const {
     //if (can_id == get_response_canid()) 
     {
         for (uint32_t index = 0; index < responseData.size(); ++index) {
@@ -23,7 +23,7 @@ bool TRequest::isMatch(uint32_t can_id, std::vector<uint8_t> const& responseData
     return false;
 }
 
-bool TRequest::handle(uint32_t can_id, std::vector<uint8_t> const& responseData, uint32_t timestamp) {
+bool TRequest::handle(uint32_t can_id, TMessage const& responseData, uint32_t timestamp) {
     if (isMatch(can_id, responseData)) {
         DataType variant = m_lambda(responseData);
         std::string value;

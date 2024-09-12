@@ -27,7 +27,7 @@ public:
 
     bool sendNextPendingGet();
     void sendSet(std::string const& request_name, float value);
-    void handle(uint32_t can_id, std::vector<uint8_t> const& responseData);
+    void handle(uint32_t can_id, TMessage const& responseData);
 
 private:
     TRequest* getNextRequestToSend();

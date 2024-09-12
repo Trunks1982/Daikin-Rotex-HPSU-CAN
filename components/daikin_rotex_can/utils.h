@@ -1,5 +1,6 @@
 #pragma once
 
+#include "esphome/components/daikin_rotex_can/types.h"
 #include "esphome/components/sensor/sensor.h"
 #include "esphome/components/binary_sensor/binary_sensor.h"
 #include "esphome/components/text_sensor/text_sensor.h"
@@ -52,12 +53,11 @@ public:
     static bool find(std::string const& haystack, std::string const& needle);
     static std::vector<std::string> split(std::string const& str);
     static std::string to_hex(uint32_t value);
-    static std::vector<uint8_t> str_to_bytes(const std::string& str);
-    static std::array<uint8_t, 7> str_to_bytes_array8(const std::string& str);
+    static TMessage str_to_bytes(const std::string& str);
+    static TMessage str_to_bytes_array8(const std::string& str);
     static std::array<uint16_t, 7> str_to_bytes_array16(const std::string& str);
     static std::map<uint8_t, std::string> str_to_map(const std::string& input);
-    static std::vector<uint8_t> str_to_bytes(const std::string& str, uint16_t value);
-    static void setBytes(std::array<uint8_t, 7>& data, uint16_t value, uint8_t offset, uint8_t len);
+    static void setBytes(TMessage& data, uint16_t value, uint8_t offset, uint8_t len);
 
     template<typename... Args>
     static void log(std::string const& tag, std::string const& str_format, Args... args) {

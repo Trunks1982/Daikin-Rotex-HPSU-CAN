@@ -16,7 +16,7 @@ class Accessor {
     struct TEntityArguments {
         EntityBase* pEntity;
         std::string id;
-        std::array<uint8_t, 7> data;
+        TMessage data;
         std::string expected_response;
         uint8_t data_offset;
         uint8_t data_size;
