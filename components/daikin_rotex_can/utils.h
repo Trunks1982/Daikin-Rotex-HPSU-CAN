@@ -55,7 +55,6 @@ public:
     static std::string to_hex(uint32_t value);
     static TMessage str_to_bytes(const std::string& str);
     static TMessage str_to_bytes_array8(const std::string& str);
-    static std::array<uint16_t, 7> str_to_bytes_array16(const std::string& str);
     static std::map<uint8_t, std::string> str_to_map(const std::string& input);
     static void setBytes(TMessage& data, uint16_t value, uint8_t offset, uint8_t len);
 

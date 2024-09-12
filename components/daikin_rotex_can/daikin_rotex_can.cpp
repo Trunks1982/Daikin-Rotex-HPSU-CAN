@@ -20,7 +20,6 @@ void DaikinRotexCanComponent::setup() {
     ESP_LOGI(TAG, "setup");
 
     for (auto const& entity_conf : m_accessor.get_entities()) {
-        const std::array<uint16_t, 7> expected_response = Utils::str_to_bytes_array16(entity_conf.expected_response);
 
         const uint32_t response_can_id = entity_conf.data.size() >= 7 ? (entity_conf.data[0] & 0xF0) * 8 + (entity_conf.data[1] & 0x0F) : 0x00;
         if (response_can_id == 0x0) {
@@ -31,7 +30,6 @@ void DaikinRotexCanComponent::setup() {
         m_data_requests.add({
             entity_conf.id,
             entity_conf.data,
-            expected_response,
             entity_conf.pEntity,
             [entity_conf, this](auto const& data) -> DataType {
                 DataType variant;

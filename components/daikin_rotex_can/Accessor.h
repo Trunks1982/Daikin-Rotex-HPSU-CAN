@@ -17,7 +17,6 @@ class Accessor {
         EntityBase* pEntity;
         std::string id;
         TMessage data;
-        std::string expected_response;
         uint8_t data_offset;
         uint8_t data_size;
         float divider;
@@ -28,7 +27,6 @@ class Accessor {
             EntityBase* _pEntity,
             std::string const& _id,
             std::string const& _data,
-            std::string const& _expected_response,
             uint8_t _data_offset,
             uint8_t _data_size,
             float _divider,
@@ -39,7 +37,6 @@ class Accessor {
         : pEntity(_pEntity)
         , id(_id)
         , data(Utils::str_to_bytes_array8(_data))
-        , expected_response(_expected_response)
         , data_offset(_data_offset)
         , data_size(_data_size)
         , divider(_divider)

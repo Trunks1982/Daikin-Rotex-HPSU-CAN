@@ -33,7 +33,6 @@ sensor_configuration = [
         "name": "outdoor_unit" ,
         "icon": ICON_SUN_SNOWFLAKE_VARIANT,
         "data": "31 00 FA 06 9A 00 00",
-        "expected_reponse": "__ __ FA 06 9A __ __",
         "data_offset": 6,
         "data_size": 1,
         "map": {
@@ -46,12 +45,11 @@ sensor_configuration = [
             0x06: "16"
         }
     },
-   {
+    {
         "type": "select",
         "name": "indoor_unit" ,
         "icon": ICON_SUN_SNOWFLAKE_VARIANT,
         "data": "31 00 FA 06 99 00 00",
-        "expected_reponse": "__ __ FA 06 99 __ __",
         "data_offset": 6,
         "data_size": 1,
         "map": {
@@ -73,7 +71,6 @@ sensor_configuration = [
         "max_value": 75,
         "step": 1,
         "data": "31 00 FA 05 87 00 00",
-        "expected_reponse": "__ __ FA 05 87 __ __",
         "data_offset": 5,
         "data_size": 2,
         "divider": 10.0
@@ -83,7 +80,6 @@ sensor_configuration = [
         "name": "antileg_day" ,
         "icon": ICON_SUN_SNOWFLAKE_VARIANT,
         "data": "31 00 FA 01 01 00 00",
-        "expected_reponse": "__ __ FA 01 01 __ __",
         "data_offset": 5,
         "data_size": 1,
         "map": {
@@ -108,7 +104,6 @@ sensor_configuration = [
         "max_value": 15,
         "step": 1,
         "data": "31 00 FA 06 5E 00 00",
-        "expected_reponse": "__ __ FA 06 5E __ __",
         "data_offset": 5,
         "data_size": 2,
         "divider": 1
@@ -123,7 +118,6 @@ sensor_configuration = [
         "max_value": 15,
         "step": 1,
         "data": "31 00 FA 06 5F 00 00",
-        "expected_reponse": "__ __ FA 06 5F __ __",
         "data_offset": 5,
         "data_size": 2,
         "divider": 1
@@ -133,7 +127,6 @@ sensor_configuration = [
         "name": "circulation_with_dhw_program" ,
         "icon": ICON_SUN_SNOWFLAKE_VARIANT,
         "data": "31 00 FA 01 82 00 00",
-        "expected_reponse": "__ __ FA 01 82 __ __",
         "data_offset": 6,
         "data_size": 1,
         "map": {
@@ -152,7 +145,6 @@ sensor_configuration = [
         "max_value": 85,
         "step": 1,
         "data": "31 00 FA 06 73 00 00",
-        "expected_reponse": "__ __ FA 06 73 __ __",
         "data_offset": 5,
         "data_size": 2,
         "divider": 10.0
@@ -167,7 +159,6 @@ sensor_configuration = [
         "max_value": 240,
         "step": 1,
         "data": "31 00 FA 01 80 00 00",
-        "expected_reponse": "__ __ FA 01 80 __ __",
         "data_offset": 5,
         "data_size": 2,
         "divider": 1
@@ -182,7 +173,6 @@ sensor_configuration = [
         "max_value": 180,
         "step": 1,
         "data": "31 00 FA 4E 3F 00 00",
-        "expected_reponse": "__ __ FA 4E 3F __ __",
         "data_offset": 5,
         "data_size": 2,
         "divider": 1
@@ -198,7 +188,6 @@ sensor_configuration = [
         "max_value": 15,
         "step": 1,
         "data": "31 00 FA 06 6D 00 00",
-        "expected_reponse": "__ __ FA 06 6D __ __",
         "data_offset": 5,
         "data_size": 2,
         "divider": 10.0
@@ -211,7 +200,6 @@ sensor_configuration = [
         "accuracy_decimals": 1,
         "state_class": STATE_CLASS_MEASUREMENT,
         "data": "31 00 FA 01 D6 00 00",
-        "expected_reponse": "__ __ FA 01 D6 __ __",
         "data_offset": 5,
         "data_size": 2,
         "divider": 10.0
@@ -224,7 +212,6 @@ sensor_configuration = [
         "accuracy_decimals": 1,
         "state_class": STATE_CLASS_MEASUREMENT,
         "data": "31 00 FA C0 FF 00 00",
-        "expected_reponse": "__ __ FA C0 FF __ __",
         "data_offset": 5,
         "data_size": 2,
         "divider": 10.0
@@ -237,7 +224,6 @@ sensor_configuration = [
         "accuracy_decimals": 1,
         "state_class": STATE_CLASS_MEASUREMENT,
         "data": "61 00 FA 0A 0C 00 00",
-        "expected_reponse": "__ __ FA 0A 0C __ __",
         "data_offset": 5,
         "data_size": 2,
         "divider": 10.0
@@ -250,7 +236,6 @@ sensor_configuration = [
         "accuracy_decimals": 1,
         "state_class": STATE_CLASS_MEASUREMENT,
         "data": "31 00 FA 00 0E 00 00",
-        "expected_reponse": "__ __ FA, 00, 0E __ __",
         "data_offset": 5,
         "data_size": 2,
         "divider": 10.0
@@ -263,7 +248,6 @@ sensor_configuration = [
         "accuracy_decimals": 2,
         "state_class": STATE_CLASS_MEASUREMENT,
         "data": "31 00 1C 00 00 00 00",
-        "expected_reponse": "D2 __ 1C __ __ __ __",
         "data_offset": 3,
         "data_size": 2,
         "divider": 1000.0
@@ -277,7 +261,6 @@ sensor_configuration = [
         "state_class": STATE_CLASS_MEASUREMENT,
         "icon": "mdi:pump",
         "data": "31 00 FA C0 F7 00 00",
-        "expected_reponse": "__ __ FA C0 F7 __ __",
         "data_offset": 6,
         "data_size": 1,
         "divider": 1
@@ -294,7 +277,6 @@ sensor_configuration = [
         "max_value": 100,
         "step": 1,
         "data": "31 00 FA 06 7F 00 00",
-        "expected_reponse": "__ __ FA 06 7F __ __",
         "data_offset": 6,
         "data_size": 1,
         "divider": 1
@@ -311,7 +293,6 @@ sensor_configuration = [
         "max_value": 100,
         "step": 1,
         "data": "31 00 FA 06 7E 00 00",
-        "expected_reponse": "__ __ FA 06 7E __ __",
         "data_offset": 6,
         "data_size": 1,
         "divider": 1
@@ -325,7 +306,6 @@ sensor_configuration = [
         "state_class": STATE_CLASS_MEASUREMENT,
         "icon": "mdi:waves-arrow-left",
         "data": "31 00 FA C0 FB 00 00",
-        "expected_reponse": "__ __ FA C0 FB __ __",
         "data_offset": 5,
         "data_size": 2,
         "divider": 1
@@ -339,7 +319,6 @@ sensor_configuration = [
         "state_class": STATE_CLASS_MEASUREMENT,
         "icon": "mdi:waves-arrow-left",
         "data": "31 00 FA 06 9B 00 00",
-        "expected_reponse": "__ __ FA 06 9B __ __",
         "data_offset": 5,
         "data_size": 2,
         "divider": 1
@@ -352,7 +331,6 @@ sensor_configuration = [
         "accuracy_decimals": 1,
         "state_class": STATE_CLASS_MEASUREMENT,
         "data": "31 00 02 00 00 00 00",
-        "expected_reponse": "D2 __ 02 __ __ __ __",
         "data_offset": 3,
         "data_size": 2,
         "divider": 10.0
@@ -366,7 +344,6 @@ sensor_configuration = [
         "state_class": STATE_CLASS_MEASUREMENT,
         "icon": "mdi:transmission-tower",
         "data": "31 00 FA 09 20 00 00",
-        "expected_reponse": "__ __ FA 09 20 __ __",
         "data_offset": 5,
         "data_size": 2,
         "divider": 1
@@ -380,7 +357,6 @@ sensor_configuration = [
         "state_class": STATE_CLASS_MEASUREMENT,
         "icon": "mdi:transmission-tower",
         "data": "31 00 FA 06 A7 00 00",
-        "expected_reponse": "__ __ FA 06 A7 __ __",
         "data_offset": 5,
         "data_size": 2,
         "divider": 1
@@ -394,7 +370,6 @@ sensor_configuration = [
         "state_class": STATE_CLASS_MEASUREMENT,
         "icon": "mdi:transmission-tower",
         "data": "31 00 FA 09 1C 00 00",
-        "expected_reponse": "__ __ FA 09 1C __ __",
         "data_offset": 5,
         "data_size": 2,
         "divider": 1
@@ -408,7 +383,6 @@ sensor_configuration = [
         "state_class": STATE_CLASS_MEASUREMENT,
         "icon": "mdi:transmission-tower",
         "data": "31 00 FA 09 2C 00 00",
-        "expected_reponse": "__ __ FA 09 2C __ __",
         "data_offset": 5,
         "data_size": 2,
         "divider": 1
@@ -422,7 +396,6 @@ sensor_configuration = [
         "state_class": STATE_CLASS_MEASUREMENT,
         "icon": "mdi:transmission-tower",
         "data": "31 00 FA 09 30 00 00",
-        "expected_reponse": "__ __ FA 09 30 __ __",
         "data_offset": 5,
         "data_size": 2,
         "divider": 1
@@ -435,7 +408,6 @@ sensor_configuration = [
         "state_class": STATE_CLASS_MEASUREMENT,
         "icon": "mdi:clock-time-two-outline",
         "data": "31 00 FA 06 A5 00 00",
-        "expected_reponse": "__ __ FA 06 A5 __ __",
         "data_offset": 5,
         "data_size": 2,
         "divider": 1
@@ -448,7 +420,6 @@ sensor_configuration = [
         "state_class": STATE_CLASS_MEASUREMENT,
         "icon": "mdi:clock-time-two-outline",
         "data": "31 00 FA 06 A4 00 00",
-        "expected_reponse": "__ __ FA 06 A4 __ __",
         "data_offset": 5,
         "data_size": 2,
         "divider": 1
@@ -462,7 +433,6 @@ sensor_configuration = [
         "state_class": STATE_CLASS_MEASUREMENT,
         "icon": "mdi:thermometer-lines",
         "data": "31 00 FA 06 83 00 00",
-        "expected_reponse": "__ __ FA 06 83 __ __",
         "data_offset": 5,
         "data_size": 2,
         "divider": 10.0
@@ -476,7 +446,6 @@ sensor_configuration = [
         "state_class": STATE_CLASS_MEASUREMENT,
         "icon": "mdi:thermometer-lines",
         "data": "31 00 FA 06 84 00 00",
-        "expected_reponse": "__ __ FA 06 84 __ __",
         "data_offset": 5,
         "data_size": 2,
         "divider": 10.0
@@ -490,7 +459,6 @@ sensor_configuration = [
         "state_class": STATE_CLASS_MEASUREMENT,
         "icon": "mdi:thermometer-lines",
         "data": "31 00 FA C0 FC 00 00",
-        "expected_reponse": "__ __ FA C0 FC __ __",
         "data_offset": 5,
         "data_size": 2,
         "divider": 10.0,
@@ -505,7 +473,6 @@ sensor_configuration = [
         "state_class": STATE_CLASS_MEASUREMENT,
         "icon": "mdi:thermometer-lines",
         "data": "31 00 FA C1 02 00 00",
-        "expected_reponse": "__ __ FA C1 02 __ __",
         "data_offset": 5,
         "data_size": 2,
         "divider": 10.0,
@@ -520,7 +487,6 @@ sensor_configuration = [
         "state_class": STATE_CLASS_MEASUREMENT,
         "icon": "mdi:thermometer-lines",
         "data": "31 00 FA C1 00 00 00",
-        "expected_reponse": "__ __ FA C1 00 __ __",
         "data_offset": 5,
         "data_size": 2,
         "divider": 10.0,
@@ -535,7 +501,6 @@ sensor_configuration = [
         "state_class": STATE_CLASS_MEASUREMENT,
         "icon": "mdi:thermometer-lines",
         "data": "31 00 FA 01 DA 00 00",
-        "expected_reponse": "__ __ FA 01 DA __ __",
         "data_offset": 5,
         "data_size": 2,
         "divider": 1,
@@ -552,7 +517,6 @@ sensor_configuration = [
         "max_value": 25,
         "step": 0.1,
         "data": "31 00 05 00 00 00 00",
-        "expected_reponse": "D2 00 05 __ __ 00 __",
         "data_offset": 3,
         "data_size": 2,
         "divider": 10.0
@@ -568,7 +532,6 @@ sensor_configuration = [
         "max_value": 60,
         "step": 1,
         "data": "31 00 FA 01 29 00 00",
-        "expected_reponse": "__ __ FA 01 29 __ __",
         "data_offset": 5,
         "data_size": 2,
         "divider": 10.0
@@ -584,7 +547,6 @@ sensor_configuration = [
         "max_value": 2.55,
         "step": 0.01,
         "data": "31 00 FA 01 0E 00 00",
-        "expected_reponse": "__ __ FA 01 0E __ __",
         "data_offset": 5,
         "data_size": 2,
         "divider": 100.0
@@ -601,7 +563,6 @@ sensor_configuration = [
         "max_value": 40,
         "step": 1,
         "data": "31 00 FA 01 2B 00 00",
-        "expected_reponse": "__ __ FA 01 2B __ __",
         "data_offset": 5,
         "data_size": 2,
         "divider": 10.0
@@ -618,7 +579,6 @@ sensor_configuration = [
         "max_value": 60,
         "step": 1,
         "data": "31 00 28 00 00 00 00",
-        "expected_reponse": "__ __ 28 __ __ __ __",
         "data_offset": 3,
         "data_size": 2,
         "divider": 10.0
@@ -635,7 +595,6 @@ sensor_configuration = [
         "max_value": 70,
         "step": 1,
         "data": "31 00 13 00 00 00 00",
-        "expected_reponse": "D2 00 13 __ __ 00 00",
         "data_offset": 3,
         "data_size": 2,
         "divider": 10.0
@@ -645,7 +604,6 @@ sensor_configuration = [
         "name": "mode_of_operating" ,
         "icon": ICON_SUN_SNOWFLAKE_VARIANT,
         "data": "31 00 FA C0 F6 00 00",
-        "expected_reponse": "__ __ FA C0 F6 __ __",
         "data_offset": 5,
         "data_size": 2,
         "map": {
@@ -662,7 +620,6 @@ sensor_configuration = [
         "name": "quiet" ,
         "icon": "mdi:weather-partly-cloudy",
         "data": "31 00 FA 06 96",
-        "expected_reponse": "__ __ FA 06 96 __ __",
         "data_offset": 6,
         "data_size": 1,
         "map": {
@@ -676,7 +633,6 @@ sensor_configuration = [
         "name": "error_code" ,
         "icon": "mdi:alert",
         "data": "31 00 FA 13 88 00 00",
-        "expected_reponse": "__ __ FA 13 88 __ __",
         "data_offset": 5,
         "data_size": 2,
         "map": {
@@ -745,7 +701,6 @@ sensor_configuration = [
         "name": "status_kompressor" ,
         "icon": "mdi:pump",
         "data": "A1 00 61 00 00 00 00",
-        "expected_reponse": "__ __ 61 __ __ __ __",
         "data_offset": 3,
         "data_size": 1
     },
@@ -754,7 +709,6 @@ sensor_configuration = [
         "name": "status_kesselpumpe" ,
         "icon": "mdi:pump",
         "data": "31 00 FA 0A 8C 00 00",
-        "expected_reponse": "__ __ FA 0A 8C __ __",
         "data_offset": 6,
         "data_size": 1
     },
@@ -763,7 +717,6 @@ sensor_configuration = [
         "name": "operating_mode" ,
         "icon": ICON_SUN_SNOWFLAKE_VARIANT,
         "data": "31 00 FA 01 12 00 00",
-        "expected_reponse": "__ __ FA 01 12 __ __",
         "data_offset": 5,
         "data_size": 1,
         "map": {
@@ -781,7 +734,6 @@ sensor_configuration = [
         "name": "hk_function" ,
         "icon": "mdi:weather-partly-cloudy",
         "data": "31 00 FA 01 41 00 00",
-        "expected_reponse": "__ __ FA 01 41 __ __",
         "data_offset": 6,
         "data_size": 1,
         "map": {
@@ -794,7 +746,6 @@ sensor_configuration = [
         "name": "sg_mode" ,
         "icon": "mdi:weather-partly-cloudy",
         "data": "31 00 FA 06 94 00 00",
-        "expected_reponse": "__ __ FA 06 94 __ __",
         "data_offset": 6,
         "data_size": 1,
         "map": {
@@ -808,7 +759,6 @@ sensor_configuration = [
         "name": "smart_grid" ,
         "icon": "mdi:weather-partly-cloudy",
         "data": "31 00 FA 06 93 00 00",
-        "expected_reponse": "__ __ FA 06 93 __ __",
         "data_offset": 6,
         "data_size": 1,
         "map": {
@@ -991,7 +941,6 @@ def to_code(config):
                     entity,
                     sens_conf.get("name"),
                     sens_conf.get("data"),
-                    sens_conf.get("expected_reponse"),
                     sens_conf.get("data_offset"),
                     sens_conf.get("data_size"),
                     sens_conf.get("divider", 1.0),

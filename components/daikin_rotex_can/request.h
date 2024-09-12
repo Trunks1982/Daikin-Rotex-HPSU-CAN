@@ -19,14 +19,13 @@ public:
     TRequest(
         std::string const& id,
         TMessage const& data,
-        std::array<uint16_t, 7> const& expected_reponse,
         EntityBase* entity,
         TGetLambda lambda,
         TSetLambda setLambda,
         uint16_t update_interval)
     : m_id(id)
     , m_data(data)
-    , m_expected_reponse(expected_reponse)
+    , m_expected_reponse(TRequest::calculate_reponse(data))
     , m_entity(entity)
     , m_lambda(lambda)
     , m_set_lambda(setLambda)
@@ -76,6 +75,8 @@ public:
 
     bool isGetInProgress() const;
     uint16_t get_update_interval() const { return m_update_interval; }
+
+    static std::array<uint16_t, 7> calculate_reponse(TMessage const& message);
 
     std::string string() {
         return Utils::format(

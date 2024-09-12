@@ -68,21 +68,6 @@ TMessage Utils::str_to_bytes_array8(const std::string& str) {
     return byte_array;
 }
 
-std::array<uint16_t, 7> Utils::str_to_bytes_array16(const std::string& str) {
-    std::array<uint16_t, 7> words;
-    std::stringstream ss(str);
-    std::string wordStr;
-    const uint16_t DC = 0xFFFF;
-
-    uint8_t index = 0;
-    while (ss >> wordStr && index < 7) {
-        const uint16_t word = (wordStr == "__") ? DC : static_cast<uint16_t>(std::stoi(wordStr, nullptr, 16));
-        words[index++] = word;
-    }
-
-    return words;
-}
-
 std::map<uint8_t, std::string> Utils::str_to_map(const std::string& input) {
     std::map<uint8_t, std::string> result;
     std::stringstream ss(input);
