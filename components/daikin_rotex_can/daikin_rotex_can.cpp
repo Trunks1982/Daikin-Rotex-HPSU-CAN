@@ -20,10 +20,9 @@ void DaikinRotexCanComponent::setup() {
     ESP_LOGI(TAG, "setup");
 
     for (auto const& entity_conf : m_accessor.get_entities()) {
-        const std::array<uint8_t, 7> data = Utils::str_to_bytes_array8(entity_conf.data);
         const std::array<uint16_t, 7> expected_response = Utils::str_to_bytes_array16(entity_conf.expected_response);
 
-        const uint32_t response_can_id = data.size() >= 7 ? (data[0] & 0xF0) * 8 + (data[1] & 0x0F) : 0x00;
+        const uint32_t response_can_id = entity_conf.data.size() >= 7 ? (entity_conf.data[0] & 0xF0) * 8 + (entity_conf.data[1] & 0x0F) : 0x00;
         if (response_can_id == 0x0) {
             throwPeriodicError(Utils::format("Response can_id can't be calculated: %s", entity_conf.id.c_str()));
             return;
@@ -31,7 +30,7 @@ void DaikinRotexCanComponent::setup() {
 
         m_data_requests.add({
             entity_conf.id,
-            data,
+            entity_conf.data,
             expected_response,
             entity_conf.pEntity,
             [entity_conf, this](auto const& data) -> DataType {
@@ -88,10 +87,13 @@ void DaikinRotexCanComponent::setup() {
 
                 return variant;
             },
-            [entity_conf](float const& value) -> std::vector<uint8_t> {
-                return Utils::str_to_bytes(entity_conf.setter, value * entity_conf.divider);
+            [&entity_conf](float const& value) -> std::array<uint8_t, 7> {
+                std::array<uint8_t, 7> data = std::array<uint8_t, 7>(entity_conf.data);
+                data[0] = 0x30;
+                data[1] = 0x00;
+                Utils::setBytes(data, value * entity_conf.divider, entity_conf.data_offset, entity_conf.data_size);
+                return data;
             },
-            !entity_conf.setter.empty(),
             entity_conf.update_interval
         });
     }

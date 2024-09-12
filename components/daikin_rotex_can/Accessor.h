@@ -16,14 +16,13 @@ class Accessor {
     struct TEntityArguments {
         EntityBase* pEntity;
         std::string id;
-        std::string data;
+        std::array<uint8_t, 7> data;
         std::string expected_response;
         uint8_t data_offset;
         uint8_t data_size;
         float divider;
         BidiMap<uint8_t, std::string> map;
         std::string update_entity;
-        std::string setter;
         uint16_t update_interval;
         TEntityArguments(
             EntityBase* _pEntity,
@@ -35,19 +34,17 @@ class Accessor {
             float _divider,
             std::string const& _map,
             std::string const& _update_entity,
-            std::string const& _setter,
             uint16_t _update_interval
         )
         : pEntity(_pEntity)
         , id(_id)
-        , data(_data)
+        , data(Utils::str_to_bytes_array8(_data))
         , expected_response(_expected_response)
         , data_offset(_data_offset)
         , data_size(_data_size)
         , divider(_divider)
         , map(Utils::str_to_map(_map))
         , update_entity(_update_entity)
-        , setter(_setter)
         , update_interval(_update_interval)
         {}
     };

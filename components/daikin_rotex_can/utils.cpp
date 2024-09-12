@@ -102,6 +102,17 @@ std::map<uint8_t, std::string> Utils::str_to_map(const std::string& input) {
     return result;
 }
 
+void Utils::setBytes(std::array<uint8_t, 7>& data, uint16_t value, uint8_t offset, uint8_t len) {
+    if (len == 1) {
+        data[offset] = value & 0xFF;
+    } else if (len == 2) {
+        data[offset] = (value >> 8) & 0xFF;
+        data[offset + 1] = value & 0xFF;
+    } else {
+        ESP_LOGE("write", "Invalid len: %d", len);
+    }
+}
+
 std::vector<uint8_t> Utils::str_to_bytes(const std::string& input, uint16_t value) {
     std::vector<uint8_t> result;
     std::istringstream stream(input);

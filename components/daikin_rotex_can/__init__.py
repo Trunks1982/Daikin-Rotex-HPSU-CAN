@@ -44,8 +44,7 @@ sensor_configuration = [
             0x04: "11",
             0x05: "14",
             0x06: "16"
-        },
-        "setter": "30 00 FA 06 9A 00 __"
+        }
     },
    {
         "type": "select",
@@ -61,8 +60,7 @@ sensor_configuration = [
             0x02: "308",
             0x03: "508",
             0x04: "516"
-        },
-        "setter": "30 00 FA 06 99 00 __"
+        }
     },
     {
         "type": "number",
@@ -78,8 +76,7 @@ sensor_configuration = [
         "expected_reponse": "__ __ FA 05 87 __ __",
         "data_offset": 5,
         "data_size": 2,
-        "divider": 10.0,
-        "setter": "30 00 FA 05 87 __ __"
+        "divider": 10.0
     },
     {
         "type": "select",
@@ -99,8 +96,7 @@ sensor_configuration = [
             0x06: "Sa",
             0x07: "So",
             0x08: "Mo-So"
-        },
-        "setter": "30 00 FA 01 01 __ 00"
+        }
     },
     {
         "type": "number",
@@ -115,8 +111,7 @@ sensor_configuration = [
         "expected_reponse": "__ __ FA 06 5E __ __",
         "data_offset": 5,
         "data_size": 2,
-        "divider": 1,
-        "setter": "30 00 FA 06 5E __ __"
+        "divider": 1
     },
     {
         "type": "number",
@@ -131,8 +126,7 @@ sensor_configuration = [
         "expected_reponse": "__ __ FA 06 5F __ __",
         "data_offset": 5,
         "data_size": 2,
-        "divider": 1,
-        "setter": "30 00 FA 06 5F __ __"
+        "divider": 1
     },
     {
         "type": "select",
@@ -145,8 +139,7 @@ sensor_configuration = [
         "map": {
             0x00: "Aus",
             0x01: "An"
-        },
-        "setter": "30 00 FA 01 82 00 __"
+        }
     },
     {
         "type": "number",
@@ -162,8 +155,7 @@ sensor_configuration = [
         "expected_reponse": "__ __ FA 06 73 __ __",
         "data_offset": 5,
         "data_size": 2,
-        "divider": 10.0,
-        "setter": "30 00 FA 06 73 __ __"
+        "divider": 10.0
     },
     {
         "type": "number",
@@ -178,8 +170,7 @@ sensor_configuration = [
         "expected_reponse": "__ __ FA 01 80 __ __",
         "data_offset": 5,
         "data_size": 2,
-        "divider": 1,
-        "setter": "30 00 FA 01 80 __ __"
+        "divider": 1
     },
     {
         "type": "number",
@@ -194,8 +185,7 @@ sensor_configuration = [
         "expected_reponse": "__ __ FA 4E 3F __ __",
         "data_offset": 5,
         "data_size": 2,
-        "divider": 1,
-        "setter": "30 00 FA 4E 3F __ __"
+        "divider": 1
     },
     {
         "type": "number",
@@ -211,8 +201,7 @@ sensor_configuration = [
         "expected_reponse": "__ __ FA 06 6D __ __",
         "data_offset": 5,
         "data_size": 2,
-        "divider": 10.0,
-        "setter": "30 00 FA 06 6D __ __"
+        "divider": 10.0
     },
     {
         "type": "sensor",
@@ -308,8 +297,7 @@ sensor_configuration = [
         "expected_reponse": "__ __ FA 06 7F __ __",
         "data_offset": 6,
         "data_size": 1,
-        "divider": 1,
-        "setter": "30 00 FA 06 7F __ __"
+        "divider": 1
     },
     {
         "type": "number",
@@ -326,8 +314,7 @@ sensor_configuration = [
         "expected_reponse": "__ __ FA 06 7E __ __",
         "data_offset": 6,
         "data_size": 1,
-        "divider": 1,
-        "setter": "30 00 FA 06 7E __ __"
+        "divider": 1
     },
     {
         "type": "sensor",
@@ -568,8 +555,7 @@ sensor_configuration = [
         "expected_reponse": "D2 00 05 __ __ 00 __",
         "data_offset": 3,
         "data_size": 2,
-        "divider": 10.0,
-        "setter": "30 00 05 __ __ 00 00"
+        "divider": 10.0
     },
     {
         "type": "number",
@@ -585,8 +571,7 @@ sensor_configuration = [
         "expected_reponse": "__ __ FA 01 29 __ __",
         "data_offset": 5,
         "data_size": 2,
-        "divider": 10.0,
-        "setter": "30 00 FA 01 29 __ __"
+        "divider": 10.0
     },
     {
         "type": "number",
@@ -602,8 +587,7 @@ sensor_configuration = [
         "expected_reponse": "__ __ FA 01 0E __ __",
         "data_offset": 5,
         "data_size": 2,
-        "divider": 100.0,
-        "setter": "30 00 FA 01 0E __ __"
+        "divider": 100.0
     },
     {
         "type": "number",
@@ -620,8 +604,7 @@ sensor_configuration = [
         "expected_reponse": "__ __ FA 01 2B __ __",
         "data_offset": 5,
         "data_size": 2,
-        "divider": 10.0,
-        "setter": "30 00 FA 01 2B __ __"
+        "divider": 10.0
     },
     {
         "type": "number",
@@ -638,8 +621,7 @@ sensor_configuration = [
         "expected_reponse": "__ __ 28 __ __ __ __",
         "data_offset": 3,
         "data_size": 2,
-        "divider": 10.0,
-        "setter": "30 00 28 __ __ 00 00"
+        "divider": 10.0
     },
     {
         "type": "number",
@@ -656,8 +638,7 @@ sensor_configuration = [
         "expected_reponse": "D2 00 13 __ __ 00 00",
         "data_offset": 3,
         "data_size": 2,
-        "divider": 10.0,
-        "setter": "30 00 13 __ __ 00 00"
+        "divider": 10.0
     },
     {
         "type": "text_sensor",
@@ -793,8 +774,7 @@ sensor_configuration = [
             0x11: "Kühlen",
             0x0B: "Automatik 1",
             0x0C: "Automatik 2"
-        },
-        "setter": "30 00 FA 01 12 __ 00"
+        }
     },
     {
         "type": "select",
@@ -807,8 +787,7 @@ sensor_configuration = [
         "map": {
             0x00: "Witterungsgeführt",
             0x01: "Fest"
-        },
-        "setter": "30 00 FA 01 41 00 __"
+        }
     },
     {
         "type": "select",
@@ -822,8 +801,7 @@ sensor_configuration = [
             0x00: "Aus",
             0x01: "SG Modus 1",
             0x02: "SG Modus 2"
-        },
-        "setter": "30 00 FA 06 94 00 __"
+        }
     },
     {
         "type": "select",
@@ -836,8 +814,7 @@ sensor_configuration = [
         "map": {
             0x00: "Aus",
             0x01: "An"
-        },
-        "setter": "30 00 FA 06 93 00, __"
+        }
     }
 ]
 
@@ -1020,7 +997,6 @@ def to_code(config):
                     sens_conf.get("divider", 1.0),
                     "|".join([f"0x{key:02X}:{value}" for key, value in sens_conf.get("map", {}).items()]), # map
                     sens_conf.get("update_entity", ""),
-                    sens_conf.get("setter", ""),
                     update_interval
                 ]))
 

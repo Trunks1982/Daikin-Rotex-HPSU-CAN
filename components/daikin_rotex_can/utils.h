@@ -57,6 +57,7 @@ public:
     static std::array<uint16_t, 7> str_to_bytes_array16(const std::string& str);
     static std::map<uint8_t, std::string> str_to_map(const std::string& input);
     static std::vector<uint8_t> str_to_bytes(const std::string& str, uint16_t value);
+    static void setBytes(std::array<uint8_t, 7>& data, uint16_t value, uint8_t offset, uint8_t len);
 
     template<typename... Args>
     static void log(std::string const& tag, std::string const& str_format, Args... args) {

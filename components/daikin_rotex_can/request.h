@@ -14,7 +14,7 @@ class TRequest
 {
 public:
     using TGetLambda = std::function<DataType(std::vector<uint8_t> const&)>;
-    using TSetLambda = std::function<std::vector<uint8_t>(float const&)>;
+    using TSetLambda = std::function<std::array<uint8_t, 7>(float const&)>;
 public:
     TRequest(
         std::string const& id,
@@ -23,7 +23,6 @@ public:
         EntityBase* entity,
         TGetLambda lambda,
         TSetLambda setLambda,
-        bool setter,
         uint16_t update_interval)
     : m_id(id)
     , m_data(data)
@@ -33,7 +32,6 @@ public:
     , m_set_lambda(setLambda)
     , m_last_handle_timestamp(0u)
     , m_last_get_timestamp(0u)
-    , m_setter(setter)
     , m_update_interval(update_interval)
     {
     }
@@ -77,7 +75,6 @@ public:
     bool isGetNeeded() const;
 
     bool isGetInProgress() const;
-    bool isSetter() const { return m_setter; }
     uint16_t get_update_interval() const { return m_update_interval; }
 
     std::string string() {
@@ -94,10 +91,9 @@ private:
     std::array<uint16_t, 7> m_expected_reponse;
     EntityBase* m_entity;
     TGetLambda m_lambda;
-    std::function<std::vector<uint8_t>(float const&)> m_set_lambda;
+    TSetLambda m_set_lambda;
     uint32_t m_last_handle_timestamp;
     uint32_t m_last_get_timestamp;
-    bool m_setter;
     uint16_t m_update_interval;
 };
 

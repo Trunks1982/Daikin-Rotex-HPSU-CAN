@@ -45,7 +45,7 @@ bool TRequests::sendNextPendingGet() {
 
 void TRequests::sendSet(std::string const& request_name, float value) {
     const auto it = std::find_if(m_requests.begin(), m_requests.end(),
-        [&request_name](auto& request) { return request.isSetter() && request.getName() == request_name; }
+        [&request_name](auto& request) { return request.getName() == request_name; }
     );
     if (it != m_requests.end()) {
         it->sendSet(m_pCanbus, value);
