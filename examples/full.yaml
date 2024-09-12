@@ -187,12 +187,17 @@ daikin_rotex_can:
 
 #Konfiguration -> WW Konfig
 
-#name: "Zirk mit WW-Prog"
-#name: "ZirkInterval"
-#name: "AntilegTag"
-#name: "AntilegZeit"
-#name: "AntilegTemp"
-
+    circulation_with_dhw_program:
+      name: "Zirk mit WW-Prog"
+    circulation_interval_on:
+        name: "ZirkInterval An"
+    circulation_interval_off:
+        name: "ZirkInterval Aus"
+    antileg_day:
+        name: "AntilegTag"
+#AntilegZeit
+    antileg_temp:
+        name: "AntilegTemp"
     max_dhw_loading:
       name: "Max WW Ladezeit"
     dhw_off_time:
