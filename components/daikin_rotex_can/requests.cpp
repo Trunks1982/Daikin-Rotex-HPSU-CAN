@@ -58,9 +58,9 @@ void TRequests::handle(uint32_t can_id, std::vector<uint8_t> const& responseData
     bool bHandled = false;
     const uint32_t timestamp = millis();
     for (auto& request : m_requests) {
-        if (request.isMatch(can_id, responseData)) {
-            request.handle(can_id, responseData, timestamp);
+        if (request.handle(can_id, responseData, timestamp)) {
             bHandled = true;
+            break;
         }
     }
     if (!bHandled) {

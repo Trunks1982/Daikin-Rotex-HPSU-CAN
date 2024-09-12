@@ -11,13 +11,14 @@ bool TRequest::inProgress() const {
 }
 
 bool TRequest::isMatch(uint32_t can_id, std::vector<uint8_t> const& responseData) const {
-    if (can_id == get_response_canid()) {
+    //if (can_id == get_response_canid()) 
+    {
         for (uint32_t index = 0; index < responseData.size(); ++index) {
             if (m_expected_reponse[index] != DC && responseData[index] != m_expected_reponse[index]) {
                 return false;
             }
         }
-        return true;
+        return responseData.size() == 7;
     }
     return false;
 }
