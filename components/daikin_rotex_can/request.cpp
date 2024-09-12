@@ -5,9 +5,9 @@
 namespace esphome {
 namespace daikin_rotex_can {
 
-bool TRequest::inProgress() const {
+bool TRequest::isGetInProgress() const {
     uint32_t mil = millis();
-    return m_last_request > m_last_update && ((mil - m_last_request) < 3*1000);
+    return m_last_get_timestamp > m_last_handle_timestamp && ((mil - m_last_get_timestamp) < 3*1000); // Consider 3 sek => package is lost
 }
 
 bool TRequest::isMatch(uint32_t can_id, std::vector<uint8_t> const& responseData) const {
@@ -44,7 +44,7 @@ bool TRequest::handle(uint32_t can_id, std::vector<uint8_t> const& responseData,
         Utils::log("handle ", "%s<%s> can_id<%s> data<%s>",
             getName().c_str(), value.c_str(), Utils::to_hex(can_id).c_str(), Utils::to_hex(responseData).c_str());
 
-        m_last_update = timestamp;
+        m_last_handle_timestamp = timestamp;
         return true;
     }
     return false;
@@ -64,7 +64,7 @@ bool TRequest::sendGet(esphome::esp32_can::ESP32Can* pCanBus) {
     Utils::log("sendGet", "%s can_id<%s> data<%s>",
         getName().c_str(), Utils::to_hex(can_id).c_str(), Utils::to_hex(m_data).c_str());
 
-    m_last_request = millis();
+    m_last_get_timestamp = millis();
     return true;
 }
 

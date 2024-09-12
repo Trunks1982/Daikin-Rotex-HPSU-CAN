@@ -31,8 +31,8 @@ public:
     , m_entity(entity)
     , m_lambda(lambda)
     , m_set_lambda(setLambda)
-    , m_last_update(0u)
-    , m_last_request(0u)
+    , m_last_handle_timestamp(0u)
+    , m_last_get_timestamp(0u)
     , m_setter(setter)
     , m_update_interval(update_interval)
     {
@@ -61,7 +61,7 @@ public:
     }
 
     uint32_t getLastUpdate() const {
-        return m_last_update;
+        return m_last_handle_timestamp;
     }
 
     uint16_t get_response_canid() const {
@@ -74,7 +74,9 @@ public:
     bool sendGet(esphome::esp32_can::ESP32Can* pCanBus);
     bool sendSet(esphome::esp32_can::ESP32Can* pCanBus, float value);
 
-    bool inProgress() const;
+    bool isGetNeeded() const;
+
+    bool isGetInProgress() const;
     bool isSetter() const { return m_setter; }
     uint16_t get_update_interval() const { return m_update_interval; }
 
@@ -93,11 +95,16 @@ private:
     EntityBase* m_entity;
     TGetLambda m_lambda;
     std::function<std::vector<uint8_t>(float const&)> m_set_lambda;
-    uint32_t m_last_update;
-    uint32_t m_last_request;
+    uint32_t m_last_handle_timestamp;
+    uint32_t m_last_get_timestamp;
     bool m_setter;
     uint16_t m_update_interval;
 };
+
+inline bool TRequest::isGetNeeded() const {
+    const uint32_t update_interval = get_update_interval() * 1000;
+    return getLastUpdate() == 0 || (millis() > (getLastUpdate() + update_interval));
+}
 
 }
 }

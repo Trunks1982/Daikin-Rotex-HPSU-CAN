@@ -68,24 +68,32 @@ void TRequests::handle(uint32_t can_id, std::vector<uint8_t> const& responseData
     }
 }
 
-TRequest* TRequests::getNextRequestToSend() {
-    const uint32_t timestamp = millis();
-
-    for (auto& request : m_requests) {
-        if (request.inProgress()) {
-            return nullptr;
-        }
-    }
-
-    for (auto& request : m_requests) {
-        const uint32_t update_interval = request.get_update_interval() * 1000;
-
-        if (request.getLastUpdate() == 0 || (timestamp > (request.getLastUpdate() + update_interval))) {
+TRequest const* TRequests::get(std::string const& id) const {
+    for (auto& request: m_requests) {
+        if (request.get_id() == id) {
             return &request;
         }
     }
     return nullptr;
 }
+
+TRequest* TRequests::getNextRequestToSend() {
+    const uint32_t timestamp = millis();
+
+    for (auto& request : m_requests) {
+        if (request.isGetInProgress()) {
+            return nullptr;
+        }
+    }
+
+    for (auto& request : m_requests) {
+        if (request.isGetNeeded()) {
+            return &request;
+        }
+    }
+    return nullptr;
+}
+
 
 }
 }

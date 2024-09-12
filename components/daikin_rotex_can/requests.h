@@ -52,15 +52,6 @@ inline TRequest const& TRequests::get(uint32_t index) const {
     return m_requests[index];
 }
 
-inline TRequest const* TRequests::get(std::string const& id) const {
-    for (auto& request: m_requests) {
-        if (request.get_id() == id) {
-            return &request;
-        }
-    }
-    return nullptr;
-}
-
 inline sensor::Sensor* TRequests::get_sensor(std::string const& id) {
     return Utils::toSensor(get_entity(id));
 }
