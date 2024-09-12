@@ -18,7 +18,7 @@ public:
     esphome::esp32_can::ESP32Can* getCanbus() const;
 
     uint32_t size() const;
-    TRequest const& get(uint32_t index) const;
+    TRequest const* get(uint32_t index) const;
     TRequest const* get(std::string const& id) const;
 
     EntityBase* get_entity(std::string const& id);
@@ -48,8 +48,8 @@ inline uint32_t TRequests::size() const {
     return m_requests.size();
 }
 
-inline TRequest const& TRequests::get(uint32_t index) const {
-    return m_requests[index];
+inline TRequest const* TRequests::get(uint32_t index) const {
+    return (index >= 0 && index < m_requests.size()) ? &m_requests[index] : nullptr;
 }
 
 inline sensor::Sensor* TRequests::get_sensor(std::string const& id) {

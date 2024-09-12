@@ -190,6 +190,35 @@ void DaikinRotexCanComponent::dhw_run() {
     }
 }
 
+void DaikinRotexCanComponent::dump() {
+    const char* DUMP = "dump";
+
+    ESP_LOGI(DUMP, "------------------------------------------");
+    ESP_LOGI(DUMP, "------------ DUMP %d Entities ------------", m_data_requests.size());
+    ESP_LOGI(DUMP, "------------------------------------------");
+
+    for (auto index = 0; index < m_data_requests.size(); ++index) {
+        TRequest const* pRequest = m_data_requests.get(index);
+        if (pRequest != nullptr) {
+            EntityBase* pEntity = pRequest->get_entity();
+            if (sensor::Sensor* pSensor = dynamic_cast<sensor::Sensor*>(pEntity)) {
+                ESP_LOGI(DUMP, "%s: %f", pSensor->get_name().c_str(), pSensor->get_state());
+            } else if (binary_sensor::BinarySensor* pBinarySensor = dynamic_cast<binary_sensor::BinarySensor*>(pEntity)) {
+                ESP_LOGI(DUMP, "%s: %d", pBinarySensor->get_name().c_str(), pBinarySensor->state);
+            } else if (number::Number* pNumber = dynamic_cast<number::Number*>(pEntity)) {
+                ESP_LOGI(DUMP, "%s: %f", pNumber->get_name().c_str(), pNumber->state);
+            } else if (text_sensor::TextSensor* pTextSensor = dynamic_cast<text_sensor::TextSensor*>(pEntity)) {
+                ESP_LOGI(DUMP, "%s: %s", pTextSensor->get_name().c_str(), pTextSensor->get_state().c_str());
+            } else if (select::Select* pSelect = dynamic_cast<select::Select*>(pEntity)) {
+                ESP_LOGI(DUMP, "%s: %s", pSelect->get_name().c_str(), pSelect->state.c_str());
+            }
+        } else {
+            ESP_LOGE(DUMP, "Entity with index<%d> not found!", index);
+        }
+    }
+    ESP_LOGI(DUMP, "------------------------------------------");
+}
+
 void DaikinRotexCanComponent::run_dhw_lambdas() {
     if (m_accessor.getDaikinRotexCanComponent() != nullptr) {
         if (!m_dhw_run_lambdas.empty()) {

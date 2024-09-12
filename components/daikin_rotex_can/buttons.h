@@ -13,5 +13,12 @@ protected:
     void press_action() override;
 };
 
+class DumpButton : public button::Button, public Parented<DaikinRotexCanComponent> {
+public:
+    DumpButton() = default;
+protected:
+    void press_action() override;
+};
+
 }
 }

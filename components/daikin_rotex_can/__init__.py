@@ -17,6 +17,7 @@ LogFilterText = daikin_rotex_can_ns.class_("LogFilterText", text.Text)
 CustomRequestText = daikin_rotex_can_ns.class_("CustomRequestText", text.Text)
 
 DHWRunButton = daikin_rotex_can_ns.class_("DHWRunButton", button.Button)
+DumpButton = daikin_rotex_can_ns.class_("DumpButton", button.Button)
 
 UNIT_BAR = "bar"
 UNIT_LITER_PER_HOUR = "L/h"
@@ -818,6 +819,7 @@ CONF_ENTITIES = "entities"
 
 CONF_THERMAL_POWER = "thermal_power" # Thermische Leistung
 
+CONF_DUMP = "dump"
 CONF_DHW_RUN = "dhw_run"
 
 DEFAULT_UPDATE_INTERVAL = 30 # seconds
@@ -906,6 +908,11 @@ CONFIG_SCHEMA = cv.Schema(
                 cv.Optional(CONF_MODE, default="TEXT"): cv.enum(text.TEXT_MODES, upper=True),
             }
         ),
+        cv.Optional(CONF_DUMP): button.button_schema(
+            DumpButton,
+            entity_category=ENTITY_CATEGORY_CONFIG,
+            icon=ICON_SUN_SNOWFLAKE_VARIANT
+        ).extend(),
 
         cv.Required(CONF_ENTITIES): cv.Schema(
             entity_schemas
@@ -932,6 +939,10 @@ def to_code(config):
         t = yield text.new_text(text_conf)
         yield cg.register_parented(t, var)
         cg.add(var.getAccessor().set_custom_request_text(t))
+
+    if button_conf := config.get(CONF_DUMP):
+        but = yield button.new_button(button_conf)
+        yield cg.register_parented(but, var)
 
     if entities := config.get(CONF_ENTITIES):
         for sens_conf in sensor_configuration:

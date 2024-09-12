@@ -44,7 +44,7 @@ public:
         return m_entity != nullptr ? m_entity->get_name().str() : "<INVALID>";
     }
 
-    EntityBase* getEntity() const {
+    EntityBase* get_entity() const {
         return m_entity;
     }
 

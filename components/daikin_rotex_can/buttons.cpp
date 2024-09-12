@@ -7,5 +7,9 @@ void DHWRunButton::press_action() {
     this->parent_->dhw_run();
 }
 
+void DumpButton::press_action() {
+    this->parent_->dump();
+}
+
 }  // namespace seeed_mr24hpc1
 }  // namespace esphome

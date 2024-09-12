@@ -32,6 +32,7 @@ public:
 
     // Buttons
     void dhw_run();
+    void dump();
 
     Accessor& getAccessor() { return m_accessor; }
 
