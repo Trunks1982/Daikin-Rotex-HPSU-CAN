@@ -61,10 +61,6 @@ public:
         return m_last_handle_timestamp;
     }
 
-    uint16_t get_response_canid() const {
-        return m_command.size() >= 7 ? (m_command[0] & 0xF0) * 8 + (m_command[1] & 0x0F) : 0x00;
-    }
-
     bool isMatch(uint32_t can_id, TMessage const& responseData) const;
     bool handle(uint32_t can_id, TMessage const& responseData, uint32_t timestamp);
 

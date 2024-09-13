@@ -8,7 +8,7 @@ namespace daikin_rotex_can {
 std::array<uint16_t, 7> TRequest::calculate_reponse(TMessage const& message) {
     const uint16_t DC = 0xFFFF;
     std::array<uint16_t, 7> response = {DC, DC, DC, DC, DC, DC, DC};
-    if (message[2] == 0xFA) {
+    if (message[2] == 0xFA) {   // https://github.com/crycode-de/ioBroker.canbus/blob/master/well-known-messages/configs/rotex-hpsu.md
         response[2] = message[2];
         response[3] = message[3];
         response[4] = message[4];
@@ -25,14 +25,18 @@ bool TRequest::isGetInProgress() const {
 }
 
 bool TRequest::isMatch(uint32_t can_id, TMessage const& responseData) const {
-    //if (can_id == get_response_canid()) 
+    const uint16_t response_can_id = (m_command[0] & 0xF0) * 8 + (m_command[1] & 0x0F);
+
+    //if (can_id == response_can_id())
     {
-        for (uint32_t index = 0; index < responseData.size(); ++index) {
-            if (m_expected_reponse[index] != DC && responseData[index] != m_expected_reponse[index]) {
-                return false;
+        if ((responseData[0] & 0x0F) == 0x02) { // is a response
+            for (uint32_t index = 0; index < responseData.size(); ++index) {
+                if (m_expected_reponse[index] != DC && responseData[index] != m_expected_reponse[index]) {
+                    return false;
+                }
             }
+            return responseData.size() == 7;
         }
-        return responseData.size() == 7;
     }
     return false;
 }
