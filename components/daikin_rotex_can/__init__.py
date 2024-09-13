@@ -2,6 +2,9 @@ import esphome.codegen as cg
 import esphome.config_validation as cv
 from esphome.components import sensor, binary_sensor, button, number, select, text_sensor, canbus, text
 from esphome.const import *
+from esphome.core import Lambda
+from esphome.cpp_generator import MockObj
+from esphome.cpp_types import std_ns
 from esphome.components.canbus import CanbusComponent
 #from esphome.const import (
 #    ENTITY_CATEGORY_CONFIG,
@@ -765,6 +768,116 @@ sensor_configuration = [
             0x00: "Aus",
             0x01: "An"
         }
+    },
+    {
+        "type": "select",
+        "name": "function_ehs" ,
+        "icon": ICON_SUN_SNOWFLAKE_VARIANT,
+        "command": "31 00 FA 06 D2 00 00",
+        "data_offset": 6,
+        "data_size": 1,
+        "map": {
+            0x00: "Kein zusätzlicher Wärmeerzeuger",
+            0x01: "Optionaler Backup-Heater",
+            0x02: "WEZ für WW und HZ",
+            0x03: "WEZ1 für WW - WEZ2 für HZ"
+        }
+    },
+    {
+        "type": "select",
+        "name": "ch_support" ,
+        "icon": ICON_SUN_SNOWFLAKE_VARIANT,
+        "command": "31 00 FA 06 6C 00 00",
+        "data_offset": 6,
+        "data_size": 1,
+        "map": {
+            0x00: "Aus",
+            0x01: "An"
+        }
+    },
+    {
+        "type": "number",
+        "name": "power_dhw",
+        "device_class": DEVICE_CLASS_POWER,
+        "unit_of_measurement": UNIT_KILOWATT,
+        "accuracy_decimals": 0,
+        "state_class": STATE_CLASS_MEASUREMENT,
+        "icon": "mdi:waves-arrow-left",
+        "min_value": 1,
+        "max_value": 40,
+        "step": 1,
+        "command": "31 00 FA 06 68 00 00",
+        "handle_lambda": """
+            return ((data[5] << 8) | data[6]) / 0x64;
+        """,
+        "set_lambda": """
+            const uint16_t u16val = value * 0x64;
+            data[5] = (u16val >> 8) & 0xFF;
+            data[6] = u16val & 0xFF;
+        """
+    },
+    {
+        "type": "number",
+        "name": "power_ehs_1",
+        "device_class": DEVICE_CLASS_POWER,
+        "unit_of_measurement": UNIT_KILOWATT,
+        "accuracy_decimals": 0,
+        "state_class": STATE_CLASS_MEASUREMENT,
+        "icon": "mdi:waves-arrow-left",
+        "min_value": 1,
+        "max_value": 40,
+        "step": 1,
+        "command": "31 00 FA 06 69 00 00",
+       "handle_lambda": """
+            return ((data[5] << 8) | data[6]) / 0x64;
+        """,
+        "set_lambda": """
+            const uint16_t u16val = value * 0x64;
+            data[5] = (u16val >> 8) & 0xFF;
+            data[6] = u16val & 0xFF;
+        """
+    },
+    {
+        "type": "number",
+        "name": "power_ehs_2",
+        "device_class": DEVICE_CLASS_POWER,
+        "unit_of_measurement": UNIT_KILOWATT,
+        "accuracy_decimals": 0,
+        "state_class": STATE_CLASS_MEASUREMENT,
+        "icon": "mdi:waves-arrow-left",
+        "min_value": 1,
+        "max_value": 40,
+        "step": 1,
+        "command": "31 00 FA 06 6A 00 00",
+       "handle_lambda": """
+            return ((data[5] << 8) | data[6]) / 0x64;
+        """,
+        "set_lambda": """
+            const uint16_t u16val = value * 0x64;
+            data[5] = (u16val >> 8) & 0xFF;
+            data[6] = u16val & 0xFF;
+        """
+    },
+    {
+        "type": "number",
+        "name": "power_biv",
+        "device_class": DEVICE_CLASS_POWER,
+        "unit_of_measurement": UNIT_KILOWATT,
+        "accuracy_decimals": 0,
+        "state_class": STATE_CLASS_MEASUREMENT,
+        "icon": "mdi:waves-arrow-left",
+        "min_value": 3,
+        "max_value": 40,
+        "step": 1,
+        "command": "31 00 FA 06 6B 00 00",
+       "handle_lambda": """
+            return ((data[5] << 8) | data[6]) / 0x64;
+        """,
+        "set_lambda": """
+            const uint16_t u16val = value * 0x64;
+            data[5] = (u16val >> 8) & 0xFF;
+            data[6] = u16val & 0xFF;
+        """
     }
 ]
 
@@ -883,29 +996,33 @@ CONFIG_SCHEMA = cv.Schema(
     }
 ).extend(cv.COMPONENT_SCHEMA)
 
-def to_code(config):
+async def to_code(config):
+    global_ns = MockObj("", "")
+    std_array_u8_7_const_ref = std_ns.class_("array<uint8_t, 7> const&")
+    std_array_u8_7_ref = std_ns.class_("array<uint8_t, 7>&")
+
     var = cg.new_Pvariable(config[CONF_ID])
-    yield cg.register_component(var, config)
+    await cg.register_component(var, config)
 
     if CONF_CAN_ID in config:
         cg.add_define("USE_CANBUS")
-        canbus = yield cg.get_variable(config[CONF_CAN_ID])
+        canbus = await cg.get_variable(config[CONF_CAN_ID])
         cg.add(var.set_canbus(canbus))
 
     ########## Texts ##########
 
     if text_conf := config.get(CONF_LOG_FILTER_TEXT):
-        t = yield text.new_text(text_conf)
+        t = await text.new_text(text_conf)
         cg.add(var.getAccessor().set_log_filter(t))
 
     if text_conf := config.get(CONF_CUSTOM_REQUEST_TEXT):
-        t = yield text.new_text(text_conf)
-        yield cg.register_parented(t, var)
+        t = await text.new_text(text_conf)
+        await cg.register_parented(t, var)
         cg.add(var.getAccessor().set_custom_request_text(t))
 
     if button_conf := config.get(CONF_DUMP):
-        but = yield button.new_button(button_conf)
-        yield cg.register_parented(but, var)
+        but = await button.new_button(button_conf)
+        await cg.register_parented(but, var)
 
     if entities := config.get(CONF_ENTITIES):
         for sens_conf in sensor_configuration:
@@ -913,50 +1030,81 @@ def to_code(config):
                 entity = None
                 match sens_conf.get("type"):
                     case "sensor":
-                        entity = yield sensor.new_sensor(yaml_sensor_conf)
+                        entity = await sensor.new_sensor(yaml_sensor_conf)
                     case "text_sensor":
-                        entity = yield text_sensor.new_text_sensor(yaml_sensor_conf)
+                        entity = await text_sensor.new_text_sensor(yaml_sensor_conf)
                     case "binary_sensor":
-                        entity = yield binary_sensor.new_binary_sensor(yaml_sensor_conf)
+                        entity = await binary_sensor.new_binary_sensor(yaml_sensor_conf)
                     case "select":
-                        entity = yield select.new_select(yaml_sensor_conf, options = list(sens_conf.get("map").values()))
+                        entity = await select.new_select(yaml_sensor_conf, options = list(sens_conf.get("map").values()))
                         cg.add(entity.set_id(sens_conf.get("name")))
-                        yield cg.register_parented(entity, var)
+                        await cg.register_parented(entity, var)
                     case "number":
-                        entity = yield number.new_number(
+                        if "min_value" not in sens_conf:
+                            raise Exception("min_value is required for number: " + sens_conf.get("name"))
+                        if "max_value" not in sens_conf:
+                            raise Exception("max_value is required for number: " + sens_conf.get("name"))
+                        if "step" not in sens_conf:
+                            raise Exception("step is required for number: " + sens_conf.get("name"))
+                        entity = await number.new_number(
                             yaml_sensor_conf,
                             min_value=sens_conf.get("min_value"),
                             max_value=sens_conf.get("max_value"),
                             step=sens_conf.get("step")
                         )
                         cg.add(entity.set_id(sens_conf.get("name")))
-                        yield cg.register_parented(entity, var)
+
+                        await cg.register_parented(entity, var)
                     case _:
                         raise Exception("Unknown type: " + sens_conf.get("type"))
 
                 update_interval = yaml_sensor_conf.get(CONF_UPDATE_INTERVAL, -1)
                 if update_interval < 0:
                     update_interval = config[CONF_UPDATE_INTERVAL]
+
+                if "command" not in sens_conf:
+                    raise Exception("command is required for number: " + sens_conf.get("name"))
+
+                async def handle_lambda():
+                    lamb = str(sens_conf.get("handle_lambda")) if "handle_lambda" in sens_conf else "return 0;"
+                    return await cg.process_lambda(
+                        Lambda(lamb),
+                        [(std_array_u8_7_const_ref, "data")],
+                        return_type=cg.float_,
+                    )
+
+                async def set_lambda():
+                    lamb = str(sens_conf.get("set_lambda")) if "set_lambda" in sens_conf else ""
+                    return await cg.process_lambda(
+                        Lambda(lamb),
+                        [(std_array_u8_7_ref, "data"), (float, "value")],
+                        return_type=cg.void,
+                    )
+
                 cg.add(var.getAccessor().set_entity(sens_conf.get("name"), [
                     entity,
                     sens_conf.get("name"),
                     sens_conf.get("command"),
-                    sens_conf.get("data_offset"),
-                    sens_conf.get("data_size"),
+                    sens_conf.get("data_offset", 5),
+                    sens_conf.get("data_size", 1),
                     sens_conf.get("divider", 1.0),
                     "|".join([f"0x{key:02X}:{value}" for key, value in sens_conf.get("map", {}).items()]), # map
                     sens_conf.get("update_entity", ""),
-                    update_interval
+                    update_interval,
+                    await handle_lambda(),
+                    await set_lambda(),
+                    "handle_lambda" in sens_conf,
+                    "set_lambda" in sens_conf
                 ]))
 
         ########## Sensors ##########
 
         if yaml_sensor_conf := entities.get(CONF_THERMAL_POWER):
-            sens = yield sensor.new_sensor(yaml_sensor_conf)
+            sens = await sensor.new_sensor(yaml_sensor_conf)
             cg.add(var.getAccessor().set_thermal_power(sens))
 
         ########## Buttons ##########
 
         if button_conf := entities.get(CONF_DHW_RUN):
-            but = yield button.new_button(button_conf)
-            yield cg.register_parented(but, var)
+            but = await button.new_button(button_conf)
+            await cg.register_parented(but, var)

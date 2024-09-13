@@ -36,9 +36,12 @@ void DaikinRotexCanComponent::setup() {
 
                 if (entity_conf.data_offset > 0 && (entity_conf.data_offset + entity_conf.data_size) <= 7) {
                     if (entity_conf.data_size >= 1 && entity_conf.data_size <= 2) {
-                        const float value = entity_conf.data_size == 2 ?
-                            (((data[entity_conf.data_offset] << 8) + data[entity_conf.data_offset + 1]) / entity_conf.divider) :
-                            (data[entity_conf.data_offset] / entity_conf.divider);
+                        const float value = entity_conf.handle_lambda_set ? entity_conf.handle_lambda(data) :
+                                (
+                                    entity_conf.data_size == 2 ?
+                                    (((data[entity_conf.data_offset] << 8) + data[entity_conf.data_offset + 1]) / entity_conf.divider) :
+                                    (data[entity_conf.data_offset] / entity_conf.divider)
+                                );
 
                         if (dynamic_cast<sensor::Sensor*>(entity_conf.pEntity) != nullptr) {
                             Utils::toSensor(entity_conf.pEntity)->publish_state(value);
@@ -89,7 +92,11 @@ void DaikinRotexCanComponent::setup() {
                 TMessage message = TMessage(entity_conf.command);
                 message[0] = 0x30;
                 message[1] = 0x00;
-                Utils::setBytes(message, value * entity_conf.divider, entity_conf.data_offset, entity_conf.data_size);
+                if (entity_conf.set_lambda_set) {
+                    entity_conf.set_lambda(message, value);
+                } else {
+                    Utils::setBytes(message, value * entity_conf.divider, entity_conf.data_offset, entity_conf.data_size);
+                }
                 return message;
             },
             entity_conf.update_interval

@@ -106,8 +106,10 @@ daikin_rotex_can:
       name: "Aussengerät"
     indoor_unit:
       name: "Innengerät"
-#Funktion EHS
-#HZ Unterstützung
+    function_ehs:
+      name: "Funktion EHS"
+    ch_support:
+      name: "HZ Unterstützung"
 #Bivalenzfunktion
     smart_grid:
       name: "Smart Grid"
@@ -128,10 +130,14 @@ daikin_rotex_can:
 
 #Konfiguration -> Anlagenkonfiguration
 
-#Leistung WW
-#Leistung EHS Stufe 1
-#Leistung EHS Stufe 2
-#Leistung BIV
+    power_dhw:
+      name: "Leistung WW"
+    power_ehs_1:
+      name: "Leistung EHS Stufe 1"
+    power_ehs_2:
+      name: "Leistung EHS Stufe 2"
+    power_biv:
+      name: "Leistung BIV"
     tdiff_dhw_ch:
       name: "TDiff-WW HZU"
 #Max Temp Heizung

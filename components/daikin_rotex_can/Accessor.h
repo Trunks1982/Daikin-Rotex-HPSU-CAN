@@ -13,6 +13,9 @@ namespace daikin_rotex_can {
 class DaikinRotexCanComponent;
 
 class Accessor {
+    using THandleFunc = std::function<float(TMessage const&)>;
+    using TSetFunc = std::function<void(TMessage&, float)>;
+
     struct TEntityArguments {
         EntityBase* pEntity;
         std::string id;
@@ -23,6 +26,11 @@ class Accessor {
         BidiMap<uint8_t, std::string> map;
         std::string update_entity;
         uint16_t update_interval;
+        THandleFunc handle_lambda;
+        TSetFunc set_lambda;
+        bool handle_lambda_set;
+        bool set_lambda_set;
+
         TEntityArguments(
             EntityBase* _pEntity,
             std::string const& _id,
@@ -32,7 +40,11 @@ class Accessor {
             float _divider,
             std::string const& _map,
             std::string const& _update_entity,
-            uint16_t _update_interval
+            uint16_t _update_interval,
+            THandleFunc _handle_lambda,
+            TSetFunc _set_lambda,
+            bool _handle_lambda_set,
+            bool _set_lambda_set
         )
         : pEntity(_pEntity)
         , id(_id)
@@ -43,6 +55,10 @@ class Accessor {
         , map(Utils::str_to_map(_map))
         , update_entity(_update_entity)
         , update_interval(_update_interval)
+        , handle_lambda(_handle_lambda)
+        , set_lambda(_set_lambda)
+        , handle_lambda_set(_handle_lambda_set)
+        , set_lambda_set(_set_lambda_set)
         {}
     };
     using TEntityArgumentsList = std::list<TEntityArguments>;
