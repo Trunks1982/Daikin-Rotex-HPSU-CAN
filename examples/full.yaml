@@ -58,6 +58,9 @@ daikin_rotex_can:
 
 # Info
 
+    ext:
+      name: Ext
+
 #Übersicht
     water_pressure:
       name: "Wasserdruck"

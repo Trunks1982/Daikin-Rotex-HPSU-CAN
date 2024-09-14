@@ -886,7 +886,7 @@ sensor_configuration = [
         "unit_of_measurement": UNIT_KILOWATT,
         "accuracy_decimals": 0,
         "state_class": STATE_CLASS_MEASUREMENT,
-        "icon": "mdi:weather-partly-cloudy",
+        "icon": "mdi:induction",
         "command": "31 00 FA 0A 20 00 00",
         "data_offset": 5,
         "data_size": 2,
@@ -908,6 +908,21 @@ sensor_configuration = [
             if (value >= 6) data[5] |= 0b00000100;
             if (value >= 9) data[5] |= 0b00000010;
         """
+    },
+    {
+        "type": "text_sensor",
+        "name": "ext",
+        "accuracy_decimals": 0,
+        "icon": "mdi:transmission-tower-import",
+        "command": "31 00 FA C0 F8 00 00",
+        "data_offset": 6,
+        "data_size": 1,
+        "map": {
+            0x03: "SGN - Normaler Modus",
+            0x04: "SG1 - WW & HZ ausgeschalten",
+            0x05: "SG2 - WW & HZ + 5°C",
+            0x06: "SG3 - WW 70°C"
+        }
     }
 ]
 
