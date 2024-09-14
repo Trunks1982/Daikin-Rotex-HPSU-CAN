@@ -30,26 +30,7 @@ public:
         return std::string(buffer.get(), buffer.get() + size - 1);
     }
 
-    template<typename T>
-    static std::string to_hex(const T& data) {
-        std::stringstream str;
-        str.setf(std::ios_base::hex, std::ios::basefield);
-        str.setf(std::ios_base::uppercase);
-        str.fill('0');
-
-        bool first = true;
-        for (uint8_t chr : data)
-        {
-            if (first) {
-                first = false;
-            } else {
-                str << " ";
-            }
-            str << "0x" << std::setw(2) << (unsigned short)(std::byte)chr;
-        }
-        return str.str();
-    }
-
+    static std::string to_hex(TMessage const& data);
     static bool find(std::string const& haystack, std::string const& needle);
     static std::vector<std::string> split(std::string const& str);
     static std::string to_hex(uint32_t value);

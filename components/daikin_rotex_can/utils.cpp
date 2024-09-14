@@ -21,8 +21,7 @@ std::vector<std::string> Utils::split(std::string const& str) {
     std::istringstream iss(str);
     std::vector<std::string> result;
 
-    while (std::getline(iss, segment, '|'))
-    {
+    while (std::getline(iss, segment, '|')) {
         if (!segment.empty()) {
             result.push_back(segment);
         }
@@ -35,6 +34,25 @@ std::string Utils::to_hex(uint32_t value) {
     char hex_string[20];
     sprintf(hex_string, "0x%02X", value);
     return std::string(hex_string);
+}
+
+std::string Utils::to_hex(TMessage const& data) {
+    std::stringstream str;
+    str.setf(std::ios_base::hex, std::ios::basefield);
+    str.setf(std::ios_base::uppercase);
+    str.fill('0');
+
+    bool first = true;
+    for (uint8_t chr : data)
+    {
+        if (first) {
+            first = false;
+        } else {
+            str << " ";
+        }
+        str << std::setw(2) << (unsigned short)(std::byte)chr;
+    }
+    return str.str();
 }
 
 TMessage Utils::str_to_bytes(const std::string& str) {
