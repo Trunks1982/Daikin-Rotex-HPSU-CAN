@@ -8,12 +8,13 @@
 namespace esphome {
 namespace daikin_rotex_can {
 
-const uint16_t DC = 0xFFFF; // Don't care
-
 class TRequest
 {
+    static const uint16_t DC = 0xFFFF; // Don't care
+
 public:
-    using TGetLambda = std::function<DataType(TMessage const&)>;
+    using TVariant = std::variant<uint32_t, uint8_t, float, bool, std::string>;
+    using TGetLambda = std::function<TVariant(TMessage const&)>;
     using TSetLambda = std::function<TMessage(float const&)>;
 public:
     TRequest(

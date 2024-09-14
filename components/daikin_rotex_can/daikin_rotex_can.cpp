@@ -31,8 +31,8 @@ void DaikinRotexCanComponent::setup() {
             entity_conf.id,
             entity_conf.command,
             entity_conf.pEntity,
-            [entity_conf, this](auto const& data) -> DataType {
-                DataType variant;
+            [entity_conf, this](auto const& data) -> TRequest::TVariant {
+                TRequest::TVariant variant;
 
                 if (entity_conf.data_offset > 0 && (entity_conf.data_offset + entity_conf.data_size) <= 7) {
                     if (entity_conf.data_size >= 1 && entity_conf.data_size <= 2) {

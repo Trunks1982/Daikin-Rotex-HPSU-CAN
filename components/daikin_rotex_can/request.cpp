@@ -43,7 +43,7 @@ bool TRequest::isMatch(uint32_t can_id, TMessage const& responseData) const {
 
 bool TRequest::handle(uint32_t can_id, TMessage const& responseData, uint32_t timestamp) {
     if (isMatch(can_id, responseData)) {
-        DataType variant = m_lambda(responseData);
+        const TVariant variant = m_lambda(responseData);
         std::string value;
         if (std::holds_alternative<uint32_t>(variant)) {
             value = std::to_string(std::get<uint32_t>(variant));
