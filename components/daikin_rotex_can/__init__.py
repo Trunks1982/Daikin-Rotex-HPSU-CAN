@@ -878,6 +878,36 @@ sensor_configuration = [
             data[5] = (u16val >> 8) & 0xFF;
             data[6] = u16val & 0xFF;
         """
+    },
+    {
+        "type": "select",
+        "name": "electric_heater",
+        "device_class": DEVICE_CLASS_POWER,
+        "unit_of_measurement": UNIT_KILOWATT,
+        "accuracy_decimals": 0,
+        "state_class": STATE_CLASS_MEASUREMENT,
+        "icon": "mdi:weather-partly-cloudy",
+        "command": "31 00 FA 0A 20 00 00",
+        "data_offset": 5,
+        "data_size": 2,
+        "map": {
+            0x00: "Aus",
+            0x03: "3 kW",
+            0x06: "6 kW",
+            0x09: "9 kW"
+        },
+        "handle_lambda": """
+            return
+                bool(data[5] & 0b00001000) * 3 +
+                bool(data[5] & 0b00000100) * 3 +
+                bool(data[5] & 0b00000010) * 3;
+        """,
+        "set_lambda": """
+            data[5] = 0b00000001;
+            if (value >= 3) data[5] |= 0b00001000;
+            if (value >= 6) data[5] |= 0b00000100;
+            if (value >= 9) data[5] |= 0b00000010;
+        """
     }
 ]
 
