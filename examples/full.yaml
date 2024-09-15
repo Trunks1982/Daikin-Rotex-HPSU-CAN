@@ -217,7 +217,7 @@ daikin_rotex_can:
 # Others
 
     electric_heater:
-      name: "Heizstäbe"
+      name: Heizstäbe - Für Pumpen nach Oktober 2018
     thermal_power:
       name: "Thermische Leistung"
 
