@@ -14,7 +14,7 @@ esp32:
     type: arduino
 
 external_components:
-  - source: github://wrfz/esphome-daikin-rotex-can
+  - source: github://Trunks1982/Daikin-Rotex-HPSU-CAN
 
 logger:
   level: INFO
