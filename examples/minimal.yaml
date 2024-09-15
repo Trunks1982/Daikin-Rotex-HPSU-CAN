@@ -14,7 +14,7 @@ esp32:
     type: arduino
 
 external_components:      # Automatically loads the *esphome-daikin-rotex-can* component from github during compilation
-  - source: github://wrfz/esphome-daikin-rotex-can
+  - source: github://Trunks1982/Daikin-Rotex-HPSU-CAN
 
 canbus:                   # Required for communication with the Daikin or Rotex heat pump
   - platform: esp32_can
