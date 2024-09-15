@@ -1,78 +1,108 @@
 #### Language Selection:
-[![en](https://img.shields.io/badge/lang-en-red.svg)](README.en.md)
+[![en](https://img.shields.io/badge/lang-en-red.svg)](README.en.md) 
 [![de](https://img.shields.io/badge/lang-de-blue.svg)](README.md)
 
-## Warning!
+<br><br>
+"A coffee for the next long night in front of the computer would be great" is of course not a must.
+<br>[![Paypal](https://user-images.githubusercontent.com/41958506/212499642-b2fd097a-0938-4bfc-b37b-74df64592c58.png)](https://www.paypal.com/donate/?hosted_button_id=H94LZRQW9PFQ4)
 
-The use of esphome-daikin-rotex-can may cause damage to the heating system if used improperly.
-Usage is at your own risk, and the developer assumes no responsibility for any damages.
-Using this software may void your warranty and manufacturer support.
-Please note that this software is not supported by the manufacturer.
-<br>
-<br>
+# Warning
+The use of Daikin-Rotex-HPSU-Can can damage the heating system. The use of Daikin-Rotex-HPSU-Can is at your own risk. The creator cannot be held responsible for damage.
 
-## Software requirements
- * [ESPHome](https://esphome.io/) installed
+You can risk a loss of warranty and support from the manufacturer!!!!
 
-# How to setup
+This software is not supported by the manufacturer!!!!
 
-1. Open the `ESPHome Dashboard`
-2. Click on `NEW DEVICE` in the bottom right corner
-3. Click the `CONTINUE` button
-4. Enter any name for the configuration (e.g., Rotex) and confirm with `NEXT`
-5. Select `ESP32-S3`
-6. Complete the basic configuration by clicking `SKIP`
-7. Click `EDIT` on the newly created configuration
-8. Copy the following three sections from [examples/full.yaml](examples/full.yaml):
-    - `esphome` → `platformio_options` (Very important to ensure successful compilation later)
-    - `canbus` (Adjust GPIOs according to your needs)
-    - `daikin_rotex_can` (Unnecessary entities can be removed)
-9. In the ESPHome Dashboard, click on the three vertical dots in the bottom right corner of the configuration and then click `Install`.
+# Rotex /Daikin HPSU CAN
 
 
-Supported sensors and controls:
-------------------------
 
-|ID                              |Empfohlener Name                  |Beschreibubg                                               |
-|---                             |---                               |---                                                        |
-|**bypass_valve**                |BPV                               |Percentage opening position of the bypass valve            |
-|**circulation_pump**            |Umwälzpumpe                       |Percentage operating performance of the circulation pump   |
-|**circulation_pump_min**        |Umwälzpumpe Min                   |Minimum operating level of the circulation pump            |
-|**circulation_pump_max**        |Umwälzpumpe Max                   |Maximum operating level of the circulation pump            |
-|**delta_temp_ch**               |Spreizung MOD HZ                  |Temperature difference during heating operation            |
-|**delta_temp_dhw**              |Spreizung MOD WW                  |Temperature difference during hot water preparation        |
-|**dhw_mixer_position**          |DHW Mischer Position              |Position of the hot water mixer                            |
-|**dhw_run**                     |Warmwasser bereiten               |Control for activating hot water preparation               |
-|**ehs_for_ch**                  |EHS fuer CH                       |External heating system for heating                        |
-|**error_code**                  |Fehlercode                        |Error code and description                                 |
-|**flow_rate**                   |Durchfluss                        |Flow rate in liters per hour                               |
-|**flow_temperature_day**        |T Vorlauf Tag                     |Flow temperature for daytime operation                     |
-|**heating_curve**               |Heizkurve                         |Heating curve for temperature control                      |
-|**hk_function**                 |HK Funktion                       |Heating circuit function                                   |
-|**max_target_flow_temp**        |Max VL Soll                       |Maximum flow temperature                                   |
-|**min_target_flow_temp**        |Min VL Soll                       |Minimum flow temperature                                   |
-|**mode_of_operating**           |Betriebsart                       |Operating mode of the heat pump                            |
-|**operating_mode**              |Betriebsmodus                     |Current operating mode of the heat pump                    |
-|**qboh**                        |EHS für DHW                       |External heating system for hot water preparation          |
-|**qch**                         |Energie Heizung                   |Produced heating energy                                    |
-|**qdhw**                        |Energie für WW                    |Produced energy for hot water                              |
-|**quiet**                       |Flüsterbetrieb                    |Activation of quiet operation                              |
-|**runtime_compressor**          |Laufzeit Compressor               |Runtime of the compressor                                  |
-|**runtime_pump**                |Laufzeit Pump                     |Runtime of the pump                                        |
-|**sg_mode**                     |SG Modus                          |SG mode                                                    |
-|**smart_grid**                  |Smart Grid                        |Smart grid function                                        |
-|**status_kesselpumpe**          |Status Kesselpumpe                |Status of the boiler pump                                  |
-|**status_kompressor**           |Status Kompressor                 |Status of the compressor                                   |
-|**target_room1_temperature**    |Raumsoll 1                        |Target room temperature                                    |
-|**tdhw1**                       |Warmwassertemperatur              |Hot water temperature                                      |
-|**temperature_outside**         |Aussentemperatur                  |Outside temperature measured by the outdoor unit           |
-|**t_ext**                       |T-Aussen                          |Outside temperature                                        |
-|**tr**                          |Ruecklauftemperatur Heizung       |Return temperature of the heating system                   |
-|**tv**                          |Heizkreis Vorlauf (TV)            |Flow temperature of the heating circuit                    |
-|**tvbh**                        |Vorlauftemperatur Heizung (TVBH)  |Flow temperature of the heating system                     |
-|**t_hs**                        |T-WE                              |Hot water generator temperature (T-WE)                     |
-|**water_pressure**              |Wasserdruck                       |Water pressure of the system                               |
-|**target_hot_water_temperature**|T-WW-Soll1                        |Setpoint for hot water temperature                         |
-|**target_supply_temperature**   |Vorlauf Soll                      |Setpoint for supply temperature                            |
-|**thermal_power**               |Thermische Leistung               |Current thermal power                                      |
-|**total_energy_produced**       |Erzeugte Energie Gesamt           |Total energy produced                                      |
+Hi, I would like to present my first small project, I wanted a flexible solution that runs standalone, with Homeassistant and Iobroker, to read and control my Rotex HPSU Compact using CAN BUS.
+I used an ESP32-S3-WROOM board (it should work for everyone from S1, because they support the 20kbits baudrate,
+The normal ESP32 Wroom do not work because they only work from 50kbit) and a Waveshare SN65HVD230 CAN board with 3.3V.
+An ESP32 S3 mini (Zero) also works.
+
+## Installation instructions:
+
+1. To flash the ESP32, you need the browser Google Chrome once (Safari and Firefox are not supported). Then you need the file rotex-factory.bin.
+
+2. You then open the website https://web.esphome.io and connect the ESP32 to the PC using USB-C. After connecting, click on "Connect" on the website. After that, a window will open where you select the USB serial interface.
+
+3. After that, a new window will open on the website where you click on "Install".
+
+4. Now click on "Select file" and select the previously downloaded rotex-factory.bin and click on "Install". This process takes about 2 minutes.
+
+5. After successful installation, you wait about 1-2 minutes, after which a "Rotex Fallback Hotspot" from the ESP32 should build up.
+
+6. Now you connect to the ESP32 via WLAN and enter the "Password H3jGqANSa7aL".
+
+7. Now a browser window should automatically open where you will be asked for your WLAN SSID and the password for your WLAN. Here you now enter your access data for your WLAN.
+
+8. After successfully connecting your ESP32 to the WLAN, it should be accessible via http://rotex.local. If not, please check your router for the correct IP address.
+
+9. If you do not use any other home automation software now, you are now finished with the installation and can connect the ESP32 to the Rotex / Daikin according to the diagrams.
+
+10. If you use a home automation software e.g. Home Assistant, you can now connect the ESP32. This should be found automatically by Home Assistant.
+<br><br>
+# :sparkles: Congratulation! :sparkles:
+
+
+<br><br>
+## Updating the ESP32:
+
+The Rotex.bin file is used for simplified updating via the WEB-UI interface of the ESP32. Simply select OTA Update new file and update click done!!!
+
+## Features:
+
+- Adjustment of room soll
+
+- Adjustment WW Should
+
+- 1x hot water button without heating rod (it is set to 70 degrees for 10s and then back to 45 degrees)
+
+- Thermal performance calculation
+
+- Operating mode can be adjusted
+
+- Heating curves adjustment in 0.01 steps (default in 0.1 steps)
+
+- New feature: Two new switches created to also switch the thermostat inputs from the Rotex / Daikin directly between heating / cooling.
+
+- ### New feature error code display with description of the error with Hanbuch page information!!
+
+All relevant data that you actually need is queried.
+<br>  
+## more . YAML files:
+
+If you have thawing problems, you can easily build a small script in Iobroker or Homeassitant, if defrosting is detected should be switched to summer,
+
+When heating is detected again, switches back to operating mode heating. Thus, a maximum of 0.7 degrees of hot water from the Sepicher is consumed.
+
+For Iobroker I have uploaded a Blockly Script which I use myself and works great.<br>
+
+The Defrost.yaml is intended for Home Assistant automation. This is the same automation as for IoBroker.
+
+Tested with: - Rotex HSPU Compact 508 8kw
+## WEBUI from ESP:
+![Bildschirmfoto 2023-12-17 um 11 33 51](https://github.com/Trunks1982/Daikin-Rotex-HPSU-CAN/assets/62701386/524a204e-801a-4fe7-aacb-ac2e731a99b7)
+
+
+## View Homeassistant:
+![Bildschirmfoto 2024-04-01 um 01 37 19](https://github.com/Trunks1982/Daikin-Rotex-HPSU-CAN/assets/62701386/d9c1d703-ac4a-4466-97e3-dbd6478cbed1)
+
+
+## Pin assignment GPIO 47 and 48
+
+![ESP32-S3toCAN](https://github.com/Trunks1982/Daikin-Rotex-HPSU-CAN/assets/62701386/40b1881a-b7f5-40b5-a2d7-678ee19299d2)
+
+## Pin assignment at the Rotex HPSU
+
+![Rotex CAN Anschluss](https://github.com/Trunks1982/Daikin-Rotex-HPSU-CAN/assets/62701386/05c36ae7-ddc9-4a1e-8a73-4559c765f132)
+
+
+
+
+
+
+
+

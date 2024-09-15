@@ -1,0 +1,20 @@
+sensor: 
+  - platform: template
+      sensors:
+        cop_wert:
+        friendly_name: "COP Wert"
+        unit_of_measurement: "COP"
+        value_template: >
+          {% set thermische_leistung = states('sensor.rotex_thermische_leistung') | float(0) %}
+          {% set stromverbrauch = states('sensor.wp_channel_a_power') | float(0) / 1000 %}
+          {% set kompressor_status = states('sensor.rotex_status_kompressor') %}
+          
+          {% if kompressor_status == 'An' and stromverbrauch > 0 %}
+            {% if thermische_leistung >= 0 %}
+              {{ (thermische_leistung / stromverbrauch) | round(2) }}
+            {% else %}
+              {{ (-1 * thermische_leistung / stromverbrauch) | round(2) }}
+            {% endif %}
+          {% else %}
+            0  # Wenn der Kompressor nicht läuft, wird COP auf 0 gesetzt
+          {% endif %}

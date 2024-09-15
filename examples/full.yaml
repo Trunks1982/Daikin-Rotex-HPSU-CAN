@@ -14,7 +14,7 @@ esp32:
     type: arduino
 
 external_components:
-  - source: github://wrfz/esphome-daikin-rotex-can
+  - source: github://Trunks1982/Daikin-Rotex-HPSU-CAN
 
 logger:
   level: INFO
@@ -35,7 +35,7 @@ wifi:
   password: !secret wifi_password
 
   ap:
-    ssid: "DaikinRotex Fallback Hotspot"
+    ssid: DaikinRotex Fallback Hotspot
     password: !secret fallback_hotspot_password
 
 canbus:
@@ -51,9 +51,9 @@ daikin_rotex_can:
   canbus_id: can_bus
   update_interval: 30
   log_filter:
-    name: "Log Filter"
+    name: Log Filter
   custom_request:
-    name: "Custom Request"
+    name: Custom Request
   entities:
 
 # Info
@@ -63,39 +63,39 @@ daikin_rotex_can:
 
 #Übersicht
     water_pressure:
-      name: "Wasserdruck"
+      name: Wasserdruck
     t_hs:
-      name: "T-WE"
+      name: T-WE
 #T-WE Soll
     t_ext:  # Oder gehört hier temperature_outside rein?
-      name: "T-Aussen"
+      name: T-Aussen
 #T-WW
 #T-WW Soll
 #T-Rücklauf
     flow_rate:
-      name: "Durchfluss"
+      name: Durchfluss
       update_interval: 5
 #T-HK
 #T-HK Soll
     status_kesselpumpe:
-      name: "Status Kesselpumpe"
+      name: Status Kesselpumpe
     runtime_compressor:
-      name: "Laufzeit Compressor"
+      name: Laufzeit Compressor
     runtime_pump:
-      name: "Laufzeit Pump"
+      name: Laufzeit Pump
     dhw_mixer_position:
-      name: "DHW Mischer Position"
+      name: DHW Mischer Position
     qboh:
-      name: "EHS für DHW"
+      name: EHS für DHW
     ehs_for_ch:
-      name: "EHS fuer CH"
+      name: EHS fuer CH
 #Energie Kühlung
     qch:
-      name: "Energie Heizung"
+      name: Energie Heizung
     total_energy_produced:
-      name: "Erzeugte Energie Gesamt"
+      name: Erzeugte Energie Gesamt
     qdhw:
-      name: "Energie für WW"
+      name: Energie für WW
 #WE Typ
 #SwNr B1/U1
 #SwNr Regler
@@ -106,18 +106,18 @@ daikin_rotex_can:
 #Konfiguration -> Installation
 #...
     outdoor_unit:
-      name: "Aussengerät"
+      name: Aussengerät
     indoor_unit:
-      name: "Innengerät"
+      name: Innengerät
     function_ehs:
-      name: "Funktion EHS"
+      name: Funktion EHS
     ch_support:
-      name: "HZ Unterstützung"
+      name: HZ Unterstützung
 #Bivalenzfunktion
     smart_grid:
-      name: "Smart Grid"
+      name: Smart Grid
     sg_mode:
-      name: "SG Modus"
+      name: SG Modus
 #HT/NT Funktion
 #HT/NT Anschluss
 #Raumthermostat
@@ -134,25 +134,25 @@ daikin_rotex_can:
 #Konfiguration -> Anlagenkonfiguration
 
     power_dhw:
-      name: "Leistung WW"
+      name: Leistung WW
     power_ehs_1:
-      name: "Leistung EHS Stufe 1"
+      name: Leistung EHS Stufe 1
     power_ehs_2:
-      name: "Leistung EHS Stufe 2"
+      name: Leistung EHS Stufe 2
     power_biv:
-      name: "Leistung BIV"
+      name: Leistung BIV
     tdiff_dhw_ch:
-      name: "TDiff-WW HZU"
+      name: TDiff-WW HZU
 #Max Temp Heizung
 #Bivalenztemperatur
     quiet:
-      name: "Flüsterbetrieb"
+      name: Flüsterbetrieb
 #Sonderfunkt Schaltk
 #Wartezeit Sonderfunkt
     t_dhw_1_min:
-      name: "Schaltschwelle TDHW"
+      name: Schaltschwelle TDHW
     delta_temp_ch:
-      name: "Spreizung MOD HZ"
+      name: Spreizung MOD HZ
 #Durchfluss Ber
 #Anpassung T-VL Heizen
 #Anpassung T-VL Kühlen
@@ -164,7 +164,7 @@ daikin_rotex_can:
 
 # Konfiguration -> HZK Konfig
     hk_function:
-      name: "HK Funktion"
+      name: HK Funktion
 #T-Frostschutz
 #Gebäudedämumng
 #Estrich
@@ -175,11 +175,11 @@ daikin_rotex_can:
 #Heizgrenze Tag
 #Heizgrenze Nacht
     heating_curve:
-      name: "Heizkurve"
+      name: Heizkurve
 #Raumeinfluss
 #RF Anpassung
     flow_temperature_day:
-      name: "T Vorlauf Tag"
+      name: T Vorlauf Tag
 #T-Vorlauf Nacht
 #Max T-Vorlauf
 #Min T-Vorlauf
@@ -199,67 +199,67 @@ daikin_rotex_can:
 #Konfiguration -> WW Konfig
 
     circulation_with_dhw_program:
-      name: "Zirk mit WW-Prog"
+      name: Zirk mit WW-Prog
     circulation_interval_on:
-        name: "ZirkInterval An"
+        name: ZirkInterval An
     circulation_interval_off:
-        name: "ZirkInterval Aus"
+        name: ZirkInterval Aus
     antileg_day:
-        name: "AntilegTag"
+        name: AntilegTag
 #AntilegZeit
     antileg_temp:
-        name: "AntilegTemp"
+        name: AntilegTemp
     max_dhw_loading:
-      name: "Max WW Ladezeit"
+      name: Max WW Ladezeit
     dhw_off_time:
-      name: "WW Sperrzeit"
+      name: WW Sperrzeit
 
 # Others
 
     electric_heater:
       name: Heizstäbe - Für Pumpen nach Oktober 2018
     thermal_power:
-      name: "Thermische Leistung"
+      name: Thermische Leistung
 
 # To be categorized
 
     bypass_valve:
-      name: "BPV"
+      name: BPV
     circulation_pump:
-      name: "Umwaelzpumpe"
+      name: Umwaelzpumpe
     circulation_pump_min:
-      name: "Umwälzpumpe Min"
+      name: Umwälzpumpe Min
     circulation_pump_max:
-      name: "Umwälzpumpe Max"
+      name: Umwälzpumpe Max
     delta_temp_dhw:
-      name: "Spreizung MOD WW"
+      name: Spreizung MOD WW
     dhw_run:
-      name: "Warmwasser bereiten"
+      name: Warmwasser bereiten
     error_code:
-      name: "Fehlercode"
+      name: Fehlercode
     max_target_flow_temp:
-      name: "Max VL Soll"
+      name: Max VL Soll
     min_target_flow_temp:
-      name: "Min VL Soll"
+      name: Min VL Soll
     mode_of_operating:
-      name: "Betriebsart"
+      name: Betriebsart
     operating_mode:
-      name: "Betriebsmodus"
+      name: Betriebsmodus
     status_kompressor:
-      name: "Status Kompressor"
+      name: Status Kompressor
     target_room1_temperature:
-      name: "Raumsoll 1"
+      name: Raumsoll 1
     tdhw1:
-      name: "Warmwassertemperatur"
+      name: Warmwassertemperatur
     temperature_outside:
-      name: "Aussentemperatur"
+      name: Aussentemperatur
     tr:
-      name: "Ruecklauftemperatur Heizung"
+      name: Ruecklauftemperatur Heizung
     tv:
-      name: "Heizkreis Vorlauf (TV)"
+      name: Heizkreis Vorlauf (TV)
     tvbh:
-      name: "Vorlauftemperatur Heizung (TVBH)"
+      name: Vorlauftemperatur Heizung (TVBH)
     target_hot_water_temperature:
-      name: "T-WW-Soll1"
+      name: T-WW-Soll1
     target_supply_temperature:
-      name: "Vorlauf Soll"
+      name: Vorlauf Soll
