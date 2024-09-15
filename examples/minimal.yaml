@@ -1,0 +1,32 @@
+esphome:
+    name: rotex
+    friendly_name: Rotex
+    platformio_options:
+        build_unflags:
+            - "-std=gnu++11"
+            - "-fno-rtti"
+        build_flags:
+            - "-std=gnu++17"
+
+esp32:
+  board: esp32-s3-devkitc-1
+  framework:
+    type: arduino
+
+external_components:      # Automatically loads the *esphome-daikin-rotex-can* component from github during compilation
+  - source: github://wrfz/esphome-daikin-rotex-can
+
+canbus:                   # Required for communication with the Daikin or Rotex heat pump
+  - platform: esp32_can
+    id: can_bus
+    can_id: 0x680
+    rx_pin: GPIO2
+    tx_pin: GPIO3
+    bit_rate: 20kbps    # HPSU heat pumps require a mandatory baud rate of 20kbs!
+
+daikin_rotex_can:
+  id: rotext_hpsu
+  canbus_id: can_bus
+  entities:
+    tdhw1:
+      name: "Warmwassertemperatur"

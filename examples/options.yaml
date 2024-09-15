@@ -1,0 +1,13 @@
+daikin_rotex_can:
+  id: rotext_hpsu
+  canbus_id: can_bus
+  update_interval: 60                 # Set the global update interval to 60 seconds. Default is 30
+  entities:
+    tdhw1:
+      name: "Warmwassertemperatur"
+    water_flow:
+      name: "Durchfluss"
+      update_interval: 10             # Overwrites the global update interval with 10 seconds. The global interval applies if not set here
+    circulation_pump_max:
+      name: "Umwälzpumpe Max"
+      mode: "SLIDER"                  # Displays the circulation_pump_max number control as a slider
