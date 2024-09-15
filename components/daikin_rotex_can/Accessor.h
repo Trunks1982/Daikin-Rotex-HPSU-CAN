@@ -64,7 +64,10 @@ class Accessor {
     using TEntityArgumentsList = std::list<TEntityArguments>;
 public:
     Accessor(DaikinRotexCanComponent* pDaikinRotexCanComponent)
-    : m_pDaikinRotexCanComponent(pDaikinRotexCanComponent) {
+    : m_log_filter(nullptr)
+    , m_custom_request_text(nullptr)
+    , m_thermal_power(nullptr)
+    , m_pDaikinRotexCanComponent(pDaikinRotexCanComponent) {
     }
 
     DaikinRotexCanComponent* getDaikinRotexCanComponent() const {
