@@ -918,6 +918,7 @@ sensor_configuration = [
         "data_offset": 6,
         "data_size": 1,
         "map": {
+            0x00: "---",
             0x03: "SGN - Normaler Modus",
             0x04: "SG1 - WW & HZ ausgeschalten",
             0x05: "SG2 - WW & HZ + 5°C",
