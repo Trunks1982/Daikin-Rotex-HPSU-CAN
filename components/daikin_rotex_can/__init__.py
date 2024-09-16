@@ -619,7 +619,7 @@ sensor_configuration = [
         "update_entity": "thermal_power"
     },
     {
-        "type": "text_sensor",
+        "type": "select",
         "name": "quiet" ,
         "icon": "mdi:weather-partly-cloudy",
         "command": "31 00 FA 06 96",
