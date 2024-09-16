@@ -27,9 +27,9 @@ bool TRequest::isGetInProgress() const {
 bool TRequest::isMatch(uint32_t can_id, TMessage const& responseData) const {
     const uint16_t response_can_id = (m_command[0] & 0xF0) * 8 + (m_command[1] & 0x0F);
 
-    //if (can_id == response_can_id)
+    //if (can_id == response_can_id())
     {
-        //if ((responseData[0] & 0x0F) == 0x02) { // is a response
+        if ((responseData[0] & 0x0F) == 0x02) { // is a response
             for (uint32_t index = 0; index < responseData.size(); ++index) {
                 if (m_expected_reponse[index] != DC && responseData[index] != m_expected_reponse[index]) {
                     return false;
