@@ -3,7 +3,7 @@
 [![en](https://img.shields.io/badge/lang-en-red.svg)](README.en.md) 
 
 # Telegram Gruppenchat
-https://t.me/+C1iVhAjaENw0ODY0
+[https://t.me/+C1iVhAjaENw0ODY0]
 
 <br><br>
 "Ein Kaffee für nächste lange Nacht vor dem Rechner wäre toll" ist aber natürlich kein muss.
@@ -23,8 +23,8 @@ Diese Software wird vom Hersteller nicht unterstützt!!!!
 
 
 
-Hi ich möchte mein erstes kleines Projekt vorstellen, ich wollte eine flexible Lösung die Standalone, mit Homeassistant und Iobroker läuft,um meine Rotex HPSU Compact mittels CAN BUS auszulesen und zu steuern.
-Verwendet habe ich ein ESP32-S3-WROOM Board (es sollte jeder ab S1 funktionieren, weil diese die 20kbits Baudrate unterstützen,
+Wir biesten hier eine flexible Lösung die Standalone, mit Homeassistant und Iobroker läuft,um meine Rotex HPSU Compact mittels CAN BUS auszulesen und zu steuern.
+Verwendet wird zb. ein ESP32-S3-WROOM Board (es sollte jeder ab S1 funktionieren, weil diese die 20kbits Baudrate unterstützen,
 die normalen ESP32 Wroom funktionieren nicht weil diese erst ab 50kbit funktionieren) und ein Waveshare SN65HVD230 CAN Board mit 3,3V.
 Ein ESP32 S3 mini (Zero) funktioniert auch.
 
@@ -54,24 +54,17 @@ Die Rotex.bin Datei dient zum vereinfachten updaten über die WEB-UI Oberfläche
 
 ## Features:
 
-- Verstellung von Raumsoll
-- Verstellung WW Soll
 - 1x Warm Wasser Taste ohne Heizstab (es wird für 10s auf 70Grad gestellt und dann wieder auf den vorher eingestellten Wert zurück)
 - Thermische Leistungsberechnung
-- Betriebsmodus kann verstellt werden
 - Heizkurven Verstellung in 0.01 Schritten (Standard in 0.1 Schritten)
 - Zwei neue Schalter angelegt um auch die Thermostat Eingänge von der Rotex / Daikin direkt zwischen Heizen / Kühlen umzuschalten.
 - Neues Feature Fehlercode Anzeige mit Beschreibung des Fehlers mit Handbuch Seitenangabe!!
-- Abfrage Intervall kann jetzt per Schalter abgeschaltet werden. Bitte beachten nach dem Neustart des ESP bleibt die Abfrage aus.
-Es werden alle relevanten Daten Abgefragt die man eigentlich benötigt.
+  
 <br>  
-## weitere .YAML Dateien:
 
-Wer Abtau Probleme hat kann sich in Iobroker oder Homeassitant leicht ein kleines Script bauen, wenn Abtauen erkannt wird soll auf Sommer geschaltet werden,
-wenn heizen wieder erkannt schaltet wieder auf Betriebsmodus heizen um.So wird max 0.7 Grad Warmwasser aus dem Sepicher verbraucht.
 
-Für Iobroker hab ich ein Blockly Script hochgeladen was ich selber nutze und super funktioniert.<br>  
-Die Defrost.yaml ist für Home Assistant Automatisierung gedacht.Das ist die gleiche Automatisierung wie für IoBroker.
+Wer Abtau Probleme hat kann ##  (demnächst) das neue Feature "Defrost" direkt über den ESP nutzen.So wird max 0.7 Grad Warmwasser aus dem Sepicher verbraucht.
+
 
 Getestet mit: - Rotex HSPU Compact 508 8kw mit Rocon BM1, ROTEX HPSU compact Ultra
 
