@@ -3,7 +3,7 @@
 [![en](https://img.shields.io/badge/lang-en-red.svg)](README.en.md) 
 
 # Telegram Gruppenchat
-[https://t.me/+C1iVhAjaENw0ODY0]
+[!https://t.me/+C1iVhAjaENw0ODY0]
 
 <br><br>
 "Ein Kaffee für nächste lange Nacht vor dem Rechner wäre toll" ist aber natürlich kein muss.
