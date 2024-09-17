@@ -69,9 +69,10 @@ Wer Abtau Probleme hat kann (demnächst) das neue Feature "Defrost" direkt über
 Getestet mit: - Rotex HSPU Compact 508 8kw mit Rocon BM1, ROTEX HPSU compact Ultra
 
 ## WEBUI vom ESP:
-![Bildschirmfoto 2024-04-19 um 12 24 08](https://github.com/Trunks1982/Daikin-Rotex-HPSU-CAN/assets/62701386/cf6346a0-e183-4680-b032-b11090d8a67a)
 
 
+
+![Bildschirmfoto 2024-09-17 um 13 13 06](https://github.com/user-attachments/assets/8bb5ca8e-323f-45d1-ab4b-a30f185a6ffc)
 
 ## Ansicht Homeassistant:
 ![Bildschirmfoto 2024-04-01 um 01 37 19](https://github.com/Trunks1982/Daikin-Rotex-HPSU-CAN/assets/62701386/d9c1d703-ac4a-4466-97e3-dbd6478cbed1)
