@@ -89,7 +89,7 @@ Getestet mit: - Rotex HSPU Compact 508 8kw mit Rocon BM1, ROTEX HPSU compact Ult
 
 ## DIY Platine von (Dornieden)
 
-mehr dazu im Discusions Forum https://github.com/Trunks1982/Daikin-Rotex-HPSU-CAN/discussions/35:
+mehr dazu im Discusions Forum https://github.com/Trunks1982/Daikin-Rotex-HPSU-CAN/discussions/35:<br> 
 Bei Verwendung der Custom Platine für den ESP32 ist es möglich, die Verbauten Relais für die Ansteuerung der SG/EVU Pins zu verwenden. Hierzu verbindet man die auf der Platine mit RelaisHeat/RelaisCool sowie RelaisCOM markierten Schraubkontakte mit den SG/EVU Kontakten auf der RoCon BM1 Platine. RelaisCOM kann als gemeinsamer Ground verwendet werden. Die notwendigen Kontakte befinden sich am Stecker J8 auf der RoCon BM1 Platine.
 
 - SG Pins 5+6
