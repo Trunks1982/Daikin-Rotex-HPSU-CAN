@@ -516,7 +516,20 @@ sensor_configuration = [
         "command": "31 00 05 00 00 00 00",
         "data_offset": 3,
         "data_size": 2,
-        "divider": 10.0
+        "divider": 10.0,
+        "map": {
+            15: "15 °C",
+            16: "16 °C",
+            17: "17 °C",
+            18: "18 °C",
+            19: "19 °C",
+            20: "20 °C",
+            21: "21 °C",
+            22: "22 °C",
+            23: "23 °C",
+            24: "24 °C",
+            25: "25 °C"
+        }
     },
     {
         "type": "number",
@@ -594,7 +607,19 @@ sensor_configuration = [
         "command": "31 00 13 00 00 00 00",
         "data_offset": 3,
         "data_size": 2,
-        "divider": 10.0
+        "divider": 10.0,
+        "map": {
+            35: "35 °C",
+            40: "40 °C",
+            45: "45 °C",
+            48: "48 °C",
+            49: "49 °C",
+            50: "50 °C",
+            51: "51 °C",
+            52: "52 °C",
+            60: "60 °C",
+            70: "70 °C",
+        }
     },
     {
         "type": "text_sensor",
@@ -808,7 +833,12 @@ sensor_configuration = [
             const uint16_t u16val = value * 0x64;
             data[5] = (u16val >> 8) & 0xFF;
             data[6] = u16val & 0xFF;
-        """
+        """,
+        "map": {
+            3: "3 kW",
+            6: "6 kW",
+            9: "9 kW"
+        }
     },
     {
         "type": "number",
@@ -930,6 +960,7 @@ CONF_UPDATE_INTERVAL = "update_interval"
 CONF_LOG_FILTER_TEXT = "log_filter"
 CONF_CUSTOM_REQUEST_TEXT = "custom_request"
 CONF_ENTITIES = "entities"
+CONF_SELECT_OPTIONS = "options"
 
 ########## Sensors ##########
 
@@ -942,47 +973,70 @@ DEFAULT_UPDATE_INTERVAL = 30 # seconds
 
 entity_schemas = {}
 for sensor_conf in sensor_configuration:
+    name = sensor_conf.get("name")
+    icon = sensor_conf.get("icon", sensor._UNDEF)
+    divider = sensor_conf.get("divider", 1.0)
+
     match sensor_conf.get("type"):
         case "sensor":
             entity_schemas.update({
-                cv.Optional(sensor_conf.get("name")): sensor.sensor_schema(
+                cv.Optional(name): sensor.sensor_schema(
                     device_class=(sensor_conf.get("device_class") if sensor_conf.get("device_class") != None else sensor._UNDEF),
                     unit_of_measurement=sensor_conf.get("unit_of_measurement"),
                     accuracy_decimals=sensor_conf.get("accuracy_decimals"),
                     state_class=sensor_conf.get("state_class"),
-                    icon=(sensor_conf.get("icon") if sensor_conf.get("icon") != None else sensor._UNDEF)
+                    icon=sensor_conf.get("icon", sensor._UNDEF)
                 ).extend({cv.Optional(CONF_UPDATE_INTERVAL): cv.uint16_t}),
             })
         case "text_sensor":
             entity_schemas.update({
-                cv.Optional(sensor_conf.get("name")): text_sensor.text_sensor_schema(
-                    icon=sensor_conf.get("icon")
+                cv.Optional(name): text_sensor.text_sensor_schema(
+                    icon=sensor_conf.get("icon", text_sensor._UNDEF)
                 ).extend({cv.Optional(CONF_UPDATE_INTERVAL): cv.uint16_t}),
             })
         case "binary_sensor":
             entity_schemas.update({
-                cv.Optional(sensor_conf.get("name")): binary_sensor.binary_sensor_schema(
-                    icon=(sensor_conf.get("icon") if sensor_conf.get("icon") != None else sensor._UNDEF)
+                cv.Optional(name): binary_sensor.binary_sensor_schema(
+                    icon=sensor_conf.get("icon", binary_sensor._UNDEF)
                 ).extend({cv.Optional(CONF_UPDATE_INTERVAL): cv.uint16_t}),
             })
         case "select":
             entity_schemas.update({
-                cv.Optional(sensor_conf.get("name")): select.select_schema(
+                cv.Optional(name): select.select_schema(
                     GenericSelect,
                     entity_category=ENTITY_CATEGORY_CONFIG,
-                    icon=sensor_conf.get("icon")
+                    icon=sensor_conf.get("icon", select._UNDEF)
                 ).extend({cv.Optional(CONF_UPDATE_INTERVAL): cv.uint16_t}),
             })
         case "number":
+            select_options_schema = cv.Optional(CONF_SELECT_OPTIONS) if "map" in sensor_conf else cv.Required(CONF_SELECT_OPTIONS)
             entity_schemas.update({
-                cv.Optional(sensor_conf.get("name")): number.number_schema(
-                    GenericNumber,
-                    entity_category=ENTITY_CATEGORY_CONFIG,
-                    icon=ICON_SUN_SNOWFLAKE_VARIANT
-                ).extend({
-                    cv.Optional(CONF_UPDATE_INTERVAL): cv.uint16_t,
-                    cv.Optional(CONF_MODE, default="BOX"): cv.enum(number.NUMBER_MODES, upper=True)
-                })
+                cv.Optional(name): cv.typed_schema(
+                    {
+                        "number": number.number_schema(
+                            GenericNumber,
+                            entity_category=ENTITY_CATEGORY_CONFIG,
+                            icon=sensor_conf.get("icon", number._UNDEF)
+                        ).extend({
+                            cv.Optional(CONF_UPDATE_INTERVAL): cv.uint16_t,
+                            cv.Optional(CONF_MODE, default="BOX"): cv.enum(number.NUMBER_MODES, upper=True)
+                        }),
+                        "select": select.select_schema(
+                            GenericSelect,
+                            entity_category=ENTITY_CATEGORY_CONFIG,
+                            icon=sensor_conf.get("icon", select._UNDEF)
+                        ).extend({
+                            cv.Optional(CONF_UPDATE_INTERVAL): cv.uint16_t,
+                            select_options_schema: cv.Schema({
+                                cv.float_range(
+                                    min=sensor_conf.get("min_value"),
+                                    max=sensor_conf.get("max_value")
+                                ): cv.string
+                            })
+                        }),
+                    },
+                    default_type="number"
+                )
             })
 
 entity_schemas.update({
@@ -1068,6 +1122,8 @@ async def to_code(config):
         for sens_conf in sensor_configuration:
             if yaml_sensor_conf := entities.get(sens_conf.get("name")):
                 entity = None
+                mapping = sens_conf.get("map", {})
+                divider = sens_conf.get("divider", 1.0)
                 match sens_conf.get("type"):
                     case "sensor":
                         entity = await sensor.new_sensor(yaml_sensor_conf)
@@ -1076,7 +1132,7 @@ async def to_code(config):
                     case "binary_sensor":
                         entity = await binary_sensor.new_binary_sensor(yaml_sensor_conf)
                     case "select":
-                        entity = await select.new_select(yaml_sensor_conf, options = list(sens_conf.get("map").values()))
+                        entity = await select.new_select(yaml_sensor_conf, options = list(mapping.values()))
                         cg.add(entity.set_id(sens_conf.get("name")))
                         await cg.register_parented(entity, var)
                     case "number":
@@ -1086,12 +1142,20 @@ async def to_code(config):
                             raise Exception("max_value is required for number: " + sens_conf.get("name"))
                         if "step" not in sens_conf:
                             raise Exception("step is required for number: " + sens_conf.get("name"))
-                        entity = await number.new_number(
-                            yaml_sensor_conf,
-                            min_value=sens_conf.get("min_value"),
-                            max_value=sens_conf.get("max_value"),
-                            step=sens_conf.get("step")
-                        )
+
+                        match yaml_sensor_conf.get("type"):
+                            case "number":
+                                entity = await number.new_number(
+                                    yaml_sensor_conf,
+                                    min_value=sens_conf.get("min_value"),
+                                    max_value=sens_conf.get("max_value"),
+                                    step=sens_conf.get("step")
+                                )
+                            case "select":
+                                if "options" in yaml_sensor_conf:
+                                    mapping = yaml_sensor_conf.get("options")
+                                entity = await select.new_select(yaml_sensor_conf, options = list(mapping.values()))
+
                         cg.add(entity.set_id(sens_conf.get("name")))
 
                         await cg.register_parented(entity, var)
@@ -1110,14 +1174,14 @@ async def to_code(config):
                     return await cg.process_lambda(
                         Lambda(lamb),
                         [(std_array_u8_7_const_ref, "data")],
-                        return_type=cg.float_,
+                        return_type=cg.uint16,
                     )
 
                 async def set_lambda():
                     lamb = str(sens_conf.get("set_lambda")) if "set_lambda" in sens_conf else ""
                     return await cg.process_lambda(
                         Lambda(lamb),
-                        [(std_array_u8_7_ref, "data"), (float, "value")],
+                        [(std_array_u8_7_ref, "data"), (cg.uint16, "value")],
                         return_type=cg.void,
                     )
 
@@ -1127,8 +1191,8 @@ async def to_code(config):
                     sens_conf.get("command"),
                     sens_conf.get("data_offset", 5),
                     sens_conf.get("data_size", 1),
-                    sens_conf.get("divider", 1.0),
-                    "|".join([f"0x{key:02X}:{value}" for key, value in sens_conf.get("map", {}).items()]), # map
+                    divider,
+                    "|".join([f"0x{int(key * divider):02X}:{value}" for key, value in mapping.items()]),
                     sens_conf.get("update_entity", ""),
                     update_interval,
                     await handle_lambda(),

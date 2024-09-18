@@ -86,26 +86,6 @@ TMessage Utils::str_to_bytes_array8(const std::string& str) {
     return byte_array;
 }
 
-std::map<uint8_t, std::string> Utils::str_to_map(const std::string& input) {
-    std::map<uint8_t, std::string> result;
-    std::stringstream ss(input);
-    std::string pair;
-
-    while (std::getline(ss, pair, '|')) {
-        size_t pos = pair.find(':');
-        if (pos != std::string::npos) {
-            std::string keyStr = pair.substr(0, pos);
-            std::string value = pair.substr(pos + 1);
-
-            uint8_t key = static_cast<uint8_t>(std::strtoul(keyStr.c_str(), nullptr, 16));
-
-            result[key] = value;
-        }
-    }
-
-    return result;
-}
-
 void Utils::setBytes(TMessage& data, uint16_t value, uint8_t offset, uint8_t len) {
     if (len == 1) {
         data[offset] = value & 0xFF;
@@ -161,6 +141,30 @@ number::Number* Utils::toNumber(EntityBase* pEntity) {
         return nullptr;
     }
 }
+
+template<typename... Args>
+void Utils::log(std::string const& tag, std::string const& str_format, Args... args) {
+    const std::string formated = Utils::format(str_format, args...);
+    const std::string log_filter = g_log_filter;
+    bool found = log_filter.empty();
+    if (!found) {
+        for (auto segment : Utils::split(log_filter)) {
+            if (Utils::find(tag, segment) || Utils::find(formated, segment)) {
+                found = true;
+                break;
+            }
+        }
+    }
+    if (found) {
+        ESP_LOGI(tag.c_str(), formated.c_str(), "");
+    }
+}
+
+template void Utils::log<char const*, char const*, char const*, char const*>(std::string const& tag, std::string const& str_format, char const* arg1, char const* arg2, char const* arg3, char const* arg4);
+template void Utils::log<char const*, float, char const*, char const*>(std::string const& tag, std::string const& str_format, char const* arg1, float arg2, char const* arg3, char const* arg4);
+template void Utils::log<char const*, char const*, char const*>(std::string const& tag, std::string const& str_format, char const* arg1, char const* arg2, char const* arg3);
+template void Utils::log<char const*, char const*>(std::string const& tag, std::string const& str_format, char const* arg1, char const* arg2);
+template void Utils::log<int>(std::string const& tag, std::string const& str_format, int arg);
 
 
 }

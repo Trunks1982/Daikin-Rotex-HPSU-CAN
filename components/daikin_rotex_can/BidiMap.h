@@ -1,32 +1,37 @@
 #pragma once
 
-#include <sstream>  
+#include <sstream>
 #include <map>
 
-template<typename KeyType, typename ValueType>
+namespace esphome {
+namespace daikin_rotex_can {
+
 class BidiMap {
 public:
-    using Iterator = typename std::map<KeyType, ValueType>::const_iterator;
+    using Iterator = typename std::map<uint16_t, std::string>::const_iterator;
 
-    BidiMap(std::initializer_list<std::pair<const KeyType, ValueType>> init_list)
+    BidiMap(std::initializer_list<std::pair<const uint16_t, std::string>> init_list)
     : key_to_value(init_list) {
         for (const auto& pair : init_list) {
             value_to_key[pair.second] = pair.first;
         }
     }
 
-    BidiMap(const std::map<KeyType, ValueType>& map)
-    : key_to_value(map) {
+    BidiMap(const std::map<uint16_t, std::string>& map)
+    : key_to_value(map)
+    {
         for (const auto& pair : map) {
             value_to_key[pair.second] = pair.first;
         }
     }
 
-    Iterator findByKey(const KeyType& key) const {
+    Iterator findByKey(const uint16_t& key) const {
         return key_to_value.find(key);
     }
 
-    Iterator findByValue(const ValueType& value) const {
+    Iterator findNextByKey(uint16_t value) const;
+
+    Iterator findByValue(const std::string& value) const {
         auto it = value_to_key.find(value);
         if (it != value_to_key.end()) {
             return key_to_value.find(it->second);
@@ -47,6 +52,9 @@ public:
     }
 
 private:
-    std::map<KeyType, ValueType> key_to_value;
-    std::map<ValueType, KeyType> value_to_key;
+    std::map<uint16_t, std::string> key_to_value;
+    std::map<std::string, uint16_t> value_to_key;
 };
+
+}
+}

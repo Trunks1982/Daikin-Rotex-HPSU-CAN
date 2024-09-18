@@ -54,6 +54,10 @@ public:
         return dynamic_cast<number::Number*>(m_entity);
     }
 
+    select::Select* get_select() const {
+        return dynamic_cast<select::Select*>(m_entity);
+    }
+
     bool isGetSupported() const {
         return m_entity != nullptr;
     }

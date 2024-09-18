@@ -1,10 +1,10 @@
 #pragma once
 
+#include "esphome/components/daikin_rotex_can/BidiMap.h"
+#include "esphome/components/daikin_rotex_can/utils.h"
 #include "esphome/components/sensor/sensor.h"
 #include "esphome/components/text/text.h"
 #include "esphome/components/text_sensor/text_sensor.h"
-#include "esphome/components/daikin_rotex_can/BidiMap.h"
-#include "esphome/components/daikin_rotex_can/utils.h"
 #include <list>
 
 namespace esphome {
@@ -13,9 +13,10 @@ namespace daikin_rotex_can {
 class DaikinRotexCanComponent;
 
 class Accessor {
-    using THandleFunc = std::function<float(TMessage const&)>;
-    using TSetFunc = std::function<void(TMessage&, float)>;
+    using THandleFunc = std::function<uint16_t(TMessage const&)>;
+    using TSetFunc = std::function<void(TMessage&, uint16_t)>;
 
+public:
     struct TEntityArguments {
         EntityBase* pEntity;
         std::string id;
@@ -23,7 +24,7 @@ class Accessor {
         uint8_t data_offset;
         uint8_t data_size;
         float divider;
-        BidiMap<uint8_t, std::string> map;
+        BidiMap map;
         std::string update_entity;
         uint16_t update_interval;
         THandleFunc handle_lambda;
@@ -52,7 +53,7 @@ class Accessor {
         , data_offset(_data_offset)
         , data_size(_data_size)
         , divider(_divider)
-        , map(Utils::str_to_map(_map))
+        , map(str_to_map(_map))
         , update_entity(_update_entity)
         , update_interval(_update_interval)
         , handle_lambda(_handle_lambda)
@@ -61,8 +62,9 @@ class Accessor {
         , set_lambda_set(_set_lambda_set)
         {}
     };
+
     using TEntityArgumentsList = std::list<TEntityArguments>;
-public:
+
     Accessor(DaikinRotexCanComponent* pDaikinRotexCanComponent)
     : m_log_filter(nullptr)
     , m_custom_request_text(nullptr)
@@ -90,6 +92,9 @@ public:
     sensor::Sensor* get_thermal_power() const { return m_thermal_power; }
     void set_thermal_power(sensor::Sensor* pSensor) { m_thermal_power = pSensor; }
 
+private:
+
+    static std::map<uint16_t, std::string> str_to_map(const std::string& input);
 private:
     text::Text* m_log_filter;
     text::Text* m_custom_request_text;

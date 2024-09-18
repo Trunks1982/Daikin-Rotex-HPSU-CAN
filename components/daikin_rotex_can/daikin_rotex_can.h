@@ -66,6 +66,7 @@ private:
 
     float getSensorState(std::string const& name);
     void throwPeriodicError(std::string const& message);
+    Accessor::TEntityArguments const* get_select_entity_conf(std::string const& id) const;
 
     Accessor m_accessor;
     TRequests m_data_requests;

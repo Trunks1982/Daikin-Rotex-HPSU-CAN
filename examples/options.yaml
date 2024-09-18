@@ -11,3 +11,14 @@ daikin_rotex_can:
     circulation_pump_max:
       name: Umwälzpumpe Max
       mode: SLIDER                    # Displays the circulation_pump_max number control as a slider
+    target_hot_water_temperature:
+      name: T-WW-Soll1
+      type: select                    # target_hot_water_temperature is a Number by default. However, we can make a Select out of it, with predefined options
+    target_room1_temperature:
+      name: Raumsoll 1
+      type: select
+      options:                        # Similar to target_hot_water_temperature, except that here we specify the desired values ourselves
+        18: 18 °C
+        20: 20 °C
+        21: 21 °C
+        22: 22 °C

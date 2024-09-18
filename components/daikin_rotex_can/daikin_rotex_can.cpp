@@ -36,32 +36,32 @@ void DaikinRotexCanComponent::setup() {
 
                 if (entity_conf.data_offset > 0 && (entity_conf.data_offset + entity_conf.data_size) <= 7) {
                     if (entity_conf.data_size >= 1 && entity_conf.data_size <= 2) {
-                        const float value = entity_conf.handle_lambda_set ? entity_conf.handle_lambda(data) :
+                        const uint16_t value = entity_conf.handle_lambda_set ? entity_conf.handle_lambda(data) :
                                 (
                                     entity_conf.data_size == 2 ?
-                                    (((data[entity_conf.data_offset] << 8) + data[entity_conf.data_offset + 1]) / entity_conf.divider) :
-                                    (data[entity_conf.data_offset] / entity_conf.divider)
+                                    (((data[entity_conf.data_offset] << 8) + data[entity_conf.data_offset + 1])) :
+                                    (data[entity_conf.data_offset])
                                 );
 
                         if (dynamic_cast<sensor::Sensor*>(entity_conf.pEntity) != nullptr) {
-                            Utils::toSensor(entity_conf.pEntity)->publish_state(value);
-                            variant = value;
+                            variant = value / entity_conf.divider;
+                            Utils::toSensor(entity_conf.pEntity)->publish_state(std::get<float>(variant));
                         } else if (dynamic_cast<binary_sensor::BinarySensor*>(entity_conf.pEntity) != nullptr) {
-                            Utils::toBinarySensor(entity_conf.pEntity)->publish_state(value);
-                            variant = value;
+                            variant = value > 0;
+                            Utils::toBinarySensor(entity_conf.pEntity)->publish_state(std::get<bool>(variant));
                         } else if (dynamic_cast<text_sensor::TextSensor*>(entity_conf.pEntity) != nullptr) {
                             auto it = entity_conf.map.findByKey(value);
-                            const std::string str = it != entity_conf.map.end() ? it->second : "INVALID";
+                            const std::string str = it != entity_conf.map.end() ? it->second : Utils::format("INVALID<%f>", value);
                             Utils::toTextSensor(entity_conf.pEntity)->publish_state(str);
                             variant = str;
                         } else if (dynamic_cast<select::Select*>(entity_conf.pEntity) != nullptr) {
-                            auto it = entity_conf.map.findByKey(value);
-                            const std::string str = it != entity_conf.map.end() ? it->second : "INVALID";
+                            auto it = entity_conf.map.findNextByKey(value);
+                            const std::string str = it != entity_conf.map.end() ? it->second : Utils::format("INVALID<%f>", value);
                             Utils::toSelect(entity_conf.pEntity)->publish_state(str);
                             variant = str;
                         } else if (dynamic_cast<number::Number*>(entity_conf.pEntity) != nullptr) {
-                            Utils::toNumber(entity_conf.pEntity)->publish_state(value);
-                            variant = value;
+                            variant = value / entity_conf.divider;
+                            Utils::toNumber(entity_conf.pEntity)->publish_state(std::get<float>(variant));
                         }
                     } else {
                         call_later([entity_conf](){
@@ -95,7 +95,7 @@ void DaikinRotexCanComponent::setup() {
                 if (entity_conf.set_lambda_set) {
                     entity_conf.set_lambda(message, value);
                 } else {
-                    Utils::setBytes(message, value * entity_conf.divider, entity_conf.data_offset, entity_conf.data_size);
+                    Utils::setBytes(message, value, entity_conf.data_offset, entity_conf.data_size);
                 }
                 return message;
             },
@@ -152,15 +152,13 @@ void DaikinRotexCanComponent::custom_request(std::string const& value) {
 
 ///////////////// Selects /////////////////
 void DaikinRotexCanComponent::set_generic_select(std::string const& id, std::string const& state) {
-    for (auto& entity_conf : m_accessor.get_entities()) {
-        if (entity_conf.id == id && dynamic_cast<select::Select*>(entity_conf.pEntity) != nullptr) {
-            auto it = entity_conf.map.findByValue(state);
-            if (it != entity_conf.map.end()) {
-                m_data_requests.sendSet(entity_conf.pEntity->get_name(), it->first);
-            } else {
-                ESP_LOGE(TAG, "set_generic_select(%s, %s) => Invalid value!", id.c_str(), state.c_str());
-            }
-            break;
+    auto const* pEntityConf = get_select_entity_conf(id);
+    if (pEntityConf != nullptr) {
+        auto it = pEntityConf->map.findByValue(state);
+        if (it != pEntityConf->map.end()) {
+            m_data_requests.sendSet(pEntityConf->pEntity->get_name(), it->first);
+        } else {
+            ESP_LOGE(TAG, "set_generic_select(%s, %s) => Invalid value!", id.c_str(), state.c_str());
         }
     }
 }
@@ -169,7 +167,7 @@ void DaikinRotexCanComponent::set_generic_select(std::string const& id, std::str
 void DaikinRotexCanComponent::set_generic_number(std::string const& id, float value) {
     for (auto& entity_conf : m_accessor.get_entities()) {
         if (entity_conf.id == id && dynamic_cast<number::Number*>(entity_conf.pEntity) != nullptr) {
-            m_data_requests.sendSet(entity_conf.pEntity->get_name(), value);
+            m_data_requests.sendSet(entity_conf.pEntity->get_name(), value * entity_conf.divider);
             break;
         }
     }
@@ -177,17 +175,36 @@ void DaikinRotexCanComponent::set_generic_number(std::string const& id, float va
 
 ///////////////// Buttons /////////////////
 void DaikinRotexCanComponent::dhw_run() {
-    TRequest const* pRequest = m_data_requests.get("target_hot_water_temperature");
+    const std::string id {"target_hot_water_temperature"};
+    TRequest const* pRequest = m_data_requests.get(id);
     if (pRequest != nullptr) {
-        number::Number* pNumber = pRequest->get_number();
-        if (pNumber != nullptr) {
-            const float temp = pNumber->state;
+        float temp1 {70};
+        float temp2 {0};
+
+        auto const* pEntityConf = get_select_entity_conf(id);
+        if (pEntityConf != nullptr) {
+            temp1 *= pEntityConf->divider;
+
+            number::Number* pNumber = pRequest->get_number();
+            select::Select* pSelect = pRequest->get_select();
+
+            if (pNumber != nullptr) {
+                temp1 = pNumber->state * pEntityConf->divider;
+            } else if (pSelect != nullptr) {
+                auto it = pEntityConf->map.findByValue(pSelect->state);
+                if (it != pEntityConf->map.end()) {
+                    temp2 = it->first;
+                }
+            }
+        }
+
+        if (temp2 > 0) {
             const std::string name = pRequest->getName();
 
-            m_data_requests.sendSet(name, 70);
+            m_data_requests.sendSet(name,  temp1);
 
-            call_later([name, temp, this](){
-                m_data_requests.sendSet(name, temp);
+            call_later([name, temp2, this](){
+                m_data_requests.sendSet(name, temp2);
             }, 10*1000);
         } else {
             ESP_LOGE("dhw_rum", "Request doesn't have a Number!");
@@ -263,6 +280,15 @@ void DaikinRotexCanComponent::throwPeriodicError(std::string const& message) {
         ESP_LOGE(TAG, message.c_str());
         throwPeriodicError(message);
     }, 15 * 1000);
+}
+
+Accessor::TEntityArguments const* DaikinRotexCanComponent::get_select_entity_conf(std::string const& id) const {
+    for (auto& entity_conf : m_accessor.get_entities()) {
+        if (entity_conf.id == id && dynamic_cast<select::Select*>(entity_conf.pEntity) != nullptr) {
+            return &entity_conf;
+        }
+    }
+    return nullptr;
 }
 
 } // namespace daikin_rotex_can
