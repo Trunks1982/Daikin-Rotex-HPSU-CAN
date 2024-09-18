@@ -16,6 +16,12 @@ esp32:
 external_components:
   - source: github://Trunks1982/Daikin-Rotex-HPSU-CAN
 
+#external_components:   # Use this block instead of the one above if you want to use the development branch
+#  - source:
+#      type: git
+#      url: https://github.com/Trunks1982/Daikin-Rotex-HPSU-CAN.git
+#      ref: dev
+
 logger:
   level: INFO
 
@@ -38,6 +44,40 @@ wifi:
     ssid: DaikinRotex Fallback Hotspot
     password: !secret fallback_hotspot_password
 
+captive_portal:
+
+time:
+  - platform: homeassistant
+
+debug:
+  update_interval: 5s
+
+sensor:
+  - platform: uptime
+    type: seconds
+    name: Uptime Seconds
+  - platform: uptime
+    type: timestamp
+    name: Uptime Timestamp
+  - platform: debug
+    free:
+      name: "Heap Free"
+    block:
+      name: "Heap Max Block"
+    loop_time:
+      name: "Loop Time"
+
+button:
+  - platform: restart
+    name: "Rotex ESP Restart"
+
+text_sensor:
+  - platform: debug
+    device:
+      name: "Device Info"
+    reset_reason:
+      name: "Reset Reason"
+
 canbus:
   - platform: esp32_can
     id: can_bus
@@ -54,6 +94,8 @@ daikin_rotex_can:
     name: Log Filter
   custom_request:
     name: Custom Request
+  dump:
+    name: Dump Senors
   entities:
 
 # Info
@@ -135,6 +177,7 @@ daikin_rotex_can:
 
     power_dhw:
       name: Leistung WW
+      #type: select
     power_ehs_1:
       name: Leistung EHS Stufe 1
     power_ehs_2:
@@ -152,7 +195,9 @@ daikin_rotex_can:
     t_dhw_1_min:
       name: Schaltschwelle TDHW
     delta_temp_ch:
-      name: Spreizung MOD HZ
+      name: Spreizung HZ
+    delta_temp_dhw:
+      name: Spreizung WW
 #Durchfluss Ber
 #Anpassung T-VL Heizen
 #Anpassung T-VL Kühlen
@@ -231,8 +276,6 @@ daikin_rotex_can:
       name: Umwälzpumpe Min
     circulation_pump_max:
       name: Umwälzpumpe Max
-    delta_temp_dhw:
-      name: Spreizung MOD WW
     dhw_run:
       name: Warmwasser bereiten
     error_code:
@@ -249,6 +292,7 @@ daikin_rotex_can:
       name: Status Kompressor
     target_room1_temperature:
       name: Raumsoll 1
+      type: select
     tdhw1:
       name: Warmwassertemperatur
     temperature_outside:
@@ -261,5 +305,6 @@ daikin_rotex_can:
       name: Vorlauftemperatur Heizung (TVBH)
     target_hot_water_temperature:
       name: T-WW-Soll1
+      type: select
     target_supply_temperature:
       name: Vorlauf Soll
