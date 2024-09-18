@@ -24,6 +24,7 @@ DumpButton = daikin_rotex_can_ns.class_("DumpButton", button.Button)
 
 UNIT_BAR = "bar"
 UNIT_LITER_PER_HOUR = "L/h"
+UNIT_LITER_PER_MIN = "L/min"
 
 ########## Icons ##########
 ICON_SUN_SNOWFLAKE_VARIANT = "mdi:sun-snowflake-variant"
@@ -508,6 +509,18 @@ sensor_configuration = [
         "data_size": 2,
         "divider": 1,
         "update_entity": "thermal_power"
+    },
+    {
+        "type": "sensor",
+        "name": "flow_rate_calc",
+        "unit_of_measurement": UNIT_LITER_PER_MIN,
+        "accuracy_decimals": 1,
+        "state_class": STATE_CLASS_MEASUREMENT,
+        "icon": "mdi:thermometer-lines",
+        "command": "31 00 FA 06 9C 00 00",
+        "data_offset": 5,
+        "data_size": 2,
+        "divider": 10.0
     },
     {
         "type": "number",

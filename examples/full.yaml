@@ -116,7 +116,10 @@ daikin_rotex_can:
 #T-Rücklauf
     flow_rate:
       name: Durchfluss
-      update_interval: 5
+      update_interval: 10
+    flow_rate_calc:
+      name: DurchflussBer
+      update_interval: 10
 #T-HK
 #T-HK Soll
     status_kesselpumpe:
