@@ -258,7 +258,6 @@ sensor_configuration = [
     {
         "type": "sensor",
         "name": "circulation_pump",
-        "device_class": DEVICE_CLASS_VOLUME_FLOW_RATE,
         "unit_of_measurement": UNIT_PERCENT,
         "accuracy_decimals": 0,
         "state_class": STATE_CLASS_MEASUREMENT,
@@ -271,7 +270,6 @@ sensor_configuration = [
     {
         "type": "number",
         "name": "circulation_pump_min",
-        "device_class": DEVICE_CLASS_VOLUME_FLOW_RATE,
         "unit_of_measurement": UNIT_PERCENT,
         "accuracy_decimals": 0,
         "state_class": STATE_CLASS_MEASUREMENT,
@@ -287,7 +285,6 @@ sensor_configuration = [
     {
         "type": "number",
         "name": "circulation_pump_max",
-        "device_class": DEVICE_CLASS_VOLUME_FLOW_RATE,
         "unit_of_measurement": UNIT_PERCENT,
         "accuracy_decimals": 0,
         "state_class": STATE_CLASS_MEASUREMENT,
@@ -303,7 +300,6 @@ sensor_configuration = [
     {
         "type": "sensor",
         "name": "bypass_valve",
-        "device_class": DEVICE_CLASS_VOLUME_FLOW_RATE,
         "unit_of_measurement": UNIT_PERCENT,
         "accuracy_decimals": 0,
         "state_class": STATE_CLASS_MEASUREMENT,
@@ -316,7 +312,6 @@ sensor_configuration = [
     {
         "type": "sensor",
         "name": "dhw_mixer_position",
-        "device_class": DEVICE_CLASS_VOLUME_FLOW_RATE,
         "unit_of_measurement": UNIT_PERCENT,
         "accuracy_decimals": 0,
         "state_class": STATE_CLASS_MEASUREMENT,
@@ -498,7 +493,6 @@ sensor_configuration = [
     {
         "type": "sensor",
         "name": "flow_rate",
-        "device_class": DEVICE_CLASS_VOLUME_FLOW_RATE,
         "unit_of_measurement": UNIT_LITER_PER_HOUR,
         "accuracy_decimals": 0,
         "state_class": STATE_CLASS_MEASUREMENT,
