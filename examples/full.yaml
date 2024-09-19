@@ -66,10 +66,26 @@ sensor:
       name: "Heap Max Block"
     loop_time:
       name: "Loop Time"
+  - platform: wifi_signal
+    name: "WiFi Signal Sensor"
+    update_interval: 60s
 
 button:
   - platform: restart
     name: "Rotex ESP Restart"
+
+#switch:
+#  - platform: gpio
+#    name: Smart Grid
+#    pin:
+#      number: GPIO06
+#      inverted: true
+
+#  - platform: gpio
+#    name: EVU
+#    pin:
+#      number: GPIO05
+#      inverted: true
 
 text_sensor:
   - platform: debug
@@ -77,6 +93,11 @@ text_sensor:
       name: "Device Info"
     reset_reason:
       name: "Reset Reason"
+  - platform: wifi_info
+    ip_address:
+      name: ESP IP Address
+    ssid:
+      name: ESP Connected SSID
 
 canbus:
   - platform: esp32_can
