@@ -202,7 +202,8 @@ daikin_rotex_can:
     delta_temp_dhw:           # service
       name: Spreizung WW
 #VerzZeitPumpe                # service
-#Durchfluss Min               # service
+    flow_rate_min:            # service
+      name: Durchfluss Min
     flow_rate_setpoint:       # serive
       name: Durchfluss Soll
 #Durchfluss Ber
