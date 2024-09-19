@@ -42,7 +42,7 @@ wifi:
 
   ap:
     ssid: DaikinRotex Fallback Hotspot
-    password: !secret fallback_hotspot_password
+    password: H3jGqANSa7aL
 
 captive_portal:
 
