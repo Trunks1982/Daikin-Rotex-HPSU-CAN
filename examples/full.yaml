@@ -199,9 +199,14 @@ daikin_rotex_can:
       name: Schaltschwelle TDHW
     delta_temp_ch:
       name: Spreizung HZ
-    delta_temp_dhw:
+    delta_temp_dhw:           # service
       name: Spreizung WW
+#VerzZeitPumpe                # service
+#Durchfluss Min               # service
+    flow_rate_setpoint:       # serive
+      name: Durchfluss Soll
 #Durchfluss Ber
+#Durchfluss Hyst              # service
 #Anpassung T-VL Heizen
 #Anpassung T-VL Kühlen
 #Min Druck
