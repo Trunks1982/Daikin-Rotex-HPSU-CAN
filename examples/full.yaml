@@ -82,8 +82,8 @@ canbus:
   - platform: esp32_can
     id: can_bus
     can_id: 0x680
-    rx_pin: GPIO2
-    tx_pin: GPIO3
+    tx_pin: GPIO47
+    rx_pin: GPIO48
     bit_rate: 20kbps
 
 daikin_rotex_can:
