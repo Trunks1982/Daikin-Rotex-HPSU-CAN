@@ -23,16 +23,16 @@ Diese Software wird vom Hersteller nicht unterstützt!!!!
 
 
 
-Hi ich möchte mein erstes kleines Projekt vorstellen, ich wollte eine flexible Lösung die Standalone, mit Homeassistant und Iobroker läuft,um meine Rotex HPSU Compact mittels CAN BUS auszulesen und zu steuern.
-Verwendet habe ich ein ESP32-S3-WROOM Board (es sollte jeder ab S1 funktionieren, weil diese die 20kbits Baudrate unterstützen,
+Wir bieten hier eine flexible Lösung die Standalone, mit Homeassistant und Iobroker läuft,um meine Rotex HPSU Compact mittels CAN BUS auszulesen und zu steuern.
+Verwendet wird zb. ein ESP32-S3-WROOM Board (es sollte jeder ab S1 funktionieren, weil diese die 20kbits Baudrate unterstützen,
 die normalen ESP32 Wroom funktionieren nicht weil diese erst ab 50kbit funktionieren) und ein Waveshare SN65HVD230 CAN Board mit 3,3V.
 Ein ESP32 S3 mini (Zero) funktioniert auch.
 
 ## Installationsanleitung:
-1. Du benötigst um den ESP32 zu flashen einmal den Browser Google Chrome (Safari und Firefox werden nicht unterstützt). Dann benötigst du die Datei rotex-factory.bin.
+1. Du benötigst um den ESP32 zu flashen einmal den Browser Google Chrome (Safari und Firefox werden nicht unterstützt). Dann benötigst du die Datei Rotex-Factory.bin aus dem Ordner .bin.
 2. Du öffnest dann die Website https://web.esphome.io und verbindest den ESP32 mittels USB-C mit dem PC. Nach dem verbinden klickst du auf der Website auf "Connect". Danach öffnet sich ein Fenster wo du die USB-Serial Schnitstelle auswählst.
 3. Danach öffnet sich ein neues Fenster auf der Website wo du auf "Installieren" klickst.
-4. Jetzt klickst du auf "Datei auswählen" und wählst die vorher runtergeladene rotex-factory.bin aus und klickst auf "Installieren". Dieser Vorgang benötigt ca 2min.
+4. Jetzt klickst du auf "Datei auswählen" und wählst die vorher runtergeladene Rotex-Factory.bin aus und klickst auf "Installieren". Dieser Vorgang benötigt ca 2min.
 5. Nach erfolgreicher Installation wartest du ca 1-2 min, danach sollte sich ein "Rotex Fallback Hotspot" vom ESP32 aufbauen.
 6. Jetzt verbindest du dich mit dem ESP32 mittels WLAN und gibst das "Passwort H3jGqANSa7aL" ein.
 7. Jetzt sollte sich automatisch ein Browser Fenster öffnen, wo du deine WLAN SSID und das Passwort für dein WLAN abgefragt wird. Hier trägst du jetzt deine Zugangsdaten für dein WLAN ein.
@@ -54,31 +54,25 @@ Die Rotex.bin Datei dient zum vereinfachten updaten über die WEB-UI Oberfläche
 
 ## Features:
 
-- Verstellung von Raumsoll
-- Verstellung WW Soll
 - 1x Warm Wasser Taste ohne Heizstab (es wird für 10s auf 70Grad gestellt und dann wieder auf den vorher eingestellten Wert zurück)
 - Thermische Leistungsberechnung
-- Betriebsmodus kann verstellt werden
 - Heizkurven Verstellung in 0.01 Schritten (Standard in 0.1 Schritten)
 - Zwei neue Schalter angelegt um auch die Thermostat Eingänge von der Rotex / Daikin direkt zwischen Heizen / Kühlen umzuschalten.
 - Neues Feature Fehlercode Anzeige mit Beschreibung des Fehlers mit Handbuch Seitenangabe!!
-- Abfrage Intervall kann jetzt per Schalter abgeschaltet werden. Bitte beachten nach dem Neustart des ESP bleibt die Abfrage aus.
-Es werden alle relevanten Daten Abgefragt die man eigentlich benötigt.
+  
 <br>  
-## weitere .YAML Dateien:
 
-Wer Abtau Probleme hat kann sich in Iobroker oder Homeassitant leicht ein kleines Script bauen, wenn Abtauen erkannt wird soll auf Sommer geschaltet werden,
-wenn heizen wieder erkannt schaltet wieder auf Betriebsmodus heizen um.So wird max 0.7 Grad Warmwasser aus dem Sepicher verbraucht.
 
-Für Iobroker hab ich ein Blockly Script hochgeladen was ich selber nutze und super funktioniert.<br>  
-Die Defrost.yaml ist für Home Assistant Automatisierung gedacht.Das ist die gleiche Automatisierung wie für IoBroker.
+Wer Abtau Probleme hat kann (demnächst) das neue Feature "Defrost" direkt über den ESP nutzen.So wird max 0.7 Grad Warmwasser aus dem Sepicher verbraucht.
+
 
 Getestet mit: - Rotex HSPU Compact 508 8kw mit Rocon BM1, ROTEX HPSU compact Ultra
 
 ## WEBUI vom ESP:
-![Bildschirmfoto 2024-04-19 um 12 24 08](https://github.com/Trunks1982/Daikin-Rotex-HPSU-CAN/assets/62701386/cf6346a0-e183-4680-b032-b11090d8a67a)
 
 
+
+![Bildschirmfoto 2024-09-17 um 13 13 06](https://github.com/user-attachments/assets/8bb5ca8e-323f-45d1-ab4b-a30f185a6ffc)
 
 ## Ansicht Homeassistant:
 ![Bildschirmfoto 2024-04-01 um 01 37 19](https://github.com/Trunks1982/Daikin-Rotex-HPSU-CAN/assets/62701386/d9c1d703-ac4a-4466-97e3-dbd6478cbed1)
@@ -93,6 +87,12 @@ Getestet mit: - Rotex HSPU Compact 508 8kw mit Rocon BM1, ROTEX HPSU compact Ult
 ![Rotex CAN Anschluss](https://github.com/Trunks1982/Daikin-Rotex-HPSU-CAN/assets/62701386/05c36ae7-ddc9-4a1e-8a73-4559c765f132)
 
 
+## DIY Platine von (Dornieden)
+
+mehr dazu im Discusions Forum https://github.com/Trunks1982/Daikin-Rotex-HPSU-CAN/discussions/35:<br> 
+https://github.com/Trunks1982/Daikin-Rotex-HPSU-CAN/blob/main/DIY-Platine/README
+
+<img width="554" alt="357024972-fda9cc55-63de-4862-963a-ea39f58e5028" src="https://github.com/user-attachments/assets/1640db7a-693b-45a5-8315-dcbc2e84892c">
 
 
 
