@@ -590,6 +590,21 @@ sensor_configuration = [
     },
     {
         "type": "number",
+        "name": "flow_rate_hyst",
+        "unit_of_measurement": UNIT_LITER_PER_MIN,
+        "accuracy_decimals": 0,
+        "state_class": STATE_CLASS_MEASUREMENT,
+        "icon": "mdi:waves-arrow-right",
+        "min_value": 0,
+        "max_value": 5,
+        "step": 0.1,
+        "command": "31 00 FA 06 8A",
+        "data_offset": 6,
+        "data_size": 1,
+        "divider": 10
+    },
+    {
+        "type": "number",
         "name": "target_room1_temperature",
         "device_class": DEVICE_CLASS_TEMPERATURE,
         "unit_of_measurement": UNIT_CELSIUS,

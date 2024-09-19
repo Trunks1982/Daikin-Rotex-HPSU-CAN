@@ -206,8 +206,10 @@ daikin_rotex_can:
       name: Durchfluss Min
     flow_rate_setpoint:       # serive
       name: Durchfluss Soll
-#Durchfluss Ber
-#Durchfluss Hyst              # service
+    flow_rate_calc:           # service
+      name: DurchflussBer
+    flow_rate_hyst:           # service
+      name: Durchfluss Hyst
 #Anpassung T-VL Heizen
 #Anpassung T-VL Kühlen
 #Min Druck
