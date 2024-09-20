@@ -86,6 +86,16 @@ TMessage Utils::str_to_bytes_array8(const std::string& str) {
     return byte_array;
 }
 
+uint16_t Utils::hex_to_uint16(const std::string& hexStr) {
+    uint16_t result;
+    std::stringstream ss;
+
+    ss << std::hex << hexStr;
+    ss >> result;
+
+    return result;
+}
+
 void Utils::setBytes(TMessage& data, uint16_t value, uint8_t offset, uint8_t len) {
     if (len == 1) {
         data[offset] = value & 0xFF;
@@ -164,8 +174,11 @@ template void Utils::log<char const*, char const*, char const*, char const*>(std
 template void Utils::log<char const*, float, char const*, char const*>(std::string const& tag, std::string const& str_format, char const* arg1, float arg2, char const* arg3, char const* arg4);
 template void Utils::log<char const*, char const*, char const*>(std::string const& tag, std::string const& str_format, char const* arg1, char const* arg2, char const* arg3);
 template void Utils::log<char const*, char const*>(std::string const& tag, std::string const& str_format, char const* arg1, char const* arg2);
+template void Utils::log<unsigned char>(std::string const& tag, std::string const& str_format, unsigned char arg);
 template void Utils::log<int>(std::string const& tag, std::string const& str_format, int arg);
-
+template void Utils::log<>(std::string const& tag, std::string const& str_format);
+template void Utils::log<char const*>(std::string const& tag, std::string const& str_format, char const* arg);
+template void Utils::log<void*, void*>(std::string const& tag, std::string const& str_format, void* arg1, void* arg2);
 
 }
 }

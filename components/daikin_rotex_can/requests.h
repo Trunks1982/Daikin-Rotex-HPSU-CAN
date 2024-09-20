@@ -24,6 +24,7 @@ public:
     EntityBase* get_entity(std::string const& id);
     sensor::Sensor* get_sensor(std::string const& id);
     text_sensor::TextSensor* get_text_sensor(std::string const& id);
+    select::Select* get_select(std::string const& id);
 
     bool sendNextPendingGet();
     void sendSet(std::string const& request_name, float value);
@@ -60,6 +61,9 @@ inline text_sensor::TextSensor* TRequests::get_text_sensor(std::string const& id
     return Utils::toTextSensor(get_entity(id));
 }
 
+inline select::Select* TRequests::get_select(std::string const& id) {
+    return Utils::toSelect(get_entity(id));
+}
 
 }
 }

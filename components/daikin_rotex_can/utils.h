@@ -35,6 +35,7 @@ public:
     static std::string to_hex(uint32_t value);
     static TMessage str_to_bytes(const std::string& str);
     static TMessage str_to_bytes_array8(const std::string& str);
+    static uint16_t hex_to_uint16(const std::string& hexStr);
     static void setBytes(TMessage& data, uint16_t value, uint8_t offset, uint8_t len);
 
     template<typename... Args>

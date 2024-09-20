@@ -6,9 +6,6 @@ from esphome.core import Lambda
 from esphome.cpp_generator import MockObj
 from esphome.cpp_types import std_ns
 from esphome.components.canbus import CanbusComponent
-#from esphome.const import (
-#    ENTITY_CATEGORY_CONFIG,
-#)
 
 daikin_rotex_can_ns = cg.esphome_ns.namespace('daikin_rotex_can')
 DaikinRotexCanComponent = daikin_rotex_can_ns.class_('DaikinRotexCanComponent', cg.Component)
@@ -726,8 +723,8 @@ sensor_configuration = [
         "name": "mode_of_operating" ,
         "icon": ICON_SUN_SNOWFLAKE_VARIANT,
         "command": "31 00 FA C0 F6 00 00",
-        "data_offset": 5,
-        "data_size": 2,
+        "data_offset": 6,
+        "data_size": 1,
         "map": {
             0x00: "Standby",
             0x01: "Heizen",
@@ -736,6 +733,23 @@ sensor_configuration = [
             0x04: "Warmwasserbereitung"
         },
         "update_entity": "thermal_power"
+    },
+    {
+        "type": "select",
+        "name": "operating_mode" ,
+        "icon": ICON_SUN_SNOWFLAKE_VARIANT,
+        "command": "31 00 FA 01 12 00 00",
+        "data_offset": 5,
+        "data_size": 1,
+        "map": {
+            0x01: "Bereitschaft",
+            0x03: "Heizen",
+            0x04: "Absenken",
+            0x05: "Sommer",
+            0x11: "Kühlen",
+            0x0B: "Automatik 1",
+            0x0C: "Automatik 2"
+        }
     },
     {
         "type": "select",
@@ -833,23 +847,6 @@ sensor_configuration = [
         "command": "31 00 FA 0A 8C 00 00",
         "data_offset": 6,
         "data_size": 1
-    },
-    {
-        "type": "select",
-        "name": "operating_mode" ,
-        "icon": ICON_SUN_SNOWFLAKE_VARIANT,
-        "command": "31 00 FA 01 12 00 00",
-        "data_offset": 5,
-        "data_size": 1,
-        "map": {
-            0x01: "Bereitschaft",
-            0x03: "Heizen",
-            0x04: "Absenken",
-            0x05: "Sommer",
-            0x11: "Kühlen",
-            0x0B: "Automatik 1",
-            0x0C: "Automatik 2"
-        }
     },
     {
         "type": "select",
@@ -1048,6 +1045,15 @@ sensor_configuration = [
             0x05: "SG2 - WW & HZ + 5°C",
             0x06: "SG3 - WW 70°C"
         }
+    },
+    {
+        "type": "select",
+        "name": "optimized_defrosting",
+        "icon": "mdi:snowflake-melt",
+        "map": {
+            0x00: "Aus",
+            0x01: "An"
+        }
     }
 ]
 
@@ -1178,6 +1184,9 @@ CONFIG_SCHEMA = cv.Schema(
                 cv.Optional(CONF_MODE, default="TEXT"): cv.enum(text.TEXT_MODES, upper=True),
             }
         ),
+
+        ########## Buttons ##########
+
         cv.Optional(CONF_DUMP): button.button_schema(
             DumpButton,
             entity_category=ENTITY_CATEGORY_CONFIG,
@@ -1213,6 +1222,8 @@ async def to_code(config):
         t = await text.new_text(text_conf)
         await cg.register_parented(t, var)
         cg.add(var.getAccessor().set_custom_request_text(t))
+
+    ########## Buttons ##########
 
     if button_conf := config.get(CONF_DUMP):
         but = await button.new_button(button_conf)
@@ -1266,9 +1277,6 @@ async def to_code(config):
                 if update_interval < 0:
                     update_interval = config[CONF_UPDATE_INTERVAL]
 
-                if "command" not in sens_conf:
-                    raise Exception("command is required for number: " + sens_conf.get("name"))
-
                 async def handle_lambda():
                     lamb = str(sens_conf.get("handle_lambda")) if "handle_lambda" in sens_conf else "return 0;"
                     return await cg.process_lambda(
@@ -1288,7 +1296,7 @@ async def to_code(config):
                 cg.add(var.getAccessor().set_entity(sens_conf.get("name"), [
                     entity,
                     sens_conf.get("name"),
-                    sens_conf.get("command"),
+                    sens_conf.get("command", ""),
                     sens_conf.get("data_offset", 5),
                     sens_conf.get("data_size", 1),
                     divider,
