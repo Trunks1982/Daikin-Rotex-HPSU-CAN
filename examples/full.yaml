@@ -117,6 +117,8 @@ daikin_rotex_can:
     name: Custom Request
   dump:
     name: Dump Senors
+  project_git_hash:
+    name: Project Git Hash
   entities:
 
 # Info

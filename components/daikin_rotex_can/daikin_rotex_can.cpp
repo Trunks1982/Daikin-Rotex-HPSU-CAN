@@ -19,6 +19,8 @@ DaikinRotexCanComponent::DaikinRotexCanComponent()
 , m_dhw_run_lambdas()
 , m_optimized_defrosting(false)
 , m_optimized_defrosting_pref()
+, m_project_git_hash_sensor(nullptr)
+, m_project_git_hash()
 {
 }
 
@@ -132,6 +134,8 @@ void DaikinRotexCanComponent::setup() {
             }
         }
     }
+
+    m_project_git_hash_sensor->publish_state(m_project_git_hash);
 }
 
 void DaikinRotexCanComponent::updateState(std::string const& id) {

@@ -20,6 +20,7 @@ public:
 
     void set_canbus(esphome::esp32_can::ESP32Can* pCanbus);
     void set_update_interval(uint16_t seconds) {} // dummy
+    void set_project_git_hash(text_sensor::TextSensor* pSensor, std::string const& hash) { m_project_git_hash_sensor = pSensor; m_project_git_hash = hash; }
 
     // Texts
     void custom_request(std::string const& value);
@@ -81,6 +82,8 @@ private:
 
     bool m_optimized_defrosting;
     ESPPreferenceObject m_optimized_defrosting_pref;
+    text_sensor::TextSensor* m_project_git_hash_sensor;
+    std::string m_project_git_hash;
 };
 
 inline void DaikinRotexCanComponent::set_canbus(esphome::esp32_can::ESP32Can* pCanbus) {

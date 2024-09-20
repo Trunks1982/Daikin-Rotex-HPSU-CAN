@@ -6,6 +6,12 @@ from esphome.core import Lambda
 from esphome.cpp_generator import MockObj
 from esphome.cpp_types import std_ns
 from esphome.components.canbus import CanbusComponent
+from esphome import core
+import subprocess
+import logging
+import os
+
+_LOGGER = logging.getLogger(__name__)
 
 daikin_rotex_can_ns = cg.esphome_ns.namespace('daikin_rotex_can')
 DaikinRotexCanComponent = daikin_rotex_can_ns.class_('DaikinRotexCanComponent', cg.Component)
@@ -25,6 +31,10 @@ UNIT_LITER_PER_MIN = "L/min"
 
 ########## Icons ##########
 ICON_SUN_SNOWFLAKE_VARIANT = "mdi:sun-snowflake-variant"
+
+result = subprocess.run(['git', 'rev-parse', '--short', 'HEAD'], stdout=subprocess.PIPE, text=True, cwd=os.path.dirname(os.path.realpath(__file__)))
+git_hash = result.stdout.strip()
+_LOGGER.info("Project Git Hash %s", git_hash)
 
 ########## Configuration of Sensors, TextSensors, BinarySensors, Selects and Numbers ##########
 
@@ -1067,6 +1077,7 @@ CONF_LOG_FILTER_TEXT = "log_filter"
 CONF_CUSTOM_REQUEST_TEXT = "custom_request"
 CONF_ENTITIES = "entities"
 CONF_SELECT_OPTIONS = "options"
+CONF_PROJECT_GIT_HASH = "project_git_hash"
 
 ########## Sensors ##########
 
@@ -1184,6 +1195,10 @@ CONFIG_SCHEMA = cv.Schema(
                 cv.Optional(CONF_MODE, default="TEXT"): cv.enum(text.TEXT_MODES, upper=True),
             }
         ),
+        cv.Required(CONF_PROJECT_GIT_HASH): text_sensor.text_sensor_schema(
+            icon="mdi:git",
+            entity_category=ENTITY_CATEGORY_DIAGNOSTIC
+        ),
 
         ########## Buttons ##########
 
@@ -1222,6 +1237,12 @@ async def to_code(config):
         t = await text.new_text(text_conf)
         await cg.register_parented(t, var)
         cg.add(var.getAccessor().set_custom_request_text(t))
+
+    ########## Text Sensors ##########
+
+    if text_conf := config.get(CONF_PROJECT_GIT_HASH):
+        t = await text_sensor.new_text_sensor(text_conf)
+        cg.add(var.set_project_git_hash(t, git_hash))
 
     ########## Buttons ##########
 

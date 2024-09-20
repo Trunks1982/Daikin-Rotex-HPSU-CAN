@@ -27,6 +27,8 @@ canbus:                   # Required for communication with the Daikin or Rotex 
 daikin_rotex_can:
   id: rotext_hpsu
   canbus_id: can_bus
+  project_git_hash:
+    name: Project Git Hash
   entities:
     tdhw1:
       name: Warmwassertemperatur
