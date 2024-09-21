@@ -10,6 +10,7 @@ static const char* TAG = "daikin_rotex_can";
 static const char* MODE_OF_OPERATING = "mode_of_operating";         // Betriebsart
 static const char* OPERATING_MODE = "operating_mode";               // Betriebsmodus
 static const char* OPTIMIZED_DEFROSTING = "optimized_defrosting";
+static const uint32_t POST_SETUP_TIMOUT = 15*1000;
 
 
 DaikinRotexCanComponent::DaikinRotexCanComponent()
@@ -30,11 +31,18 @@ void DaikinRotexCanComponent::setup() {
     select::Select* p_optimized_defrosting = nullptr;
 
     for (auto const& entity_conf : m_accessor.get_entities()) {
+        const bool command_set = is_command_set(entity_conf.command);
+
+        call_later([entity_conf, command_set](){
+            ESP_LOGI("setup", "name: %s, id: %s, command: %s, command_set: %d",
+                entity_conf.pEntity->get_name().c_str(), entity_conf.id.c_str(), Utils::to_hex(entity_conf.command).c_str(), command_set);
+        }, POST_SETUP_TIMOUT);
+
         if (entity_conf.id == OPTIMIZED_DEFROSTING) {
             p_optimized_defrosting = dynamic_cast<select::Select*>(entity_conf.pEntity);
         }
 
-        if (!is_command_set(entity_conf.command)) {
+        if (!command_set) {
             continue;
         }
 
@@ -119,6 +127,11 @@ void DaikinRotexCanComponent::setup() {
     }
 
     m_data_requests.removeInvalidRequests();
+    const uint32_t size = m_data_requests.size();
+
+    call_later([size](){
+        ESP_LOGI("setup", "resquests.size: %d", size);
+    }, POST_SETUP_TIMOUT);
 
     if (p_optimized_defrosting != nullptr) {
         m_optimized_defrosting_pref = global_preferences->make_preference<bool>(p_optimized_defrosting->get_object_id_hash());
@@ -344,7 +357,7 @@ void DaikinRotexCanComponent::throwPeriodicError(std::string const& message) {
     call_later([message, this]() {
         ESP_LOGE(TAG, message.c_str());
         throwPeriodicError(message);
-    }, 15 * 1000);
+    }, POST_SETUP_TIMOUT);
 }
 
 bool DaikinRotexCanComponent::is_command_set(TMessage const& message) {

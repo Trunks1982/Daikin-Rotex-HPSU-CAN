@@ -248,17 +248,22 @@ daikin_rotex_can:
 
 # Konfiguration -> HZK Konfig -> Heizen
 
-#Heizgrenze Tag
-#Heizgrenze Nacht
+    heating_limit_day:
+      name: Heizgrenze Tag
+    heating_limit_night:
+      name: Heizgrenze Nacht
     heating_curve:
       name: Heizkurve
 #Raumeinfluss
 #RF Anpassung
     flow_temperature_day:
       name: T Vorlauf Tag
-#T-Vorlauf Nacht
-#Max T-Vorlauf
-#Min T-Vorlauf
+    flow_temperature_night:
+      name: T Vorlauf Nacht
+    max_target_flow_temp:
+      name: Max T-Vorlauf
+    min_target_flow_temp:
+      name: Min T-Vorlauf
 #Heizk Adaption
 
 # Konfiguration -> HZK Konfig -> Kühlen
@@ -313,10 +318,6 @@ daikin_rotex_can:
       name: Warmwasser bereiten
     error_code:
       name: Fehlercode
-    max_target_flow_temp:
-      name: Max VL Soll
-    min_target_flow_temp:
-      name: Min VL Soll
     mode_of_operating:
       name: Betriebsart
     operating_mode:
