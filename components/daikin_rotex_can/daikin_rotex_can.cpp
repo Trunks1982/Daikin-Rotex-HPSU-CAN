@@ -65,6 +65,7 @@ void DaikinRotexCanComponent::setup() {
                                 );
 
                         if (dynamic_cast<sensor::Sensor*>(entity_conf.pEntity) != nullptr) {
+                            //variant = static_cast<int16_t>(value) / entity_conf.divider;
                             variant = value / entity_conf.divider;
                             Utils::toSensor(entity_conf.pEntity)->publish_state(std::get<float>(variant));
                         } else if (dynamic_cast<binary_sensor::BinarySensor*>(entity_conf.pEntity) != nullptr) {
@@ -81,6 +82,7 @@ void DaikinRotexCanComponent::setup() {
                             Utils::toSelect(entity_conf.pEntity)->publish_state(str);
                             variant = str;
                         } else if (dynamic_cast<number::Number*>(entity_conf.pEntity) != nullptr) {
+                            //variant = static_cast<int16_t>(value) / entity_conf.divider;
                             variant = value / entity_conf.divider;
                             Utils::toNumber(entity_conf.pEntity)->publish_state(std::get<float>(variant));
                         }
@@ -121,6 +123,9 @@ void DaikinRotexCanComponent::setup() {
                     entity_conf.set_lambda(message, value);
                 } else {
                     Utils::setBytes(message, value, entity_conf.data_offset, entity_conf.data_size);
+                    //const int16_t ivalue = static_cast<int16_t>(value); // converte negative values. E.g. -15 to 0xFF6A
+                    //const uint16_t uvalue = static_cast<int16_t>(ivalue);
+                    //Utils::setBytes(message, uvalue, entity_conf.data_offset, entity_conf.data_size);
                 }
                 return message;
             },

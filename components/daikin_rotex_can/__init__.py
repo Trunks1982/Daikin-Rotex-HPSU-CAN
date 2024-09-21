@@ -1105,6 +1105,68 @@ sensor_configuration = [
             0x06: "SG3 - WW 70°C"
         }
     },
+
+    {
+        "type": "number",
+        "name": "max_heating_temperature",
+        "device_class": DEVICE_CLASS_TEMPERATURE,
+        "unit_of_measurement": UNIT_CELSIUS,
+        "accuracy_decimals": 1,
+        "state_class": STATE_CLASS_MEASUREMENT,
+        "min_value": 5,
+        "max_value": 85,
+        "step": 1,
+        "command": "31 00 FA 06 6E",
+        "data_offset": 5,
+        "data_size": 2,
+        "divider": 10.0
+    },
+#    {
+#        "type": "number",
+#        "name": "bivalent_temperature",
+#        "device_class": DEVICE_CLASS_TEMPERATURE,
+#        "unit_of_measurement": UNIT_CELSIUS,
+#        "accuracy_decimals": 1,
+#        "state_class": STATE_CLASS_MEASUREMENT,
+#        "min_value": -15,
+#        "max_value": 35,
+#        "step": 1,
+#        "can_id": 0x500,
+#        "command": "31 00 FA 06 D4",
+#        "data_offset": 5,
+#        "data_size": 2,
+#        "divider": 10.0
+#    },
+    {
+        "type": "number",
+        "name": "supply_temperature_adjustment_heating",
+        "device_class": DEVICE_CLASS_TEMPERATURE,
+        "unit_of_measurement": UNIT_KELVIN,
+        "accuracy_decimals": 1,
+        "state_class": STATE_CLASS_MEASUREMENT,
+        "min_value": 0,
+        "max_value": 50,
+        "step": 1,
+        "command": "31 00 FA 06 A0",
+        "data_offset": 5,
+        "data_size": 2,
+        "divider": 10.0
+    },
+    {
+        "type": "number",
+        "name": "supply_temperature_adjustment_cooling",
+        "device_class": DEVICE_CLASS_TEMPERATURE,
+        "unit_of_measurement": UNIT_KELVIN,
+        "accuracy_decimals": 1,
+        "state_class": STATE_CLASS_MEASUREMENT,
+        "min_value": 0,
+        "max_value": 50,
+        "step": 1,
+        "command": "31 00 FA 06 A1",
+        "data_offset": 5,
+        "data_size": 2,
+        "divider": 10.0
+    },
     {
         "type": "select",
         "name": "optimized_defrosting",

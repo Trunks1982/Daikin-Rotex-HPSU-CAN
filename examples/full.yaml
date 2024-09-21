@@ -209,8 +209,8 @@ daikin_rotex_can:
       name: Leistung BIV
     tdiff_dhw_ch:
       name: TDiff-WW HZU
-#Max Temp Heizung
-#Bivalenztemperatur
+    max_heating_temperature:
+      name: Max Temp Heizung
     quiet:
       name: Flüsterbetrieb
 #Sonderfunkt Schaltk
@@ -224,14 +224,16 @@ daikin_rotex_can:
 #VerzZeitPumpe                # service
     flow_rate_min:            # service
       name: Durchfluss Min
-    flow_rate_setpoint:       # serive
+    flow_rate_setpoint:       # service
       name: Durchfluss Soll
     flow_rate_calc:           # service
       name: DurchflussBer
     flow_rate_hyst:           # service
       name: Durchfluss Hyst
-#Anpassung T-VL Heizen
-#Anpassung T-VL Kühlen
+    supply_temperature_adjustment_heating:
+      name: Anpassung T-VL Heizen
+    supply_temperature_adjustment_cooling:
+      name: Anpassung T-VL Kühlen
 #Min Druck
 #Max Druck
 #Soll Druck
