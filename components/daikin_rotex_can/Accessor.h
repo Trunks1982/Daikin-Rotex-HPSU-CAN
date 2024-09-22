@@ -20,6 +20,7 @@ public:
     struct TEntityArguments {
         EntityBase* pEntity;
         std::string id;
+        uint16_t can_id;
         TMessage command;
         uint8_t data_offset;
         uint8_t data_size;
@@ -35,6 +36,7 @@ public:
         TEntityArguments(
             EntityBase* _pEntity,
             std::string const& _id,
+            uint16_t _can_id,
             std::string const& _command,
             uint8_t _data_offset,
             uint8_t _data_size,
@@ -49,6 +51,7 @@ public:
         )
         : pEntity(_pEntity)
         , id(_id)
+        , can_id(_can_id)
         , command(Utils::str_to_bytes_array8(_command))
         , data_offset(_data_offset)
         , data_size(_data_size)

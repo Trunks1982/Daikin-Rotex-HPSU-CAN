@@ -25,18 +25,20 @@ bool TRequest::isGetInProgress() const {
 }
 
 bool TRequest::isMatch(uint32_t can_id, TMessage const& responseData) const {
-    const uint16_t response_can_id = (m_command[0] & 0xF0) * 8 + (m_command[1] & 0x0F);
+    const bool is_set = (responseData[0] & 0x0F) == 0x00;
+    const bool is_response = (responseData[0] & 0x0F) == 0x02;
 
-    //if (can_id == response_can_id())
-    {
-        if ((responseData[0] & 0x0F) == 0x02) { // is a response
-            for (uint32_t index = 0; index < responseData.size(); ++index) {
-                if (m_expected_reponse[index] != DC && responseData[index] != m_expected_reponse[index]) {
-                    return false;
-                }
+    const bool is_our_response = can_id == m_can_id;                                    // Listen for responses caused by our sendGet
+    const bool is_rocon_panel_response = can_id == 0x10A && (is_response || is_set);    // Listen for responses and sets caused by RoCon control panel (0x10A)
+
+    const bool is_valid = is_our_response || is_rocon_panel_response;
+    if (is_valid) {
+        for (uint32_t index = 0; index < responseData.size(); ++index) {
+            if (m_expected_reponse[index] != DC && responseData[index] != m_expected_reponse[index]) {
+                return false;
             }
-            return responseData.size() == 7;
         }
+        return responseData.size() == 7;
     }
     return false;
 }

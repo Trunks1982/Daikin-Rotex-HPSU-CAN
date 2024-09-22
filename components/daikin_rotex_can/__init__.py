@@ -234,6 +234,7 @@ sensor_configuration = [
         "unit_of_measurement": UNIT_CELSIUS,
         "accuracy_decimals": 1,
         "state_class": STATE_CLASS_MEASUREMENT,
+        "can_id": 0x300,
         "command": "61 00 FA 0A 0C 00 00",
         "data_offset": 5,
         "data_size": 2,
@@ -698,7 +699,7 @@ sensor_configuration = [
         "data_offset": 5,
         "data_size": 2,
         "divider": 10.0,
-        "map": {0xFE70 / 10.0: "Aus", **{i: f"{i} °C" for i in range(10, 41)}}
+        "map": {0x5A / 10.0: "Aus", **{i: f"{i} °C" for i in range(10, 41)}}
     },
     {
         "type": "number",
@@ -723,8 +724,8 @@ sensor_configuration = [
         "accuracy_decimals": 0,
         "state_class": STATE_CLASS_MEASUREMENT,
         "icon": "mdi:waves-arrow-left",
-        "min_value": 25,
-        "max_value": 40,
+        "min_value": 10,
+        "max_value": 90,
         "step": 1,
         "command": "31 00 FA 01 2B 00 00",
         "data_offset": 5,
@@ -739,8 +740,8 @@ sensor_configuration = [
         "accuracy_decimals": 0,
         "state_class": STATE_CLASS_MEASUREMENT,
         "icon": "mdi:waves-arrow-right",
-        "min_value": 25,
-        "max_value": 60,
+        "min_value": 20,
+        "max_value": 90,
         "step": 1,
         "command": "31 00 28 00 00 00 00",
         "data_offset": 3,
@@ -893,6 +894,7 @@ sensor_configuration = [
         "type": "binary_sensor",
         "name": "status_kompressor" ,
         "icon": "mdi:pump",
+        "can_id": 0x500,
         "command": "A1 00 61 00 00 00 00",
         "data_offset": 3,
         "data_size": 1
@@ -1364,6 +1366,7 @@ async def to_code(config):
                 cg.add(var.getAccessor().set_entity(sens_conf.get("name"), [
                     entity,
                     sens_conf.get("name"),
+                    sens_conf.get("can_id", 0x180),
                     sens_conf.get("command", ""),
                     sens_conf.get("data_offset", 5),
                     sens_conf.get("data_size", 1),

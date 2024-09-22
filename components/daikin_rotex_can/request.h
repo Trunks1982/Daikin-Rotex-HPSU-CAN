@@ -19,12 +19,14 @@ public:
 public:
     TRequest(
         std::string const& id,
+        uint16_t can_id,
         TMessage const& command,
         EntityBase* entity,
         TGetLambda lambda,
         TSetLambda setLambda,
         uint16_t update_interval)
     : m_id(id)
+    , m_can_id(can_id)
     , m_command(command)
     , m_expected_reponse(TRequest::calculate_reponse(command))
     , m_entity(entity)
@@ -89,6 +91,7 @@ public:
 
 private:
     std::string m_id;
+    uint16_t m_can_id;
     TMessage m_command;
     std::array<uint16_t, 7> m_expected_reponse;
     EntityBase* m_entity;

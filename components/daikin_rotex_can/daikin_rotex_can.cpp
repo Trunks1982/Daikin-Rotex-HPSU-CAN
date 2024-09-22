@@ -34,8 +34,9 @@ void DaikinRotexCanComponent::setup() {
         const bool command_set = is_command_set(entity_conf.command);
 
         call_later([entity_conf, command_set](){
-            ESP_LOGI("setup", "name: %s, id: %s, command: %s, command_set: %d",
-                entity_conf.pEntity->get_name().c_str(), entity_conf.id.c_str(), Utils::to_hex(entity_conf.command).c_str(), command_set);
+            ESP_LOGI("setup", "name: %s, id: %s, can_id: %s, command: %s, command_set: %d",
+                entity_conf.pEntity->get_name().c_str(), entity_conf.id.c_str(),
+                Utils::to_hex(entity_conf.can_id).c_str(), Utils::to_hex(entity_conf.command).c_str(), command_set);
         }, POST_SETUP_TIMOUT);
 
         if (entity_conf.id == OPTIMIZED_DEFROSTING) {
@@ -48,6 +49,7 @@ void DaikinRotexCanComponent::setup() {
 
         m_data_requests.add({
             entity_conf.id,
+            entity_conf.can_id,
             entity_conf.command,
             entity_conf.pEntity,
             [entity_conf, this](auto const& data) -> TRequest::TVariant {
