@@ -41,6 +41,49 @@ _LOGGER.info("Project Git Hash %s", git_hash)
 sensor_configuration = [
    {
         "type": "select",
+        "name": "1_dhw" ,
+        "icon": "mdi:hand-water",
+        "command": "31 00 FA 01 44 00 00",
+        "data_offset": 6,
+        "data_size": 1,
+        "map": {
+            0x00: "Aus",
+            0x01: "An"
+        }
+    },
+    {
+        "type": "number",
+        "name": "hp_hyst_tdhw",
+        "device_class": DEVICE_CLASS_TEMPERATURE,
+        "unit_of_measurement": UNIT_KELVIN,
+        "accuracy_decimals": 1,
+        "state_class": STATE_CLASS_MEASUREMENT,
+        "icon": "mdi:arrow-left-right",
+        "min_value": 2,
+        "max_value": 20,
+        "step": 0.1,
+        "command": "31 00 FA 06 91 00 00",
+        "data_offset": 5,
+        "data_size": 2,
+        "divider": 10.0
+    },
+    {
+        "type": "number",
+        "name": "delay_time_for_backup_heating",
+        "unit_of_measurement": UNIT_MINUTE,
+        "accuracy_decimals": 0,
+        "state_class": STATE_CLASS_MEASUREMENT,
+        "icon": "mdi:clock-time-two-outline",
+        "min_value": 20,
+        "max_value": 95,
+        "step": 1,
+        "command": "31 00 FA 06 92 00 00",
+        "data_offset": 5,
+        "data_size": 2,
+        "divider": 1
+    },
+    {
+        "type": "select",
         "name": "outdoor_unit" ,
         "icon": ICON_SUN_SNOWFLAKE_VARIANT,
         "command": "31 00 FA 06 9A 00 00",

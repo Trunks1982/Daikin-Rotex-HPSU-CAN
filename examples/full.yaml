@@ -21,6 +21,7 @@ external_components:
 #      type: git
 #      url: https://github.com/Trunks1982/Daikin-Rotex-HPSU-CAN.git
 #      ref: dev
+#    refresh: 0s
 
 logger:
   level: INFO
@@ -165,6 +166,37 @@ daikin_rotex_can:
 #SwNr B1/U1
 #SwNr Regler
 #SwNr RTXRT
+
+# Betriebsart
+    operating_mode:
+      name: Betriebsmodus
+
+# Raum Soll Tag
+    target_room1_temperature:
+      name: Raumsoll 1
+      type: select
+  # T-RaumSoll 2
+  # T-RaumSoll 3
+
+# Raum Soll Nacht
+  # T-Absenkung
+  # T-Abwesend
+
+# WW Solltemp
+    target_hot_water_temperature:
+      name: T-WW-Soll1
+      type: select
+
+  # T-WWSoll 2
+  # T-WWSoll 3
+
+# WW Install
+    1_dhw:
+      name: 1 x Warmwasser
+    hp_hyst_tdhw:
+      name: WPHyst TDHW
+    delay_time_for_backup_heating:
+      name: Wartezeit BOH
 
 #Konfiguration
 
@@ -322,13 +354,8 @@ daikin_rotex_can:
       name: Fehlercode
     mode_of_operating:
       name: Betriebsart
-    operating_mode:
-      name: Betriebsmodus
     status_kompressor:
       name: Status Kompressor
-    target_room1_temperature:
-      name: Raumsoll 1
-      type: select
     tdhw1:
       name: Warmwassertemperatur
     temperature_outside:
@@ -339,8 +366,5 @@ daikin_rotex_can:
       name: Heizkreis Vorlauf (TV)
     tvbh:
       name: Vorlauftemperatur Heizung (TVBH)
-    target_hot_water_temperature:
-      name: T-WW-Soll1
-      type: select
     target_supply_temperature:
       name: Vorlauf Soll
