@@ -267,14 +267,18 @@ void DaikinRotexCanComponent::dhw_run() {
         float temp2 {0};
 
         auto const* pEntityConf = get_select_entity_conf(id);
+        ESP_LOGW("dhw_rum", "pEntityConf: %p", pEntityConf);
         if (pEntityConf != nullptr) {
             temp1 *= pEntityConf->divider;
 
             number::Number* pNumber = pRequest->get_number();
             select::Select* pSelect = pRequest->get_select();
 
+            ESP_LOGW("dhw_rum", "pNumber: %p, pSelect: %p", pNumber, pSelect);
+
             if (pNumber != nullptr) {
                 temp1 = pNumber->state * pEntityConf->divider;
+                ESP_LOGW("dhw_rum", "state: %f, divider: %f", pNumber->state, pEntityConf->divider);
             } else if (pSelect != nullptr) {
                 auto it = pEntityConf->map.findByValue(pSelect->state);
                 if (it != pEntityConf->map.end()) {
