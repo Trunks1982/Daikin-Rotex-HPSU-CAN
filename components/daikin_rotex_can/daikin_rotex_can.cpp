@@ -266,7 +266,7 @@ void DaikinRotexCanComponent::dhw_run() {
         float temp1 {70};
         float temp2 {0};
 
-        auto const* pEntityConf = get_select_entity_conf(id);
+        auto const* pEntityConf = get_entity_conf(id);
         ESP_LOGW("dhw_rum", "pEntityConf: %p", pEntityConf);
         if (pEntityConf != nullptr) {
             temp1 *= pEntityConf->divider;
@@ -378,6 +378,15 @@ bool DaikinRotexCanComponent::is_command_set(TMessage const& message) {
         }
     }
     return false;
+}
+
+Accessor::TEntityArguments const* DaikinRotexCanComponent::get_entity_conf(std::string const& id) const {
+    for (auto& entity_conf : m_accessor.get_entities()) {
+        if (entity_conf.id == id && entity_conf.pEntity != nullptr) {
+            return &entity_conf;
+        }
+    }
+    return nullptr;
 }
 
 Accessor::TEntityArguments const* DaikinRotexCanComponent::get_select_entity_conf(std::string const& id) const {
