@@ -277,7 +277,7 @@ void DaikinRotexCanComponent::dhw_run() {
             ESP_LOGW("dhw_rum", "pNumber: %p, pSelect: %p", pNumber, pSelect);
 
             if (pNumber != nullptr) {
-                temp1 = pNumber->state * pEntityConf->divider;
+                temp2 = pNumber->state * pEntityConf->divider;
                 ESP_LOGW("dhw_rum", "state: %f, divider: %f", pNumber->state, pEntityConf->divider);
             } else if (pSelect != nullptr) {
                 auto it = pEntityConf->map.findByValue(pSelect->state);
