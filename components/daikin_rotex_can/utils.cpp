@@ -116,6 +116,15 @@ sensor::Sensor* Utils::toSensor(EntityBase* pEntity) {
     }
 }
 
+sensor::Sensor const* Utils::toSensor(EntityBase const* pEntity) {
+    if (sensor::Sensor const* pSensor = dynamic_cast<sensor::Sensor const*>(pEntity)) {
+        return pSensor;
+    } else {
+        ESP_LOGE(TAG, "Entity is not a sensor: %s", pEntity->get_name().c_str());
+        return nullptr;
+    }
+}
+
 text_sensor::TextSensor* Utils::toTextSensor(EntityBase* pEntity) {
     if (text_sensor::TextSensor* pTextSensor = dynamic_cast<text_sensor::TextSensor*>(pEntity)) {
         return pTextSensor;

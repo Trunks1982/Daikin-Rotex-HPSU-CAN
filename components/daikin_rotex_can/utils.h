@@ -42,6 +42,7 @@ public:
     static void log(std::string const& tag, std::string const& str_format, Args... args);
 
     static sensor::Sensor* toSensor(EntityBase*);
+    static sensor::Sensor const* toSensor(EntityBase const*);
     static text_sensor::TextSensor* toTextSensor(EntityBase*);
     static binary_sensor::BinarySensor* toBinarySensor(EntityBase*);
     static select::Select* toSelect(EntityBase*);

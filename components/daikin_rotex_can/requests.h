@@ -22,7 +22,11 @@ public:
     TRequest const* get(std::string const& id) const;
 
     EntityBase* get_entity(std::string const& id);
+    EntityBase const* get_entity(std::string const& id) const;
+
     sensor::Sensor* get_sensor(std::string const& id);
+    sensor::Sensor const* get_sensor(std::string const& id) const;
+
     text_sensor::TextSensor* get_text_sensor(std::string const& id);
     select::Select* get_select(std::string const& id);
 
@@ -54,6 +58,10 @@ inline TRequest const* TRequests::get(uint32_t index) const {
 }
 
 inline sensor::Sensor* TRequests::get_sensor(std::string const& id) {
+    return Utils::toSensor(get_entity(id));
+}
+
+inline sensor::Sensor const* TRequests::get_sensor(std::string const& id) const {
     return Utils::toSensor(get_entity(id));
 }
 

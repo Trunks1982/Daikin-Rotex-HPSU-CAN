@@ -73,7 +73,7 @@ void DaikinRotexCanComponent::setup() {
                             Utils::toBinarySensor(entity_conf.pEntity)->publish_state(std::get<bool>(variant));
                         } else if (dynamic_cast<text_sensor::TextSensor*>(entity_conf.pEntity) != nullptr) {
                             auto it = entity_conf.map.findByKey(value);
-                            const std::string str = it != entity_conf.map.end() ? it->second : Utils::format("INVALID<%f>", value);
+                            const std::string str = recalculate_state(entity_conf.pEntity, it != entity_conf.map.end() ? it->second : Utils::format("INVALID<%f>", value));
                             Utils::toTextSensor(entity_conf.pEntity)->publish_state(str);
                             variant = str;
                         } else if (dynamic_cast<select::Select*>(entity_conf.pEntity) != nullptr) {
@@ -374,6 +374,30 @@ bool DaikinRotexCanComponent::is_command_set(TMessage const& message) {
         }
     }
     return false;
+}
+
+std::string DaikinRotexCanComponent::recalculate_state(EntityBase* pEntity, std::string const& new_state) const {
+    sensor::Sensor const* tvbh = m_data_requests.get_sensor("tvbh");
+    sensor::Sensor const* tv = m_data_requests.get_sensor("tv");
+    sensor::Sensor const* tr = m_data_requests.get_sensor("tr");
+    sensor::Sensor const* dhw_mixer_position = m_data_requests.get_sensor("dhw_mixer_position");
+    sensor::Sensor const* bpv = m_data_requests.get_sensor("bypass_valve");
+    sensor::Sensor const* flow_rate = m_data_requests.get_sensor("flow_rate");
+    EntityBase const* error_code = m_data_requests.get_entity("error_code");
+
+    if (pEntity == error_code && error_code != nullptr) {
+        if (tvbh != nullptr && tr != nullptr && dhw_mixer_position != nullptr && flow_rate != nullptr) {
+            if (tvbh->state > (tr->state + 3.0f) && std::abs(dhw_mixer_position->state - 100) <= 0.01 && flow_rate->state > 10.0f) {
+                return new_state + "|3UV BPV defekt";
+            }
+        }
+        if (tvbh != nullptr && tr != nullptr && bpv != nullptr && flow_rate != nullptr) {
+            if (tvbh->state > (tv->state + 3.0f) && std::abs(bpv->state - 0) <= 0.01 && flow_rate->state > 10.0f) {
+                return new_state + "|3UV DHW defekt";
+            }
+        }
+    }
+    return new_state;
 }
 
 Accessor::TEntityArguments const* DaikinRotexCanComponent::get_entity_conf(std::string const& id) const {
