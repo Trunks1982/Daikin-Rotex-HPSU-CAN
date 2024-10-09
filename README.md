@@ -3,10 +3,14 @@
 [![en](https://img.shields.io/badge/lang-en-red.svg)](README.en.md) 
 
 # Rotex /Daikin HPSU CAN
-Wir bieten hier eine flexible Lösung die Standalone, mit Homeassistant und Iobroker läuft,um meine Rotex HPSU Compact mittels CAN BUS auszulesen und zu steuern.
-Verwendet wird zb. ein ESP32-S3-WROOM Board (es sollte jeder ab S1 funktionieren, weil diese die 20kbits Baudrate unterstützen,
-die normalen ESP32 Wroom funktionieren nicht weil diese erst ab 50kbit funktionieren) und ein Waveshare SN65HVD230 CAN Board mit 3,3V.
-Ein ESP32 S3 mini (Zero) funktioniert auch.
+**Daikin-Rotex-HPSU-CAN** ist eine flexible Standalone-Lösung zum Auslesen und Steuern von Rotex/Daikin Luftwärmepumpen über den CAN-Bus.
+Die Steuerung und der Datenzugriff erfolgen wahlweise über den integrierten Webserver oder bequem über Home Assistant bzw. ioBroker.
+
+Als Hardware wird ein **ESP32** benötigt, der eine Baudrate von **20 kbit/s** unterstützt.  
+Erfolgreich getestet wurden das **ESP32-S3-WROOM-Board** und ein **WaveShare ESP32-S3 Mini**.  
+Eine Übersicht weiterer Varianten und deren unterstützte Bitrate findest du in der folgenden [Tabelle](https://esphome.io/components/canbus/esp32_can).  
+
+Zusätzlich ist ein kompatibler **CAN-Transceiver** erforderlich, wie der **Waveshare SN65HVD230** (3,3V).
 
 ## WEBUI vom ESP:
 ![Bildschirmfoto 2024-09-17 um 13 13 06](https://github.com/user-attachments/assets/8bb5ca8e-323f-45d1-ab4b-a30f185a6ffc)
@@ -14,14 +18,12 @@ Ein ESP32 S3 mini (Zero) funktioniert auch.
 ## Ansicht Homeassistant:
 ![Bildschirmfoto 2024-04-01 um 01 37 19](https://github.com/Trunks1982/Daikin-Rotex-HPSU-CAN/assets/62701386/d9c1d703-ac4a-4466-97e3-dbd6478cbed1)
 
-# Warning!!
-Die Verwendung von Daikin-Rotex-HPSU-Can kann das Heizsystem beschädigen. Die Verwendung von Daikin-Rotex-HPSU-Can erfolgt auf eigene Gefahr. Der Schöpfer kann nicht für Schäden verantwortlich gemacht werden.
+## Achtung!!
+Die Verwendung von Daikin-Rotex-HPSU-CAN kann potenziell Ihr Heizsystem beschädigen. Die Nutzung erfolgt auf eigene Verantwortung. Ich übernehme keine Haftung für entstandene Schäden.
 
-Sie können einen Verlust der Garantie und Unterstützung durch den Hersteller riskieren!!!!
+Bitte beachten Sie, dass durch die Verwendung von Daikin-Rotex-HPSU-CAN möglicherweise Ihre Garantie sowie der Support durch den Hersteller erlischt!
 
-Diese Software wird vom Hersteller nicht unterstützt!!!!
-
-## Installationsanleitung:
+# Installationsanleitung:
 1. Du benötigst um den ESP32 zu flashen einmal den Browser Google Chrome (Safari und Firefox werden nicht unterstützt). Dann benötigst du die Datei Rotex-Factory.bin aus dem Ordner .bin.
 2. Du öffnest dann die Website https://web.esphome.io und verbindest den ESP32 mittels USB-C mit dem PC. Nach dem verbinden klickst du auf der Website auf "Connect". Danach öffnet sich ein Fenster wo du die USB-Serial Schnitstelle auswählst.
 3. Danach öffnet sich ein neues Fenster auf der Website wo du auf "Installieren" klickst.
