@@ -54,7 +54,7 @@ inline uint32_t TRequests::size() const {
 }
 
 inline TRequest const* TRequests::get(uint32_t index) const {
-    return (index >= 0 && index < m_requests.size()) ? &m_requests[index] : nullptr;
+    return (index < m_requests.size()) ? &m_requests[index] : nullptr;
 }
 
 inline sensor::Sensor* TRequests::get_sensor(std::string const& id) {
