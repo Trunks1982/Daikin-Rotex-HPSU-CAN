@@ -275,7 +275,8 @@ daikin_rotex_can:
 # Konfiguration -> HZK Konfig
     hk_function:
       name: HK Funktion
-#T-Frostschutz
+    temperature_antifreeze:
+      name: T-Frostschutz
 #Gebäudedämumng
 #Estrich
 #Estrichprogramm

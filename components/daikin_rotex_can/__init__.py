@@ -507,6 +507,19 @@ sensor_configuration = [
         "divider": 10.0
     },
     {
+        "type": "select",
+        "name": "temperature_antifreeze",
+        "device_class": DEVICE_CLASS_TEMPERATURE,
+        "unit_of_measurement": UNIT_CELSIUS,
+        "accuracy_decimals": 0,
+        "state_class": STATE_CLASS_MEASUREMENT,
+        "command": "31 00 FA 0A 00",
+        "data_offset": 5,
+        "data_size": 2,
+        "divider": 10.0,
+        "map": {0xFF60 / 10.0: "Aus", **{i: f"{i} °C" for i in range(-15, 6)}}
+    },
+    {
         "type": "sensor",
         "name": "tv",
         "device_class": DEVICE_CLASS_TEMPERATURE,
@@ -1476,7 +1489,7 @@ async def to_code(config):
                     sens_conf.get("data_offset", 5),
                     sens_conf.get("data_size", 1),
                     divider,
-                    "|".join([f"0x{int(key * divider):02X}:{value}" for key, value in mapping.items()]),
+                    "|".join([f"0x{int(key * divider) & 0xFFFF :02X}:{value}" for key, value in mapping.items()]),
                     sens_conf.get("update_entity", ""),
                     update_interval,
                     await handle_lambda(),
