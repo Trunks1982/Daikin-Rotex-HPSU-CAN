@@ -21,6 +21,11 @@ public:
     void set_canbus(esphome::esp32_can::ESP32Can* pCanbus);
     void set_update_interval(uint16_t seconds) {} // dummy
     void set_project_git_hash(text_sensor::TextSensor* pSensor, std::string const& hash) { m_project_git_hash_sensor = pSensor; m_project_git_hash = hash; }
+    void add_entity(EntityBase* pEntity) {
+        if (TRequest* pRequest = dynamic_cast<TRequest*>(pEntity)) {
+            m_data_requests.add(pRequest);
+        }
+    }
 
     // Texts
     void custom_request(std::string const& value);

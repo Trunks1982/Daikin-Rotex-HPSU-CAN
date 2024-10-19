@@ -18,6 +18,9 @@ DaikinRotexCanComponent = daikin_rotex_can_ns.class_('DaikinRotexCanComponent', 
 
 GenericSelect = daikin_rotex_can_ns.class_("GenericSelect", select.Select)
 GenericNumber = daikin_rotex_can_ns.class_("GenericNumber", number.Number)
+GenericSensor = daikin_rotex_can_ns.class_("GenericSensor", sensor.Sensor)
+GenericTextSensor = daikin_rotex_can_ns.class_("GenericTextSensor", text_sensor.TextSensor)
+GenericBinarySensor = daikin_rotex_can_ns.class_("GenericBinarySensor", binary_sensor.BinarySensor)
 
 LogFilterText = daikin_rotex_can_ns.class_("LogFilterText", text.Text)
 CustomRequestText = daikin_rotex_can_ns.class_("CustomRequestText", text.Text)
@@ -1265,6 +1268,7 @@ for sensor_conf in sensor_configuration:
         case "sensor":
             entity_schemas.update({
                 cv.Optional(name): sensor.sensor_schema(
+                    GenericSensor,
                     device_class=(sensor_conf.get("device_class") if sensor_conf.get("device_class") != None else sensor._UNDEF),
                     unit_of_measurement=sensor_conf.get("unit_of_measurement"),
                     accuracy_decimals=sensor_conf.get("accuracy_decimals"),
@@ -1275,12 +1279,14 @@ for sensor_conf in sensor_configuration:
         case "text_sensor":
             entity_schemas.update({
                 cv.Optional(name): text_sensor.text_sensor_schema(
+                    GenericTextSensor,
                     icon=sensor_conf.get("icon", text_sensor._UNDEF)
                 ).extend({cv.Optional(CONF_UPDATE_INTERVAL): cv.uint16_t}),
             })
         case "binary_sensor":
             entity_schemas.update({
                 cv.Optional(name): binary_sensor.binary_sensor_schema(
+                    GenericBinarySensor,
                     icon=sensor_conf.get("icon", binary_sensor._UNDEF)
                 ).extend({cv.Optional(CONF_UPDATE_INTERVAL): cv.uint16_t}),
             })
@@ -1486,6 +1492,22 @@ async def to_code(config):
                         return_type=cg.void,
                     )
 
+                cg.add(entity.set_entity(sens_conf.get("name"), [
+                    entity,
+                    sens_conf.get("name"),
+                    sens_conf.get("can_id", 0x180),
+                    sens_conf.get("command", ""),
+                    sens_conf.get("data_offset", 5),
+                    sens_conf.get("data_size", 1),
+                    divider,
+                    str_map,
+                    sens_conf.get("update_entity", ""),
+                    update_interval,
+                    await handle_lambda(),
+                    await set_lambda(),
+                    "handle_lambda" in sens_conf,
+                    "set_lambda" in sens_conf
+                ]))
                 cg.add(var.getAccessor().set_entity(sens_conf.get("name"), [
                     entity,
                     sens_conf.get("name"),
@@ -1502,6 +1524,7 @@ async def to_code(config):
                     "handle_lambda" in sens_conf,
                     "set_lambda" in sens_conf
                 ]))
+                cg.add(var.add_entity(entity));
 
         ########## Sensors ##########
 

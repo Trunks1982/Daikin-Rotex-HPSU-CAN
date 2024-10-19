@@ -7,7 +7,7 @@
 namespace esphome {
 namespace daikin_rotex_can {
 
-class GenericSelect : public select::Select, public Parented<DaikinRotexCanComponent> {
+class GenericSelect : public select::Select, public TRequest, public Parented<DaikinRotexCanComponent> {
 public:
     GenericSelect() = default;
     void set_id(std::string const& id) { m_id = id; }

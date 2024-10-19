@@ -2,7 +2,9 @@
 
 #include "esphome/components/daikin_rotex_can/types.h"
 #include "esphome/components/daikin_rotex_can/utils.h"
+#include "esphome/components/daikin_rotex_can/Accessor.h"
 #include "esphome/components/esp32_can/esp32_can.h"
+#include "esphome/core/entity_base.h"
 #include <functional>
 
 namespace esphome {
@@ -19,25 +21,7 @@ public:
     using TGetLambda = std::function<TVariant(TMessage const&)>;
     using TSetLambda = std::function<TMessage(float const&)>;
 public:
-    TRequest(
-        std::string const& id,
-        uint16_t can_id,
-        TMessage const& command,
-        EntityBase* entity,
-        TGetLambda lambda,
-        TSetLambda setLambda,
-        uint16_t update_interval)
-    : m_id(id)
-    , m_can_id(can_id)
-    , m_command(command)
-    , m_expected_reponse(TRequest::calculate_reponse(command))
-    , m_entity(entity)
-    , m_lambda(lambda)
-    , m_set_lambda(setLambda)
-    , m_last_handle_timestamp(0u)
-    , m_last_get_timestamp(0u)
-    , m_update_interval(update_interval)
-    {
+    TRequest() {
     }
 
     std::string const& get_id() const { return m_id; }
@@ -66,6 +50,20 @@ public:
 
     uint32_t getLastUpdate() const {
         return m_last_handle_timestamp;
+    }
+
+    void set_entity(std::string const& name, Accessor::TEntityArguments const& arg) { 
+        m_id = arg.id;
+        m_can_id = arg.can_id;
+        m_command = arg.command;
+        m_expected_reponse = TRequest::calculate_reponse(arg.command);
+        m_entity = arg.pEntity;
+        m_update_interval = arg.update_interval;
+    }
+
+    void set_lambdas(TGetLambda&& lambda, TSetLambda&& setLambda) {
+        m_lambda = std::move(lambda);
+        m_set_lambda = std::move(setLambda);
     }
 
     bool isMatch(uint32_t can_id, TMessage const& responseData) const;

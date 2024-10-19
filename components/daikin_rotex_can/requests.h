@@ -12,7 +12,7 @@ class GenericSelect;
 class TRequests {
 public:
     TRequests();
-    void add(esphome::daikin_rotex_can::TRequest const& request);
+    void add(esphome::daikin_rotex_can::TRequest* pRequest);
 
     void removeInvalidRequests();
 
@@ -39,7 +39,7 @@ public:
 private:
     TRequest* getNextRequestToSend();
 
-    std::vector<TRequest> m_requests;
+    std::vector<TRequest*> m_requests;
     esphome::esp32_can::ESP32Can* m_pCanbus;
 };
 
@@ -56,7 +56,7 @@ inline uint32_t TRequests::size() const {
 }
 
 inline TRequest const* TRequests::get(uint32_t index) const {
-    return (index < m_requests.size()) ? &m_requests[index] : nullptr;
+    return (index < m_requests.size()) ? m_requests[index] : nullptr;
 }
 
 inline sensor::Sensor* TRequests::get_sensor(std::string const& id) {

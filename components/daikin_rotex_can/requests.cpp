@@ -12,8 +12,8 @@ TRequests::TRequests()
 {
 }
 
-void TRequests::add(esphome::daikin_rotex_can::TRequest const& request) {
-    m_requests.push_back(request);
+void TRequests::add(esphome::daikin_rotex_can::TRequest* pRequest) {
+    m_requests.push_back(pRequest);
 }
 
 void TRequests::removeInvalidRequests() {
@@ -21,7 +21,7 @@ void TRequests::removeInvalidRequests() {
         std::remove_if(
             m_requests.begin(),
             m_requests.end(),
-            [](TRequest const& request) { return !request.isGetSupported(); }
+            [](TRequest* pRequest) { return !pRequest->isGetSupported(); }
         ),
         m_requests.end()
     );
@@ -57,10 +57,10 @@ bool TRequests::sendNextPendingGet() {
 
 void TRequests::sendSet(std::string const& request_name, float value) {
     const auto it = std::find_if(m_requests.begin(), m_requests.end(),
-        [&request_name](auto& request) { return request.getName() == request_name; }
+        [&request_name](auto pRequest) { return pRequest->getName() == request_name; }
     );
     if (it != m_requests.end()) {
-        it->sendSet(m_pCanbus, value);
+        (*it)->sendSet(m_pCanbus, value);
     } else {
         ESP_LOGE("sendSet", "Unknown request: %s", request_name.c_str());
     }
@@ -69,8 +69,8 @@ void TRequests::sendSet(std::string const& request_name, float value) {
 void TRequests::handle(uint32_t can_id, TMessage const& responseData) {
     bool bHandled = false;
     const uint32_t timestamp = millis();
-    for (auto& request : m_requests) {
-        if (request.handle(can_id, responseData, timestamp)) {
+    for (auto pRequest : m_requests) {
+        if (pRequest->handle(can_id, responseData, timestamp)) {
             bHandled = true;
             break;
         }
@@ -81,9 +81,9 @@ void TRequests::handle(uint32_t can_id, TMessage const& responseData) {
 }
 
 TRequest const* TRequests::get(std::string const& id) const {
-    for (auto& request: m_requests) {
-        if (request.get_id() == id) {
-            return &request;
+    for (auto pRequest: m_requests) {
+        if (pRequest->get_id() == id) {
+            return pRequest;
         }
     }
     return nullptr;
@@ -92,15 +92,15 @@ TRequest const* TRequests::get(std::string const& id) const {
 TRequest* TRequests::getNextRequestToSend() {
     const uint32_t timestamp = millis();
 
-    for (auto& request : m_requests) {
-        if (request.is_command_set() && request.isGetInProgress()) {
+    for (auto pRequest : m_requests) {
+        if (pRequest->is_command_set() && pRequest->isGetInProgress()) {
             return nullptr;
         }
     }
 
-    for (auto& request : m_requests) {
-        if (request.is_command_set() && request.isGetNeeded()) {
-            return &request;
+    for (auto pRequest : m_requests) {
+        if (pRequest->is_command_set() && pRequest->isGetNeeded()) {
+            return pRequest;
         }
     }
     return nullptr;

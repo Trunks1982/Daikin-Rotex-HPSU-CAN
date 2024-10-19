@@ -36,6 +36,7 @@ bool TRequest::isMatch(uint32_t can_id, TMessage const& responseData) const {
     const bool is_rocon_panel_response = can_id == 0x10A && (is_response || is_set);    // Listen for responses and sets caused by RoCon control panel (0x10A)
 
     const bool is_valid = is_our_response || is_rocon_panel_response;
+
     if (is_valid) {
         for (uint32_t index = 0; index < responseData.size(); ++index) {
             if (m_expected_reponse[index] != DC && responseData[index] != m_expected_reponse[index]) {

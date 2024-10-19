@@ -38,11 +38,8 @@ void DaikinRotexCanComponent::setup() {
                 Utils::to_hex(entity_conf.can_id).c_str(), Utils::to_hex(entity_conf.command).c_str());
         }, POST_SETUP_TIMOUT);
 
-        m_data_requests.add({
-            entity_conf.id,
-            entity_conf.can_id,
-            entity_conf.command,
-            entity_conf.pEntity,
+        TRequest* pRequest = dynamic_cast<TRequest*>(entity_conf.pEntity);
+        pRequest->set_lambdas(
             [entity_conf, this](auto const& data) -> TRequest::TVariant {
                 TRequest::TVariant variant;
 
@@ -118,9 +115,8 @@ void DaikinRotexCanComponent::setup() {
                     //Utils::setBytes(message, uvalue, entity_conf.data_offset, entity_conf.data_size);
                 }
                 return message;
-            },
-            entity_conf.update_interval
-        });
+            }
+        );
     }
 
     m_data_requests.removeInvalidRequests();
