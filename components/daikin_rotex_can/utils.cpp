@@ -1,4 +1,5 @@
 #include "esphome/components/daikin_rotex_can/utils.h"
+#include "esphome/components/daikin_rotex_can/selects.h"
 #include <regex>
 
 namespace esphome {
@@ -86,6 +87,26 @@ TMessage Utils::str_to_bytes_array8(const std::string& str) {
     return byte_array;
 }
 
+std::map<uint16_t, std::string> Utils::str_to_map(const std::string& input) {
+    std::map<uint16_t, std::string> result;
+    std::stringstream ss(input);
+    std::string pair;
+
+    while (std::getline(ss, pair, '|')) {
+        size_t pos = pair.find(':');
+        if (pos != std::string::npos) {
+            std::string keyStr = pair.substr(0, pos);
+            std::string value = pair.substr(pos + 1);
+
+            uint16_t key = static_cast<uint16_t>(std::strtoul(keyStr.c_str(), nullptr, 16));
+
+            result[key] = value;
+        }
+    }
+
+    return result;
+}
+
 uint16_t Utils::hex_to_uint16(const std::string& hexStr) {
     uint16_t result;
     std::stringstream ss;
@@ -110,55 +131,67 @@ void Utils::setBytes(TMessage& data, uint16_t value, uint8_t offset, uint8_t len
 sensor::Sensor* Utils::toSensor(EntityBase* pEntity) {
     if (sensor::Sensor* pSensor = dynamic_cast<sensor::Sensor*>(pEntity)) {
         return pSensor;
-    } else {
+    } else if (pEntity) {
         ESP_LOGE(TAG, "Entity is not a sensor: %s", pEntity->get_name().c_str());
-        return nullptr;
+    } else {
+        ESP_LOGE(TAG, "Entity is null!");
     }
+    return nullptr;
 }
 
 sensor::Sensor const* Utils::toSensor(EntityBase const* pEntity) {
     if (sensor::Sensor const* pSensor = dynamic_cast<sensor::Sensor const*>(pEntity)) {
         return pSensor;
+    } else if (pEntity) {
+        ESP_LOGE(TAG, "Const Entity is not a sensor: %s", pEntity->get_name().c_str());
     } else {
-        ESP_LOGE(TAG, "Entity is not a sensor: %s", pEntity->get_name().c_str());
-        return nullptr;
+        ESP_LOGE(TAG, "Const Entity is null!");
     }
+    return nullptr;
 }
 
 text_sensor::TextSensor* Utils::toTextSensor(EntityBase* pEntity) {
     if (text_sensor::TextSensor* pTextSensor = dynamic_cast<text_sensor::TextSensor*>(pEntity)) {
         return pTextSensor;
-    } else {
+    } else if (pEntity) {
         ESP_LOGE(TAG, "Entity is not a text sensor: %s", pEntity->get_name().c_str());
-        return nullptr;
+    } else {
+        ESP_LOGE(TAG, "toTextSensor() => Entity is null!");
     }
+    return nullptr;
 }
 
 binary_sensor::BinarySensor* Utils::toBinarySensor(EntityBase* pEntity) {
     if (binary_sensor::BinarySensor* pBinarySensor = dynamic_cast<binary_sensor::BinarySensor*>(pEntity)) {
         return pBinarySensor;
-    } else {
+    } else if (pEntity) {
         ESP_LOGE(TAG, "Entity is not a binary sensor: %s", pEntity->get_name().c_str());
-        return nullptr;
+    } else {
+        ESP_LOGE(TAG, "toBinarySensor() => Entity is null!");
     }
+    return nullptr;
 }
 
-select::Select* Utils::toSelect(EntityBase* pEntity) {
-    if (select::Select* pSelect = dynamic_cast<select::Select*>(pEntity)) {
+GenericSelect* Utils::toSelect(EntityBase* pEntity) {
+    if (GenericSelect* pSelect = dynamic_cast<GenericSelect*>(pEntity)) {
         return pSelect;
-    } else {
+    } else if (pEntity) {
         ESP_LOGE(TAG, "Entity is not a select: %s", pEntity->get_name().c_str());
-        return nullptr;
+    } else {
+        ESP_LOGE(TAG, "toSelect() => Entity is null!");
     }
+    return nullptr;
 }
 
 number::Number* Utils::toNumber(EntityBase* pEntity) {
     if (number::Number* pNumber = dynamic_cast<number::Number*>(pEntity)) {
         return pNumber;
-    } else {
+    } else if (pEntity) {
         ESP_LOGE(TAG, "Entity is not a number: %s", pEntity->get_name().c_str());
-        return nullptr;
+    } else {
+        ESP_LOGE(TAG, "toNumber() => Entity is null!");
     }
+    return nullptr;
 }
 
 template<typename... Args>

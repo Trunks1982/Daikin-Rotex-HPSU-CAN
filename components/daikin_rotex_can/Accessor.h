@@ -56,7 +56,7 @@ public:
         , data_offset(_data_offset)
         , data_size(_data_size)
         , divider(_divider)
-        , map(str_to_map(_map))
+        , map(Utils::str_to_map(_map))
         , update_entity(_update_entity)
         , update_interval(_update_interval)
         , handle_lambda(_handle_lambda)
@@ -95,9 +95,6 @@ public:
     sensor::Sensor* get_thermal_power() const { return m_thermal_power; }
     void set_thermal_power(sensor::Sensor* pSensor) { m_thermal_power = pSensor; }
 
-private:
-
-    static std::map<uint16_t, std::string> str_to_map(const std::string& input);
 private:
     text::Text* m_log_filter;
     text::Text* m_custom_request_text;

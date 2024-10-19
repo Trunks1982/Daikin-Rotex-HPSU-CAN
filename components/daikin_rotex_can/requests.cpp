@@ -4,6 +4,8 @@
 namespace esphome {
 namespace daikin_rotex_can {
 
+static const char* TAG = "daikin_rotex_can";
+
 TRequests::TRequests()
 : m_requests()
 , m_pCanbus(nullptr)
@@ -91,13 +93,13 @@ TRequest* TRequests::getNextRequestToSend() {
     const uint32_t timestamp = millis();
 
     for (auto& request : m_requests) {
-        if (request.isGetInProgress()) {
+        if (request.is_command_set() && request.isGetInProgress()) {
             return nullptr;
         }
     }
 
     for (auto& request : m_requests) {
-        if (request.isGetNeeded()) {
+        if (request.is_command_set() && request.isGetNeeded()) {
             return &request;
         }
     }

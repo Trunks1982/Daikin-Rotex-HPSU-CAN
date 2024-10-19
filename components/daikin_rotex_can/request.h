@@ -8,6 +8,8 @@
 namespace esphome {
 namespace daikin_rotex_can {
 
+class GenericSelect;
+
 class TRequest
 {
     static const uint16_t DC = 0xFFFF; // Don't care
@@ -56,9 +58,7 @@ public:
         return dynamic_cast<number::Number*>(m_entity);
     }
 
-    select::Select* get_select() const {
-        return dynamic_cast<select::Select*>(m_entity);
-    }
+    GenericSelect* get_select() const;
 
     bool isGetSupported() const {
         return m_entity != nullptr;
@@ -75,6 +75,7 @@ public:
     bool sendSet(esphome::esp32_can::ESP32Can* pCanBus, float value);
 
     bool isGetNeeded() const;
+    bool is_command_set() const;
 
     bool isGetInProgress() const;
     uint16_t get_update_interval() const { return m_update_interval; }
@@ -105,6 +106,15 @@ private:
 inline bool TRequest::isGetNeeded() const {
     const uint32_t update_interval = get_update_interval() * 1000;
     return getLastUpdate() == 0 || (millis() > (getLastUpdate() + update_interval));
+}
+
+inline bool TRequest::is_command_set() const {
+    for (auto& b : m_command) {
+        if (b != 0x00) {
+            return true;
+        }
+    }
+    return false;
 }
 
 }

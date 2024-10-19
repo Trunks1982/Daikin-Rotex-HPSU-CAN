@@ -10,6 +10,8 @@ class BidiMap {
 public:
     using Iterator = typename std::map<uint16_t, std::string>::const_iterator;
 
+    BidiMap() {}
+
     BidiMap(std::initializer_list<std::pair<const uint16_t, std::string>> init_list)
     : key_to_value(init_list) {
         for (const auto& pair : init_list) {
@@ -24,6 +26,8 @@ public:
             value_to_key[pair.second] = pair.first;
         }
     }
+
+    inline BidiMap& operator=(const std::map<uint16_t, std::string>& other_map);
 
     Iterator findByKey(const uint16_t& key) const {
         return key_to_value.find(key);
@@ -55,6 +59,18 @@ private:
     std::map<uint16_t, std::string> key_to_value;
     std::map<std::string, uint16_t> value_to_key;
 };
+
+inline BidiMap& BidiMap::operator=(const std::map<uint16_t, std::string>& other_map) {
+    key_to_value.clear();
+    value_to_key.clear();
+
+    key_to_value = other_map;
+    for (const auto& pair : other_map) {
+        value_to_key[pair.second] = pair.first;
+    }
+
+    return *this;
+}
 
 }
 }

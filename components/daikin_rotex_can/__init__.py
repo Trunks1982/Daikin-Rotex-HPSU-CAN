@@ -1421,8 +1421,13 @@ async def to_code(config):
         for sens_conf in sensor_configuration:
             if yaml_sensor_conf := entities.get(sens_conf.get("name")):
                 entity = None
-                mapping = sens_conf.get("map", {})
                 divider = sens_conf.get("divider", 1.0)
+
+                mapping = sens_conf.get("map", {})
+                if yaml_sensor_conf.get("type") == "select" and "options" in yaml_sensor_conf:
+                    mapping = yaml_sensor_conf.get("options")
+                str_map = "|".join([f"0x{int(key * divider) & 0xFFFF :02X}:{value}" for key, value in mapping.items()])
+
                 match sens_conf.get("type"):
                     case "sensor":
                         entity = await sensor.new_sensor(yaml_sensor_conf)
@@ -1433,6 +1438,7 @@ async def to_code(config):
                     case "select":
                         entity = await select.new_select(yaml_sensor_conf, options = list(mapping.values()))
                         cg.add(entity.set_id(sens_conf.get("name")))
+                        cg.add(entity.set_map(str_map))
                         await cg.register_parented(entity, var)
                     case "number":
                         if "min_value" not in sens_conf:
@@ -1451,9 +1457,8 @@ async def to_code(config):
                                     step=sens_conf.get("step")
                                 )
                             case "select":
-                                if "options" in yaml_sensor_conf:
-                                    mapping = yaml_sensor_conf.get("options")
                                 entity = await select.new_select(yaml_sensor_conf, options = list(mapping.values()))
+                                cg.add(entity.set_map(str_map))
 
                         cg.add(entity.set_id(sens_conf.get("name")))
 
@@ -1489,7 +1494,7 @@ async def to_code(config):
                     sens_conf.get("data_offset", 5),
                     sens_conf.get("data_size", 1),
                     divider,
-                    "|".join([f"0x{int(key * divider) & 0xFFFF :02X}:{value}" for key, value in mapping.items()]),
+                    str_map,
                     sens_conf.get("update_entity", ""),
                     update_interval,
                     await handle_lambda(),

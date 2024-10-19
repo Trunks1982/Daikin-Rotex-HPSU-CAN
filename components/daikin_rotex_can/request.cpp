@@ -1,4 +1,5 @@
 #include "esphome/components/daikin_rotex_can/request.h"
+#include "esphome/components/daikin_rotex_can/selects.h"
 #include "esphome/components/esp32_can/esp32_can.h"
 #include "esphome/core/hal.h"
 
@@ -18,6 +19,9 @@ std::array<uint16_t, 7> TRequest::calculate_reponse(TMessage const& message) {
     return response;
 }
 
+GenericSelect* TRequest::get_select() const {
+    return dynamic_cast<GenericSelect*>(m_entity);
+}
 
 bool TRequest::isGetInProgress() const {
     uint32_t mil = millis();

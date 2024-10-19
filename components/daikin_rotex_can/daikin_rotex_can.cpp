@@ -1,5 +1,6 @@
 #include "esphome/components/daikin_rotex_can/daikin_rotex_can.h"
 #include "esphome/components/daikin_rotex_can/request.h"
+#include "esphome/components/daikin_rotex_can/selects.h"
 #include <string>
 #include <vector>
 
@@ -7,9 +8,11 @@ namespace esphome {
 namespace daikin_rotex_can {
 
 static const char* TAG = "daikin_rotex_can";
-static const char* MODE_OF_OPERATING = "mode_of_operating";         // Betriebsart
-static const char* OPERATING_MODE = "operating_mode";               // Betriebsmodus
+static const char* MODE_OF_OPERATING = "mode_of_operating";             // Betriebsart
+static const char* OPERATING_MODE = "operating_mode";                   // Betriebsmodus
 static const char* OPTIMIZED_DEFROSTING = "optimized_defrosting";
+static const char* TEMPERATURE_ANTIFREEZE = "temperature_antifreeze";   // T-Frostschutz
+static const char* TEMPERATURE_ANTIFREEZE_OFF = "Aus";
 static const uint32_t POST_SETUP_TIMOUT = 15*1000;
 
 
@@ -28,24 +31,12 @@ DaikinRotexCanComponent::DaikinRotexCanComponent()
 void DaikinRotexCanComponent::setup() {
     ESP_LOGI(TAG, "setup");
 
-    select::Select* p_optimized_defrosting = nullptr;
-
     for (auto const& entity_conf : m_accessor.get_entities()) {
-        const bool command_set = is_command_set(entity_conf.command);
-
-        call_later([entity_conf, command_set](){
-            ESP_LOGI("setup", "name: %s, id: %s, can_id: %s, command: %s, command_set: %d",
+        call_later([entity_conf](){
+            ESP_LOGI("setup", "name: %s, id: %s, can_id: %s, command: %s",
                 entity_conf.pEntity->get_name().c_str(), entity_conf.id.c_str(),
-                Utils::to_hex(entity_conf.can_id).c_str(), Utils::to_hex(entity_conf.command).c_str(), command_set);
+                Utils::to_hex(entity_conf.can_id).c_str(), Utils::to_hex(entity_conf.command).c_str());
         }, POST_SETUP_TIMOUT);
-
-        if (entity_conf.id == OPTIMIZED_DEFROSTING) {
-            p_optimized_defrosting = dynamic_cast<select::Select*>(entity_conf.pEntity);
-        }
-
-        if (!command_set) {
-            continue;
-        }
 
         m_data_requests.add({
             entity_conf.id,
@@ -76,9 +67,8 @@ void DaikinRotexCanComponent::setup() {
                             const std::string str = recalculate_state(entity_conf.pEntity, it != entity_conf.map.end() ? it->second : Utils::format("INVALID<%f>", value));
                             Utils::toTextSensor(entity_conf.pEntity)->publish_state(str);
                             variant = str;
-                        } else if (dynamic_cast<select::Select*>(entity_conf.pEntity) != nullptr) {
-                            auto it = entity_conf.map.findNextByKey(value);
-                            const std::string str = it != entity_conf.map.end() ? it->second : Utils::format("INVALID<%f>", value);
+                        } else if (auto* pSelect = dynamic_cast<GenericSelect*>(entity_conf.pEntity)) {
+                            const std::string str = pSelect->findNextByKey(value, Utils::format("INVALID<%f>", value));
                             Utils::toSelect(entity_conf.pEntity)->publish_state(str);
                             variant = str;
                         } else if (dynamic_cast<number::Number*>(entity_conf.pEntity) != nullptr) {
@@ -140,19 +130,14 @@ void DaikinRotexCanComponent::setup() {
         ESP_LOGI("setup", "resquests.size: %d", size);
     }, POST_SETUP_TIMOUT);
 
+    GenericSelect* p_optimized_defrosting = m_data_requests.get_select(OPTIMIZED_DEFROSTING);
     if (p_optimized_defrosting != nullptr) {
         m_optimized_defrosting_pref = global_preferences->make_preference<bool>(p_optimized_defrosting->get_object_id_hash());
         if (!m_optimized_defrosting_pref.load(&m_optimized_defrosting)) {
             m_optimized_defrosting = false;
         }
 
-        auto const* pEntityConf = get_select_entity_conf(OPTIMIZED_DEFROSTING);
-        if (pEntityConf != nullptr) {
-            auto it = pEntityConf->map.findByKey(m_optimized_defrosting);
-            if (it != pEntityConf->map.end()) {
-                p_optimized_defrosting->publish_state(it->second);
-            }
-        }
+        p_optimized_defrosting->publish_select_key(m_optimized_defrosting);
     }
 
     m_project_git_hash_sensor->publish_state(m_project_git_hash);
@@ -189,9 +174,18 @@ void DaikinRotexCanComponent::update_thermal_power() {
 bool DaikinRotexCanComponent::on_custom_select(std::string const& id, uint8_t value) {
     if (id == OPTIMIZED_DEFROSTING) {
         Utils::log(TAG, "optimized_defrosting: %d", value);
-        m_optimized_defrosting = value;
-        m_optimized_defrosting_pref.save(&m_optimized_defrosting);
-        return true;
+        GenericSelect* p_temperature_antifreeze = m_data_requests.get_select(TEMPERATURE_ANTIFREEZE);
+
+        if (p_temperature_antifreeze != nullptr) {
+            if (value != 0) {
+                m_data_requests.sendSet(p_temperature_antifreeze->get_name(), p_temperature_antifreeze->getKey(TEMPERATURE_ANTIFREEZE_OFF));
+            }
+            m_optimized_defrosting = value;
+            m_optimized_defrosting_pref.save(&m_optimized_defrosting);
+            return true;
+        } else {
+            ESP_LOGE(TAG, "on_custom_select(%s, %d) => temperature_antifreeze select is missing!", id.c_str(), value);
+        }
     }
     return false;
 }
@@ -234,16 +228,12 @@ void DaikinRotexCanComponent::custom_request(std::string const& value) {
 
 ///////////////// Selects /////////////////
 void DaikinRotexCanComponent::set_generic_select(std::string const& id, std::string const& state) {
-    auto const* pEntityConf = get_select_entity_conf(id);
-    if (pEntityConf != nullptr) {
-        auto it = pEntityConf->map.findByValue(state);
-        if (it != pEntityConf->map.end()) {
-            const bool handled = on_custom_select(pEntityConf->id, it->first);
-            if (!handled) {
-                m_data_requests.sendSet(pEntityConf->pEntity->get_name(), it->first);
-            }
-        } else {
-            ESP_LOGE(TAG, "set_generic_select(%s, %s) => Invalid value!", id.c_str(), state.c_str());
+    auto const* pSelect = m_data_requests.get_select(id);
+    if (pSelect != nullptr) {
+        const auto key = pSelect->getKey(state);
+        const bool handled = on_custom_select(id, key);
+        if (!handled) {
+            m_data_requests.sendSet(pSelect->get_name(), key);
         }
     }
 }
@@ -271,15 +261,12 @@ void DaikinRotexCanComponent::dhw_run() {
             temp1 *= pEntityConf->divider;
 
             number::Number* pNumber = pRequest->get_number();
-            select::Select* pSelect = pRequest->get_select();
+            GenericSelect* pSelect = pRequest->get_select();
 
             if (pNumber != nullptr) {
                 temp2 = pNumber->state * pEntityConf->divider;
             } else if (pSelect != nullptr) {
-                auto it = pEntityConf->map.findByValue(pSelect->state);
-                if (it != pEntityConf->map.end()) {
-                    temp2 = it->first;
-                }
+                temp2 = pSelect->getKey(pSelect->state);
             }
         }
 
