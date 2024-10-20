@@ -1,4 +1,4 @@
-#include "esphome/components/daikin_rotex_can/request.h"
+#include "esphome/components/daikin_rotex_can/entity.h"
 #include "esphome/components/daikin_rotex_can/selects.h"
 #include "esphome/components/esp32_can/esp32_can.h"
 #include "esphome/core/hal.h"
@@ -6,7 +6,7 @@
 namespace esphome {
 namespace daikin_rotex_can {
 
-std::array<uint16_t, 7> TRequest::calculate_reponse(TMessage const& message) {
+std::array<uint16_t, 7> TEntity::calculate_reponse(TMessage const& message) {
     const uint16_t DC = 0xFFFF;
     std::array<uint16_t, 7> response = {DC, DC, DC, DC, DC, DC, DC};
     if (message[2] == 0xFA) {   // https://github.com/crycode-de/ioBroker.canbus/blob/master/well-known-messages/configs/rotex-hpsu.md
@@ -19,16 +19,16 @@ std::array<uint16_t, 7> TRequest::calculate_reponse(TMessage const& message) {
     return response;
 }
 
-GenericSelect* TRequest::get_select() const {
-    return dynamic_cast<GenericSelect*>(m_entity);
+GenericSelect* TEntity::get_select() const {
+    return dynamic_cast<GenericSelect*>(m_entity_base);
 }
 
-bool TRequest::isGetInProgress() const {
+bool TEntity::isGetInProgress() const {
     uint32_t mil = millis();
     return m_last_get_timestamp > m_last_handle_timestamp && ((mil - m_last_get_timestamp) < 3*1000); // Consider 3 sek => package is lost
 }
 
-bool TRequest::isMatch(uint32_t can_id, TMessage const& responseData) const {
+bool TEntity::isMatch(uint32_t can_id, TMessage const& responseData) const {
     const bool is_set = (responseData[0] & 0x0F) == 0x00;
     const bool is_response = (responseData[0] & 0x0F) == 0x02;
 
@@ -48,10 +48,10 @@ bool TRequest::isMatch(uint32_t can_id, TMessage const& responseData) const {
     return false;
 }
 
-bool TRequest::handle(uint32_t can_id, TMessage const& responseData, uint32_t timestamp) {
+bool TEntity::handle(uint32_t can_id, TMessage const& responseData, uint32_t timestamp) {
     if (isMatch(can_id, responseData)) {
 
-        TRequest::TVariant variant;
+        TEntity::TVariant variant;
 
         if (m_config.data_offset > 0 && (m_config.data_offset + m_config.data_size) <= 7) {
             if (m_config.data_size >= 1 && m_config.data_size <= 2) {
@@ -99,7 +99,7 @@ bool TRequest::handle(uint32_t can_id, TMessage const& responseData, uint32_t ti
     return false;
 }
 
-bool TRequest::sendGet(esphome::esp32_can::ESP32Can* pCanBus) {
+bool TEntity::sendGet(esphome::esp32_can::ESP32Can* pCanBus) {
     if (pCanBus == nullptr) {
         ESP_LOGE("sendGet", "pCanbus is null!");
         return false;
@@ -117,7 +117,7 @@ bool TRequest::sendGet(esphome::esp32_can::ESP32Can* pCanBus) {
     return true;
 }
 
-bool TRequest::sendSet(esphome::esp32_can::ESP32Can* pCanBus, float value) {
+bool TEntity::sendSet(esphome::esp32_can::ESP32Can* pCanBus, float value) {
     if (pCanBus == nullptr) {
         ESP_LOGE("sendSet", "pCanbus is null!");
         return false;

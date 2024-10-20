@@ -1,5 +1,5 @@
 #include "esphome/components/daikin_rotex_can/daikin_rotex_can.h"
-#include "esphome/components/daikin_rotex_can/request.h"
+#include "esphome/components/daikin_rotex_can/entity.h"
 #include "esphome/components/daikin_rotex_can/selects.h"
 #include "esphome/components/daikin_rotex_can/sensors.h"
 #include <string>
@@ -19,7 +19,7 @@ static const uint32_t POST_SETUP_TIMOUT = 15*1000;
 
 DaikinRotexCanComponent::DaikinRotexCanComponent()
 : m_accessor(this)
-, m_data_requests()
+, m_entity_manager()
 , m_later_calls()
 , m_dhw_run_lambdas()
 , m_optimized_defrosting(false)
@@ -32,7 +32,7 @@ DaikinRotexCanComponent::DaikinRotexCanComponent()
 void DaikinRotexCanComponent::setup() {
     ESP_LOGI(TAG, "setup");
 
-    for (auto const& pEntity : m_data_requests.get_entities()) {
+    for (auto const& pEntity : m_entity_manager.get_entities()) {
         call_later([pEntity](){
             ESP_LOGI("setup", "name: %s, id: %s, can_id: %s, command: %s",
                 pEntity->getName().c_str(), pEntity->get_id().c_str(),
@@ -49,19 +49,19 @@ void DaikinRotexCanComponent::setup() {
                 return on_custom_select(id, key);
             });
         }
-        pEntity->set_post_handle([this](TRequest* pRequest){
-            on_post_handle(pRequest);
+        pEntity->set_post_handle([this](TEntity* pEntity){
+            on_post_handle(pEntity);
         });
     }
 
-    m_data_requests.removeInvalidRequests();
-    const uint32_t size = m_data_requests.size();
+    m_entity_manager.removeInvalidRequests();
+    const uint32_t size = m_entity_manager.size();
 
     call_later([size](){
         ESP_LOGI("setup", "resquests.size: %d", size);
     }, POST_SETUP_TIMOUT);
 
-    GenericSelect* p_optimized_defrosting = m_data_requests.get_select(OPTIMIZED_DEFROSTING);
+    GenericSelect* p_optimized_defrosting = m_entity_manager.get_select(OPTIMIZED_DEFROSTING);
     if (p_optimized_defrosting != nullptr) {
         m_optimized_defrosting_pref = global_preferences->make_preference<bool>(p_optimized_defrosting->get_object_id_hash());
         if (!m_optimized_defrosting_pref.load(&m_optimized_defrosting)) {
@@ -74,19 +74,19 @@ void DaikinRotexCanComponent::setup() {
     m_project_git_hash_sensor->publish_state(m_project_git_hash);
 }
 
-void DaikinRotexCanComponent::on_post_handle(TRequest* pRequest) {
-    std::string const& update_entity = pRequest->get_update_entity();
+void DaikinRotexCanComponent::on_post_handle(TEntity* pEntity) {
+    std::string const& update_entity = pEntity->get_update_entity();
     if (!update_entity.empty()) {
         call_later([update_entity, this](){
             updateState(update_entity);
         });
     }
 
-    if (pRequest->get_id() == "target_hot_water_temperature") {
+    if (pEntity->get_id() == "target_hot_water_temperature") {
         call_later([this](){
             run_dhw_lambdas();
         });
-    } else if (pRequest->get_id() == MODE_OF_OPERATING) {
+    } else if (pEntity->get_id() == MODE_OF_OPERATING) {
         call_later([this](){
             on_mode_of_operating();
         });
@@ -100,15 +100,15 @@ void DaikinRotexCanComponent::updateState(std::string const& id) {
 }
 
 void DaikinRotexCanComponent::update_thermal_power() {
-    text_sensor::TextSensor* mode_of_operating = m_data_requests.get_text_sensor(MODE_OF_OPERATING);
+    text_sensor::TextSensor* mode_of_operating = m_entity_manager.get_text_sensor(MODE_OF_OPERATING);
     sensor::Sensor* thermal_power = m_accessor.get_thermal_power();
 
     if (mode_of_operating != nullptr && thermal_power != nullptr) {
-        sensor::Sensor* flow_rate = m_data_requests.get_sensor("flow_rate");
+        sensor::Sensor* flow_rate = m_entity_manager.get_sensor("flow_rate");
         if (flow_rate != nullptr) {
-            sensor::Sensor* tvbh = m_data_requests.get_sensor("tvbh");
-            sensor::Sensor* tv = m_data_requests.get_sensor("tv");
-            sensor::Sensor* tr = m_data_requests.get_sensor("tr");
+            sensor::Sensor* tvbh = m_entity_manager.get_sensor("tvbh");
+            sensor::Sensor* tv = m_entity_manager.get_sensor("tv");
+            sensor::Sensor* tr = m_entity_manager.get_sensor("tr");
 
             float value = 0;
             if (mode_of_operating->state == "Warmwasserbereitung" && tv != nullptr && tr != nullptr) {
@@ -124,11 +124,11 @@ void DaikinRotexCanComponent::update_thermal_power() {
 bool DaikinRotexCanComponent::on_custom_select(std::string const& id, uint8_t value) {
     if (id == OPTIMIZED_DEFROSTING) {
         Utils::log(TAG, "optimized_defrosting: %d", value);
-        GenericSelect* p_temperature_antifreeze = m_data_requests.get_select(TEMPERATURE_ANTIFREEZE);
+        GenericSelect* p_temperature_antifreeze = m_entity_manager.get_select(TEMPERATURE_ANTIFREEZE);
 
         if (p_temperature_antifreeze != nullptr) {
             if (value != 0) {
-                m_data_requests.sendSet(p_temperature_antifreeze->get_name(), p_temperature_antifreeze->getKey(TEMPERATURE_ANTIFREEZE_OFF));
+                m_entity_manager.sendSet(p_temperature_antifreeze->get_name(), p_temperature_antifreeze->getKey(TEMPERATURE_ANTIFREEZE_OFF));
             }
             m_optimized_defrosting = value;
             m_optimized_defrosting_pref.save(&m_optimized_defrosting);
@@ -141,13 +141,13 @@ bool DaikinRotexCanComponent::on_custom_select(std::string const& id, uint8_t va
 }
 
 void DaikinRotexCanComponent::on_mode_of_operating() {
-    select::Select* p_operating_mode = m_data_requests.get_select(OPERATING_MODE);
-    text_sensor::TextSensor* p_mode_of_operating = m_data_requests.get_text_sensor(MODE_OF_OPERATING);
+    select::Select* p_operating_mode = m_entity_manager.get_select(OPERATING_MODE);
+    text_sensor::TextSensor* p_mode_of_operating = m_entity_manager.get_text_sensor(MODE_OF_OPERATING);
     if (m_optimized_defrosting && p_operating_mode != nullptr && p_mode_of_operating != nullptr) {
         if (p_mode_of_operating->state == "Abtauen") {
-            m_data_requests.sendSet(p_operating_mode->get_name(), 0x05); // Sommer
+            m_entity_manager.sendSet(p_operating_mode->get_name(), 0x05); // Sommer
         } else if (p_mode_of_operating->state == "Heizen" && p_operating_mode->state == "Sommer") {
-            m_data_requests.sendSet(p_operating_mode->get_name(), 0x03); // Heizen
+            m_entity_manager.sendSet(p_operating_mode->get_name(), 0x03); // Heizen
         }
     }
 }
@@ -163,11 +163,11 @@ void DaikinRotexCanComponent::custom_request(std::string const& value) {
         std::string buffer = value.substr(pipe_pos + 1);
         const TMessage message = Utils::str_to_bytes(buffer);
 
-        m_data_requests.handle(can_id, message);
+        m_entity_manager.handle(can_id, message);
     } else { // send custom request
         const TMessage buffer = Utils::str_to_bytes(value);
         if (is_command_set(buffer)) {
-            esphome::esp32_can::ESP32Can* pCanbus = m_data_requests.getCanbus();
+            esphome::esp32_can::ESP32Can* pCanbus = m_entity_manager.getCanbus();
             pCanbus->send_data(can_id, use_extended_id, { buffer.begin(), buffer.end() });
 
             Utils::log("sendGet", "can_id<%s> data<%s>",
@@ -179,29 +179,29 @@ void DaikinRotexCanComponent::custom_request(std::string const& value) {
 ///////////////// Buttons /////////////////
 void DaikinRotexCanComponent::dhw_run() {
     const std::string id {"target_hot_water_temperature"};
-    TRequest const* pRequest = m_data_requests.get(id);
-    if (pRequest != nullptr) {
+    TEntity const* pEntity = m_entity_manager.get(id);
+    if (pEntity != nullptr) {
         float temp1 {70};
         float temp2 {0};
 
-        temp1 *= pRequest->get_config().divider;
+        temp1 *= pEntity->get_config().divider;
 
-        number::Number* pNumber = pRequest->get_number();
-        GenericSelect* pSelect = pRequest->get_select();
+        number::Number* pNumber = pEntity->get_number();
+        GenericSelect* pSelect = pEntity->get_select();
 
         if (pNumber != nullptr) {
-            temp2 = pNumber->state * pRequest->get_config().divider;
+            temp2 = pNumber->state * pEntity->get_config().divider;
         } else if (pSelect != nullptr) {
             temp2 = pSelect->getKey(pSelect->state);
         }
 
         if (temp2 > 0) {
-            const std::string name = pRequest->getName();
+            const std::string name = pEntity->getName();
 
-            m_data_requests.sendSet(name,  temp1);
+            m_entity_manager.sendSet(name,  temp1);
 
             call_later([name, temp2, this](){
-                m_data_requests.sendSet(name, temp2);
+                m_entity_manager.sendSet(name, temp2);
             }, 10*1000);
         } else {
             ESP_LOGE("dhw_rum", "Request doesn't have a Number!");
@@ -215,22 +215,22 @@ void DaikinRotexCanComponent::dump() {
     const char* DUMP = "dump";
 
     ESP_LOGI(DUMP, "------------------------------------------");
-    ESP_LOGI(DUMP, "------------ DUMP %d Entities ------------", m_data_requests.size());
+    ESP_LOGI(DUMP, "------------ DUMP %d Entities ------------", m_entity_manager.size());
     ESP_LOGI(DUMP, "------------------------------------------");
 
-    for (auto index = 0; index < m_data_requests.size(); ++index) {
-        TRequest const* pRequest = m_data_requests.get(index);
-        if (pRequest != nullptr) {
-            EntityBase* pEntity = pRequest->get_entity();
-            if (sensor::Sensor* pSensor = dynamic_cast<sensor::Sensor*>(pEntity)) {
+    for (auto index = 0; index < m_entity_manager.size(); ++index) {
+        TEntity const* pEntity = m_entity_manager.get(index);
+        if (pEntity != nullptr) {
+            EntityBase* pEntityBase = pEntity->get_entity_base();
+            if (sensor::Sensor* pSensor = dynamic_cast<sensor::Sensor*>(pEntityBase)) {
                 ESP_LOGI(DUMP, "%s: %f", pSensor->get_name().c_str(), pSensor->get_state());
-            } else if (binary_sensor::BinarySensor* pBinarySensor = dynamic_cast<binary_sensor::BinarySensor*>(pEntity)) {
+            } else if (binary_sensor::BinarySensor* pBinarySensor = dynamic_cast<binary_sensor::BinarySensor*>(pEntityBase)) {
                 ESP_LOGI(DUMP, "%s: %d", pBinarySensor->get_name().c_str(), pBinarySensor->state);
-            } else if (number::Number* pNumber = dynamic_cast<number::Number*>(pEntity)) {
+            } else if (number::Number* pNumber = dynamic_cast<number::Number*>(pEntityBase)) {
                 ESP_LOGI(DUMP, "%s: %f", pNumber->get_name().c_str(), pNumber->state);
-            } else if (text_sensor::TextSensor* pTextSensor = dynamic_cast<text_sensor::TextSensor*>(pEntity)) {
+            } else if (text_sensor::TextSensor* pTextSensor = dynamic_cast<text_sensor::TextSensor*>(pEntityBase)) {
                 ESP_LOGI(DUMP, "%s: %s", pTextSensor->get_name().c_str(), pTextSensor->get_state().c_str());
-            } else if (select::Select* pSelect = dynamic_cast<select::Select*>(pEntity)) {
+            } else if (select::Select* pSelect = dynamic_cast<select::Select*>(pEntityBase)) {
                 ESP_LOGI(DUMP, "%s: %s", pSelect->get_name().c_str(), pSelect->state.c_str());
             }
         } else {
@@ -251,7 +251,7 @@ void DaikinRotexCanComponent::run_dhw_lambdas() {
 }
 
 void DaikinRotexCanComponent::loop() {
-    m_data_requests.sendNextPendingGet();
+    m_entity_manager.sendNextPendingGet();
     for (auto it = m_later_calls.begin(); it != m_later_calls.end(); ) {
         if (millis() > it->second) {
             it->first();
@@ -265,7 +265,7 @@ void DaikinRotexCanComponent::loop() {
 void DaikinRotexCanComponent::handle(uint32_t can_id, std::vector<uint8_t> const& data) {
     TMessage message;
     std::copy_n(data.begin(), 7, message.begin());
-    m_data_requests.handle(can_id, message);
+    m_entity_manager.handle(can_id, message);
 }
 
 void DaikinRotexCanComponent::dump_config() {
@@ -289,13 +289,13 @@ bool DaikinRotexCanComponent::is_command_set(TMessage const& message) {
 }
 
 std::string DaikinRotexCanComponent::recalculate_state(EntityBase* pEntity, std::string const& new_state) const {
-    sensor::Sensor const* tvbh = m_data_requests.get_sensor("tvbh");
-    sensor::Sensor const* tv = m_data_requests.get_sensor("tv");
-    sensor::Sensor const* tr = m_data_requests.get_sensor("tr");
-    sensor::Sensor const* dhw_mixer_position = m_data_requests.get_sensor("dhw_mixer_position");
-    sensor::Sensor const* bpv = m_data_requests.get_sensor("bypass_valve");
-    sensor::Sensor const* flow_rate = m_data_requests.get_sensor("flow_rate");
-    EntityBase const* error_code = m_data_requests.get_entity("error_code");
+    sensor::Sensor const* tvbh = m_entity_manager.get_sensor("tvbh");
+    sensor::Sensor const* tv = m_entity_manager.get_sensor("tv");
+    sensor::Sensor const* tr = m_entity_manager.get_sensor("tr");
+    sensor::Sensor const* dhw_mixer_position = m_entity_manager.get_sensor("dhw_mixer_position");
+    sensor::Sensor const* bpv = m_entity_manager.get_sensor("bypass_valve");
+    sensor::Sensor const* flow_rate = m_entity_manager.get_sensor("flow_rate");
+    EntityBase const* error_code = m_entity_manager.get_entity_base("error_code");
 
     if (pEntity == error_code && error_code != nullptr) {
         if (tvbh != nullptr && tr != nullptr && dhw_mixer_position != nullptr && flow_rate != nullptr) {

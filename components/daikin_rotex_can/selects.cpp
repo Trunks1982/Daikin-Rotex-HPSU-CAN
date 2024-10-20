@@ -37,7 +37,7 @@ void GenericSelect::publish_select_key(uint16_t key) {
     }
 }
 
-TRequest::TVariant GenericSelect::handleValue(uint16_t value) {
+TEntity::TVariant GenericSelect::handleValue(uint16_t value) {
     const std::string str = findNextByKey(value, Utils::format("INVALID<%f>", value));
     publish_state(str);
     return str;

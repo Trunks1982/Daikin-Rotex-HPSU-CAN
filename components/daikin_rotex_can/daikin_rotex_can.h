@@ -1,6 +1,6 @@
 #pragma once
 
-#include "esphome/components/daikin_rotex_can/requests.h"
+#include "esphome/components/daikin_rotex_can/entity_manager.h"
 #include "esphome/components/daikin_rotex_can/Accessor.h"
 #include "esphome/components/esp32_can/esp32_can.h"
 #include "esphome/core/component.h"
@@ -22,12 +22,12 @@ public:
     void set_update_interval(uint16_t seconds) {} // dummy
     void set_project_git_hash(text_sensor::TextSensor* pSensor, std::string const& hash) { m_project_git_hash_sensor = pSensor; m_project_git_hash = hash; }
     void add_entity(EntityBase* pEntity) {
-        if (TRequest* pRequest = dynamic_cast<TRequest*>(pEntity)) {
-            m_data_requests.add(pRequest);
+        if (TEntity* pRequest = dynamic_cast<TEntity*>(pEntity)) {
+            m_entity_manager.add(pRequest);
         }
     }
 
-    void on_post_handle(TRequest* pRequest);
+    void on_post_handle(TEntity* pRequest);
 
     // Texts
     void custom_request(std::string const& value);
@@ -74,7 +74,7 @@ private:
     std::string recalculate_state(EntityBase* pEntity, std::string const& new_state) const;
 
     Accessor m_accessor;
-    TRequests m_data_requests;
+    TEntityManager m_entity_manager;
     std::shared_ptr<esphome::canbus::CanbusTrigger> m_canbus_trigger;
     std::shared_ptr<TCanbusAutomation> m_canbus_automation;
     std::shared_ptr<MyAction> m_canbus_action;
@@ -89,7 +89,7 @@ private:
 };
 
 inline void DaikinRotexCanComponent::set_canbus(esphome::esp32_can::ESP32Can* pCanbus) {
-    m_data_requests.setCanbus(pCanbus);
+    m_entity_manager.setCanbus(pCanbus);
     m_pCanbus = pCanbus;
 
     m_canbus_trigger = std::make_shared<esphome::canbus::CanbusTrigger>(pCanbus, 0, 0, false); // Listen to all can messages

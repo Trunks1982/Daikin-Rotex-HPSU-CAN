@@ -8,8 +8,8 @@ void GenericNumber::control(float value) {
     sendSet(m_pCanbus, value * get_config().divider);
 }
 
-TRequest::TVariant GenericNumber::handleValue(uint16_t value) {
-    TRequest::TVariant variant = value / m_config.divider;
+TEntity::TVariant GenericNumber::handleValue(uint16_t value) {
+    TEntity::TVariant variant = value / m_config.divider;
     publish_state(std::get<float>(variant));
     return variant;
 }

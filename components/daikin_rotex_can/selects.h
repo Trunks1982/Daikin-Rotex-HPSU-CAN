@@ -7,7 +7,7 @@
 namespace esphome {
 namespace daikin_rotex_can {
 
-class GenericSelect : public select::Select, public TRequest, public Parented<DaikinRotexCanComponent> {
+class GenericSelect : public select::Select, public TEntity, public Parented<DaikinRotexCanComponent> {
     using TCustomSelectLambda = std::function<bool(std::string const& id, uint16_t key)>;
 public:
     GenericSelect() = default;

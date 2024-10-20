@@ -12,7 +12,7 @@ namespace daikin_rotex_can {
 
 class GenericSelect;
 
-class TRequest
+class TEntity
 {
     static const uint16_t DC = 0xFFFF; // Don't care
 
@@ -20,7 +20,7 @@ public:
     using THandleFunc = std::function<uint16_t(TMessage const&)>;
     using TSetFunc = std::function<void(TMessage&, uint16_t)>;
     using TVariant = std::variant<uint32_t, uint8_t, float, bool, std::string>;
-    using TPostHandleLabda = std::function<void(TRequest*)>;
+    using TPostHandleLabda = std::function<void(TEntity*)>;
 
     struct TEntityArguments {
         EntityBase* pEntity;
@@ -90,32 +90,32 @@ public:
     };
 
 public:
-    TRequest()
+    TEntity()
     {
     }
 
     std::string const& get_id() const { return m_id; }
 
     std::string getName() const {
-        return m_entity != nullptr ? m_entity->get_name().str() : "<INVALID>";
+        return m_entity_base != nullptr ? m_entity_base->get_name().str() : "<INVALID>";
     }
 
-    EntityBase* get_entity() const {
-        return m_entity;
+    EntityBase* get_entity_base() const {
+        return m_entity_base;
     }
 
     sensor::Sensor* get_sensor() const {
-        return dynamic_cast<sensor::Sensor*>(m_entity);
+        return dynamic_cast<sensor::Sensor*>(m_entity_base);
     }
 
     number::Number* get_number() const {
-        return dynamic_cast<number::Number*>(m_entity);
+        return dynamic_cast<number::Number*>(m_entity_base);
     }
 
     GenericSelect* get_select() const;
 
     bool isGetSupported() const {
-        return m_entity != nullptr;
+        return m_entity_base != nullptr;
     }
 
     uint32_t getLastUpdate() const {
@@ -130,8 +130,8 @@ public:
         m_id = arg.id;
         m_can_id = arg.can_id;
         m_command = arg.command;
-        m_expected_reponse = TRequest::calculate_reponse(arg.command);
-        m_entity = arg.pEntity;
+        m_expected_reponse = TEntity::calculate_reponse(arg.command);
+        m_entity_base = arg.pEntity;
         m_update_interval = arg.update_interval;
         m_config = arg;
     }
@@ -164,7 +164,7 @@ public:
 
     std::string string() {
         return Utils::format(
-            "TRequest<name: %s, command: %s>",
+            "TEntity<name: %s, command: %s>",
             getName().c_str(),
             Utils::to_hex(m_command).c_str()
         );
@@ -182,19 +182,19 @@ private:
     uint16_t m_can_id;
     TMessage m_command;
     std::array<uint16_t, 7> m_expected_reponse;
-    EntityBase* m_entity;
+    EntityBase* m_entity_base;
     uint32_t m_last_handle_timestamp;
     uint32_t m_last_get_timestamp;
     uint16_t m_update_interval;
     TPostHandleLabda m_post_handle_lambda;
 };
 
-inline bool TRequest::isGetNeeded() const {
+inline bool TEntity::isGetNeeded() const {
     const uint32_t update_interval = get_update_interval() * 1000;
     return getLastUpdate() == 0 || (millis() > (getLastUpdate() + update_interval));
 }
 
-inline bool TRequest::is_command_set() const {
+inline bool TEntity::is_command_set() const {
     for (auto& b : m_command) {
         if (b != 0x00) {
             return true;

@@ -8,7 +8,7 @@
 namespace esphome {
 namespace daikin_rotex_can {
 
-class GenericSensor : public sensor::Sensor, public TRequest, public Parented<DaikinRotexCanComponent> {
+class GenericSensor : public sensor::Sensor, public TEntity, public Parented<DaikinRotexCanComponent> {
 public:
     GenericSensor() = default;
 
@@ -16,7 +16,7 @@ protected:
     virtual TVariant handleValue(uint16_t value) override;
 };
 
-class GenericTextSensor : public text_sensor::TextSensor, public TRequest, public Parented<DaikinRotexCanComponent> {
+class GenericTextSensor : public text_sensor::TextSensor, public TEntity, public Parented<DaikinRotexCanComponent> {
 public:
     using TRecalculateState = std::function<std::string(EntityBase*, std::string const&)>;
 
@@ -28,7 +28,7 @@ private:
     TRecalculateState m_recalculate_state;
 };
 
-class GenericBinarySensor : public binary_sensor::BinarySensor, public TRequest, public Parented<DaikinRotexCanComponent> {
+class GenericBinarySensor : public binary_sensor::BinarySensor, public TEntity, public Parented<DaikinRotexCanComponent> {
 public:
     GenericBinarySensor() = default;
 
