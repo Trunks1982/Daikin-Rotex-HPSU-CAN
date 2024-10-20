@@ -12,6 +12,7 @@ public:
     void set_id(std::string const& id) { m_id = id; }
 protected:
     void control(float value) override;
+    virtual TVariant handleValue(uint16_t value) override;
 private:
     std::string m_id;
 };

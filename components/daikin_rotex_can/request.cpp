@@ -50,7 +50,31 @@ bool TRequest::isMatch(uint32_t can_id, TMessage const& responseData) const {
 
 bool TRequest::handle(uint32_t can_id, TMessage const& responseData, uint32_t timestamp) {
     if (isMatch(can_id, responseData)) {
-        const TVariant variant = m_lambda(responseData);
+
+        TRequest::TVariant variant;
+
+        if (m_config.data_offset > 0 && (m_config.data_offset + m_config.data_size) <= 7) {
+            if (m_config.data_size >= 1 && m_config.data_size <= 2) {
+                const uint16_t value = m_config.handle_lambda_set ? m_config.handle_lambda(responseData) :
+                    (
+                        m_config.data_size == 2 ?
+                        (((responseData[m_config.data_offset] << 8) + responseData[m_config.data_offset + 1])) :
+                        (responseData[m_config.data_offset])
+                    );
+                variant = handleValue(value);
+            } else {
+                Utils::call_later([this](){
+                    ESP_LOGE("validateConfig", "Invalid data size: %d", m_config.data_size);
+                });
+            }
+        } else {
+            Utils::call_later([this](){
+                ESP_LOGE("validateConfig", "Invalid data_offset: %d", m_config.data_offset);
+            });
+        }
+
+        m_post_handle_lambda(this);
+
         std::string value;
         if (std::holds_alternative<uint32_t>(variant)) {
             value = std::to_string(std::get<uint32_t>(variant));
@@ -102,7 +126,17 @@ bool TRequest::sendSet(esphome::esp32_can::ESP32Can* pCanBus, float value) {
     const uint32_t can_id = 0x680;
     const bool use_extended_id = false;
 
-    auto command = m_set_lambda(value);
+    TMessage command = TMessage(m_config.command);
+    command[0] = 0x30;
+    command[1] = 0x00;
+    if (m_config.set_lambda_set) {
+        m_config.set_lambda(command, value);
+    } else {
+        Utils::setBytes(command, value, m_config.data_offset, m_config.data_size);
+        //const int16_t ivalue = static_cast<int16_t>(value); // converte negative values. E.g. -15 to 0xFF6A
+        //const uint16_t uvalue = static_cast<int16_t>(ivalue);
+        //Utils::setBytes(command, uvalue, m_config.data_offset, m_config.data_size);
+    }
 
     pCanBus->send_data(can_id, use_extended_id, { command.begin(), command.end() });
     Utils::log("sendSet", "name<%s> value<%f> can_id<%s> command<%s>",

@@ -19,6 +19,8 @@ public:
     void publish_select_key(uint16_t key);
 protected:
     void control(const std::string &value) override;
+    virtual TVariant handleValue(uint16_t value) override;
+
 private:
     std::string m_id;
     BidiMap m_map;

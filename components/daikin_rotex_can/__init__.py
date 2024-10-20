@@ -1067,7 +1067,7 @@ sensor_configuration = [
         "max_value": 40,
         "step": 1,
         "command": "31 00 FA 06 69 00 00",
-       "handle_lambda": """
+        "handle_lambda": """
             return ((data[5] << 8) | data[6]) / 0x64;
         """,
         "set_lambda": """
@@ -1493,22 +1493,6 @@ async def to_code(config):
                     )
 
                 cg.add(entity.set_entity(sens_conf.get("name"), [
-                    entity,
-                    sens_conf.get("name"),
-                    sens_conf.get("can_id", 0x180),
-                    sens_conf.get("command", ""),
-                    sens_conf.get("data_offset", 5),
-                    sens_conf.get("data_size", 1),
-                    divider,
-                    str_map,
-                    sens_conf.get("update_entity", ""),
-                    update_interval,
-                    await handle_lambda(),
-                    await set_lambda(),
-                    "handle_lambda" in sens_conf,
-                    "set_lambda" in sens_conf
-                ]))
-                cg.add(var.getAccessor().set_entity(sens_conf.get("name"), [
                     entity,
                     sens_conf.get("name"),
                     sens_conf.get("can_id", 0x180),

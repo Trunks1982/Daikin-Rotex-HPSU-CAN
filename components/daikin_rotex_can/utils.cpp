@@ -212,6 +212,10 @@ void Utils::log(std::string const& tag, std::string const& str_format, Args... a
     }
 }
 
+void Utils::call_later(TVoidFunc lambda, uint32_t timeout) {
+    // fixme
+}
+
 template void Utils::log<char const*, char const*, char const*, char const*>(std::string const& tag, std::string const& str_format, char const* arg1, char const* arg2, char const* arg3, char const* arg4);
 template void Utils::log<char const*, float, char const*, char const*>(std::string const& tag, std::string const& str_format, char const* arg1, float arg2, char const* arg3, char const* arg4);
 template void Utils::log<char const*, char const*, char const*>(std::string const& tag, std::string const& str_format, char const* arg1, char const* arg2, char const* arg3);

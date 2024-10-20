@@ -33,6 +33,24 @@ public:
         bool handle_lambda_set;
         bool set_lambda_set;
 
+        TEntityArguments()
+        : pEntity(nullptr)
+        , id("")
+        , can_id(0x0)
+        , command({})
+        , data_offset(0)
+        , data_size(0)
+        , divider(1)
+        , map({})
+        , update_entity({})
+        , update_interval(1000)
+        /*, handle_lambda({})
+        , set_lambda(false)
+        , handle_lambda_set({})
+        , set_lambda_set(false)*/
+        {
+        }
+
         TEntityArguments(
             EntityBase* _pEntity,
             std::string const& _id,
@@ -79,9 +97,6 @@ public:
         return m_pDaikinRotexCanComponent;
     }
 
-    TEntityArgumentsList const&  get_entities() const { return m_entities; }
-    void set_entity(std::string const& name, TEntityArguments const& arg) { m_entities.push_back(arg); }
-
     // Texts
 
     text::Text* get_log_filter() const { return m_log_filter; }
@@ -98,8 +113,6 @@ public:
 private:
     text::Text* m_log_filter;
     text::Text* m_custom_request_text;
-
-    TEntityArgumentsList m_entities;
 
     // Sensors
     sensor::Sensor* m_thermal_power;

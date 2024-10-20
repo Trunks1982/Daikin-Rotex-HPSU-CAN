@@ -27,6 +27,8 @@ public:
         }
     }
 
+    void on_post_handle(TRequest* pRequest);
+
     // Texts
     void custom_request(std::string const& value);
 
@@ -92,10 +94,12 @@ private:
     ESPPreferenceObject m_optimized_defrosting_pref;
     text_sensor::TextSensor* m_project_git_hash_sensor;
     std::string m_project_git_hash;
+    esphome::esp32_can::ESP32Can* m_pCanbus;
 };
 
 inline void DaikinRotexCanComponent::set_canbus(esphome::esp32_can::ESP32Can* pCanbus) {
     m_data_requests.setCanbus(pCanbus);
+    m_pCanbus = pCanbus;
 
     m_canbus_trigger = std::make_shared<esphome::canbus::CanbusTrigger>(pCanbus, 0, 0, false); // Listen to all can messages
     m_canbus_automation = std::make_shared<TCanbusAutomation>(m_canbus_trigger.get());

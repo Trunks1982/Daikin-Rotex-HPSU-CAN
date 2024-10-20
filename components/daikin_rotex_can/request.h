@@ -18,10 +18,10 @@ class TRequest
 
 public:
     using TVariant = std::variant<uint32_t, uint8_t, float, bool, std::string>;
-    using TGetLambda = std::function<TVariant(TMessage const&)>;
-    using TSetLambda = std::function<TMessage(float const&)>;
+    using TPostHandleLabda = std::function<void(TRequest*)>;
 public:
-    TRequest() {
+    TRequest()
+    {
     }
 
     std::string const& get_id() const { return m_id; }
@@ -52,6 +52,10 @@ public:
         return m_last_handle_timestamp;
     }
 
+    void set_canbus(esphome::esp32_can::ESP32Can* pCanbus) {
+        m_pCanbus = pCanbus;
+    }
+
     void set_entity(std::string const& name, Accessor::TEntityArguments const& arg) { 
         m_id = arg.id;
         m_can_id = arg.can_id;
@@ -59,11 +63,19 @@ public:
         m_expected_reponse = TRequest::calculate_reponse(arg.command);
         m_entity = arg.pEntity;
         m_update_interval = arg.update_interval;
+        m_config = arg;
     }
 
-    void set_lambdas(TGetLambda&& lambda, TSetLambda&& setLambda) {
-        m_lambda = std::move(lambda);
-        m_set_lambda = std::move(setLambda);
+    void set_post_handle(TPostHandleLabda&& func) {
+        m_post_handle_lambda = std::move(func);
+    }
+
+    std::string const& get_update_entity() {
+        return m_config.update_entity;
+    }
+
+    Accessor::TEntityArguments const& get_config() {
+        return m_config;
     }
 
     bool isMatch(uint32_t can_id, TMessage const& responseData) const;
@@ -88,17 +100,23 @@ public:
         );
     }
 
+protected:
+    virtual TVariant handleValue(uint16_t value) = 0;
+
+protected:
+    Accessor::TEntityArguments m_config;
+    esphome::esp32_can::ESP32Can* m_pCanbus;
+
 private:
     std::string m_id;
     uint16_t m_can_id;
     TMessage m_command;
     std::array<uint16_t, 7> m_expected_reponse;
     EntityBase* m_entity;
-    TGetLambda m_lambda;
-    TSetLambda m_set_lambda;
     uint32_t m_last_handle_timestamp;
     uint32_t m_last_get_timestamp;
     uint16_t m_update_interval;
+    TPostHandleLabda m_post_handle_lambda;
 };
 
 inline bool TRequest::isGetNeeded() const {

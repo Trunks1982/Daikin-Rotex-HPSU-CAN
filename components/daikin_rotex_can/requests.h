@@ -26,6 +26,8 @@ public:
     EntityBase* get_entity(std::string const& id);
     EntityBase const* get_entity(std::string const& id) const;
 
+    const std::vector<TRequest*>& get_entities() const { return m_requests; }
+
     sensor::Sensor* get_sensor(std::string const& id);
     sensor::Sensor const* get_sensor(std::string const& id) const;
 

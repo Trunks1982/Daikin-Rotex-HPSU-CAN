@@ -20,6 +20,7 @@ namespace daikin_rotex_can {
 class GenericSelect;
 
 class Utils {
+    using TVoidFunc = std::function<void()>;
 public:
     template<typename... Args>
     static std::string format(const std::string& format, Args... args) {
@@ -43,6 +44,8 @@ public:
 
     template<typename... Args>
     static void log(std::string const& tag, std::string const& str_format, Args... args);
+
+    static void call_later(TVoidFunc lambda, uint32_t timeout = 0u);
 
     static sensor::Sensor* toSensor(EntityBase*);
     static sensor::Sensor const* toSensor(EntityBase const*);

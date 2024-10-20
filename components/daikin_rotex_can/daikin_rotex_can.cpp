@@ -1,6 +1,7 @@
 #include "esphome/components/daikin_rotex_can/daikin_rotex_can.h"
 #include "esphome/components/daikin_rotex_can/request.h"
 #include "esphome/components/daikin_rotex_can/selects.h"
+#include "esphome/components/daikin_rotex_can/sensors.h"
 #include <string>
 #include <vector>
 
@@ -31,92 +32,22 @@ DaikinRotexCanComponent::DaikinRotexCanComponent()
 void DaikinRotexCanComponent::setup() {
     ESP_LOGI(TAG, "setup");
 
-    for (auto const& entity_conf : m_accessor.get_entities()) {
-        call_later([entity_conf](){
+    for (auto const& pEntity : m_data_requests.get_entities()) {
+        call_later([pEntity](){
             ESP_LOGI("setup", "name: %s, id: %s, can_id: %s, command: %s",
-                entity_conf.pEntity->get_name().c_str(), entity_conf.id.c_str(),
-                Utils::to_hex(entity_conf.can_id).c_str(), Utils::to_hex(entity_conf.command).c_str());
+                pEntity->getName().c_str(), pEntity->get_id().c_str(),
+                Utils::to_hex(pEntity->get_config().can_id).c_str(), Utils::to_hex(pEntity->get_config().command).c_str());
         }, POST_SETUP_TIMOUT);
 
-        TRequest* pRequest = dynamic_cast<TRequest*>(entity_conf.pEntity);
-        pRequest->set_lambdas(
-            [entity_conf, this](auto const& data) -> TRequest::TVariant {
-                TRequest::TVariant variant;
-
-                if (entity_conf.data_offset > 0 && (entity_conf.data_offset + entity_conf.data_size) <= 7) {
-                    if (entity_conf.data_size >= 1 && entity_conf.data_size <= 2) {
-                        const uint16_t value = entity_conf.handle_lambda_set ? entity_conf.handle_lambda(data) :
-                                (
-                                    entity_conf.data_size == 2 ?
-                                    (((data[entity_conf.data_offset] << 8) + data[entity_conf.data_offset + 1])) :
-                                    (data[entity_conf.data_offset])
-                                );
-
-                        if (dynamic_cast<sensor::Sensor*>(entity_conf.pEntity) != nullptr) {
-                            //variant = static_cast<int16_t>(value) / entity_conf.divider;
-                            variant = value / entity_conf.divider;
-                            Utils::toSensor(entity_conf.pEntity)->publish_state(std::get<float>(variant));
-                        } else if (dynamic_cast<binary_sensor::BinarySensor*>(entity_conf.pEntity) != nullptr) {
-                            variant = value > 0;
-                            Utils::toBinarySensor(entity_conf.pEntity)->publish_state(std::get<bool>(variant));
-                        } else if (dynamic_cast<text_sensor::TextSensor*>(entity_conf.pEntity) != nullptr) {
-                            auto it = entity_conf.map.findByKey(value);
-                            const std::string str = recalculate_state(entity_conf.pEntity, it != entity_conf.map.end() ? it->second : Utils::format("INVALID<%f>", value));
-                            Utils::toTextSensor(entity_conf.pEntity)->publish_state(str);
-                            variant = str;
-                        } else if (auto* pSelect = dynamic_cast<GenericSelect*>(entity_conf.pEntity)) {
-                            const std::string str = pSelect->findNextByKey(value, Utils::format("INVALID<%f>", value));
-                            Utils::toSelect(entity_conf.pEntity)->publish_state(str);
-                            variant = str;
-                        } else if (dynamic_cast<number::Number*>(entity_conf.pEntity) != nullptr) {
-                            //variant = static_cast<int16_t>(value) / entity_conf.divider;
-                            variant = value / entity_conf.divider;
-                            Utils::toNumber(entity_conf.pEntity)->publish_state(std::get<float>(variant));
-                        }
-                    } else {
-                        call_later([entity_conf](){
-                            ESP_LOGE("validateConfig", "Invalid data size: %d", entity_conf.data_size);
-                        });
-                    }
-                } else {
-                    call_later([entity_conf](){
-                        ESP_LOGE("validateConfig", "Invalid data_offset: %d", entity_conf.data_offset);
-                    });
-                }
-
-                if (!entity_conf.update_entity.empty()) {
-                    call_later([entity_conf, this](){
-                        updateState(entity_conf.update_entity);
-                    });
-                }
-
-                if (entity_conf.id == "target_hot_water_temperature") {
-                    call_later([this](){
-                        run_dhw_lambdas();
-                    });
-                } else if (entity_conf.id == MODE_OF_OPERATING) {
-                    call_later([this](){
-                        on_mode_of_operating();
-                    });
-                }
-
-                return variant;
-            },
-            [&entity_conf](float const& value) -> TMessage {
-                TMessage message = TMessage(entity_conf.command);
-                message[0] = 0x30;
-                message[1] = 0x00;
-                if (entity_conf.set_lambda_set) {
-                    entity_conf.set_lambda(message, value);
-                } else {
-                    Utils::setBytes(message, value, entity_conf.data_offset, entity_conf.data_size);
-                    //const int16_t ivalue = static_cast<int16_t>(value); // converte negative values. E.g. -15 to 0xFF6A
-                    //const uint16_t uvalue = static_cast<int16_t>(ivalue);
-                    //Utils::setBytes(message, uvalue, entity_conf.data_offset, entity_conf.data_size);
-                }
-                return message;
-            }
-        );
+        pEntity->set_canbus(m_pCanbus);
+        if (GenericTextSensor* pTextSensor = dynamic_cast<GenericTextSensor*>(pEntity)) {
+            pTextSensor->set_recalculate_state([this](EntityBase* pEntity, std::string const& state){
+                return recalculate_state(pEntity, state);
+            });
+        }
+        pEntity->set_post_handle([this](TRequest* pRequest){
+            on_post_handle(pRequest);
+        });
     }
 
     m_data_requests.removeInvalidRequests();
@@ -137,6 +68,25 @@ void DaikinRotexCanComponent::setup() {
     }
 
     m_project_git_hash_sensor->publish_state(m_project_git_hash);
+}
+
+void DaikinRotexCanComponent::on_post_handle(TRequest* pRequest) {
+    std::string const& update_entity = pRequest->get_update_entity();
+    if (!update_entity.empty()) {
+        call_later([update_entity, this](){
+            updateState(update_entity);
+        });
+    }
+
+    if (pRequest->get_id() == "target_hot_water_temperature") {
+        call_later([this](){
+            run_dhw_lambdas();
+        });
+    } else if (pRequest->get_id() == MODE_OF_OPERATING) {
+        call_later([this](){
+            on_mode_of_operating();
+        });
+    }
 }
 
 void DaikinRotexCanComponent::updateState(std::string const& id) {
@@ -236,12 +186,12 @@ void DaikinRotexCanComponent::set_generic_select(std::string const& id, std::str
 
 ///////////////// Numbers /////////////////
 void DaikinRotexCanComponent::set_generic_number(std::string const& id, float value) {
-    for (auto& entity_conf : m_accessor.get_entities()) {
-        if (entity_conf.id == id && dynamic_cast<number::Number*>(entity_conf.pEntity) != nullptr) {
-            m_data_requests.sendSet(entity_conf.pEntity->get_name(), value * entity_conf.divider);
+    /*for (auto pEntity : m_data_requests.get_entities()) {
+        if (pEntity->get_id() == id && dynamic_cast<number::Number*>(pEntity) != nullptr) {
+            m_data_requests.sendSet(pEntity->getName(), value * pEntity->get_config().divider);
             break;
         }
-    }
+    }*/
 }
 
 ///////////////// Buttons /////////////////
@@ -384,18 +334,18 @@ std::string DaikinRotexCanComponent::recalculate_state(EntityBase* pEntity, std:
 }
 
 Accessor::TEntityArguments const* DaikinRotexCanComponent::get_entity_conf(std::string const& id) const {
-    for (auto& entity_conf : m_accessor.get_entities()) {
-        if (entity_conf.id == id && entity_conf.pEntity != nullptr) {
-            return &entity_conf;
+    for (auto pEntity : m_data_requests.get_entities()) {
+        if (pEntity->get_id() == id && pEntity != nullptr) {
+            return &pEntity->get_config();
         }
     }
     return nullptr;
 }
 
 Accessor::TEntityArguments const* DaikinRotexCanComponent::get_select_entity_conf(std::string const& id) const {
-    for (auto& entity_conf : m_accessor.get_entities()) {
-        if (entity_conf.id == id && dynamic_cast<select::Select*>(entity_conf.pEntity) != nullptr) {
-            return &entity_conf;
+    for (auto pEntity : m_data_requests.get_entities()) {
+        if (pEntity->get_id() == id && dynamic_cast<select::Select*>(pEntity) != nullptr) {
+            return &pEntity->get_config();
         }
     }
     return nullptr;
