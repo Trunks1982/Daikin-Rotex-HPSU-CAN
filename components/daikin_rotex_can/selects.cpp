@@ -7,7 +7,11 @@ static const char* TAG = "daikin_rotex_can";
 
 void GenericSelect::control(const std::string &value) {
     this->publish_state(value);
-    this->parent_->set_generic_select(m_id, state);
+    const uint16_t key = getKey(state);
+    const bool handled = m_custom_select_lambda(get_id(), key);
+    if (!handled) {
+        sendSet(m_pCanbus, key);
+    }
 }
 
 void GenericSelect::set_map(std::string const& str_map) {

@@ -17,8 +17,78 @@ class TRequest
     static const uint16_t DC = 0xFFFF; // Don't care
 
 public:
+    using THandleFunc = std::function<uint16_t(TMessage const&)>;
+    using TSetFunc = std::function<void(TMessage&, uint16_t)>;
     using TVariant = std::variant<uint32_t, uint8_t, float, bool, std::string>;
     using TPostHandleLabda = std::function<void(TRequest*)>;
+
+    struct TEntityArguments {
+        EntityBase* pEntity;
+        std::string id;
+        uint16_t can_id;
+        TMessage command;
+        uint8_t data_offset;
+        uint8_t data_size;
+        float divider;
+        BidiMap map;
+        std::string update_entity;
+        uint16_t update_interval;
+        THandleFunc handle_lambda;
+        TSetFunc set_lambda;
+        bool handle_lambda_set;
+        bool set_lambda_set;
+
+        TEntityArguments()
+        : pEntity(nullptr)
+        , id("")
+        , can_id(0x0)
+        , command({})
+        , data_offset(0)
+        , data_size(0)
+        , divider(1)
+        , map({})
+        , update_entity({})
+        , update_interval(1000)
+        , handle_lambda([](TMessage const&){ return 0; })
+        , set_lambda([](TMessage&, uint16_t){})
+        , handle_lambda_set(false)
+        , set_lambda_set(false)
+        {
+        }
+
+        TEntityArguments(
+            EntityBase* _pEntity,
+            std::string const& _id,
+            uint16_t _can_id,
+            std::string const& _command,
+            uint8_t _data_offset,
+            uint8_t _data_size,
+            float _divider,
+            std::string const& _map,
+            std::string const& _update_entity,
+            uint16_t _update_interval,
+            THandleFunc _handle_lambda,
+            TSetFunc _set_lambda,
+            bool _handle_lambda_set,
+            bool _set_lambda_set
+        )
+        : pEntity(_pEntity)
+        , id(_id)
+        , can_id(_can_id)
+        , command(Utils::str_to_bytes_array8(_command))
+        , data_offset(_data_offset)
+        , data_size(_data_size)
+        , divider(_divider)
+        , map(Utils::str_to_map(_map))
+        , update_entity(_update_entity)
+        , update_interval(_update_interval)
+        , handle_lambda(_handle_lambda)
+        , set_lambda(_set_lambda)
+        , handle_lambda_set(_handle_lambda_set)
+        , set_lambda_set(_set_lambda_set)
+        {}
+    };
+
 public:
     TRequest()
     {
@@ -56,7 +126,7 @@ public:
         m_pCanbus = pCanbus;
     }
 
-    void set_entity(std::string const& name, Accessor::TEntityArguments const& arg) { 
+    void set_entity(std::string const& name, TEntityArguments const& arg) { 
         m_id = arg.id;
         m_can_id = arg.can_id;
         m_command = arg.command;
@@ -74,7 +144,7 @@ public:
         return m_config.update_entity;
     }
 
-    Accessor::TEntityArguments const& get_config() {
+    TEntityArguments const& get_config() const {
         return m_config;
     }
 
@@ -104,7 +174,7 @@ protected:
     virtual TVariant handleValue(uint16_t value) = 0;
 
 protected:
-    Accessor::TEntityArguments m_config;
+    TEntityArguments m_config;
     esphome::esp32_can::ESP32Can* m_pCanbus;
 
 private:

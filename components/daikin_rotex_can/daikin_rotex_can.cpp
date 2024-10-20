@@ -44,6 +44,10 @@ void DaikinRotexCanComponent::setup() {
             pTextSensor->set_recalculate_state([this](EntityBase* pEntity, std::string const& state){
                 return recalculate_state(pEntity, state);
             });
+        } else if (GenericSelect* pSelect = dynamic_cast<GenericSelect*>(pEntity)) {
+            pSelect->set_custom_select_lambda([this](std::string const& id, uint16_t key){
+                return on_custom_select(id, key);
+            });
         }
         pEntity->set_post_handle([this](TRequest* pRequest){
             on_post_handle(pRequest);
@@ -172,28 +176,6 @@ void DaikinRotexCanComponent::custom_request(std::string const& value) {
     }
 }
 
-///////////////// Selects /////////////////
-void DaikinRotexCanComponent::set_generic_select(std::string const& id, std::string const& state) {
-    auto const* pSelect = m_data_requests.get_select(id);
-    if (pSelect != nullptr) {
-        const auto key = pSelect->getKey(state);
-        const bool handled = on_custom_select(id, key);
-        if (!handled) {
-            m_data_requests.sendSet(pSelect->get_name(), key);
-        }
-    }
-}
-
-///////////////// Numbers /////////////////
-void DaikinRotexCanComponent::set_generic_number(std::string const& id, float value) {
-    /*for (auto pEntity : m_data_requests.get_entities()) {
-        if (pEntity->get_id() == id && dynamic_cast<number::Number*>(pEntity) != nullptr) {
-            m_data_requests.sendSet(pEntity->getName(), value * pEntity->get_config().divider);
-            break;
-        }
-    }*/
-}
-
 ///////////////// Buttons /////////////////
 void DaikinRotexCanComponent::dhw_run() {
     const std::string id {"target_hot_water_temperature"};
@@ -202,18 +184,15 @@ void DaikinRotexCanComponent::dhw_run() {
         float temp1 {70};
         float temp2 {0};
 
-        auto const* pEntityConf = get_entity_conf(id);
-        if (pEntityConf != nullptr) {
-            temp1 *= pEntityConf->divider;
+        temp1 *= pRequest->get_config().divider;
 
-            number::Number* pNumber = pRequest->get_number();
-            GenericSelect* pSelect = pRequest->get_select();
+        number::Number* pNumber = pRequest->get_number();
+        GenericSelect* pSelect = pRequest->get_select();
 
-            if (pNumber != nullptr) {
-                temp2 = pNumber->state * pEntityConf->divider;
-            } else if (pSelect != nullptr) {
-                temp2 = pSelect->getKey(pSelect->state);
-            }
+        if (pNumber != nullptr) {
+            temp2 = pNumber->state * pRequest->get_config().divider;
+        } else if (pSelect != nullptr) {
+            temp2 = pSelect->getKey(pSelect->state);
         }
 
         if (temp2 > 0) {
@@ -331,24 +310,6 @@ std::string DaikinRotexCanComponent::recalculate_state(EntityBase* pEntity, std:
         }
     }
     return new_state;
-}
-
-Accessor::TEntityArguments const* DaikinRotexCanComponent::get_entity_conf(std::string const& id) const {
-    for (auto pEntity : m_data_requests.get_entities()) {
-        if (pEntity->get_id() == id && pEntity != nullptr) {
-            return &pEntity->get_config();
-        }
-    }
-    return nullptr;
-}
-
-Accessor::TEntityArguments const* DaikinRotexCanComponent::get_select_entity_conf(std::string const& id) const {
-    for (auto pEntity : m_data_requests.get_entities()) {
-        if (pEntity->get_id() == id && dynamic_cast<select::Select*>(pEntity) != nullptr) {
-            return &pEntity->get_config();
-        }
-    }
-    return nullptr;
 }
 
 } // namespace daikin_rotex_can

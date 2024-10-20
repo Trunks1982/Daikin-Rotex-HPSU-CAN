@@ -8,10 +8,12 @@ namespace esphome {
 namespace daikin_rotex_can {
 
 class GenericSelect : public select::Select, public TRequest, public Parented<DaikinRotexCanComponent> {
+    using TCustomSelectLambda = std::function<bool(std::string const& id, uint16_t key)>;
 public:
     GenericSelect() = default;
     void set_id(std::string const& id) { m_id = id; }
     void set_map(std::string const& str_map);
+    void set_custom_select_lambda(TCustomSelectLambda&& lambda) { m_custom_select_lambda = std::move(lambda); }
 
     std::string findNextByKey(uint16_t value, std::string const& fallback) const;
     uint16_t getKey(std::string const& value) const;
@@ -24,6 +26,7 @@ protected:
 private:
     std::string m_id;
     BidiMap m_map;
+    TCustomSelectLambda m_custom_select_lambda;
 };
 
 inline std::string GenericSelect::findNextByKey(uint16_t value, std::string const& fallback) const { 

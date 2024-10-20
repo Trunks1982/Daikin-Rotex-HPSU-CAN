@@ -32,12 +32,6 @@ public:
     // Texts
     void custom_request(std::string const& value);
 
-    // Selects
-    void set_generic_select(std::string const& id, std::string const& state);
-
-    // Numbers
-    void set_generic_number(std::string const& id, float value);
-
     // Buttons
     void dhw_run();
     void dump();
@@ -78,9 +72,6 @@ private:
     void throwPeriodicError(std::string const& message);
     bool is_command_set(TMessage const&);
     std::string recalculate_state(EntityBase* pEntity, std::string const& new_state) const;
-
-    Accessor::TEntityArguments const* get_entity_conf(std::string const& id) const;
-    Accessor::TEntityArguments const* get_select_entity_conf(std::string const& id) const;
 
     Accessor m_accessor;
     TRequests m_data_requests;
