@@ -1403,13 +1403,11 @@ async def to_code(config):
     ########## Texts ##########
 
     if text_conf := config.get(CONF_LOG_FILTER_TEXT):
-        t = await text.new_text(text_conf)
-        cg.add(var.getAccessor().set_log_filter(t))
+        await text.new_text(text_conf)
 
     if text_conf := config.get(CONF_CUSTOM_REQUEST_TEXT):
         t = await text.new_text(text_conf)
         await cg.register_parented(t, var)
-        cg.add(var.getAccessor().set_custom_request_text(t))
 
     ########## Text Sensors ##########
 
@@ -1514,7 +1512,7 @@ async def to_code(config):
 
         if yaml_sensor_conf := entities.get(CONF_THERMAL_POWER):
             sens = await sensor.new_sensor(yaml_sensor_conf)
-            cg.add(var.getAccessor().set_thermal_power(sens))
+            cg.add(var.set_thermal_power_sensor(sens))
 
         ########## Buttons ##########
 

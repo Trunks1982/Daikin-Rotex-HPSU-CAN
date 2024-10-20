@@ -18,14 +18,14 @@ static const uint32_t POST_SETUP_TIMOUT = 15*1000;
 
 
 DaikinRotexCanComponent::DaikinRotexCanComponent()
-: m_accessor(this)
-, m_entity_manager()
+: m_entity_manager()
 , m_later_calls()
 , m_dhw_run_lambdas()
 , m_optimized_defrosting(false)
 , m_optimized_defrosting_pref()
 , m_project_git_hash_sensor(nullptr)
 , m_project_git_hash()
+, m_thermal_power_sensor(nullptr)
 {
 }
 
@@ -101,9 +101,8 @@ void DaikinRotexCanComponent::updateState(std::string const& id) {
 
 void DaikinRotexCanComponent::update_thermal_power() {
     text_sensor::TextSensor* mode_of_operating = m_entity_manager.get_text_sensor(MODE_OF_OPERATING);
-    sensor::Sensor* thermal_power = m_accessor.get_thermal_power();
 
-    if (mode_of_operating != nullptr && thermal_power != nullptr) {
+    if (mode_of_operating != nullptr && m_thermal_power_sensor != nullptr) {
         sensor::Sensor* flow_rate = m_entity_manager.get_sensor("flow_rate");
         if (flow_rate != nullptr) {
             sensor::Sensor* tvbh = m_entity_manager.get_sensor("tvbh");
@@ -116,7 +115,7 @@ void DaikinRotexCanComponent::update_thermal_power() {
             } else if ((mode_of_operating->state == "Heizen" || mode_of_operating->state == "Kühlen") && tvbh != nullptr && tr != nullptr) {
                 value = (tvbh->state - tr->state) * (4.19 * flow_rate->state) / 3600.0f;
             }
-            thermal_power->publish_state(value);
+            m_thermal_power_sensor->publish_state(value);
         }
     }
 }
@@ -241,12 +240,10 @@ void DaikinRotexCanComponent::dump() {
 }
 
 void DaikinRotexCanComponent::run_dhw_lambdas() {
-    if (m_accessor.getDaikinRotexCanComponent() != nullptr) {
-        if (!m_dhw_run_lambdas.empty()) {
-            auto& lambda = m_dhw_run_lambdas.front();
-            lambda();
-            m_dhw_run_lambdas.pop_front();
-        }
+    if (!m_dhw_run_lambdas.empty()) {
+        auto& lambda = m_dhw_run_lambdas.front();
+        lambda();
+        m_dhw_run_lambdas.pop_front();
     }
 }
 

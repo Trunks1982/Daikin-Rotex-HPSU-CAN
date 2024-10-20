@@ -2,7 +2,7 @@
 
 #include "esphome/components/daikin_rotex_can/types.h"
 #include "esphome/components/daikin_rotex_can/utils.h"
-#include "esphome/components/daikin_rotex_can/Accessor.h"
+#include "esphome/components/daikin_rotex_can/BidiMap.h"
 #include "esphome/components/esp32_can/esp32_can.h"
 #include "esphome/core/entity_base.h"
 #include <functional>

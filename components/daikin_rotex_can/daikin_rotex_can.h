@@ -1,7 +1,6 @@
 #pragma once
 
 #include "esphome/components/daikin_rotex_can/entity_manager.h"
-#include "esphome/components/daikin_rotex_can/Accessor.h"
 #include "esphome/components/esp32_can/esp32_can.h"
 #include "esphome/core/component.h"
 #include <list>
@@ -26,6 +25,7 @@ public:
             m_entity_manager.add(pRequest);
         }
     }
+    void set_thermal_power_sensor(sensor::Sensor* pSensor) { m_thermal_power_sensor = pSensor; }
 
     void on_post_handle(TEntity* pRequest);
 
@@ -35,8 +35,6 @@ public:
     // Buttons
     void dhw_run();
     void dump();
-
-    Accessor& getAccessor() { return m_accessor; }
 
     void handle(uint32_t can_id, std::vector<uint8_t> const& data);
 
@@ -73,7 +71,6 @@ private:
     bool is_command_set(TMessage const&);
     std::string recalculate_state(EntityBase* pEntity, std::string const& new_state) const;
 
-    Accessor m_accessor;
     TEntityManager m_entity_manager;
     std::shared_ptr<esphome::canbus::CanbusTrigger> m_canbus_trigger;
     std::shared_ptr<TCanbusAutomation> m_canbus_automation;
@@ -86,6 +83,8 @@ private:
     text_sensor::TextSensor* m_project_git_hash_sensor;
     std::string m_project_git_hash;
     esphome::esp32_can::ESP32Can* m_pCanbus;
+
+    sensor::Sensor* m_thermal_power_sensor;
 };
 
 inline void DaikinRotexCanComponent::set_canbus(esphome::esp32_can::ESP32Can* pCanbus) {
