@@ -40,11 +40,11 @@ void DaikinRotexCanComponent::setup() {
         }, POST_SETUP_TIMOUT);
 
         pEntity->set_canbus(m_pCanbus);
-        if (GenericTextSensor* pTextSensor = dynamic_cast<GenericTextSensor*>(pEntity)) {
+        if (CanTextSensor* pTextSensor = dynamic_cast<CanTextSensor*>(pEntity)) {
             pTextSensor->set_recalculate_state([this](EntityBase* pEntity, std::string const& state){
                 return recalculate_state(pEntity, state);
             });
-        } else if (GenericSelect* pSelect = dynamic_cast<GenericSelect*>(pEntity)) {
+        } else if (CanSelect* pSelect = dynamic_cast<CanSelect*>(pEntity)) {
             pSelect->set_custom_select_lambda([this](std::string const& id, uint16_t key){
                 return on_custom_select(id, key);
             });
@@ -61,7 +61,7 @@ void DaikinRotexCanComponent::setup() {
         ESP_LOGI("setup", "resquests.size: %d", size);
     }, POST_SETUP_TIMOUT);
 
-    GenericSelect* p_optimized_defrosting = m_entity_manager.get_select(OPTIMIZED_DEFROSTING);
+    CanSelect* p_optimized_defrosting = m_entity_manager.get_select(OPTIMIZED_DEFROSTING);
     if (p_optimized_defrosting != nullptr) {
         m_optimized_defrosting_pref = global_preferences->make_preference<bool>(p_optimized_defrosting->get_object_id_hash());
         if (!m_optimized_defrosting_pref.load(&m_optimized_defrosting)) {
@@ -123,7 +123,7 @@ void DaikinRotexCanComponent::update_thermal_power() {
 bool DaikinRotexCanComponent::on_custom_select(std::string const& id, uint8_t value) {
     if (id == OPTIMIZED_DEFROSTING) {
         Utils::log(TAG, "optimized_defrosting: %d", value);
-        GenericSelect* p_temperature_antifreeze = m_entity_manager.get_select(TEMPERATURE_ANTIFREEZE);
+        CanSelect* p_temperature_antifreeze = m_entity_manager.get_select(TEMPERATURE_ANTIFREEZE);
 
         if (p_temperature_antifreeze != nullptr) {
             if (value != 0) {
@@ -186,7 +186,7 @@ void DaikinRotexCanComponent::dhw_run() {
         temp1 *= pEntity->get_config().divider;
 
         number::Number* pNumber = pEntity->get_number();
-        GenericSelect* pSelect = pEntity->get_select();
+        CanSelect* pSelect = pEntity->get_select();
 
         if (pNumber != nullptr) {
             temp2 = pNumber->state * pEntity->get_config().divider;

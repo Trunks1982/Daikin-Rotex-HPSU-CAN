@@ -7,7 +7,7 @@
 namespace esphome {
 namespace daikin_rotex_can {
 
-class GenericSelect;
+class CanSelect;
 
 class TEntityManager {
 public:
@@ -32,7 +32,7 @@ public:
     sensor::Sensor const* get_sensor(std::string const& id) const;
 
     text_sensor::TextSensor* get_text_sensor(std::string const& id);
-    GenericSelect* get_select(std::string const& id);
+    CanSelect* get_select(std::string const& id);
 
     bool sendNextPendingGet();
     void sendSet(std::string const& request_name, float value);
@@ -73,7 +73,7 @@ inline text_sensor::TextSensor* TEntityManager::get_text_sensor(std::string cons
     return Utils::toTextSensor(get_entity_base(id));
 }
 
-inline GenericSelect* TEntityManager::get_select(std::string const& id) {
+inline CanSelect* TEntityManager::get_select(std::string const& id) {
     return Utils::toSelect(get_entity_base(id));
 }
 

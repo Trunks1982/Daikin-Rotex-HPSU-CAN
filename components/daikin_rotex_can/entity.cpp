@@ -19,8 +19,8 @@ std::array<uint16_t, 7> TEntity::calculate_reponse(TMessage const& message) {
     return response;
 }
 
-GenericSelect* TEntity::get_select() const {
-    return dynamic_cast<GenericSelect*>(m_entity_base);
+CanSelect* TEntity::get_select() const {
+    return dynamic_cast<CanSelect*>(m_entity_base);
 }
 
 bool TEntity::isGetInProgress() const {

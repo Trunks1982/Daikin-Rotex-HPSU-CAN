@@ -172,8 +172,8 @@ binary_sensor::BinarySensor* Utils::toBinarySensor(EntityBase* pEntity) {
     return nullptr;
 }
 
-GenericSelect* Utils::toSelect(EntityBase* pEntity) {
-    if (GenericSelect* pSelect = dynamic_cast<GenericSelect*>(pEntity)) {
+CanSelect* Utils::toSelect(EntityBase* pEntity) {
+    if (CanSelect* pSelect = dynamic_cast<CanSelect*>(pEntity)) {
         return pSelect;
     } else if (pEntity) {
         ESP_LOGE(TAG, "Entity is not a select: %s", pEntity->get_name().c_str());

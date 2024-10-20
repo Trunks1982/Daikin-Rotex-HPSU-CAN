@@ -6,9 +6,9 @@
 namespace esphome {
 namespace daikin_rotex_can {
 
-class GenericNumber : public number::Number, public TEntity, public Parented<DaikinRotexCanComponent> {
+class CanNumber : public number::Number, public TEntity, public Parented<DaikinRotexCanComponent> {
 public:
-    GenericNumber() = default;
+    CanNumber() = default;
     void set_id(std::string const& id) { m_id = id; }
 protected:
     void control(float value) override;

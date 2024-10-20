@@ -10,7 +10,7 @@
 namespace esphome {
 namespace daikin_rotex_can {
 
-class GenericSelect;
+class CanSelect;
 
 class TEntity
 {
@@ -112,7 +112,7 @@ public:
         return dynamic_cast<number::Number*>(m_entity_base);
     }
 
-    GenericSelect* get_select() const;
+    CanSelect* get_select() const;
 
     bool isGetSupported() const {
         return m_entity_base != nullptr;

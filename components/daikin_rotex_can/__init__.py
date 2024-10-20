@@ -16,11 +16,11 @@ _LOGGER = logging.getLogger(__name__)
 daikin_rotex_can_ns = cg.esphome_ns.namespace('daikin_rotex_can')
 DaikinRotexCanComponent = daikin_rotex_can_ns.class_('DaikinRotexCanComponent', cg.Component)
 
-GenericSelect = daikin_rotex_can_ns.class_("GenericSelect", select.Select)
-GenericNumber = daikin_rotex_can_ns.class_("GenericNumber", number.Number)
-GenericSensor = daikin_rotex_can_ns.class_("GenericSensor", sensor.Sensor)
-GenericTextSensor = daikin_rotex_can_ns.class_("GenericTextSensor", text_sensor.TextSensor)
-GenericBinarySensor = daikin_rotex_can_ns.class_("GenericBinarySensor", binary_sensor.BinarySensor)
+CanSelect = daikin_rotex_can_ns.class_("CanSelect", select.Select)
+CanNumber = daikin_rotex_can_ns.class_("CanNumber", number.Number)
+CanSensor = daikin_rotex_can_ns.class_("CanSensor", sensor.Sensor)
+CanTextSensor = daikin_rotex_can_ns.class_("CanTextSensor", text_sensor.TextSensor)
+CanBinarySensor = daikin_rotex_can_ns.class_("CanBinarySensor", binary_sensor.BinarySensor)
 
 LogFilterText = daikin_rotex_can_ns.class_("LogFilterText", text.Text)
 CustomRequestText = daikin_rotex_can_ns.class_("CustomRequestText", text.Text)
@@ -1268,7 +1268,7 @@ for sensor_conf in sensor_configuration:
         case "sensor":
             entity_schemas.update({
                 cv.Optional(name): sensor.sensor_schema(
-                    GenericSensor,
+                    CanSensor,
                     device_class=(sensor_conf.get("device_class") if sensor_conf.get("device_class") != None else sensor._UNDEF),
                     unit_of_measurement=sensor_conf.get("unit_of_measurement"),
                     accuracy_decimals=sensor_conf.get("accuracy_decimals"),
@@ -1279,21 +1279,21 @@ for sensor_conf in sensor_configuration:
         case "text_sensor":
             entity_schemas.update({
                 cv.Optional(name): text_sensor.text_sensor_schema(
-                    GenericTextSensor,
+                    CanTextSensor,
                     icon=sensor_conf.get("icon", text_sensor._UNDEF)
                 ).extend({cv.Optional(CONF_UPDATE_INTERVAL): cv.uint16_t}),
             })
         case "binary_sensor":
             entity_schemas.update({
                 cv.Optional(name): binary_sensor.binary_sensor_schema(
-                    GenericBinarySensor,
+                    CanBinarySensor,
                     icon=sensor_conf.get("icon", binary_sensor._UNDEF)
                 ).extend({cv.Optional(CONF_UPDATE_INTERVAL): cv.uint16_t}),
             })
         case "select":
             entity_schemas.update({
                 cv.Optional(name): select.select_schema(
-                    GenericSelect,
+                    CanSelect,
                     entity_category=ENTITY_CATEGORY_CONFIG,
                     icon=sensor_conf.get("icon", select._UNDEF)
                 ).extend({cv.Optional(CONF_UPDATE_INTERVAL): cv.uint16_t}),
@@ -1304,7 +1304,7 @@ for sensor_conf in sensor_configuration:
                 cv.Optional(name): cv.typed_schema(
                     {
                         "number": number.number_schema(
-                            GenericNumber,
+                            CanNumber,
                             entity_category=ENTITY_CATEGORY_CONFIG,
                             icon=sensor_conf.get("icon", number._UNDEF)
                         ).extend({
@@ -1312,7 +1312,7 @@ for sensor_conf in sensor_configuration:
                             cv.Optional(CONF_MODE, default="BOX"): cv.enum(number.NUMBER_MODES, upper=True)
                         }),
                         "select": select.select_schema(
-                            GenericSelect,
+                            CanSelect,
                             entity_category=ENTITY_CATEGORY_CONFIG,
                             icon=sensor_conf.get("icon", select._UNDEF)
                         ).extend({

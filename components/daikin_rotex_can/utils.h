@@ -17,7 +17,7 @@
 namespace esphome {
 namespace daikin_rotex_can {
 
-class GenericSelect;
+class CanSelect;
 
 class Utils {
     using TVoidFunc = std::function<void()>;
@@ -51,7 +51,7 @@ public:
     static sensor::Sensor const* toSensor(EntityBase const*);
     static text_sensor::TextSensor* toTextSensor(EntityBase*);
     static binary_sensor::BinarySensor* toBinarySensor(EntityBase*);
-    static GenericSelect* toSelect(EntityBase*);
+    static CanSelect* toSelect(EntityBase*);
     static number::Number* toNumber(EntityBase*);
 
     static std::string g_log_filter;
