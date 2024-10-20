@@ -14,10 +14,6 @@ void CanSelect::control(const std::string &value) {
     }
 }
 
-void CanSelect::set_map(std::string const& str_map) {
-    m_map = Utils::str_to_map(str_map);
-}
-
 uint16_t CanSelect::getKey(std::string const& value) const {
     auto it = m_map.findByValue(value);
     if (it != m_map.end()) {

@@ -2,7 +2,6 @@
 
 #include "esphome/components/daikin_rotex_can/types.h"
 #include "esphome/components/daikin_rotex_can/utils.h"
-#include "esphome/components/daikin_rotex_can/BidiMap.h"
 #include "esphome/components/esp32_can/esp32_can.h"
 #include "esphome/core/entity_base.h"
 #include <functional>
@@ -30,7 +29,6 @@ public:
         uint8_t data_offset;
         uint8_t data_size;
         float divider;
-        BidiMap map;
         std::string update_entity;
         uint16_t update_interval;
         THandleFunc handle_lambda;
@@ -46,7 +44,6 @@ public:
         , data_offset(0)
         , data_size(0)
         , divider(1)
-        , map({})
         , update_entity({})
         , update_interval(1000)
         , handle_lambda([](TMessage const&){ return 0; })
@@ -64,7 +61,6 @@ public:
             uint8_t _data_offset,
             uint8_t _data_size,
             float _divider,
-            std::string const& _map,
             std::string const& _update_entity,
             uint16_t _update_interval,
             THandleFunc _handle_lambda,
@@ -79,7 +75,6 @@ public:
         , data_offset(_data_offset)
         , data_size(_data_size)
         , divider(_divider)
-        , map(Utils::str_to_map(_map))
         , update_entity(_update_entity)
         , update_interval(_update_interval)
         , handle_lambda(_handle_lambda)

@@ -11,8 +11,8 @@ TEntity::TVariant CanSensor::handleValue(uint16_t value) {
 }
 
 TEntity::TVariant CanTextSensor::handleValue(uint16_t value) {
-    auto it = m_config.map.findByKey(value);
-    const std::string str = m_recalculate_state(m_config.pEntity, it != m_config.map.end() ? it->second : Utils::format("INVALID<%f>", value));
+    auto it = m_map.findByKey(value);
+    const std::string str = m_recalculate_state(m_config.pEntity, it != m_map.end() ? it->second : Utils::format("INVALID<%f>", value));
     publish_state(str);
     return str;
 }

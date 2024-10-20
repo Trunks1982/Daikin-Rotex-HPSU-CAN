@@ -1437,11 +1437,11 @@ async def to_code(config):
                         entity = await sensor.new_sensor(yaml_sensor_conf)
                     case "text_sensor":
                         entity = await text_sensor.new_text_sensor(yaml_sensor_conf)
+                        cg.add(entity.set_map(str_map))
                     case "binary_sensor":
                         entity = await binary_sensor.new_binary_sensor(yaml_sensor_conf)
                     case "select":
                         entity = await select.new_select(yaml_sensor_conf, options = list(mapping.values()))
-                        cg.add(entity.set_id(sens_conf.get("name")))
                         cg.add(entity.set_map(str_map))
                         await cg.register_parented(entity, var)
                     case "number":
@@ -1463,8 +1463,6 @@ async def to_code(config):
                             case "select":
                                 entity = await select.new_select(yaml_sensor_conf, options = list(mapping.values()))
                                 cg.add(entity.set_map(str_map))
-
-                        cg.add(entity.set_id(sens_conf.get("name")))
 
                         await cg.register_parented(entity, var)
                     case _:
@@ -1492,13 +1490,12 @@ async def to_code(config):
 
                 cg.add(entity.set_entity(sens_conf.get("name"), [
                     entity,
-                    sens_conf.get("name"),
+                    sens_conf.get("name"), # Entity id
                     sens_conf.get("can_id", 0x180),
                     sens_conf.get("command", ""),
                     sens_conf.get("data_offset", 5),
                     sens_conf.get("data_size", 1),
                     divider,
-                    str_map,
                     sens_conf.get("update_entity", ""),
                     update_interval,
                     await handle_lambda(),

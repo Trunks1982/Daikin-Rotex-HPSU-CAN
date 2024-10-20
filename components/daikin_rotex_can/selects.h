@@ -11,8 +11,7 @@ class CanSelect : public select::Select, public TEntity, public Parented<DaikinR
     using TCustomSelectLambda = std::function<bool(std::string const& id, uint16_t key)>;
 public:
     CanSelect() = default;
-    void set_id(std::string const& id) { m_id = id; }
-    void set_map(std::string const& str_map);
+    void set_map(std::string const& str_map) { m_map = Utils::str_to_map(str_map); }
     void set_custom_select_lambda(TCustomSelectLambda&& lambda) { m_custom_select_lambda = std::move(lambda); }
 
     std::string findNextByKey(uint16_t value, std::string const& fallback) const;
@@ -24,7 +23,6 @@ protected:
     virtual TVariant handleValue(uint16_t value) override;
 
 private:
-    std::string m_id;
     BidiMap m_map;
     TCustomSelectLambda m_custom_select_lambda;
 };
