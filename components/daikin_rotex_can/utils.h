@@ -1,23 +1,12 @@
 #pragma once
 
 #include "esphome/components/daikin_rotex_can/types.h"
-#include "esphome/components/sensor/sensor.h"
-#include "esphome/components/binary_sensor/binary_sensor.h"
-#include "esphome/components/text_sensor/text_sensor.h"
-#include "esphome/components/select/select.h"
-#include "esphome/components/number/number.h"
-#include <algorithm>
-#include <sstream>
-#include <iomanip>
-#include <variant>
-#include <vector>
+#include <functional>
 #include <memory>
 #include <map>
 
 namespace esphome {
 namespace daikin_rotex_can {
-
-class CanSelect;
 
 class Utils {
     using TVoidFunc = std::function<void()>;
@@ -46,13 +35,6 @@ public:
     static void log(std::string const& tag, std::string const& str_format, Args... args);
 
     static void call_later(TVoidFunc lambda, uint32_t timeout = 0u);
-
-    static sensor::Sensor* toSensor(EntityBase*);
-    static sensor::Sensor const* toSensor(EntityBase const*);
-    static text_sensor::TextSensor* toTextSensor(EntityBase*);
-    static binary_sensor::BinarySensor* toBinarySensor(EntityBase*);
-    static CanSelect* toSelect(EntityBase*);
-    static number::Number* toNumber(EntityBase*);
 
     static std::string g_log_filter;
 };

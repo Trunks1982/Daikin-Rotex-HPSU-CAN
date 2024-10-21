@@ -1,6 +1,7 @@
 #pragma once
 
 #include "esphome/components/daikin_rotex_can/entity_manager.h"
+#include "esphome/components/daikin_rotex_can/sensors.h"
 #include "esphome/components/esp32_can/esp32_can.h"
 #include "esphome/core/component.h"
 #include <list>
@@ -8,7 +9,7 @@
 namespace esphome {
 namespace daikin_rotex_can {
 
-class DaikinRotexCanComponent: public Component {
+class DaikinRotexCanComponent: public Component, public SensorAccessor {
 public:
     using TVoidFunc = std::function<void()>;
 
@@ -20,21 +21,21 @@ public:
     void set_canbus(esphome::esp32_can::ESP32Can* pCanbus);
     void set_update_interval(uint16_t seconds) {} // dummy
     void set_project_git_hash(text_sensor::TextSensor* pSensor, std::string const& hash) { m_project_git_hash_sensor = pSensor; m_project_git_hash = hash; }
+    void set_thermal_power_sensor(sensor::Sensor* pSensor) { m_thermal_power_sensor = pSensor; }
     void add_entity(EntityBase* pEntity) {
         if (TEntity* pRequest = dynamic_cast<TEntity*>(pEntity)) {
             m_entity_manager.add(pRequest);
         }
     }
-    void set_thermal_power_sensor(sensor::Sensor* pSensor) { m_thermal_power_sensor = pSensor; }
 
     void on_post_handle(TEntity* pRequest);
 
     // Texts
-    void custom_request(std::string const& value);
+    virtual void custom_request(std::string const& value) override;
 
     // Buttons
-    void dhw_run();
-    void dump();
+    virtual void dhw_run() override;
+    virtual void dump() override;
 
     void handle(uint32_t can_id, std::vector<uint8_t> const& data);
 
@@ -71,7 +72,7 @@ private:
     bool is_command_set(TMessage const&);
     std::string recalculate_state(EntityBase* pEntity, std::string const& new_state) const;
 
-    TEntityManager m_entity_manager;
+    esphome::daikin_rotex_can::TEntityManager m_entity_manager;
     std::shared_ptr<esphome::canbus::CanbusTrigger> m_canbus_trigger;
     std::shared_ptr<TCanbusAutomation> m_canbus_automation;
     std::shared_ptr<MyAction> m_canbus_action;

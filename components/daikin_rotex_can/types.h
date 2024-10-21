@@ -1,8 +1,6 @@
 #pragma once
 
 #include <array>
-#include <variant>
-#include <string>
 
 namespace esphome {
 namespace daikin_rotex_can {

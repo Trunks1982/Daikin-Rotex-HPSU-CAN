@@ -47,6 +47,66 @@ EntityBase const* TEntityManager::get_entity_base(std::string const& id) const {
     return nullptr;
 }
 
+CanSensor* TEntityManager::get_sensor(std::string const& id) {
+    EntityBase* pEntity = get_entity_base(id);
+    if (CanSensor* pSensor = dynamic_cast<CanSensor*>(pEntity)) {
+        return pSensor;
+    } else if (pEntity) {
+        ESP_LOGE(TAG, "Entity is not a sensor: %s", pEntity->get_name().c_str());
+    } else {
+        ESP_LOGE(TAG, "Entity is null!");
+    }
+    return nullptr;
+}
+
+CanSensor const* TEntityManager::get_sensor(std::string const& id) const {
+    EntityBase const* pEntity = get_entity_base(id);
+    if (CanSensor const* pSensor = dynamic_cast<CanSensor const*>(pEntity)) {
+        return pSensor;
+    } else if (pEntity) {
+        ESP_LOGE(TAG, "Const Entity is not a sensor: %s", pEntity->get_name().c_str());
+    } else {
+        ESP_LOGE(TAG, "Const Entity is null!");
+    }
+    return nullptr;
+}
+
+CanTextSensor* TEntityManager::get_text_sensor(std::string const& id) {
+    EntityBase* pEntity = get_entity_base(id);
+    if (CanTextSensor* pTextSensor = dynamic_cast<CanTextSensor*>(pEntity)) {
+        return pTextSensor;
+    } else if (pEntity) {
+        ESP_LOGE(TAG, "Entity is not a text sensor: %s", pEntity->get_name().c_str());
+    } else {
+        ESP_LOGE(TAG, "toTextSensor() => Entity is null!");
+    }
+    return nullptr;
+}
+
+CanTextSensor const* TEntityManager::get_text_sensor(std::string const& id) const {
+    EntityBase const* pEntity = get_entity_base(id);
+    if (CanTextSensor const* pTextSensor = dynamic_cast<CanTextSensor const*>(pEntity)) {
+        return pTextSensor;
+    } else if (pEntity) {
+        ESP_LOGE(TAG, "Entity is not a text sensor: %s", pEntity->get_name().c_str());
+    } else {
+        ESP_LOGE(TAG, "Const toTextSensor() => Entity is null!");
+    }
+    return nullptr;
+}
+
+CanSelect* TEntityManager::get_select(std::string const& id) {
+    EntityBase* pEntity = get_entity_base(id);
+    if (CanSelect* pSelect = dynamic_cast<CanSelect*>(pEntity)) {
+        return pSelect;
+    } else if (pEntity) {
+        ESP_LOGE(TAG, "Entity is not a select: %s", pEntity->get_name().c_str());
+    } else {
+        ESP_LOGE(TAG, "toSelect() => Entity is null!");
+    }
+    return nullptr;
+}
+
 bool TEntityManager::sendNextPendingGet() {
     TEntity* pEntity = getNextRequestToSend();
     if (pEntity != nullptr) {

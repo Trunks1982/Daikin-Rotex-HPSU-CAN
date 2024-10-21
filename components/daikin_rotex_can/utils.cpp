@@ -1,5 +1,6 @@
 #include "esphome/components/daikin_rotex_can/utils.h"
-#include "esphome/components/daikin_rotex_can/selects.h"
+#include "esphome/core/log.h"
+#include <iomanip>
 #include <regex>
 
 namespace esphome {
@@ -126,72 +127,6 @@ void Utils::setBytes(TMessage& data, uint16_t value, uint8_t offset, uint8_t len
     } else {
         ESP_LOGE("write", "Invalid len: %d", len);
     }
-}
-
-sensor::Sensor* Utils::toSensor(EntityBase* pEntity) {
-    if (sensor::Sensor* pSensor = dynamic_cast<sensor::Sensor*>(pEntity)) {
-        return pSensor;
-    } else if (pEntity) {
-        ESP_LOGE(TAG, "Entity is not a sensor: %s", pEntity->get_name().c_str());
-    } else {
-        ESP_LOGE(TAG, "Entity is null!");
-    }
-    return nullptr;
-}
-
-sensor::Sensor const* Utils::toSensor(EntityBase const* pEntity) {
-    if (sensor::Sensor const* pSensor = dynamic_cast<sensor::Sensor const*>(pEntity)) {
-        return pSensor;
-    } else if (pEntity) {
-        ESP_LOGE(TAG, "Const Entity is not a sensor: %s", pEntity->get_name().c_str());
-    } else {
-        ESP_LOGE(TAG, "Const Entity is null!");
-    }
-    return nullptr;
-}
-
-text_sensor::TextSensor* Utils::toTextSensor(EntityBase* pEntity) {
-    if (text_sensor::TextSensor* pTextSensor = dynamic_cast<text_sensor::TextSensor*>(pEntity)) {
-        return pTextSensor;
-    } else if (pEntity) {
-        ESP_LOGE(TAG, "Entity is not a text sensor: %s", pEntity->get_name().c_str());
-    } else {
-        ESP_LOGE(TAG, "toTextSensor() => Entity is null!");
-    }
-    return nullptr;
-}
-
-binary_sensor::BinarySensor* Utils::toBinarySensor(EntityBase* pEntity) {
-    if (binary_sensor::BinarySensor* pBinarySensor = dynamic_cast<binary_sensor::BinarySensor*>(pEntity)) {
-        return pBinarySensor;
-    } else if (pEntity) {
-        ESP_LOGE(TAG, "Entity is not a binary sensor: %s", pEntity->get_name().c_str());
-    } else {
-        ESP_LOGE(TAG, "toBinarySensor() => Entity is null!");
-    }
-    return nullptr;
-}
-
-CanSelect* Utils::toSelect(EntityBase* pEntity) {
-    if (CanSelect* pSelect = dynamic_cast<CanSelect*>(pEntity)) {
-        return pSelect;
-    } else if (pEntity) {
-        ESP_LOGE(TAG, "Entity is not a select: %s", pEntity->get_name().c_str());
-    } else {
-        ESP_LOGE(TAG, "toSelect() => Entity is null!");
-    }
-    return nullptr;
-}
-
-number::Number* Utils::toNumber(EntityBase* pEntity) {
-    if (number::Number* pNumber = dynamic_cast<number::Number*>(pEntity)) {
-        return pNumber;
-    } else if (pEntity) {
-        ESP_LOGE(TAG, "Entity is not a number: %s", pEntity->get_name().c_str());
-    } else {
-        ESP_LOGE(TAG, "toNumber() => Entity is null!");
-    }
-    return nullptr;
 }
 
 template<typename... Args>

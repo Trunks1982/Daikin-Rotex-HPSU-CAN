@@ -5,14 +5,13 @@
 #include "esphome/components/esp32_can/esp32_can.h"
 #include "esphome/core/entity_base.h"
 #include <functional>
+#include <stdint.h>
+#include <variant>
 
 namespace esphome {
 namespace daikin_rotex_can {
 
-class CanSelect;
-
-class TEntity
-{
+class TEntity {
     static const uint16_t DC = 0xFFFF; // Don't care
 
 public:
@@ -98,16 +97,6 @@ public:
     EntityBase* get_entity_base() const {
         return m_entity_base;
     }
-
-    sensor::Sensor* get_sensor() const {
-        return dynamic_cast<sensor::Sensor*>(m_entity_base);
-    }
-
-    number::Number* get_number() const {
-        return dynamic_cast<number::Number*>(m_entity_base);
-    }
-
-    CanSelect* get_select() const;
 
     bool isGetSupported() const {
         return m_entity_base != nullptr;

@@ -1,6 +1,5 @@
 #include "esphome/components/daikin_rotex_can/daikin_rotex_can.h"
 #include "esphome/components/daikin_rotex_can/entity.h"
-#include "esphome/components/daikin_rotex_can/selects.h"
 #include "esphome/components/daikin_rotex_can/sensors.h"
 #include <string>
 #include <vector>
@@ -15,7 +14,6 @@ static const char* OPTIMIZED_DEFROSTING = "optimized_defrosting";
 static const char* TEMPERATURE_ANTIFREEZE = "temperature_antifreeze";   // T-Frostschutz
 static const char* TEMPERATURE_ANTIFREEZE_OFF = "Aus";
 static const uint32_t POST_SETUP_TIMOUT = 15*1000;
-
 
 DaikinRotexCanComponent::DaikinRotexCanComponent()
 : m_entity_manager()
@@ -103,11 +101,11 @@ void DaikinRotexCanComponent::update_thermal_power() {
     text_sensor::TextSensor* mode_of_operating = m_entity_manager.get_text_sensor(MODE_OF_OPERATING);
 
     if (mode_of_operating != nullptr && m_thermal_power_sensor != nullptr) {
-        sensor::Sensor* flow_rate = m_entity_manager.get_sensor("flow_rate");
+        CanSensor const* flow_rate = m_entity_manager.get_sensor("flow_rate");
         if (flow_rate != nullptr) {
-            sensor::Sensor* tvbh = m_entity_manager.get_sensor("tvbh");
-            sensor::Sensor* tv = m_entity_manager.get_sensor("tv");
-            sensor::Sensor* tr = m_entity_manager.get_sensor("tr");
+            CanSensor const* tvbh = m_entity_manager.get_sensor("tvbh");
+            CanSensor const* tv = m_entity_manager.get_sensor("tv");
+            CanSensor const* tr = m_entity_manager.get_sensor("tr");
 
             float value = 0;
             if (mode_of_operating->state == "Warmwasserbereitung" && tv != nullptr && tr != nullptr) {
@@ -140,8 +138,8 @@ bool DaikinRotexCanComponent::on_custom_select(std::string const& id, uint8_t va
 }
 
 void DaikinRotexCanComponent::on_mode_of_operating() {
-    select::Select* p_operating_mode = m_entity_manager.get_select(OPERATING_MODE);
-    text_sensor::TextSensor* p_mode_of_operating = m_entity_manager.get_text_sensor(MODE_OF_OPERATING);
+    CanSelect* p_operating_mode = m_entity_manager.get_select(OPERATING_MODE);
+    CanTextSensor* p_mode_of_operating = m_entity_manager.get_text_sensor(MODE_OF_OPERATING);
     if (m_optimized_defrosting && p_operating_mode != nullptr && p_mode_of_operating != nullptr) {
         if (p_mode_of_operating->state == "Abtauen") {
             m_entity_manager.sendSet(p_operating_mode->get_name(), 0x05); // Sommer
@@ -185,12 +183,9 @@ void DaikinRotexCanComponent::dhw_run() {
 
         temp1 *= pEntity->get_config().divider;
 
-        number::Number* pNumber = pEntity->get_number();
-        CanSelect* pSelect = pEntity->get_select();
-
-        if (pNumber != nullptr) {
+        if (CanNumber const* pNumber = dynamic_cast<CanNumber const*>(pEntity)) {
             temp2 = pNumber->state * pEntity->get_config().divider;
-        } else if (pSelect != nullptr) {
+        } else if (CanSelect const* pSelect = dynamic_cast<CanSelect const*>(pEntity)) {
             temp2 = pSelect->getKey(pSelect->state);
         }
 
@@ -221,15 +216,15 @@ void DaikinRotexCanComponent::dump() {
         TEntity const* pEntity = m_entity_manager.get(index);
         if (pEntity != nullptr) {
             EntityBase* pEntityBase = pEntity->get_entity_base();
-            if (sensor::Sensor* pSensor = dynamic_cast<sensor::Sensor*>(pEntityBase)) {
+            if (CanSensor* pSensor = dynamic_cast<CanSensor*>(pEntityBase)) {
                 ESP_LOGI(DUMP, "%s: %f", pSensor->get_name().c_str(), pSensor->get_state());
-            } else if (binary_sensor::BinarySensor* pBinarySensor = dynamic_cast<binary_sensor::BinarySensor*>(pEntityBase)) {
+            } else if (CanBinarySensor* pBinarySensor = dynamic_cast<CanBinarySensor*>(pEntityBase)) {
                 ESP_LOGI(DUMP, "%s: %d", pBinarySensor->get_name().c_str(), pBinarySensor->state);
-            } else if (number::Number* pNumber = dynamic_cast<number::Number*>(pEntityBase)) {
+            } else if (CanNumber* pNumber = dynamic_cast<CanNumber*>(pEntityBase)) {
                 ESP_LOGI(DUMP, "%s: %f", pNumber->get_name().c_str(), pNumber->state);
-            } else if (text_sensor::TextSensor* pTextSensor = dynamic_cast<text_sensor::TextSensor*>(pEntityBase)) {
+            } else if (CanTextSensor* pTextSensor = dynamic_cast<CanTextSensor*>(pEntityBase)) {
                 ESP_LOGI(DUMP, "%s: %s", pTextSensor->get_name().c_str(), pTextSensor->get_state().c_str());
-            } else if (select::Select* pSelect = dynamic_cast<select::Select*>(pEntityBase)) {
+            } else if (CanSelect* pSelect = dynamic_cast<CanSelect*>(pEntityBase)) {
                 ESP_LOGI(DUMP, "%s: %s", pSelect->get_name().c_str(), pSelect->state.c_str());
             }
         } else {
@@ -286,13 +281,13 @@ bool DaikinRotexCanComponent::is_command_set(TMessage const& message) {
 }
 
 std::string DaikinRotexCanComponent::recalculate_state(EntityBase* pEntity, std::string const& new_state) const {
-    sensor::Sensor const* tvbh = m_entity_manager.get_sensor("tvbh");
-    sensor::Sensor const* tv = m_entity_manager.get_sensor("tv");
-    sensor::Sensor const* tr = m_entity_manager.get_sensor("tr");
-    sensor::Sensor const* dhw_mixer_position = m_entity_manager.get_sensor("dhw_mixer_position");
-    sensor::Sensor const* bpv = m_entity_manager.get_sensor("bypass_valve");
-    sensor::Sensor const* flow_rate = m_entity_manager.get_sensor("flow_rate");
-    EntityBase const* error_code = m_entity_manager.get_entity_base("error_code");
+    CanSensor const* tvbh = m_entity_manager.get_sensor("tvbh");
+    CanSensor const* tv = m_entity_manager.get_sensor("tv");
+    CanSensor const* tr = m_entity_manager.get_sensor("tr");
+    CanSensor const* dhw_mixer_position = m_entity_manager.get_sensor("dhw_mixer_position");
+    CanSensor const* bpv = m_entity_manager.get_sensor("bypass_valve");
+    CanSensor const* flow_rate = m_entity_manager.get_sensor("flow_rate");
+    CanTextSensor const* error_code = m_entity_manager.get_text_sensor("error_code");
 
     if (pEntity == error_code && error_code != nullptr) {
         if (tvbh != nullptr && tr != nullptr && dhw_mixer_position != nullptr && flow_rate != nullptr) {

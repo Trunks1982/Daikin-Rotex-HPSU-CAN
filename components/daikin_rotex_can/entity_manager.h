@@ -1,18 +1,15 @@
 #pragma once
 
+#include "esphome/components/daikin_rotex_can/sensors.h"
 #include "esphome/components/daikin_rotex_can/entity.h"
-#include "esphome/components/text_sensor/text_sensor.h"
-#include <vector>
 
 namespace esphome {
 namespace daikin_rotex_can {
 
-class CanSelect;
-
 class TEntityManager {
 public:
     TEntityManager();
-    void add(esphome::daikin_rotex_can::TEntity* pRequest);
+    void add(TEntity* pRequest);
 
     void removeInvalidRequests();
 
@@ -28,10 +25,12 @@ public:
 
     const std::vector<TEntity*>& get_entities() const { return m_entities; }
 
-    sensor::Sensor* get_sensor(std::string const& id);
-    sensor::Sensor const* get_sensor(std::string const& id) const;
+    CanSensor* get_sensor(std::string const& id);
+    CanSensor const* get_sensor(std::string const& id) const;
 
-    text_sensor::TextSensor* get_text_sensor(std::string const& id);
+    CanTextSensor* get_text_sensor(std::string const& id);
+    CanTextSensor const* get_text_sensor(std::string const& id) const;
+
     CanSelect* get_select(std::string const& id);
 
     bool sendNextPendingGet();
@@ -59,22 +58,6 @@ inline uint32_t TEntityManager::size() const {
 
 inline TEntity const* TEntityManager::get(uint32_t index) const {
     return (index < m_entities.size()) ? m_entities[index] : nullptr;
-}
-
-inline sensor::Sensor* TEntityManager::get_sensor(std::string const& id) {
-    return Utils::toSensor(get_entity_base(id));
-}
-
-inline sensor::Sensor const* TEntityManager::get_sensor(std::string const& id) const {
-    return Utils::toSensor(get_entity_base(id));
-}
-
-inline text_sensor::TextSensor* TEntityManager::get_text_sensor(std::string const& id) {
-    return Utils::toTextSensor(get_entity_base(id));
-}
-
-inline CanSelect* TEntityManager::get_select(std::string const& id) {
-    return Utils::toSelect(get_entity_base(id));
 }
 
 }

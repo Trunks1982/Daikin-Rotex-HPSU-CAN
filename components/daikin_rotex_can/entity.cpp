@@ -1,5 +1,4 @@
 #include "esphome/components/daikin_rotex_can/entity.h"
-#include "esphome/components/daikin_rotex_can/selects.h"
 #include "esphome/components/esp32_can/esp32_can.h"
 #include "esphome/core/hal.h"
 
@@ -17,10 +16,6 @@ std::array<uint16_t, 7> TEntity::calculate_reponse(TMessage const& message) {
         response[2] = message[2];
     }
     return response;
-}
-
-CanSelect* TEntity::get_select() const {
-    return dynamic_cast<CanSelect*>(m_entity_base);
 }
 
 bool TEntity::isGetInProgress() const {
