@@ -32,7 +32,7 @@ EntityBase* TEntityManager::get_entity_base(std::string const& id) {
     if (pEntity != nullptr) {
         return pEntity->get_entity_base();
     } else {
-        ESP_LOGE("get_entity_base", "Entity not found: %s", id.c_str());
+        ESP_LOGE(TAG, "get_entity_base: Entity not found: %s", id.c_str());
     }
     return nullptr;
 }
@@ -42,7 +42,7 @@ EntityBase const* TEntityManager::get_entity_base(std::string const& id) const {
     if (pEntity != nullptr) {
         return pEntity->get_entity_base();
     } else {
-        ESP_LOGE("get_entity_base", "Entity not found: %s", id.c_str());
+        ESP_LOGE(TAG, "get_entity_base: Entity not found: %s", id.c_str());
     }
     return nullptr;
 }
@@ -122,7 +122,7 @@ void TEntityManager::sendSet(std::string const& request_name, float value) {
     if (it != m_entities.end()) {
         (*it)->sendSet(m_pCanbus, value);
     } else {
-        ESP_LOGE("sendSet", "Unknown request: %s", request_name.c_str());
+        ESP_LOGE(TAG, "sendSet: Unknown request: %s", request_name.c_str());
     }
 }
 

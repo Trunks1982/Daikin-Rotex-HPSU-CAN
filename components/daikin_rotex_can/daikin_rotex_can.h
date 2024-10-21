@@ -1,5 +1,6 @@
 #pragma once
 
+#include "esphome/components/daikin_rotex_can/persistent_value.h"
 #include "esphome/components/daikin_rotex_can/entity_manager.h"
 #include "esphome/components/daikin_rotex_can/sensors.h"
 #include "esphome/components/esp32_can/esp32_can.h"
@@ -79,8 +80,7 @@ private:
     std::list<std::pair<TVoidFunc, uint32_t>> m_later_calls;
     std::list<TVoidFunc> m_dhw_run_lambdas;
 
-    bool m_optimized_defrosting;
-    ESPPreferenceObject m_optimized_defrosting_pref;
+    PersistentValue<bool> m_optimized_defrosting;
     text_sensor::TextSensor* m_project_git_hash_sensor;
     std::string m_project_git_hash;
     esphome::esp32_can::ESP32Can* m_pCanbus;

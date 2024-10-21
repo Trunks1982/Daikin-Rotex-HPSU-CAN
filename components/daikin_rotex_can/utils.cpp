@@ -147,10 +147,6 @@ void Utils::log(std::string const& tag, std::string const& str_format, Args... a
     }
 }
 
-void Utils::call_later(TVoidFunc lambda, uint32_t timeout) {
-    // fixme
-}
-
 template void Utils::log<char const*, char const*, char const*, char const*>(std::string const& tag, std::string const& str_format, char const* arg1, char const* arg2, char const* arg3, char const* arg4);
 template void Utils::log<char const*, float, char const*, char const*>(std::string const& tag, std::string const& str_format, char const* arg1, float arg2, char const* arg3, char const* arg4);
 template void Utils::log<char const*, char const*, char const*>(std::string const& tag, std::string const& str_format, char const* arg1, char const* arg2, char const* arg3);
@@ -160,6 +156,8 @@ template void Utils::log<int>(std::string const& tag, std::string const& str_for
 template void Utils::log<>(std::string const& tag, std::string const& str_format);
 template void Utils::log<char const*>(std::string const& tag, std::string const& str_format, char const* arg);
 template void Utils::log<void*, void*>(std::string const& tag, std::string const& str_format, void* arg1, void* arg2);
+template void Utils::log<char const*, unsigned char>(std::string const&, std::string const&, char const*, unsigned char);
+template void Utils::log<char const*, bool>(std::string const&, std::string const&, char const*, bool);
 
 }
 }

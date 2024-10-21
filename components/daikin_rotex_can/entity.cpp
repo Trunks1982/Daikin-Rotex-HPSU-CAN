@@ -5,6 +5,8 @@
 namespace esphome {
 namespace daikin_rotex_can {
 
+static const char* TAG = "daikin_rotex_can";
+
 std::array<uint16_t, 7> TEntity::calculate_reponse(TMessage const& message) {
     const uint16_t DC = 0xFFFF;
     std::array<uint16_t, 7> response = {DC, DC, DC, DC, DC, DC, DC};
@@ -58,14 +60,10 @@ bool TEntity::handle(uint32_t can_id, TMessage const& responseData, uint32_t tim
                     );
                 variant = handleValue(value);
             } else {
-                Utils::call_later([this](){
-                    ESP_LOGE("validateConfig", "Invalid data size: %d", m_config.data_size);
-                });
+                ESP_LOGE(TAG, "handle: Invalid data size: %d", m_config.data_size);
             }
         } else {
-            Utils::call_later([this](){
-                ESP_LOGE("validateConfig", "Invalid data_offset: %d", m_config.data_offset);
-            });
+            ESP_LOGE(TAG, "handle: Invalid data_offset: %d", m_config.data_offset);
         }
 
         m_post_handle_lambda(this);
@@ -96,7 +94,7 @@ bool TEntity::handle(uint32_t can_id, TMessage const& responseData, uint32_t tim
 
 bool TEntity::sendGet(esphome::esp32_can::ESP32Can* pCanBus) {
     if (pCanBus == nullptr) {
-        ESP_LOGE("sendGet", "pCanbus is null!");
+        ESP_LOGE(TAG, "sendGet: pCanbus is null!");
         return false;
     }
 
@@ -114,7 +112,7 @@ bool TEntity::sendGet(esphome::esp32_can::ESP32Can* pCanBus) {
 
 bool TEntity::sendSet(esphome::esp32_can::ESP32Can* pCanBus, float value) {
     if (pCanBus == nullptr) {
-        ESP_LOGE("sendSet", "pCanbus is null!");
+        ESP_LOGE(TAG, "sendSet: pCanbus is null!");
         return false;
     }
 

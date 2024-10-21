@@ -20,7 +20,6 @@ DaikinRotexCanComponent::DaikinRotexCanComponent()
 , m_later_calls()
 , m_dhw_run_lambdas()
 , m_optimized_defrosting(false)
-, m_optimized_defrosting_pref()
 , m_project_git_hash_sensor(nullptr)
 , m_project_git_hash()
 , m_thermal_power_sensor(nullptr)
@@ -56,17 +55,13 @@ void DaikinRotexCanComponent::setup() {
     const uint32_t size = m_entity_manager.size();
 
     call_later([size](){
-        ESP_LOGI("setup", "resquests.size: %d", size);
+        ESP_LOGI(TAG, "entities.size: %d", size);
     }, POST_SETUP_TIMOUT);
 
     CanSelect* p_optimized_defrosting = m_entity_manager.get_select(OPTIMIZED_DEFROSTING);
     if (p_optimized_defrosting != nullptr) {
-        m_optimized_defrosting_pref = global_preferences->make_preference<bool>(p_optimized_defrosting->get_object_id_hash());
-        if (!m_optimized_defrosting_pref.load(&m_optimized_defrosting)) {
-            m_optimized_defrosting = false;
-        }
-
-        p_optimized_defrosting->publish_select_key(m_optimized_defrosting);
+        m_optimized_defrosting.load(p_optimized_defrosting);
+        p_optimized_defrosting->publish_select_key(m_optimized_defrosting.value());
     }
 
     m_project_git_hash_sensor->publish_state(m_project_git_hash);
@@ -80,14 +75,25 @@ void DaikinRotexCanComponent::on_post_handle(TEntity* pEntity) {
         });
     }
 
-    if (pEntity->get_id() == "target_hot_water_temperature") {
+    const std::string id = pEntity->get_id();
+    if (id == "target_hot_water_temperature") {
         call_later([this](){
             run_dhw_lambdas();
         });
-    } else if (pEntity->get_id() == MODE_OF_OPERATING) {
+    } else if (id == MODE_OF_OPERATING) {
         call_later([this](){
             on_mode_of_operating();
         });
+    } else if (id == TEMPERATURE_ANTIFREEZE) {
+        CanSelect* p_optimized_defrosting = m_entity_manager.get_select(OPTIMIZED_DEFROSTING);
+        CanSelect* p_temperature_antifreeze = m_entity_manager.get_select(TEMPERATURE_ANTIFREEZE);
+        if (p_optimized_defrosting != nullptr && p_temperature_antifreeze != nullptr) {
+            if (p_temperature_antifreeze->state != TEMPERATURE_ANTIFREEZE_OFF && m_optimized_defrosting.value() != 0x0) {
+                p_optimized_defrosting->publish_select_key(0x0);
+                m_optimized_defrosting.save(0x0);
+                Utils::log(TAG, "set %s: %d", OPTIMIZED_DEFROSTING, m_optimized_defrosting.value());
+            }
+        }
     }
 }
 
@@ -120,15 +126,14 @@ void DaikinRotexCanComponent::update_thermal_power() {
 
 bool DaikinRotexCanComponent::on_custom_select(std::string const& id, uint8_t value) {
     if (id == OPTIMIZED_DEFROSTING) {
-        Utils::log(TAG, "optimized_defrosting: %d", value);
+        Utils::log(TAG, "%s: %d", OPTIMIZED_DEFROSTING, value);
         CanSelect* p_temperature_antifreeze = m_entity_manager.get_select(TEMPERATURE_ANTIFREEZE);
 
         if (p_temperature_antifreeze != nullptr) {
             if (value != 0) {
                 m_entity_manager.sendSet(p_temperature_antifreeze->get_name(), p_temperature_antifreeze->getKey(TEMPERATURE_ANTIFREEZE_OFF));
             }
-            m_optimized_defrosting = value;
-            m_optimized_defrosting_pref.save(&m_optimized_defrosting);
+            m_optimized_defrosting.save(value);
             return true;
         } else {
             ESP_LOGE(TAG, "on_custom_select(%s, %d) => temperature_antifreeze select is missing!", id.c_str(), value);
@@ -140,7 +145,7 @@ bool DaikinRotexCanComponent::on_custom_select(std::string const& id, uint8_t va
 void DaikinRotexCanComponent::on_mode_of_operating() {
     CanSelect* p_operating_mode = m_entity_manager.get_select(OPERATING_MODE);
     CanTextSensor* p_mode_of_operating = m_entity_manager.get_text_sensor(MODE_OF_OPERATING);
-    if (m_optimized_defrosting && p_operating_mode != nullptr && p_mode_of_operating != nullptr) {
+    if (m_optimized_defrosting.value() && p_operating_mode != nullptr && p_mode_of_operating != nullptr) {
         if (p_mode_of_operating->state == "Abtauen") {
             m_entity_manager.sendSet(p_operating_mode->get_name(), 0x05); // Sommer
         } else if (p_mode_of_operating->state == "Heizen" && p_operating_mode->state == "Sommer") {
@@ -198,40 +203,38 @@ void DaikinRotexCanComponent::dhw_run() {
                 m_entity_manager.sendSet(name, temp2);
             }, 10*1000);
         } else {
-            ESP_LOGE("dhw_rum", "Request doesn't have a Number!");
+            ESP_LOGE(TAG, "dhw_run: Request doesn't have a Number!");
         }
     } else {
-        ESP_LOGE("dhw_rum", "Request couldn't be found!");
+        ESP_LOGE(TAG, "dhw_run: Request couldn't be found!");
     }
 }
 
 void DaikinRotexCanComponent::dump() {
-    const char* DUMP = "dump";
-
-    ESP_LOGI(DUMP, "------------------------------------------");
-    ESP_LOGI(DUMP, "------------ DUMP %d Entities ------------", m_entity_manager.size());
-    ESP_LOGI(DUMP, "------------------------------------------");
+    ESP_LOGI(TAG, "------------------------------------------");
+    ESP_LOGI(TAG, "------------ DUMP %d Entities ------------", m_entity_manager.size());
+    ESP_LOGI(TAG, "------------------------------------------");
 
     for (auto index = 0; index < m_entity_manager.size(); ++index) {
         TEntity const* pEntity = m_entity_manager.get(index);
         if (pEntity != nullptr) {
             EntityBase* pEntityBase = pEntity->get_entity_base();
             if (CanSensor* pSensor = dynamic_cast<CanSensor*>(pEntityBase)) {
-                ESP_LOGI(DUMP, "%s: %f", pSensor->get_name().c_str(), pSensor->get_state());
+                ESP_LOGI(TAG, "%s: %f", pSensor->get_name().c_str(), pSensor->get_state());
             } else if (CanBinarySensor* pBinarySensor = dynamic_cast<CanBinarySensor*>(pEntityBase)) {
-                ESP_LOGI(DUMP, "%s: %d", pBinarySensor->get_name().c_str(), pBinarySensor->state);
+                ESP_LOGI(TAG, "%s: %d", pBinarySensor->get_name().c_str(), pBinarySensor->state);
             } else if (CanNumber* pNumber = dynamic_cast<CanNumber*>(pEntityBase)) {
-                ESP_LOGI(DUMP, "%s: %f", pNumber->get_name().c_str(), pNumber->state);
+                ESP_LOGI(TAG, "%s: %f", pNumber->get_name().c_str(), pNumber->state);
             } else if (CanTextSensor* pTextSensor = dynamic_cast<CanTextSensor*>(pEntityBase)) {
-                ESP_LOGI(DUMP, "%s: %s", pTextSensor->get_name().c_str(), pTextSensor->get_state().c_str());
+                ESP_LOGI(TAG, "%s: %s", pTextSensor->get_name().c_str(), pTextSensor->get_state().c_str());
             } else if (CanSelect* pSelect = dynamic_cast<CanSelect*>(pEntityBase)) {
-                ESP_LOGI(DUMP, "%s: %s", pSelect->get_name().c_str(), pSelect->state.c_str());
+                ESP_LOGI(TAG, "%s: %s", pSelect->get_name().c_str(), pSelect->state.c_str());
             }
         } else {
-            ESP_LOGE(DUMP, "Entity with index<%d> not found!", index);
+            ESP_LOGE(TAG, "Entity with index<%d> not found!", index);
         }
     }
-    ESP_LOGI(DUMP, "------------------------------------------");
+    ESP_LOGI(TAG, "------------------------------------------");
 }
 
 void DaikinRotexCanComponent::run_dhw_lambdas() {

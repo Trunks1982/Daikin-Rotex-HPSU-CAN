@@ -34,8 +34,6 @@ public:
     template<typename... Args>
     static void log(std::string const& tag, std::string const& str_format, Args... args);
 
-    static void call_later(TVoidFunc lambda, uint32_t timeout = 0u);
-
     static std::string g_log_filter;
 };
 
