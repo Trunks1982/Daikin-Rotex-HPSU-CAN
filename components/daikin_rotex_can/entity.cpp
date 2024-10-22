@@ -29,7 +29,7 @@ bool TEntity::isMatch(uint32_t can_id, TMessage const& responseData) const {
     const bool is_set = (responseData[0] & 0x0F) == 0x00;
     const bool is_response = (responseData[0] & 0x0F) == 0x02;
 
-    const bool is_our_response = can_id == m_can_id;                                    // Listen for responses caused by our sendGet
+    const bool is_our_response = can_id == m_config.can_id;                             // Listen for responses caused by our sendGet
     const bool is_rocon_panel_response = can_id == 0x10A && (is_response || is_set);    // Listen for responses and sets caused by RoCon control panel (0x10A)
 
     const bool is_valid = is_our_response || is_rocon_panel_response;
@@ -101,10 +101,10 @@ bool TEntity::sendGet(esphome::esp32_can::ESP32Can* pCanBus) {
     const uint32_t can_id = 0x680;
     const bool use_extended_id = false;
 
-    pCanBus->send_data(can_id, use_extended_id, { m_command.begin(), m_command.end() });
+    pCanBus->send_data(can_id, use_extended_id, { m_config.command.begin(), m_config.command.end() });
 
     Utils::log("sendGet", "%s can_id<%s> command<%s>",
-        getName().c_str(), Utils::to_hex(can_id).c_str(), Utils::to_hex(m_command).c_str());
+        getName().c_str(), Utils::to_hex(can_id).c_str(), Utils::to_hex(m_config.command).c_str());
 
     m_last_get_timestamp = millis();
     return true;

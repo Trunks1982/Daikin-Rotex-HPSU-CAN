@@ -88,18 +88,18 @@ public:
     {
     }
 
-    std::string const& get_id() const { return m_id; }
+    std::string const& get_id() const { return m_config.id; }
 
     std::string getName() const {
-        return m_entity_base != nullptr ? m_entity_base->get_name().str() : "<INVALID>";
+        return m_config.pEntity != nullptr ? m_config.pEntity->get_name().str() : "<INVALID>";
     }
 
     EntityBase* get_entity_base() const {
-        return m_entity_base;
+        return m_config.pEntity;
     }
 
     bool isGetSupported() const {
-        return m_entity_base != nullptr;
+        return m_config.pEntity != nullptr;
     }
 
     uint32_t getLastUpdate() const {
@@ -110,14 +110,9 @@ public:
         m_pCanbus = pCanbus;
     }
 
-    void set_entity(std::string const& name, TEntityArguments const& arg) { 
-        m_id = arg.id;
-        m_can_id = arg.can_id;
-        m_command = arg.command;
-        m_expected_reponse = TEntity::calculate_reponse(arg.command);
-        m_entity_base = arg.pEntity;
-        m_update_interval = arg.update_interval;
-        m_config = arg;
+    void set_entity(std::string const& name, TEntityArguments&& arg) {
+        m_config = std::move(arg);
+        m_expected_reponse = TEntity::calculate_reponse(m_config.command);
     }
 
     void set_post_handle(TPostHandleLabda&& func) {
@@ -142,7 +137,7 @@ public:
     bool is_command_set() const;
 
     bool isGetInProgress() const;
-    uint16_t get_update_interval() const { return m_update_interval; }
+    uint16_t get_update_interval() const { return m_config.update_interval; }
 
     static std::array<uint16_t, 7> calculate_reponse(TMessage const& message);
 
@@ -150,7 +145,7 @@ public:
         return Utils::format(
             "TEntity<name: %s, command: %s>",
             getName().c_str(),
-            Utils::to_hex(m_command).c_str()
+            Utils::to_hex(m_config.command).c_str()
         );
     }
 
@@ -162,14 +157,9 @@ protected:
     esphome::esp32_can::ESP32Can* m_pCanbus;
 
 private:
-    std::string m_id;
-    uint16_t m_can_id;
-    TMessage m_command;
     std::array<uint16_t, 7> m_expected_reponse;
-    EntityBase* m_entity_base;
     uint32_t m_last_handle_timestamp;
     uint32_t m_last_get_timestamp;
-    uint16_t m_update_interval;
     TPostHandleLabda m_post_handle_lambda;
 };
 
@@ -179,7 +169,7 @@ inline bool TEntity::isGetNeeded() const {
 }
 
 inline bool TEntity::is_command_set() const {
-    for (auto& b : m_command) {
+    for (auto& b : m_config.command) {
         if (b != 0x00) {
             return true;
         }
