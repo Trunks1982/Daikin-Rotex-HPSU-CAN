@@ -148,7 +148,7 @@ void DaikinRotexCanComponent::on_mode_of_operating() {
     if (m_optimized_defrosting.value() && p_operating_mode != nullptr && p_mode_of_operating != nullptr) {
         if (p_mode_of_operating->state == "Abtauen") {
             m_entity_manager.sendSet(p_operating_mode->get_name(), 0x05); // Sommer
-        } else if (p_mode_of_operating->state == "Heizen" && p_operating_mode->state == "Sommer") {
+        } else if (p_operating_mode->state == "Heizen" && p_mode_of_operating->state == "Sommer") {
             m_entity_manager.sendSet(p_operating_mode->get_name(), 0x03); // Heizen
         }
     }
