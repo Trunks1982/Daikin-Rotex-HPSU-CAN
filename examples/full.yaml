@@ -112,6 +112,8 @@ daikin_rotex_can:
   id: rotext_hpsu
   canbus_id: can_bus
   update_interval: 30
+  #max_spread_tvbh_tv: 4
+  #max_spread_tvbh_tr: 4
   log_filter:
     name: Log Filter
   custom_request:

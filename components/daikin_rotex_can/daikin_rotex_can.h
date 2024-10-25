@@ -11,6 +11,10 @@ namespace esphome {
 namespace daikin_rotex_can {
 
 class DaikinRotexCanComponent: public Component, public SensorAccessor {
+    struct MaxSpread {
+        float tvbh_tv;
+        float tvbh_tr;
+    };
 public:
     using TVoidFunc = std::function<void()>;
 
@@ -23,6 +27,7 @@ public:
     void set_update_interval(uint16_t seconds) {} // dummy
     void set_project_git_hash(text_sensor::TextSensor* pSensor, std::string const& hash) { m_project_git_hash_sensor = pSensor; m_project_git_hash = hash; }
     void set_thermal_power_sensor(sensor::Sensor* pSensor) { m_thermal_power_sensor = pSensor; }
+    void set_max_spread(float tvbh_tv, float tvbh_tr) { m_max_spread = { tvbh_tv, tvbh_tr };}
     void add_entity(EntityBase* pEntity) {
         if (TEntity* pRequest = dynamic_cast<TEntity*>(pEntity)) {
             m_entity_manager.add(pRequest);
@@ -86,6 +91,7 @@ private:
     esphome::esp32_can::ESP32Can* m_pCanbus;
 
     sensor::Sensor* m_thermal_power_sensor;
+    MaxSpread m_max_spread;
 };
 
 inline void DaikinRotexCanComponent::set_canbus(esphome::esp32_can::ESP32Can* pCanbus) {

@@ -1243,6 +1243,8 @@ AUTO_LOAD = ['binary_sensor', 'button', 'number', 'sensor', 'select', 'text', 't
 
 CONF_CAN_ID = "canbus_id"
 CONF_UPDATE_INTERVAL = "update_interval"
+CONF_MAX_SPREAD_TVBH_TV = "max_spread_tvbh_tv"
+CONF_MAX_SPREAD_TVBH_TR = "max_spread_tvbh_tr"
 CONF_LOG_FILTER_TEXT = "log_filter"
 CONF_CUSTOM_REQUEST_TEXT = "custom_request"
 CONF_ENTITIES = "entities"
@@ -1257,6 +1259,8 @@ CONF_DUMP = "dump"
 CONF_DHW_RUN = "dhw_run"
 
 DEFAULT_UPDATE_INTERVAL = 30 # seconds
+DEFAULT_MAX_SPREAD_TVBH_TV = 3.0
+DEFAULT_MAX_SPREAD_TVBH_TR = 3.0
 
 entity_schemas = {}
 for sensor_conf in sensor_configuration:
@@ -1353,6 +1357,8 @@ CONFIG_SCHEMA = cv.Schema(
         cv.GenerateID(): cv.declare_id(DaikinRotexCanComponent),
         cv.Required(CONF_CAN_ID): cv.use_id(CanbusComponent),
         cv.Optional(CONF_UPDATE_INTERVAL, default=DEFAULT_UPDATE_INTERVAL): cv.uint16_t,
+        cv.Optional(CONF_MAX_SPREAD_TVBH_TV, default=DEFAULT_MAX_SPREAD_TVBH_TV): cv.float_,
+        cv.Optional(CONF_MAX_SPREAD_TVBH_TR, default=DEFAULT_MAX_SPREAD_TVBH_TR): cv.float_,
 
         ########## Texts ##########
 
@@ -1399,6 +1405,8 @@ async def to_code(config):
         cg.add_define("USE_CANBUS")
         canbus = await cg.get_variable(config[CONF_CAN_ID])
         cg.add(var.set_canbus(canbus))
+
+    cg.add(var.set_max_spread(config[CONF_MAX_SPREAD_TVBH_TV], config[CONF_MAX_SPREAD_TVBH_TR]))
 
     ########## Texts ##########
 

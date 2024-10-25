@@ -294,12 +294,16 @@ std::string DaikinRotexCanComponent::recalculate_state(EntityBase* pEntity, std:
 
     if (pEntity == error_code && error_code != nullptr) {
         if (tvbh != nullptr && tr != nullptr && dhw_mixer_position != nullptr && flow_rate != nullptr) {
-            if (tvbh->state > (tr->state + 3.0f) && std::abs(dhw_mixer_position->state - 100) <= 0.01 && flow_rate->state > 10.0f) {
+            if (tvbh->state > (tr->state + m_max_spread.tvbh_tr) && std::abs(dhw_mixer_position->state - 100) <= 0.01 && flow_rate->state > 10.0f) {
+                ESP_LOGE(TAG, "3UV BPV defekt => tvbh: %f, tr: %f, max_spread: %f, dhw_mixer_pos: %f, flow_rate: %f",
+                    tvbh->state, tr->state, m_max_spread.tvbh_tr, dhw_mixer_position->state, flow_rate->state);
                 return new_state + "|3UV BPV defekt";
             }
         }
         if (tvbh != nullptr && tr != nullptr && bpv != nullptr && flow_rate != nullptr) {
-            if (tvbh->state > (tv->state + 3.0f) && std::abs(bpv->state - 0) <= 0.01 && flow_rate->state > 10.0f) {
+            if (tvbh->state > (tv->state + m_max_spread.tvbh_tv) && std::abs(bpv->state - 0) <= 0.01 && flow_rate->state > 10.0f) {
+                ESP_LOGE(TAG, "3UV DHW defekt => tvbh: %f, tv: %f, max_spread: %f, bpv: %f, flow_rate: %f",
+                    tvbh->state, tv->state, m_max_spread.tvbh_tv, bpv->state, flow_rate->state);
                 return new_state + "|3UV DHW defekt";
             }
         }
