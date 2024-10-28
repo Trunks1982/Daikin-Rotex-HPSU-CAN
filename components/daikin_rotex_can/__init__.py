@@ -259,7 +259,8 @@ sensor_configuration = [
         "command": "31 00 FA 01 D6 00 00",
         "data_offset": 5,
         "data_size": 2,
-        "divider": 10.0
+        "divider": 10.0,
+        "range": [1, 90]
     },
     {
         "type": "sensor",
@@ -271,7 +272,8 @@ sensor_configuration = [
         "command": "31 00 FA C0 FF 00 00",
         "data_offset": 5,
         "data_size": 2,
-        "divider": 10.0
+        "divider": 10.0,
+        "range": [-30, 90]
     },
     {
         "type": "sensor",
@@ -284,7 +286,8 @@ sensor_configuration = [
         "command": "61 00 FA 0A 0C 00 00",
         "data_offset": 5,
         "data_size": 2,
-        "divider": 10.0
+        "divider": 10.0,
+        "range": [-30, 90]
     },
     {
         "type": "sensor",
@@ -296,7 +299,8 @@ sensor_configuration = [
         "command": "31 00 FA 00 0E 00 00",
         "data_offset": 5,
         "data_size": 2,
-        "divider": 10.0
+        "divider": 10.0,
+        "range": [1, 90]
     },
     {
         "type": "sensor",
@@ -320,7 +324,8 @@ sensor_configuration = [
         "command": "31 00 FA C0 F7 00 00",
         "data_offset": 6,
         "data_size": 1,
-        "divider": 1
+        "divider": 1,
+        "range": [0, 100]
     },
     {
         "type": "number",
@@ -362,7 +367,8 @@ sensor_configuration = [
         "command": "31 00 FA C0 FB 00 00",
         "data_offset": 5,
         "data_size": 2,
-        "divider": 1
+        "divider": 1,
+        "range": [0, 100]
     },
     {
         "type": "sensor",
@@ -374,7 +380,8 @@ sensor_configuration = [
         "command": "31 00 FA 06 9B 00 00",
         "data_offset": 5,
         "data_size": 2,
-        "divider": 1
+        "divider": 1,
+        "range": [0, 100]
     },
     {
         "type": "sensor",
@@ -386,7 +393,8 @@ sensor_configuration = [
         "command": "31 00 02 00 00 00 00",
         "data_offset": 3,
         "data_size": 2,
-        "divider": 10.0
+        "divider": 10.0,
+        "range": [0, 90]
     },
     {
         "type": "sensor",
@@ -534,7 +542,8 @@ sensor_configuration = [
         "data_offset": 5,
         "data_size": 2,
         "divider": 10.0,
-        "update_entity": "thermal_power"
+        "update_entity": "thermal_power",
+        "range": [1, 90]
     },
     {
         "type": "sensor",
@@ -548,7 +557,8 @@ sensor_configuration = [
         "data_offset": 5,
         "data_size": 2,
         "divider": 10.0,
-        "update_entity": "thermal_power"
+        "update_entity": "thermal_power",
+        "range": [1, 90]
     },
     {
         "type": "sensor",
@@ -562,7 +572,8 @@ sensor_configuration = [
         "data_offset": 5,
         "data_size": 2,
         "divider": 10.0,
-        "update_entity": "thermal_power"
+        "update_entity": "thermal_power",
+        "range": [1, 90]
     },
     {
         "type": "sensor",
@@ -575,7 +586,8 @@ sensor_configuration = [
         "data_offset": 5,
         "data_size": 2,
         "divider": 1,
-        "update_entity": "thermal_power"
+        "update_entity": "thermal_power",
+        "range": [0, 3000]
     },
     {
         "type": "sensor",
@@ -1443,6 +1455,7 @@ async def to_code(config):
                 match sens_conf.get("type"):
                     case "sensor":
                         entity = await sensor.new_sensor(yaml_sensor_conf)
+                        cg.add(entity.set_range(sens_conf.get("range", [0, 0])))
                     case "text_sensor":
                         entity = await text_sensor.new_text_sensor(yaml_sensor_conf)
                         cg.add(entity.set_map(str_map))

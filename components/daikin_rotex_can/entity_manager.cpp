@@ -128,9 +128,8 @@ void TEntityManager::sendSet(std::string const& request_name, float value) {
 
 void TEntityManager::handle(uint32_t can_id, TMessage const& responseData) {
     bool bHandled = false;
-    const uint32_t timestamp = millis();
     for (auto pEntity : m_entities) {
-        if (pEntity->handle(can_id, responseData, timestamp)) {
+        if (pEntity->handle(can_id, responseData)) {
             bHandled = true;
             break;
         }

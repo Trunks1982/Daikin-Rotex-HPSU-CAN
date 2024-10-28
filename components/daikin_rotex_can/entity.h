@@ -128,7 +128,7 @@ public:
     }
 
     bool isMatch(uint32_t can_id, TMessage const& responseData) const;
-    bool handle(uint32_t can_id, TMessage const& responseData, uint32_t timestamp);
+    bool handle(uint32_t can_id, TMessage const& responseData);
 
     bool sendGet(esphome::esp32_can::ESP32Can* pCanBus);
     bool sendSet(esphome::esp32_can::ESP32Can* pCanBus, float value);
@@ -150,7 +150,7 @@ public:
     }
 
 protected:
-    virtual TVariant handleValue(uint16_t value) = 0;
+    virtual bool handleValue(uint16_t value, TVariant& variant) = 0;
 
 protected:
     TEntityArguments m_config;

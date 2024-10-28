@@ -45,10 +45,11 @@ bool TEntity::isMatch(uint32_t can_id, TMessage const& responseData) const {
     return false;
 }
 
-bool TEntity::handle(uint32_t can_id, TMessage const& responseData, uint32_t timestamp) {
+bool TEntity::handle(uint32_t can_id, TMessage const& responseData) {
     if (isMatch(can_id, responseData)) {
 
         TEntity::TVariant variant;
+        bool valid = false;
 
         if (m_config.data_offset > 0 && (m_config.data_offset + m_config.data_size) <= 7) {
             if (m_config.data_size >= 1 && m_config.data_size <= 2) {
@@ -58,7 +59,7 @@ bool TEntity::handle(uint32_t can_id, TMessage const& responseData, uint32_t tim
                         (((responseData[m_config.data_offset] << 8) + responseData[m_config.data_offset + 1])) :
                         (responseData[m_config.data_offset])
                     );
-                variant = handleValue(value);
+                valid = handleValue(value, variant);
             } else {
                 ESP_LOGE(TAG, "handle: Invalid data size: %d", m_config.data_size);
             }
@@ -66,27 +67,28 @@ bool TEntity::handle(uint32_t can_id, TMessage const& responseData, uint32_t tim
             ESP_LOGE(TAG, "handle: Invalid data_offset: %d", m_config.data_offset);
         }
 
-        m_post_handle_lambda(this);
+        if (valid) {
+            m_post_handle_lambda(this);
 
-        std::string value;
-        if (std::holds_alternative<uint32_t>(variant)) {
-            value = std::to_string(std::get<uint32_t>(variant));
-        } else if (std::holds_alternative<uint8_t>(variant)) {
-            value = std::to_string(std::get<uint8_t>(variant));
-        } else if (std::holds_alternative<float>(variant)) {
-            value = std::to_string(std::get<float>(variant));
-        } else if (std::holds_alternative<bool>(variant)) {
-            value = std::get<bool>(variant);
-        } else if (std::holds_alternative<std::string>(variant)) {
-            value = std::get<std::string>(variant);
-        } else {
-            value = "Unsupported value type!";
+            std::string value;
+            if (std::holds_alternative<uint32_t>(variant)) {
+                value = std::to_string(std::get<uint32_t>(variant));
+            } else if (std::holds_alternative<uint8_t>(variant)) {
+                value = std::to_string(std::get<uint8_t>(variant));
+            } else if (std::holds_alternative<float>(variant)) {
+                value = std::to_string(std::get<float>(variant));
+            } else if (std::holds_alternative<bool>(variant)) {
+                value = std::get<bool>(variant);
+            } else if (std::holds_alternative<std::string>(variant)) {
+                value = std::get<std::string>(variant);
+            } else {
+                value = "Unsupported value type!";
+            }
+
+            Utils::log("handle ", "%s<%s> can_id<%s> data<%s>",
+                getName().c_str(), value.c_str(), Utils::to_hex(can_id).c_str(), Utils::to_hex(responseData).c_str());
         }
-
-        Utils::log("handle ", "%s<%s> can_id<%s> data<%s>",
-            getName().c_str(), value.c_str(), Utils::to_hex(can_id).c_str(), Utils::to_hex(responseData).c_str());
-
-        m_last_handle_timestamp = timestamp;
+        m_last_handle_timestamp = millis();
         return true;
     }
     return false;

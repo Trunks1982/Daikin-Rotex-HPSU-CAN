@@ -15,11 +15,21 @@ namespace daikin_rotex_can {
 /////////////////////// CanSensor ///////////////////////
 
 class CanSensor : public sensor::Sensor, public TEntity, public Parented<SensorAccessor> {
+    struct Range {
+        float min;
+        float max;
+
+        bool required() { return min != 0 && max != 0; }
+    };
+
 public:
     CanSensor() = default;
-
+    void set_range(Range const& range) { m_range = range; }
 protected:
-    virtual TVariant handleValue(uint16_t value) override;
+    virtual bool handleValue(uint16_t value, TVariant& variant) override;
+private:
+    Range m_range;
+    uint32_t trys;
 };
 
 /////////////////////// CanTextSensor ///////////////////////
@@ -32,7 +42,7 @@ public:
     void set_map(std::string const& str_map) { m_map = Utils::str_to_map(str_map); }
     void set_recalculate_state(TRecalculateState&& lambda) { m_recalculate_state = std::move(lambda); }
 protected:
-    virtual TVariant handleValue(uint16_t value) override;
+    virtual bool handleValue(uint16_t value, TVariant& variant) override;
 private:
     BidiMap m_map;
     TRecalculateState m_recalculate_state;
@@ -45,7 +55,7 @@ public:
     CanBinarySensor() = default;
 
 protected:
-    virtual TVariant handleValue(uint16_t value) override;
+    virtual bool handleValue(uint16_t value, TVariant& variant) override;
 };
 
 /////////////////////// CanNumber ///////////////////////
@@ -55,7 +65,7 @@ public:
     CanNumber() = default;
 protected:
     void control(float value) override;
-    virtual TVariant handleValue(uint16_t value) override;
+    virtual bool handleValue(uint16_t value, TVariant& variant) override;
 };
 
 /////////////////////// CanSelect ///////////////////////
@@ -73,7 +83,7 @@ public:
     void publish_select_key(uint16_t key);
 protected:
     void control(const std::string &value) override;
-    virtual TVariant handleValue(uint16_t value) override;
+    virtual bool handleValue(uint16_t value, TVariant& variant) override;
 
 private:
     BidiMap m_map;
