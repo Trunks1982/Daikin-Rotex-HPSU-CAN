@@ -70,22 +70,20 @@ class HPSUDashboardCard extends HTMLElement {
         svgElement.setAttribute("preserveAspectRatio", "xMidYMid meet");
         svgElement.setAttribute("width", "100%");
         svgElement.setAttribute("height", "100%");
-        svgElement.style.width = "100%";
-        svgElement.style.height = "100%";
+        svgElement.style.width = "auto"; // Automatische Breite
+        svgElement.style.height = "100%"; // Höhe auf 100%
         svgElement.style.display = "block";
 
         this.shadowRoot.innerHTML = "";
 
         const wrapper = document.createElement("div");
+        wrapper.classList.add('wrapper'); 
         wrapper.style.width = "100%";
         wrapper.style.height = "100vh";
-        wrapper.style.overflow = "hidden";
-        wrapper.style.display = "flex";
-        wrapper.style.alignItems = "center";
-        wrapper.style.justifyContent = "center";
-
-        wrapper.style.minWidth = "0"; 
-        wrapper.style.minHeight = "0";
+        wrapper.style.overflowX = "auto"; // Aktiviert horizontales Scrollen
+        wrapper.style.overflowY = "hidden"; // Verhindert vertikales Scrollen
+        wrapper.style.display = "flex"; // Flex-Layout für den Wrapper
+        wrapper.style.alignItems = "stretch"; // Füllt die Höhe aus
 
         this.createStateLabels(svgDoc);
 
@@ -104,14 +102,21 @@ class HPSUDashboardCard extends HTMLElement {
                 display: block;
                 position: relative;
                 width: 100%;
-                height: 100%;
+                height: 100vh; /* Höhe des Hosts auf 100% des Viewports setzen */
                 background: linear-gradient(90deg, #220000, #000022);
-                overflow: hidden;
+                overflow: hidden; /* Verhindert vertikales Scrollen im Host */
+            }
+            .wrapper {
+                display: flex; /* Flex-Layout für den Wrapper */
+                height: 100%; /* Höhe auf 100% */
+                overflow-x: auto; /* Aktiviert horizontales Scrollen */
+                overflow-y: hidden; /* Verhindert vertikales Scrollen */
+                align-items: stretch; /* Füllt die Höhe aus */
             }
             svg {
-                position: absolute;
-                width: 100%;
-                height: 100%;
+                height: 100%; /* Höhe 100% des Containers */
+                width: auto; /* Automatische Breite */
+                flex-shrink: 0; /* Verhindert das Schrumpfen des SVGs */
             }
         `;
         this.shadowRoot.appendChild(style);
