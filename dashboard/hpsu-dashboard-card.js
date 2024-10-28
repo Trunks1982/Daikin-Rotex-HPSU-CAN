@@ -8,27 +8,29 @@ class HPSUDashboardCard extends HTMLElement {
         }
 
         this.entities_configuration = [
-            { confEntityId: "temperature_outside", rectId: "T-Aussen-1-Value" },
-            { confEntityId: "t_ext", rectId: "T-Aussen-2-Value" },
-            { confEntityId: "expansion_valve", rectId: "EEV-Value" },
-            { confEntityId: "t_liquid", rectId: "Kondensator-Value" },
-            { confEntityId: "circulation_pump", rectId: "Umwaelzpumpe-Value" },
-            { confEntityId: "flow_rate", rectId: "Durchfluss-Value" },
-            { confEntityId: "tr", rectId: "Ruecklauf-1-Value" },
-            { confEntityId: "inlet_water_temp_r4t", rectId: "Ruecklauf-2-Value" },
-            { confEntityId: "heat_exchanger_mid_temp", rectId: "Verdampfer-Value" },
-            { confEntityId: "tv", rectId: "Vorlauf-1-Value" },
-            { confEntityId: "leaving_water_temp_before_buh", rectId: "Vorlauf-2-Value" },
-            { confEntityId: "target_supply_temperature", rectId: "Vorlauf-Soll-Value" },
-            { confEntityId: "water_pressure", rectId: "Druck-Value" },
-            { confEntityId: "leaving_water_temp_after_buh", rectId: "Vorlauf-BH-1-Value" },
-            { confEntityId: "tvbh", rectId: "Vorlauf-BH-2-Value" },
-            { confEntityId: "fan_speed", rectId: "Luefter-Value" },
-            { confEntityId: "inv_frequency_rps", rectId: "Verdichter-Value" },
-            { confEntityId: "tdhw1", rectId: "Speicher-Value" },
-            { confEntityId: "target_hot_water_temperature", rectId: "Speicher-Soll-Value" },
-            { confEntityId: "dhw_mixer_position", rectId: "DHW-Mixer-Value", fontSize: "40px" },
-            { confEntityId: "bypass_valve", rectId: "Bypass-Value", fontSize: "40px" }
+            { confEntityId: "temperature_outside", rectId: "T-Aussen-1-Value", offset: 6 },
+            { confEntityId: "t_ext", rectId: "T-Aussen-2-Value", offset: 6 },
+            { confEntityId: "expansion_valve", rectId: "EEV-Value", offset: 6 },
+            { confEntityId: "t_liquid", rectId: "Kondensator-Value", offset: 6 },
+            { confEntityId: "circulation_pump", rectId: "Umwaelzpumpe-Value", offset: 6 },
+            { confEntityId: "circulation_pump_on_off", rectId: "circulation_pump_on_off_rect", fontSize: "30px", offset: 2 },
+            { confEntityId: "flow_rate", rectId: "Durchfluss-Value", offset: 6 },
+            { confEntityId: "tr", rectId: "Ruecklauf-1-Value", offset: 6 },
+            { confEntityId: "inlet_water_temp_r4t", rectId: "Ruecklauf-2-Value", offset: 6 },
+            { confEntityId: "heat_exchanger_mid_temp", rectId: "Verdampfer-Value", offset: 6 },
+            { confEntityId: "tv", rectId: "Vorlauf-1-Value", offset: 6 },
+            { confEntityId: "leaving_water_temp_before_buh", rectId: "Vorlauf-2-Value", offset: 6 },
+            { confEntityId: "target_supply_temperature", rectId: "Vorlauf-Soll-Value", offset: 6 },
+            { confEntityId: "water_pressure", rectId: "Druck-Value", offset: 6 },
+            { confEntityId: "leaving_water_temp_after_buh", rectId: "Vorlauf-BH-1-Value", offset: 6 },
+            { confEntityId: "tvbh", rectId: "Vorlauf-BH-2-Value", offset: 6 },
+            { confEntityId: "compressor_on_off", rectId: "compressor_on_off_rect", fontSize: "40px", offset: 2 },
+            { confEntityId: "fan_speed", rectId: "Luefter-Value", offset: 6 },
+            { confEntityId: "inv_frequency_rps", rectId: "Verdichter-Value", offset: 6 },
+            { confEntityId: "tdhw1", rectId: "Speicher-Value", offset: 6 },
+            { confEntityId: "target_hot_water_temperature", rectId: "Speicher-Soll-Value", offset: 6 },
+            { confEntityId: "dhw_mixer_position", rectId: "DHW-Mixer-Value", fontSize: "40px", offset: 6 },
+            { confEntityId: "bypass_valve", rectId: "Bypass-Value", fontSize: "40px", offset: 6 }
         ];
 
         this.entities_configuration.forEach(entityConfig => {
@@ -37,15 +39,14 @@ class HPSUDashboardCard extends HTMLElement {
             }
         });
 
-        console.log("aaaaaaaa");
-  
         this.config = config;
         this.attachShadow({ mode: "open" });
         this.render();
     }
-  
+
     async render() {
-        const response = await fetch(this.config.image)
+        const url = this.config.image + "?" + new Date().getTime();
+        const response = await fetch(url);
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
@@ -91,8 +92,29 @@ class HPSUDashboardCard extends HTMLElement {
         wrapper.appendChild(svgElement);
         this.shadowRoot.appendChild(wrapper);
 
+        this.createCSS();
 
         this.updateOpacity();
+    }
+
+    createCSS() {
+        const style = document.createElement('style');
+        style.textContent = `
+            :host {
+                display: block;
+                position: relative;
+                width: 100%;
+                height: 100%;
+                background: linear-gradient(90deg, #220000, #000022);
+                overflow: hidden;
+            }
+            svg {
+                position: absolute;
+                width: 100%;
+                height: 100%;
+            }
+        `;
+        this.shadowRoot.appendChild(style);
     }
   
     updateOpacity() {
@@ -101,13 +123,19 @@ class HPSUDashboardCard extends HTMLElement {
         const heatingArrows = this.shadowRoot.querySelector(`#Heating-Flow-Arrows`);
 
         if (!flowArrows || !flowReturnArrows || !heatingArrows) return;
-  
+
+        const flowRate = parseFloat(this._hass.states["sensor.rotex_durchfluss"].state);
         const mischerState = parseFloat(this._hass.states["sensor.rotex_dhw_mischer_position"].state);
         const bpvState = parseFloat(this._hass.states["sensor.rotex_bpv"].state);
-        
-        flowArrows.style.opacity = mischerState / 100.0;
-        flowReturnArrows.style.opacity = (100 - bpvState) / 100.0;
-        heatingArrows.style.opacity = bpvState / 100.0;
+
+        flowArrows.style.opacity = flowRate > 0 ? (mischerState / 100.0) : 0;
+        flowReturnArrows.style.opacity = flowRate > 0 ? (bpvState / 100.0) : 0;
+        heatingArrows.style.opacity = flowRate > 0 ? ((100 - bpvState) / 100.0) : 0;
+
+        for (let index = 1; index <= 8; ++index) {
+            const arrow = this.shadowRoot.querySelector(`#Flow-Arrow-${index}`);
+            arrow.style.opacity = (flowRate > 0) * 1;
+        }
     }
   
     set hass(hass) {
@@ -139,12 +167,10 @@ class HPSUDashboardCard extends HTMLElement {
                         label.setAttribute("cursor", "pointer");
                         label.setAttribute("fill", "blue");
                         label.setAttribute("font-size", fontSize);
-                        label.setAttribute("fill", "silver");
+                        label.setAttribute("stroke-width", "1");
                         if (transform) {
                             label.setAttribute("transform", transform);
                         }
-
-                        console.log(state.confEntityId + "|" + state.entityId);
 
                         state.label = label;
                         state.valueBox = valueBox;
@@ -152,16 +178,13 @@ class HPSUDashboardCard extends HTMLElement {
                         if (this._hass.states[state.entityId] !== undefined) {
                             label.textContent = this._hass.states[state.entityId].state;
 
-                            console.log(label.textContent);
-        
                             label.addEventListener("click", () => {
-                                console.log("entityId: " + state.entityId);
                                 this.handleStateClick(state.entityId);
                             });
             
                             group.appendChild(label);
                         } else {
-                            log.warn(`Entity with ID ${state.entityId} not found`);
+                            console.warn(`Entity with ID ${state.entityId} not found`);
                         }
                     }
                 } else {
@@ -179,21 +202,29 @@ class HPSUDashboardCard extends HTMLElement {
         if (this.entities_configuration) {
             this.entities_configuration.forEach(state => {
                 if (state.entityId) {
-                    console.log(state.entityId);
                     const newState = this._hass.states[state.entityId] || "";
                     if (state.valueBox) {
                         if (state.label) {
                             const entityState = newState.state || "--";
                             const unit = newState.attributes.unit_of_measurement || "";
-                            state.label.textContent = `${entityState} ${unit}`;
     
                             const xPos = parseFloat(state.valueBox.getAttribute('x'));
                             const yPos = parseFloat(state.valueBox.getAttribute('y'));
                             const width = parseFloat(state.valueBox.getAttribute('width'));
                             const height = parseFloat(state.valueBox.getAttribute('height'));
-    
+
+                            const fontSize = parseFloat(state.label.getAttribute("font-size")) || 46;
+
+                            if (this.isBooleanSensor(state.entityId)) {
+                                state.label.textContent = entityState === "on" ? "An" : "Aus";
+                                state.label.setAttribute("fill", entityState === "on" ? "yellow" : "white");
+                            } else {
+                                state.label.textContent = `${this.formatNumber(entityState)} ${unit}`;
+                                state.label.setAttribute("fill", "silver");
+                            }
+
                             state.label.setAttribute("x", xPos + width / 2);
-                            state.label.setAttribute("y", yPos + height / 2 + 5);
+                            state.label.setAttribute("y", yPos + height / 2 + state.offset);
                         } else {
                             console.warn("Label not found: " + state.entityId);
                         }
@@ -203,6 +234,24 @@ class HPSUDashboardCard extends HTMLElement {
                 }
             });
         }
+    }
+
+    formatNumber(value) {
+        let formatted = value.toString().replace('.', ',');
+        return formatted.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+    }
+
+    isBooleanSensor(entityId) {
+        const entity = this._hass.states[entityId];
+
+        if (entity) {
+            if (entity.entity_id.startsWith('binary_sensor.')) {
+                return true;
+            }
+        } else {
+            console.warn(`Entität ${state.entityId} nicht gefunden`);
+        }
+        return false;
     }
 
     handleStateClick(entityId) {
