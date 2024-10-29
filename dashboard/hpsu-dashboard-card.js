@@ -68,27 +68,13 @@ class HPSUDashboardCard extends HTMLElement {
         }
 
         svgElement.setAttribute("preserveAspectRatio", "xMidYMid meet");
-        svgElement.setAttribute("width", "100%");
-        svgElement.setAttribute("height", "100%");
-        svgElement.style.width = "auto"; // Automatische Breite
-        svgElement.style.height = "100%"; // Höhe auf 100%
         svgElement.style.display = "block";
 
         this.shadowRoot.innerHTML = "";
 
-        const wrapper = document.createElement("div");
-        wrapper.classList.add('wrapper'); 
-        wrapper.style.width = "100%";
-        wrapper.style.height = "100vh";
-        wrapper.style.overflowX = "auto"; // Aktiviert horizontales Scrollen
-        wrapper.style.overflowY = "hidden"; // Verhindert vertikales Scrollen
-        wrapper.style.display = "flex"; // Flex-Layout für den Wrapper
-        wrapper.style.alignItems = "stretch"; // Füllt die Höhe aus
-
         this.createStateLabels(svgDoc);
 
-        wrapper.appendChild(svgElement);
-        this.shadowRoot.appendChild(wrapper);
+        this.shadowRoot.appendChild(svgElement);
 
         this.createCSS();
 
@@ -98,30 +84,67 @@ class HPSUDashboardCard extends HTMLElement {
     createCSS() {
         const style = document.createElement('style');
         style.textContent = `
-            :host {
-                display: block;
-                position: relative;
-                width: 100%;
-                height: 100vh; /* Höhe des Hosts auf 100% des Viewports setzen */
-                background: linear-gradient(90deg, #220000, #000022);
-                overflow: hidden; /* Verhindert vertikales Scrollen im Host */
-            }
-            .wrapper {
-                display: flex; /* Flex-Layout für den Wrapper */
-                height: 100%; /* Höhe auf 100% */
-                overflow-x: auto; /* Aktiviert horizontales Scrollen */
-                overflow-y: hidden; /* Verhindert vertikales Scrollen */
-                align-items: stretch; /* Füllt die Höhe aus */
-            }
+        hui-panel-view {
+            display: block;
+            background: linear-gradient(90deg, #220000, #000022);
+            width:auto;
+        }
+        svg {
+            display: block;
+        }
+        @media (min-width: 768px) {
             svg {
-                height: 100%; /* Höhe 100% des Containers */
-                width: auto; /* Automatische Breite */
-                flex-shrink: 0; /* Verhindert das Schrumpfen des SVGs */
+                width: 100%;
+                height: auto;
             }
+        }
+
+        /* Mobile Stile (Breite < 768px) */
+        @media (max-width: 767px) {
+            svg {
+                width: auto; /* Breite proportional */
+                height: calc(100vh -  var(--header-height));
+                transform: scale(1);
+            }
+        }
         `;
         this.shadowRoot.appendChild(style);
     }
-  
+
+    connectedCallback() {
+        const ha = document.querySelector("home-assistant");
+        if (ha) {
+            const style = document.createElement("style"); // Removes additional empty scroll area on smmobile phones
+            style.textContent = `
+                :host {
+                    display: block;
+                    overflow:auto;
+                }
+            `;
+            ha.shadowRoot.appendChild(style);
+
+            const ha_main = ha.shadowRoot.querySelector("home-assistant-main");
+            if (ha_main) {
+                const lovelace_panel = ha_main.shadowRoot.querySelector("ha-panel-lovelace");
+                if (lovelace_panel) {
+                    const hui_root = lovelace_panel.shadowRoot.querySelector("hui-root");
+                    if (hui_root) {
+                        const hui_panel_view = hui_root.shadowRoot.querySelector("hui-panel-view");
+                        if (hui_panel_view) {
+                            const style = document.createElement("style");
+                            style.textContent = `
+                                :host {
+                                    background: linear-gradient(90deg, #220000, #000022) !important;
+                                }
+                            `;
+                            hui_panel_view.shadowRoot.appendChild(style);
+                        }
+                    }
+                }
+           }
+        }
+    }
+
     updateOpacity() {
         const flowArrows = this.shadowRoot.querySelector(`#DHW-Flow-Arrows`);
         const flowReturnArrows = this.shadowRoot.querySelector(`#DHW-Flow-Return-Arrows`);
