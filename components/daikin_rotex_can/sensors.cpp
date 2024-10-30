@@ -8,9 +8,10 @@ static const char* TAG = "daikin_rotex_can";
 
 /////////////////////// CanSensor ///////////////////////
 
-bool CanSensor::handleValue(uint16_t value, TEntity::TVariant& variant) {
-    variant = value / m_config.divider;
-    const float float_value = std::get<float>(variant);
+bool CanSensor::handleValue(uint16_t value, TEntity::TVariant& current, TVariant& previous) {
+    previous = state;
+    current = value / m_config.divider;
+    const float float_value = std::get<float>(current);
     const bool valid = !m_range.required() || (float_value >= m_range.min && float_value <= m_range.max);
     if (valid) {
         publish_state(float_value);
@@ -24,18 +25,20 @@ bool CanSensor::handleValue(uint16_t value, TEntity::TVariant& variant) {
 
 /////////////////////// CanTextSensor ///////////////////////
 
-bool CanTextSensor::handleValue(uint16_t value, TEntity::TVariant& variant) {
+bool CanTextSensor::handleValue(uint16_t value, TEntity::TVariant& current, TVariant& previous) {
+    previous = state;
     auto it = m_map.findByKey(value);
-    variant = m_recalculate_state(m_config.pEntity, it != m_map.end() ? it->second : Utils::format("INVALID<%f>", value));
-    publish_state(std::get<std::string>(variant));
+    current = m_recalculate_state(m_config.pEntity, it != m_map.end() ? it->second : Utils::format("INVALID<%f>", value));
+    publish_state(std::get<std::string>(current));
     return true;
 }
 
 /////////////////////// CanBinarySensor ///////////////////////
 
-bool CanBinarySensor::handleValue(uint16_t value, TEntity::TVariant& variant) {
-    variant = value > 0;
-    publish_state(std::get<bool>(variant));
+bool CanBinarySensor::handleValue(uint16_t value, TEntity::TVariant& current, TVariant& previous) {
+    previous = state;
+    current = value > 0;
+    publish_state(std::get<bool>(current));
     return true;
 }
 
@@ -46,9 +49,10 @@ void CanNumber::control(float value) {
     sendSet(m_pCanbus, value * get_config().divider);
 }
 
-bool CanNumber::handleValue(uint16_t value, TEntity::TVariant& variant) {
-    variant = value / m_config.divider;
-    publish_state(std::get<float>(variant));
+bool CanNumber::handleValue(uint16_t value, TEntity::TVariant& current, TVariant& previous) {
+    previous = state;
+    current = value / m_config.divider;
+    publish_state(std::get<float>(current));
     return true;
 }
 
@@ -82,9 +86,10 @@ void CanSelect::publish_select_key(uint16_t key) {
     }
 }
 
-bool CanSelect::handleValue(uint16_t value, TEntity::TVariant& variant) {
-    variant = findNextByKey(value, Utils::format("INVALID<%f>", value));
-    publish_state(std::get<std::string>(variant));
+bool CanSelect::handleValue(uint16_t value, TEntity::TVariant& current, TVariant& previous) {
+    previous = state;
+    current = findNextByKey(value, Utils::format("INVALID<%f>", value));
+    publish_state(std::get<std::string>(current));
     return true;
 }
 

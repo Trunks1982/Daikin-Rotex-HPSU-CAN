@@ -18,7 +18,7 @@ public:
     using THandleFunc = std::function<uint16_t(TMessage const&)>;
     using TSetFunc = std::function<void(TMessage&, uint16_t)>;
     using TVariant = std::variant<uint32_t, uint8_t, float, bool, std::string>;
-    using TPostHandleLabda = std::function<void(TEntity*)>;
+    using TPostHandleLabda = std::function<void(TEntity*, TEntity::TVariant const&, TEntity::TVariant const&)>;
 
     struct TEntityArguments {
         EntityBase* pEntity;
@@ -150,7 +150,7 @@ public:
     }
 
 protected:
-    virtual bool handleValue(uint16_t value, TVariant& variant) = 0;
+    virtual bool handleValue(uint16_t value, TVariant& current, TVariant& previous) = 0;
 
 protected:
     TEntityArguments m_config;

@@ -158,6 +158,7 @@ template void Utils::log<char const*>(std::string const& tag, std::string const&
 template void Utils::log<void*, void*>(std::string const& tag, std::string const& str_format, void* arg1, void* arg2);
 template void Utils::log<char const*, unsigned char>(std::string const&, std::string const&, char const*, unsigned char);
 template void Utils::log<char const*, bool>(std::string const&, std::string const&, char const*, bool);
+template void Utils::log<char const*, char const*, char const*, char const*, bool>(std::string const&, std::string const&, char const*, char const*, char const*, char const*, bool);
 
 }
 }

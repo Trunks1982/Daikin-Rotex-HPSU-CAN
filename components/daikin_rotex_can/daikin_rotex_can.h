@@ -34,7 +34,7 @@ public:
         }
     }
 
-    void on_post_handle(TEntity* pRequest);
+    void on_post_handle(TEntity* pRequest, TEntity::TVariant const& current, TEntity::TVariant const& previous);
 
     // Texts
     virtual void custom_request(std::string const& value) override;
@@ -71,7 +71,7 @@ private:
 
     void updateState(std::string const& id);
     bool on_custom_select(std::string const& id, uint8_t value);
-    void on_mode_of_operating();
+    void on_betriebsart(TEntity::TVariant const& current, TEntity::TVariant const& previous);
 
     float getSensorState(std::string const& name);
     void throwPeriodicError(std::string const& message);

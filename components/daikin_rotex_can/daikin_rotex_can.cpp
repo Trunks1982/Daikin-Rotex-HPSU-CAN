@@ -8,8 +8,8 @@ namespace esphome {
 namespace daikin_rotex_can {
 
 static const char* TAG = "daikin_rotex_can";
-static const char* MODE_OF_OPERATING = "mode_of_operating";             // Betriebsart
-static const char* OPERATING_MODE = "operating_mode";                   // Betriebsmodus
+static const char* BETRIEBS_ART = "mode_of_operating";
+static const char* BETRIEBS_MODUS = "operating_mode";
 static const char* OPTIMIZED_DEFROSTING = "optimized_defrosting";
 static const char* TEMPERATURE_ANTIFREEZE = "temperature_antifreeze";   // T-Frostschutz
 static const char* TEMPERATURE_ANTIFREEZE_OFF = "Aus";
@@ -46,8 +46,8 @@ void DaikinRotexCanComponent::setup() {
                 return on_custom_select(id, key);
             });
         }
-        pEntity->set_post_handle([this](TEntity* pEntity){
-            on_post_handle(pEntity);
+        pEntity->set_post_handle([this](TEntity* pEntity, TEntity::TVariant const& current, TEntity::TVariant const& previous){
+            on_post_handle(pEntity, current, previous);
         });
     }
 
@@ -67,7 +67,7 @@ void DaikinRotexCanComponent::setup() {
     m_project_git_hash_sensor->publish_state(m_project_git_hash);
 }
 
-void DaikinRotexCanComponent::on_post_handle(TEntity* pEntity) {
+void DaikinRotexCanComponent::on_post_handle(TEntity* pEntity, TEntity::TVariant const& current, TEntity::TVariant const& previous) {
     std::string const& update_entity = pEntity->get_update_entity();
     if (!update_entity.empty()) {
         call_later([update_entity, this](){
@@ -80,9 +80,9 @@ void DaikinRotexCanComponent::on_post_handle(TEntity* pEntity) {
         call_later([this](){
             run_dhw_lambdas();
         });
-    } else if (id == MODE_OF_OPERATING) {
-        call_later([this](){
-            on_mode_of_operating();
+    } else if (id == BETRIEBS_ART) {
+        call_later([this, current, previous](){ // copy arguments -> temporary values
+            on_betriebsart(current, previous);
         });
     } else if (id == TEMPERATURE_ANTIFREEZE) {
         CanSelect* p_optimized_defrosting = m_entity_manager.get_select(OPTIMIZED_DEFROSTING);
@@ -104,9 +104,9 @@ void DaikinRotexCanComponent::updateState(std::string const& id) {
 }
 
 void DaikinRotexCanComponent::update_thermal_power() {
-    text_sensor::TextSensor* mode_of_operating = m_entity_manager.get_text_sensor(MODE_OF_OPERATING);
+    text_sensor::TextSensor* p_betriebs_art = m_entity_manager.get_text_sensor(BETRIEBS_ART);
 
-    if (mode_of_operating != nullptr && m_thermal_power_sensor != nullptr) {
+    if (p_betriebs_art != nullptr && m_thermal_power_sensor != nullptr) {
         CanSensor const* flow_rate = m_entity_manager.get_sensor("flow_rate");
         if (flow_rate != nullptr) {
             CanSensor const* tvbh = m_entity_manager.get_sensor("tvbh");
@@ -114,9 +114,9 @@ void DaikinRotexCanComponent::update_thermal_power() {
             CanSensor const* tr = m_entity_manager.get_sensor("tr");
 
             float value = 0;
-            if (mode_of_operating->state == "Warmwasserbereitung" && tv != nullptr && tr != nullptr) {
+            if (p_betriebs_art->state == "Warmwasserbereitung" && tv != nullptr && tr != nullptr) {
                 value = (tv->state - tr->state) * (4.19 * flow_rate->state) / 3600.0f;
-            } else if ((mode_of_operating->state == "Heizen" || mode_of_operating->state == "Kühlen") && tvbh != nullptr && tr != nullptr) {
+            } else if ((p_betriebs_art->state == "Heizen" || p_betriebs_art->state == "Kühlen") && tvbh != nullptr && tr != nullptr) {
                 value = (tvbh->state - tr->state) * (4.19 * flow_rate->state) / 3600.0f;
             }
             m_thermal_power_sensor->publish_state(value);
@@ -142,14 +142,19 @@ bool DaikinRotexCanComponent::on_custom_select(std::string const& id, uint8_t va
     return false;
 }
 
-void DaikinRotexCanComponent::on_mode_of_operating() {
-    CanSelect* p_operating_mode = m_entity_manager.get_select(OPERATING_MODE);
-    CanTextSensor* p_mode_of_operating = m_entity_manager.get_text_sensor(MODE_OF_OPERATING);
-    if (m_optimized_defrosting.value() && p_operating_mode != nullptr && p_mode_of_operating != nullptr) {
-        if (p_mode_of_operating->state == "Abtauen") {
-            m_entity_manager.sendSet(p_operating_mode->get_name(), 0x05); // Sommer
-        } else if (p_operating_mode->state == "Heizen" && p_mode_of_operating->state == "Sommer") {
-            m_entity_manager.sendSet(p_operating_mode->get_name(), 0x03); // Heizen
+void DaikinRotexCanComponent::on_betriebsart(TEntity::TVariant const& current, TEntity::TVariant const& previous) {
+    CanSelect* p_betriebs_modus = m_entity_manager.get_select(BETRIEBS_MODUS);
+    if (m_optimized_defrosting.value() && p_betriebs_modus != nullptr) {
+        if (std::holds_alternative<std::string>(current)) {
+            if (p_betriebs_modus->state != "Sommer" && std::get<std::string>(current) == "Abtauen") {
+                m_entity_manager.sendSet(p_betriebs_modus->get_name(), 0x05); // Sommer
+            } else if (p_betriebs_modus->state != "Heizen" && std::get<std::string>(current) == "Heizen") {
+                m_entity_manager.sendSet(p_betriebs_modus->get_name(), 0x03); // Heizen
+            } else if (p_betriebs_modus->state != "Heizen" && std::get<std::string>(current) == "Standby") {
+                m_entity_manager.sendSet(p_betriebs_modus->get_name(), 0x03); // Heizen
+            }
+        } else {
+            ESP_LOGE(TAG, "on_betriebsart(): current has no valid string value!");
         }
     }
 }

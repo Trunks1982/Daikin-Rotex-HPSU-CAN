@@ -26,7 +26,7 @@ public:
     CanSensor() = default;
     void set_range(Range const& range) { m_range = range; }
 protected:
-    virtual bool handleValue(uint16_t value, TVariant& variant) override;
+    virtual bool handleValue(uint16_t value, TVariant& current, TVariant& previous) override;
 private:
     Range m_range;
     uint32_t trys;
@@ -42,7 +42,7 @@ public:
     void set_map(std::string const& str_map) { m_map = Utils::str_to_map(str_map); }
     void set_recalculate_state(TRecalculateState&& lambda) { m_recalculate_state = std::move(lambda); }
 protected:
-    virtual bool handleValue(uint16_t value, TVariant& variant) override;
+    virtual bool handleValue(uint16_t value, TVariant& current, TVariant& previous) override;
 private:
     BidiMap m_map;
     TRecalculateState m_recalculate_state;
@@ -55,7 +55,7 @@ public:
     CanBinarySensor() = default;
 
 protected:
-    virtual bool handleValue(uint16_t value, TVariant& variant) override;
+    virtual bool handleValue(uint16_t value, TVariant& current, TVariant& previous) override;
 };
 
 /////////////////////// CanNumber ///////////////////////
@@ -65,7 +65,7 @@ public:
     CanNumber() = default;
 protected:
     void control(float value) override;
-    virtual bool handleValue(uint16_t value, TVariant& variant) override;
+    virtual bool handleValue(uint16_t value, TVariant& current, TVariant& previous) override;
 };
 
 /////////////////////// CanSelect ///////////////////////
@@ -83,7 +83,7 @@ public:
     void publish_select_key(uint16_t key);
 protected:
     void control(const std::string &value) override;
-    virtual bool handleValue(uint16_t value, TVariant& variant) override;
+    virtual bool handleValue(uint16_t value, TVariant& current, TVariant& previous) override;
 
 private:
     BidiMap m_map;
