@@ -1,43 +1,3 @@
-#### Language Selection:
-[![de](https://img.shields.io/badge/lang-de-blue.svg)](README.md)
-[![en](https://img.shields.io/badge/lang-en-red.svg)](README.en.md) 
-
-# Rotex / Daikin HPSU CAN
-**Daikin-Rotex-HPSU-CAN** ist eine flexible Standalone-Lösung zum Auslesen und Steuern von Rotex/Daikin Luftwärmepumpen über den CAN-Bus und/oder die Serielle Schnittselle.
-Die Steuerung und der Datenzugriff erfolgen wahlweise über den integrierten Webserver oder bequem über Home Assistant bzw. ioBroker.
-
-## Benötigte Hardware
-Als Hardware wird ein **ESP32** benötigt, der eine Baudrate von **20 kbit/s** unterstützt.  
-- Erfolgreich getestet wurden das **ESP32-S3-WROOM-Board** und ein **WaveShare ESP32-S3 Mini** in Kombination mit dem kompatiblen **Waveshare SN65HVD230** (3,3V) CAN-Transceiver.
-- Eine elegante Lösung, ideal für alle ohne viel Erfahrung mit ESP oder Bastelprojekten, ist das Klick-/Steck-System [ATOM S3 Lite](https://docs.m5stack.com/en/core/AtomS3%20Lite) mit einem [ATOM CAN Modul](https://docs.m5stack.com/en/atom/atom_can).
-
-Eine Übersicht unterstützter ESP32-Varianten und deren unterstützte Bitrate findest du in der folgenden [Tabelle](https://esphome.io/components/canbus/esp32_can).  
-
-
-## Homeassistant - Dashboard
-[![Bild 1](images/ha-dashboard-thumb.png)](images/ha-dashboard.png)
-
-Das [HPSU Dashboard für Home Assistant](https://github.com/wrfz/daikin-rotex-hpsu-dashboard) ist ein Add-on, das hilft, die Funktionsweise der Wärmepumpe leicht verständlich in Echtzeit nachzuvollziehen.
-
-## Home Assistant - Sensoren
-[![Bild 1](images/ha-can-sensors-small.png)](images/ha-can-sensors.png)
-[![Bild 1](images/ha-uart-sensors-small.png)](images/ha-uart-sensors.png)
-
-Die CAN- und seriellen Werte des Kältekreises verbessern das Verständnis der Pumpe und erleichtern es, im Falle von Störungen die Ursachen schneller zu erkennen.
-
-## Home Assistant - Einstellungen
-[![Bild 1](images/ha-settings-small.png)](images/ha-settings.png)
-[![Bild 1](images/ha-settings-small-2.png)](images/ha-settings-2.png)
-
-Sowohl die üblichen Einstellungen, wie die Soll-Temperaturen für Warmwasser oder Raumheizung, lassen sich bequem aus der Ferne anpassen, als auch spezielle Einstellungen, die das grundlegende Verhalten der Pumpe steuern.
-
-## Integrierter ESP Webserver (ohne Home Assistant nutzbar)
-
-[![Bild 1](images/esp-webserver-thumb.png)](images/esp-webserver.png)
-[![Bild 1](images/esp-webserver-settings-thumb.png)](images/esp-webserver-settings.png)
-
-Der in ESP integrierte Webserver ist ideal für technisch weniger versierte Nutzer, die eine unkomplizierte Lösung suchen, um die Wärmepumpe remote zu steuern und schnell einen Überblick über alle relevanten Werte zu erhalten, ohne auf Home Assistant zurückgreifen zu müssen.
-<br>
 
 # Achtung!!
 Die Verwendung von Daikin-Rotex-HPSU-CAN kann potenziell Ihr Heizsystem beschädigen. Die Nutzung erfolgt auf eigene Verantwortung. Ich übernehme keine Haftung für entstandene Schäden.
@@ -209,55 +169,6 @@ Die Installation ist nun abgeschlossen, und du kannst den ESP32 gemäß den Scha
 
 
 **Hinweis**: Weitere Sensoren oder Steuerungen können einfach durch das Hinzufügen neuer Einträge in der ESPHome yaml-Konfiguration ergänzt werden.
-
-
-<br><br>
-
-## Features:
-
-- 1x Warm Wasser Taste ohne Heizstab (es wird für 10s auf 70Grad gestellt und dann wieder auf den vorher eingestellten Wert zurück)
-- Thermische Leistungsberechnung
-- Heizkurven Verstellung in 0.01 Schritten (Standard in 0.1 Schritten)
-- Zwei neue Schalter angelegt um auch die Thermostat Eingänge von der Rotex / Daikin direkt zwischen Heizen / Kühlen umzuschalten.
-- Neues Feature Fehlercode Anzeige mit Beschreibung des Fehlers mit Handbuch Seitenangabe!!
-  
-<br>  
-
-
-Wer Abtauprobleme hat, kann das neue Feature "Defrost" direkt über den ESP nutzen. So wird max 0.7 Grad Warmwasser aus dem Sepicher verbraucht.
-
-
-Getestet mit: 
-- Rotex HSPU Compact 508 8kw mit Rocon BM1, 
-- ROTEX HPSU compact Ultra
-- Dakin ECH2O (bis 01/2022)
-
-## Pinbelegung GPIO 5 und 6 (Bin Datei)
-
-![TxPin5_RxPin6](https://github.com/user-attachments/assets/b0e3ae0d-2354-4871-b295-c156836afddf)
-
-## Pin Belegung an der Rotex HPSU
-
-![Rotex CAN Anschluss](https://github.com/Trunks1982/Daikin-Rotex-HPSU-CAN/assets/62701386/05c36ae7-ddc9-4a1e-8a73-4559c765f132)
-
-
-
-## DIY Platine von (Dornieden)
-
-mehr dazu im Discusions Forum https://github.com/Trunks1982/Daikin-Rotex-HPSU-CAN/discussions/35:<br> 
-https://github.com/Trunks1982/Daikin-Rotex-HPSU-CAN/blob/main/DIY-Platine/README
-
-<img width="554" alt="357024972-fda9cc55-63de-4862-963a-ea39f58e5028" src="https://github.com/user-attachments/assets/1640db7a-693b-45a5-8315-dcbc2e84892c">
-
-
-
-# Telegram Gruppenchat
-https://t.me/+C1iVhAjaENw0ODY0
-
-<br><br>
-"Ein Kaffee für nächste lange Nacht vor dem Rechner wäre toll" ist aber natürlich kein muss.
-<br>[![Paypal](https://user-images.githubusercontent.com/41958506/212499642-b2fd097a-0938-4bfc-b37b-74df64592c58.png)](https://www.paypal.com/donate/?hosted_button_id=H94LZRQW9PFQ4)
-
 
 
 
