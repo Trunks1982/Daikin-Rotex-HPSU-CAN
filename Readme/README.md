@@ -42,10 +42,9 @@ Der in ESP integrierte Webserver ist ideal für technisch weniger versierte Nutz
 # Achtung!!
 Die Verwendung von Daikin-Rotex-HPSU-CAN kann potenziell Ihr Heizsystem beschädigen. Die Nutzung erfolgt auf eigene Verantwortung. Ich übernehme keine Haftung für entstandene Schäden.
 
-Bitte beachten Sie, dass durch die Verwendung von Daikin-Rotex-HPSU-CAN möglicherweise Ihre Garantie sowie der Support durch den Hersteller erlischt!
 # Anleitung: ESPHome in einer virtuellen Umgebung auf macOS nutzen
 
-Diese Anleitung hilft dir, eine Python-virtuelle Umgebung zu erstellen, ESPHome darin zu installieren und ein ESP32-Gerät für die Home Assistant-Steuerung deiner Rotex/Daikin HPSU Compact einzurichten.
+Diese Anleitung hilft dir, eine Python-virtuelle Umgebung zu erstellen, ESPHome darin zu installieren, das Dashboard zu nutzen und ein ESP32-Gerät für die Home Assistant-Steuerung deiner Rotex/Daikin HPSU Compact einzurichten.
 
 ## 1. Überprüfen und Installieren von Python und PIP
 
@@ -135,14 +134,74 @@ esphome version
 
 Wenn alles richtig installiert ist, zeigt der Befehl die aktuelle Version von ESPHome an.
 
-## 4. Konfigurationsdatei für den ESP32 erstellen
+## 4. ESPHome Dashboard starten
 
-Erstelle eine neue Datei für die ESPHome-Konfiguration, https://github.com/Trunks1982/Daikin-Rotex-HPSU-CAN/blob/dev/examples/full.yaml , mit folgendem Inhalt. Diese Datei enthält die WLAN-Zugangsdaten, API-Schlüssel und CAN-Bus-Konfiguration:
+Um das ESPHome Dashboard zu starten, führe den folgenden Befehl im Terminal aus:
 
+```bash
+esphome dashboard ~/esphome_projects
+```
+
+> **Hinweis:** Ersetze `~/esphome_projects` durch den Pfad zu dem Verzeichnis, in dem deine ESPHome YAML-Dateien gespeichert sind. 
+
+Nach dem Ausführen des obigen Befehls sollte das Terminal dir eine Adresse anzeigen, typischerweise `http://localhost:6052`. Öffne einen Webbrowser und gehe zu dieser URL:
+
+```
+http://localhost:6052
+```
+
+### 4.1 Das Dashboard verwenden
+
+Im Dashboard kannst du:
+- Neue Konfigurationen erstellen.
+- Vorhandene Konfigurationen bearbeiten.
+- Geräte flashen, die mit deinem Computer verbunden sind.
+- Statusberichte über deine Geräte einsehen.
+
+## 5. Konfigurationsdatei für den ESP32 erstellen
+
+Erstelle eine neue Datei für die ESPHome-Konfiguration, z. B. `rotex_hpsu.yaml`, mit folgendem Inhalt. Diese Datei enthält die WLAN-Zugangsdaten, API-Schlüssel und CAN-Bus-Konfiguration:
+
+```yaml
+esphome:
+  name: rotex_hpsu
+
+esp32:
+  board: esp32dev
+
+wifi:
+  ssid: "Dein_WLAN_Name"
+  password: "Dein_WLAN_Passwort"
+  manual_ip:
+    static_ip: 192.168.1.50  # Beispiel-IP für den ESP32
+    gateway: 192.168.1.1
+    subnet: 255.255.255.0
+
+api:
+  encryption:
+    key: "IQlCgJuBZRG216PW71elFReuWeojcwsP9zUyY1xCJTg="
+
+ota:
+
+# CAN-Bus Konfiguration
+canbus:
+  - platform: sn65hvd230
+    rx_pin: GPIO3  # Passenden Pin des ESP32 eintragen
+    tx_pin: GPIO1  # Passenden Pin des ESP32 eintragen
+    baud_rate: 20000
+
+sensor:
+  - platform: canbus
+    name: "Temperatur Sensor"
+    id: temp_sensor
+    can_id: 0x100  # Beispiel CAN-ID, anpassen falls nötig
+    filters:
+      - multiply: 0.1
+```
 
 > **Hinweis:** Ersetze `"Dein_WLAN_Name"` und `"Dein_WLAN_Passwort"` durch die Zugangsdaten deines WLANs. Passe auch die `static_ip` und die GPIO-Pins für RX und TX an dein Setup an.
 
-## 5. secrets.yaml erstellen
+## 6. secrets.yaml erstellen
 
 Vor dem Flashen des ESP32 musst du auch eine `secrets.yaml`-Datei erstellen. Diese Datei enthält sensible Informationen wie WLAN-Passwörter und API-Schlüssel.
 
@@ -168,7 +227,7 @@ api:
     key: !secret api_encryption_key
 ```
 
-## 6. ESP32 flashen
+## 7. ESP32 flashen
 
 Verbinde den ESP32 per USB mit deinem Mac und führe im Terminal den folgenden Befehl aus, um ESPHome auf den ESP32 zu flashen:
 
@@ -180,13 +239,13 @@ ESPHome wird den angeschlossenen ESP32 erkennen und eine Verbindung herstellen. 
 
 Nach dem Flashen sollte sich der ESP32 automatisch mit deinem WLAN verbinden und online gehen.
 
-## 7. Den ESP32 in Home Assistant einbinden
+## 8. Den ESP32 in Home Assistant einbinden
 
 1. Öffne **Home Assistant** und gehe zu **Einstellungen > Geräte & Dienste**.
 2. Der ESP32 sollte als neues Gerät (`rotex_hpsu`) erscheinen und lässt sich direkt zu Home Assistant hinzufügen.
 3. Überprüfe in Home Assistant, ob die Sensoren und Steuerungen vom ESP32 korrekt angezeigt werden und Daten empfangen.
 
-## 8. Beenden der virtuellen Umgebung
+## 9. Beenden der virtuellen Umgebung
 
 Wenn du mit der Arbeit in der virtuellen Umgebung fertig bist, kannst du sie deaktivieren:
 
@@ -210,7 +269,7 @@ Bearbeite die YAML-Datei für neue Anpassungen und flashe das Gerät erneut:
 esphome run rotex_hpsu.yaml
 ```
 
-Diese Anleitung sollte dir helfen, ESPHome in einer virtuellen Umgebung auf macOS einzurichten, den ESP32 zu flashen und ihn mit Home Assistant zu verbinden.
+Diese Anleitung sollte dir helfen, ESPHome in einer virtuellen Umgebung auf macOS einzurichten, das Dashboard zu nutzen, den ESP32 zu flashen und ihn mit Home Assistant zu verbinden.
 
 
 ## Abschluss
