@@ -110,11 +110,7 @@ Diese Anleitung beschreibt, wie du deine Rotex HPSU Compact über CAN-Bus mithil
 2. Gehe zu **Einstellungen > Geräte & Dienste** und prüfe, ob das Gerät (z.B. `Rotex_HPSU`) hinzugefügt wurde.
 3. Die konfigurierten Sensoren und Steuerungen sollten nun in Home Assistant verfügbar sein und sind bereit zur Nutzung.
 
----
 
-Damit wird der Installations- und Konfigurationsprozess effizienter gestaltet, da das mehrmalige Flashen entfällt.
-
----
 
 ## Abschluss
 
