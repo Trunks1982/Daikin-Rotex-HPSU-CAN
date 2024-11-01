@@ -134,7 +134,7 @@ Die Installation ist nun abgeschlossen, und du kannst den ESP32 gemäß den Scha
 <br>  
 
 
-Wer Abtauprobleme hat, kann das neue Feature "Defrost" direkt über den ESP nutzen. So wird max 0.7 Grad Warmwasser aus dem Sepicher verbraucht.
+Wer Abtauprobleme hat, kann das neue Feature "Defrost" direkt über den ESP nutzen. So wird max 0.7 Grad Warmwasser aus dem Speicher verbraucht.
 
 
 Getestet mit: 
