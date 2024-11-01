@@ -24,7 +24,7 @@ Die Verwendung von Daikin-Rotex-HPSU-CAN kann potenziell Ihr Heizsystem beschäd
 Bitte beachten Sie, dass durch die Verwendung von Daikin-Rotex-HPSU-CAN möglicherweise Ihre Garantie sowie der Support durch den Hersteller erlischt!
 
 # Installationsanleitung (Standalone):
-1. Du benötigst um den ESP32 zu flashen einmal den Browser Google Chrome (Safari und Firefox werden nicht unterstützt). Dann benötigst du die Datei rotex.factory-gpios-tx05-rx06.bin aus dem Ordner .bin.
+1. Du benötigst um den ESP32 zu flashen einmal den Browser Google Chrome (Safari und Firefox werden nicht unterstützt). Dann benötigst du die Datei **rotex.factory-gpios-tx05-rx06.bin** aus dem Ordner .bin.
 2. Du öffnest dann die Website https://web.esphome.io und verbindest den ESP32 mittels USB-C mit dem PC. Nach dem verbinden klickst du auf der Website auf "Connect". Danach öffnet sich ein Fenster wo du die USB-Serial Schnitstelle auswählst.
 3. Danach öffnet sich ein neues Fenster auf der Website wo du auf "Installieren" klickst.
 4. Jetzt klickst du auf "Datei auswählen" und wählst die vorher runtergeladene Rotex-Factory.bin aus und klickst auf "Installieren". Dieser Vorgang benötigt ca 2min.
