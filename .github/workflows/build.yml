@@ -33,7 +33,7 @@ jobs:
           mv examples/.esphome/build/rotex/.pioenvs/rotex/firmware.bin build/output/rotex.factory-gpios-tx05-rx06_${BRANCH_NAME}_${DATE}.bin 
 
       - name: Archive compiled binary
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: compiled-binary
           path: build/output/rotex.factory-gpios-tx05-rx06_${BRANCH_NAME}_${DATE}.bin
