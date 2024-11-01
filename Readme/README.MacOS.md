@@ -6,7 +6,7 @@ Die Verwendung von Daikin-Rotex-HPSU-CAN kann potenziell Ihr Heizsystem beschäd
 
 Diese Anleitung hilft dir, eine Python-virtuelle Umgebung zu erstellen, ESPHome darin zu installieren, das Dashboard zu nutzen und ein ESP32-Gerät für die Home Assistant-Steuerung deiner Rotex/Daikin HPSU Compact einzurichten.
 
-
+1. Du lädst dir die Datei von https://github.com/Trunks1982/Daikin-Rotex-HPSU-CAN/tree/dev/Install%20Scripte%20EspHome auf deinen MAC herunter.
 
 Nach dem Ausführen des obigen Befehls sollte das Terminal dir eine Adresse anzeigen, typischerweise `http://localhost:6052`. Öffne einen Webbrowser und gehe zu dieser URL:
 
