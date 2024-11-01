@@ -37,10 +37,10 @@ jobs:
           BRANCH_NAME=$(echo ${GITHUB_REF#refs/heads/}) 
           DATE=$(date +%Y%m%d_%H%M)
           esphome compile examples/full.yaml
-          mv examples/.esphome/build/rotex/.pioenvs/rotex/firmware.bin build/output/rotex.factory-gpios-tx05-rx06_${BRANCH_NAME}_${DATE}.bin 
+          mv examples/.esphome/build/rotex/.pioenvs/rotex/firmware.factory.bin examples/.esphome/build/rotex/.pioenvs/rotex/rotex.factory-gpios-tx05-rx06_${BRANCH_NAME}_${DATE}.bin  
 
       - name: Archive compiled binary
         uses: actions/upload-artifact@v4
         with:
           name: compiled-binary
-          path: build/output/rotex.factory-gpios-tx05-rx06_${BRANCH_NAME}_${DATE}.bin
+          path: examples/.esphome/build/rotex/.pioenvs/rotex/rotex.factory-gpios-tx05-rx06_${BRANCH_NAME}_${DATE}.bin
