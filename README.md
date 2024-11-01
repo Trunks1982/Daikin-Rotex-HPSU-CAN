@@ -57,6 +57,7 @@ Getestet mit:
 - Rotex HSPU Compact 508 8kw mit Rocon BM1, 
 - ROTEX HPSU compact Ultra
 - Dakin ECH2O (bis 01/2022)
+- Rotex GSU
 
 ## Pinbelegung GPIO 47 und 48 (Beispiel)
 
