@@ -137,7 +137,7 @@ Wenn alles richtig installiert ist, zeigt der Befehl die aktuelle Version von ES
 
 ## 4. Konfigurationsdatei für den ESP32 erstellen
 
-Erstelle eine neue Datei für die ESPHome-Konfiguration, , mit folgendem Inhalt. Diese Datei enthält die WLAN-Zugangsdaten, API-Schlüssel und CAN-Bus-Konfiguration:
+Erstelle eine neue Datei für die ESPHome-Konfiguration, https://github.com/Trunks1982/Daikin-Rotex-HPSU-CAN/blob/dev/examples/full.yaml , mit folgendem Inhalt. Diese Datei enthält die WLAN-Zugangsdaten, API-Schlüssel und CAN-Bus-Konfiguration:
 
 
 > **Hinweis:** Ersetze `"Dein_WLAN_Name"` und `"Dein_WLAN_Passwort"` durch die Zugangsdaten deines WLANs. Passe auch die `static_ip` und die GPIO-Pins für RX und TX an dein Setup an.
