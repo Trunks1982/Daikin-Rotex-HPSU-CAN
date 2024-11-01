@@ -159,46 +159,9 @@ http://localhost:6052
 
 2. **Konfigurationsdatei für den ESP32 erstellen:**
    - Das Dashboard öffnet nun einen YAML-Editor, in dem du die Konfiguration für dein Gerät hinzufügen kannst.
-   - Füge den folgenden YAML-Inhalt ein, um die WLAN-Zugangsdaten, API-Schlüssel und CAN-Bus-Konfiguration zu definieren:
+   - Füge den folgenden https://github.com/Trunks1982/Daikin-Rotex-HPSU-CAN/blob/main/examples/full.yaml YAML-Inhalt ein,
 
-   ```yaml
-   esphome:
-     name: rotex_hpsu
-
-   esp32:
-     board: esp32dev
-
-   wifi:
-     ssid: "Dein_WLAN_Name"
-     password: "Dein_WLAN_Passwort"
-     manual_ip:
-       static_ip: 192.168.1.50  # Beispiel-IP für den ESP32
-       gateway: 192.168.1.1
-       subnet: 255.255.255.0
-
-   api:
-     encryption:
-       key: "IQlCgJuBZRG216PW71elFReuWeojcwsP9zUyY1xCJTg="
-
-   ota:
-
-   # CAN-Bus Konfiguration
-   canbus:
-     - platform: sn65hvd230
-       rx_pin: GPIO3  # Passenden Pin des ESP32 eintragen
-       tx_pin: GPIO1  # Passenden Pin des ESP32 eintragen
-       baud_rate: 20000
-
-   sensor:
-     - platform: canbus
-       name: "Temperatur Sensor"
-       id: temp_sensor
-       can_id: 0x100  # Beispiel CAN-ID, anpassen falls nötig
-       filters:
-         - multiply: 0.1
-   ```
-
-   > **Hinweis:** Ersetze `"Dein_WLAN_Name"` und `"Dein_WLAN_Passwort"` durch die Zugangsdaten deines WLANs. Passe auch die `static_ip` und die GPIO-Pins für RX und TX an dein Setup an.
+   
 
 3. **secrets.yaml erstellen:**
    - Klicke im Dashboard auf den „Editor“ und erstelle eine Datei namens `secrets.yaml`.
