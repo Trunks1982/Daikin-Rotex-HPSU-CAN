@@ -13,6 +13,24 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Check for required secrets
+        run: |
+          if [ -z "${{ secrets.API_ENCRYPTION_KEY }}" ]; then
+            echo "Error: API_ENCRYPTION_KEY secret is not set" >&2
+            exit 1
+          fi
+          if [ -z "${{ secrets.OTA_PASSWORD }}" ]; then
+            echo "Error: OTA_PASSWORD secret is not set" >&2
+            exit 1
+          fi
+          if [ -z "${{ secrets.WIFI_SSID }}" ]; then
+            echo "Error: WIFI_SSID secret is not set" >&2
+            exit 1
+          fi
+          if [ -z "${{ secrets.WIFI_PASSWORD }}" ]; then
+            echo "Error: WIFI_PASSWORD secret is not set" >&2
+            exit 1
+          fi
       - name: Checkout code
         uses: actions/checkout@v4
 
@@ -43,4 +61,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: compiled-binary
-          path: examples/.esphome/build/rotex/.pioenvs/rotex/rotex.factory-gpios-tx05-rx06_${BRANCH_NAME}_${DATE}.bin
+          path: examples/.esphome/build/rotex/.pioenvs/rotex/rotex.factory-gpios-tx05-rx06_*.bin
