@@ -173,20 +173,6 @@ http://localhost:6052
    api_encryption_key: "IQlCgJuBZRG216PW71elFReuWeojcwsP9zUyY1xCJTg="
    ```
 
-   > **Hinweis:** Ersetze die Werte entsprechend mit deinen tatsächlichen WLAN-Zugangsdaten und dem API-Schlüssel.
-
-   - Aktualisiere die `rotex_hpsu.yaml`-Datei, um die Werte aus der `secrets.yaml`-Datei zu verwenden:
-
-   ```yaml
-   wifi:
-     ssid: !secret wifi_ssid
-     password: !secret wifi_password
-
-   api:
-     encryption:
-       key: !secret api_encryption_key
-   ```
-
 4. **Gerät flashen:**
    - Verbinde den ESP32 per USB mit deinem Mac.
    - Klicke im Dashboard auf die Schaltfläche „Install“ neben deinem Gerät.
