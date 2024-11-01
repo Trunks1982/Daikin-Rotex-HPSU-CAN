@@ -13,7 +13,7 @@ Eine Übersicht weiterer Varianten und deren unterstützte Bitrate findest du in
 Zusätzlich ist ein kompatibler **CAN-Transceiver** erforderlich, wie der **Waveshare SN65HVD230** (3,3V).
 
 ## Ansicht Homeassistant - Dashboard
-[![Bild 1](images/dashboard-thumb.png)](images/dashboard.png)
+[![Bild 1](images/ha-dashboard-thumb.png)](images/ha-dashboard.png)
 
 ## Sensoren und Einstellungen
 [![Bild 1](images/ha-can-sensors-thumb.png)](images/ha-can-sensors.png)
