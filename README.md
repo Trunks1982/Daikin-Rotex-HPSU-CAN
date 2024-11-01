@@ -63,6 +63,9 @@ Getestet mit: - Rotex HSPU Compact 508 8kw mit Rocon BM1, ROTEX HPSU compact Ult
 
 ![Rotex CAN Anschluss](https://github.com/Trunks1982/Daikin-Rotex-HPSU-CAN/assets/62701386/05c36ae7-ddc9-4a1e-8a73-4559c765f132)
 
+## Pinbelegung GPIO 5 und 6 (Bin Datei)
+
+![TxPin5_RxPin6](https://github.com/user-attachments/assets/b0e3ae0d-2354-4871-b295-c156836afddf)
 
 ## DIY Platine von (Dornieden)
 
