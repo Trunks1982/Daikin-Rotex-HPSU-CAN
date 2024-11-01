@@ -80,9 +80,6 @@ Die Installation ist nun abgeschlossen, und das System kann nach den Schaubild *
 
 Diese Anleitung beschreibt, wie du die Rotex HPSU Compact über CAN-Bus mit einem ESP32 und ESPHome in Home Assistant integrierst. Hierzu verwenden wir das ESPHome Addon in Home Assistant und vermeiden die Notwendigkeit, externe Flashing-Tools zu verwenden.
 
-## Voraussetzungen
-
-- **Home Assistant** mit installiertem **ESPHome Addon**.
 
 ## Schritt 1: ESPHome Addon in Home Assistant installieren
 
@@ -93,7 +90,7 @@ Diese Anleitung beschreibt, wie du die Rotex HPSU Compact über CAN-Bus mit eine
 ## Schritt 2: ESP32 in ESPHome hinzufügen
 
 1. In der ESPHome-Oberfläche klicke auf „**New Device**“.
-2. Gib einen Namen für das Gerät ein (z.B. `Rotex_HPSU`) und wähle den ESP32 als Geräteplattform aus.
+2. Gib einen Namen für das Gerät ein (z.B. `Rotex_HPSU`) und wähle den ESP32-S3 als Geräteplattform aus.
 3. Gib die WLAN-SSID und das WLAN-Passwort deines Heimnetzwerks ein, damit der ESP32 später verbunden wird.
 4. Lade die Konfigurationsdatei herunter, die für das Flashen benötigt wird.
 
