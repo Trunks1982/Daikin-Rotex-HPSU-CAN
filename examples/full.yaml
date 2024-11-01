@@ -16,6 +16,7 @@ esp32:
 external_components:
   - source: github://Trunks1982/Daikin-Rotex-HPSU-CAN
 
+#
 #external_components:   # Use this block instead of the one above if you want to use the development branch
 #  - source:
 #      type: git
