@@ -96,14 +96,14 @@ Diese Anleitung beschreibt, wie du die Rotex HPSU Compact über CAN-Bus mit eine
 
 ## Schritt 3: ESP32 direkt aus ESPHome heraus flashen
 
-1. Verbinde den ESP32 per USB-C-Kabel mit dem Computer, auf dem Home Assistant läuft (oder mit einem anderen Computer im Netzwerk, auf dem ESPHome installiert ist).
+1. Verbinde den ESP32 per USB-C-Kabel mit dem Computer, auf dem Home Assistant läuft (oder mit einem anderen Computer im Netzwerk, auf dem ESPHome installiert ist). Falls Homeassistant in einer Virtuellen Maschine installiert ist, sollten die USB Ports durchgereicht werden.
 2. Wähle die Option „**Plug into this computer**“ aus und folge den Anweisungen, um den ESP32 zu flashen.
 3. Nach erfolgreichem Flashen verbindet sich der ESP32 automatisch mit deinem WLAN und erscheint in der ESPHome-Liste in Home Assistant.
 
 ## Schritt 4: Konfigurationsdatei anpassen
 
 1. In ESPHome wähle das soeben hinzugefügte Gerät (z.B. `Rotex_HPSU`) und klicke auf „**Edit**“, um die Konfigurationsdatei zu bearbeiten.
-2. Ersetze den Inhalt mit der Datei mit der folgenden Konfiguration, [examples/full.yaml](https://github.com/Columbo/Daikin-Rotex-HPSU-CAN/blob/main/examples/full.yaml).
+2. Ersetze den Inhalt mit der Datei mit der folgenden Konfiguration, [examples/full.yaml](https://github.com/Columbo/Daikin-Rotex-HPSU-CAN/blob/main/examples/full.yaml). 
 
 3. Speichere die Änderungen und klicke auf „**Install**“, um die Konfiguration an den ESP32 zu senden.
 
