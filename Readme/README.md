@@ -2,27 +2,47 @@
 [![de](https://img.shields.io/badge/lang-de-blue.svg)](README.md)
 [![en](https://img.shields.io/badge/lang-en-red.svg)](README.en.md) 
 
-# Rotex /Daikin HPSU CAN
-**Daikin-Rotex-HPSU-CAN** ist eine flexible Standalone-Lösung zum Auslesen und Steuern von Rotex/Daikin Luftwärmepumpen über den CAN-Bus.
+# Rotex / Daikin HPSU CAN
+**Daikin-Rotex-HPSU-CAN** ist eine flexible Standalone-Lösung zum Auslesen und Steuern von Rotex/Daikin Luftwärmepumpen über den CAN-Bus und/oder die Serielle Schnittselle.
 Die Steuerung und der Datenzugriff erfolgen wahlweise über den integrierten Webserver oder bequem über Home Assistant bzw. ioBroker.
 
+## Benötigte Hardware
 Als Hardware wird ein **ESP32** benötigt, der eine Baudrate von **20 kbit/s** unterstützt.  
-Erfolgreich getestet wurden das **ESP32-S3-WROOM-Board** und ein **WaveShare ESP32-S3 Mini**.  
-Eine Übersicht weiterer Varianten und deren unterstützte Bitrate findest du in der folgenden [Tabelle](https://esphome.io/components/canbus/esp32_can).  
+- Erfolgreich getestet wurden das **ESP32-S3-WROOM-Board** und ein **WaveShare ESP32-S3 Mini** in Kombination mit dem kompatiblen **Waveshare SN65HVD230** (3,3V) CAN-Transceiver.
+- Eine elegante Lösung, ideal für alle ohne viel Erfahrung mit ESP oder Bastelprojekten, ist das Klick-/Steck-System [ATOM S3 Lite](https://docs.m5stack.com/en/core/AtomS3%20Lite) mit einem [ATOM CAN Modul](https://docs.m5stack.com/en/atom/atom_can).
 
-Zusätzlich ist ein kompatibler **CAN-Transceiver** erforderlich, wie der **Waveshare SN65HVD230** (3,3V).
+Eine Übersicht unterstützter ESP32-Varianten und deren unterstützte Bitrate findest du in der folgenden [Tabelle](https://esphome.io/components/canbus/esp32_can).  
 
-## WEBUI vom ESP:
-![Bildschirmfoto 2024-09-17 um 13 13 06](https://github.com/user-attachments/assets/8bb5ca8e-323f-45d1-ab4b-a30f185a6ffc)
 
-## Ansicht Homeassistant:
-![Bildschirmfoto 2024-04-01 um 01 37 19](https://github.com/Trunks1982/Daikin-Rotex-HPSU-CAN/assets/62701386/d9c1d703-ac4a-4466-97e3-dbd6478cbed1)
+## Homeassistant - Dashboard
+[![Bild 1](images/ha-dashboard-thumb.png)](images/ha-dashboard.png)
 
-## Achtung!!
+Das [HPSU Dashboard für Home Assistant](https://github.com/wrfz/daikin-rotex-hpsu-dashboard) ist ein Add-on, das hilft, die Funktionsweise der Wärmepumpe leicht verständlich in Echtzeit nachzuvollziehen.
+
+## Home Assistant - Sensoren
+[![Bild 1](images/ha-can-sensors-small.png)](images/ha-can-sensors.png)
+[![Bild 1](images/ha-uart-sensors-small.png)](images/ha-uart-sensors.png)
+
+Die CAN- und seriellen Werte des Kältekreises verbessern das Verständnis der Pumpe und erleichtern es, im Falle von Störungen die Ursachen schneller zu erkennen.
+
+## Home Assistant - Einstellungen
+[![Bild 1](images/ha-settings-small.png)](images/ha-settings.png)
+[![Bild 1](images/ha-settings-small-2.png)](images/ha-settings-2.png)
+
+Sowohl die üblichen Einstellungen, wie die Soll-Temperaturen für Warmwasser oder Raumheizung, lassen sich bequem aus der Ferne anpassen, als auch spezielle Einstellungen, die das grundlegende Verhalten der Pumpe steuern.
+
+## Integrierter ESP Webserver (ohne Home Assistant nutzbar)
+
+[![Bild 1](images/esp-webserver-thumb.png)](images/esp-webserver.png)
+[![Bild 1](images/esp-webserver-settings-thumb.png)](images/esp-webserver-settings.png)
+
+Der in ESP integrierte Webserver ist ideal für technisch weniger versierte Nutzer, die eine unkomplizierte Lösung suchen, um die Wärmepumpe remote zu steuern und schnell einen Überblick über alle relevanten Werte zu erhalten, ohne auf Home Assistant zurückgreifen zu müssen.
+<br>
+
+# Achtung!!
 Die Verwendung von Daikin-Rotex-HPSU-CAN kann potenziell Ihr Heizsystem beschädigen. Die Nutzung erfolgt auf eigene Verantwortung. Ich übernehme keine Haftung für entstandene Schäden.
 
 Bitte beachten Sie, dass durch die Verwendung von Daikin-Rotex-HPSU-CAN möglicherweise Ihre Garantie sowie der Support durch den Hersteller erlischt!
-
 # Anleitung: ESPHome in einer virtuellen Umgebung auf macOS nutzen
 
 Diese Anleitung hilft dir, eine Python-virtuelle Umgebung zu erstellen, ESPHome darin zu installieren und ein ESP32-Gerät für die Home Assistant-Steuerung deiner Rotex/Daikin HPSU Compact einzurichten.
@@ -117,44 +137,8 @@ Wenn alles richtig installiert ist, zeigt der Befehl die aktuelle Version von ES
 
 ## 4. Konfigurationsdatei für den ESP32 erstellen
 
-Erstelle eine neue Datei für die ESPHome-Konfiguration, z. B. `rotex_hpsu.yaml`, mit folgendem Inhalt. Diese Datei enthält die WLAN-Zugangsdaten, API-Schlüssel und CAN-Bus-Konfiguration:
+Erstelle eine neue Datei für die ESPHome-Konfiguration, , mit folgendem Inhalt. Diese Datei enthält die WLAN-Zugangsdaten, API-Schlüssel und CAN-Bus-Konfiguration:
 
-```yaml
-esphome:
-  name: rotex_hpsu
-
-esp32:
-  board: esp32dev
-
-wifi:
-  ssid: "Dein_WLAN_Name"
-  password: "Dein_WLAN_Passwort"
-  manual_ip:
-    static_ip: 192.168.1.50  # Beispiel-IP für den ESP32
-    gateway: 192.168.1.1
-    subnet: 255.255.255.0
-
-api:
-  encryption:
-    key: "IQlCgJuBZRG216PW71elFReuWeojcwsP9zUyY1xCJTg="
-
-ota:
-
-# CAN-Bus Konfiguration
-canbus:
-  - platform: sn65hvd230
-    rx_pin: GPIO3  # Passenden Pin des ESP32 eintragen
-    tx_pin: GPIO1  # Passenden Pin des ESP32 eintragen
-    baud_rate: 20000
-
-sensor:
-  - platform: canbus
-    name: "Temperatur Sensor"
-    id: temp_sensor
-    can_id: 0x100  # Beispiel CAN-ID, anpassen falls nötig
-    filters:
-      - multiply: 0.1
-```
 
 > **Hinweis:** Ersetze `"Dein_WLAN_Name"` und `"Dein_WLAN_Passwort"` durch die Zugangsdaten deines WLANs. Passe auch die `static_ip` und die GPIO-Pins für RX und TX an dein Setup an.
 
@@ -229,6 +213,15 @@ esphome run rotex_hpsu.yaml
 Diese Anleitung sollte dir helfen, ESPHome in einer virtuellen Umgebung auf macOS einzurichten, den ESP32 zu flashen und ihn mit Home Assistant zu verbinden.
 
 
+## Abschluss
+
+Die Installation ist nun abgeschlossen, und du kannst den ESP32 gemäß den Schaubildern mit der Rotex/Daikin-Anlage verbinden.
+
+
+**Hinweis**: Weitere Sensoren oder Steuerungen können einfach durch das Hinzufügen neuer Einträge in der ESPHome yaml-Konfiguration ergänzt werden.
+
+
+<br><br>
 
 ## Features:
 
@@ -241,18 +234,13 @@ Diese Anleitung sollte dir helfen, ESPHome in einer virtuellen Umgebung auf macO
 <br>  
 
 
-Wer Abtau-Probleme hat, kann das neue Feature "Defrost" direkt über den ESP nutzen.So wird max 0.7 Grad Warmwasser aus dem Sepicher verbraucht.
+Wer Abtauprobleme hat, kann das neue Feature "Defrost" direkt über den ESP nutzen. So wird max 0.7 Grad Warmwasser aus dem Sepicher verbraucht.
 
 
 Getestet mit: 
 - Rotex HSPU Compact 508 8kw mit Rocon BM1, 
 - ROTEX HPSU compact Ultra
 - Dakin ECH2O (bis 01/2022)
-
-
-## Pinbelegung GPIO 47 und 48 (Beispiel)
-
-![ESP32-S3toCAN](https://github.com/Trunks1982/Daikin-Rotex-HPSU-CAN/assets/62701386/40b1881a-b7f5-40b5-a2d7-678ee19299d2)
 
 ## Pinbelegung GPIO 5 und 6 (Bin Datei)
 
@@ -261,6 +249,7 @@ Getestet mit:
 ## Pin Belegung an der Rotex HPSU
 
 ![Rotex CAN Anschluss](https://github.com/Trunks1982/Daikin-Rotex-HPSU-CAN/assets/62701386/05c36ae7-ddc9-4a1e-8a73-4559c765f132)
+
 
 
 ## DIY Platine von (Dornieden)
