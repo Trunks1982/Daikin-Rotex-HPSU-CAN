@@ -78,7 +78,6 @@ Die Installation ist nun abgeschlossen, und das System kann nach den Schaubild *
 
 # Rotex/Daikin HPSU CAN Integration mit ESPHome und Home Assistant
 
-# Rotex HPSU Compact in Home Assistant über ESP32 und ESPHome integrieren
 
 Diese Anleitung beschreibt, wie du deine Rotex HPSU Compact über CAN-Bus mithilfe eines ESP32 und ESPHome in Home Assistant integrieren kannst, ohne mehrfaches Flashen durchzuführen.
 
