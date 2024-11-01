@@ -53,7 +53,10 @@ Bitte beachten Sie, dass durch die Verwendung von Daikin-Rotex-HPSU-CAN möglich
 Wer Abtau-Probleme hat, kann das neue Feature "Defrost" direkt über den ESP nutzen.So wird max 0.7 Grad Warmwasser aus dem Sepicher verbraucht.
 
 
-Getestet mit: - Rotex HSPU Compact 508 8kw mit Rocon BM1, ROTEX HPSU compact Ultra
+Getestet mit: 
+- Rotex HSPU Compact 508 8kw mit Rocon BM1, 
+- ROTEX HPSU compact Ultra
+- Dakin ECH2O (bis 01/2022)
 
 ## Pinbelegung GPIO 47 und 48 (Beispiel)
 
