@@ -12,15 +12,18 @@ Eine Übersicht weiterer Varianten und deren unterstützte Bitrate findest du in
 
 Zusätzlich ist ein kompatibler **CAN-Transceiver** erforderlich, wie der **Waveshare SN65HVD230** (3,3V).
 
-## Ansicht Homeassistant - Dashboard
+## Homeassistant - Dashboard
 [![Bild 1](images/ha-dashboard-thumb.png)](images/ha-dashboard.png)
 
-## Sensoren und Einstellungen
-[![Bild 1](images/ha-can-sensors-thumb.png)](images/ha-can-sensors.png)
-[![Bild 1](images/ha-uart-sensors-thumb.png)](images/ha-uart-sensors.png)
-[![Bild 1](images/ha-settings-thumb.png)](images/ha-settings.png)
+## Home Assistant - Sensoren
+[![Bild 1](images/ha-can-sensors-small.png)](images/ha-can-sensors.png)
+[![Bild 1](images/ha-uart-sensors-small.png)](images/ha-uart-sensors.png)
 
-## Integrierter ESP Webserver (ehne Home Assistant nutzbar)
+## Home Assistant - Einstellungen
+[![Bild 1](images/ha-settings-small.png)](images/ha-settings.png)
+[![Bild 1](images/ha-settings-small-2.png)](images/ha-settings-2.png)
+
+## Integrierter ESP Webserver (ohne Home Assistant nutzbar)
 
 [![Bild 1](images/esp-webserver-thumb.png)](images/esp-webserver.png)
 [![Bild 1](images/esp-webserver-settings-thumb.png)](images/esp-webserver-settings.png)
