@@ -97,8 +97,9 @@ Diese Anleitung beschreibt, wie du deine Rotex HPSU Compact über CAN-Bus mithil
 3. Gib die WLAN-SSID und das WLAN-Passwort deines Heimnetzwerks ein, damit der ESP32 später automatisch verbunden wird.
 4. Lade die Konfigurationsdatei herunter, die für das einmalige Flashen benötigt wird.
 5. **Verbinde den ESP32 per USB-C-Kabel mit dem Computer, auf dem Home Assistant läuft** (oder einem anderen Computer im Netzwerk mit ESPHome).
-6. Wähle die Option **„Plug into this computer“** und folge den Anweisungen, um den ESP32 direkt aus ESPHome heraus zu flashen.
-7. Nach erfolgreichem Flashen verbindet sich der ESP32 automatisch mit deinem WLAN und erscheint in der ESPHome-Liste in Home Assistant.
+   Falls Homeassistant in einer Virtuellen Maschine installiert ist, muss vorher überprüft werden ob die USB Ports durchgereicht sind.
+7. Wähle die Option **„Plug into this computer“** und folge den Anweisungen, um den ESP32 direkt aus ESPHome heraus zu flashen.
+8. Nach erfolgreichem Flashen verbindet sich der ESP32 automatisch mit deinem WLAN und erscheint in der ESPHome-Liste in Home Assistant.
 
 ## Schritt 3: Konfiguration in ESPHome anpassen und drahtlos aktualisieren
 1. In ESPHome wähle das hinzugefügte Gerät (z.B. `Rotex_HPSU`) und klicke auf **„Edit“**, um die Konfigurationsdatei zu bearbeiten.
