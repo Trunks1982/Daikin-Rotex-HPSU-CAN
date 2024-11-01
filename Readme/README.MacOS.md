@@ -69,7 +69,7 @@ Damit kehrst du zum normalen Terminal-Modus zurück.
 
 ## Zukünftige Updates und Anpassungen
 
-Um den ESP32 erneut zu flashen oder die Konfiguration zu ändern, starte das ESPHome Dashboard erneut und lade deine Konfigurationsdatei. Nach Änderungen kannst du einfach den Flash-Vorgang erneut starten.
+Um den ESP32 erneut zu flashen oder die Konfiguration zu ändern, starte das ESPHome Dashboard erneut mit dem Befehl  bash ./install_esphome_mac.sh und lade deine Konfigurationsdatei. Nach Änderungen kannst du einfach den Flash-Vorgang erneut starten.
 
 Diese Anleitung sollte dir helfen, ESPHome in einer virtuellen Umgebung auf macOS einzurichten, das Dashboard zu nutzen, den ESP32 zu flashen und ihn mit Home Assistant zu verbinden.
 
