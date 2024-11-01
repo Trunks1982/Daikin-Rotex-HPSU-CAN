@@ -1,0 +1,229 @@
+type: picture-elements
+image: /local/hpsu.svg
+card_mod:
+  style: |
+    ha-card {
+      background: linear-gradient(90deg, #220000, #000022);
+    }
+    :host {
+      --sensor-color: rgb(200, 200, 200);
+    }
+elements:
+  - type: state-label
+    entity: sensor.rotex_aussentemperatur
+    style:
+      top: 10.9%
+      left: 7.7%
+      unit: false
+      font-size: 1.8vw
+      color: var(--sensor-color)
+  - type: state-label
+    entity: sensor.rotex_t_aussen
+    style:
+      top: 10.9%
+      left: 16.5%
+      unit: false
+      font-size: 1.8vw
+      color: var(--sensor-color)
+  - type: state-label
+    entity: sensor.rotex_expansionsventil
+    style:
+      top: 10.9%
+      left: 25.5%
+      unit: false
+      font-size: 1.8vw
+      color: var(--sensor-color)
+  - type: state-label
+    entity: sensor.rotex_temperatur_fl_ssigkeitsleitung
+    style:
+      top: 10.9%
+      left: 35.7%
+      unit: false
+      font-size: 1.8vw
+      color: var(--sensor-color)
+  - type: state-label
+    entity: binary_sensor.rotex_status_kesselpumpe
+    style:
+      top: 24.3%
+      left: 49.4%
+      font-size: 1.2vw
+    card_mod:
+      style: |
+        :host {
+          color: {% if is_state('binary_sensor.rotex_status_kesselpumpe', 'on') %} yellow {% else %} silver {% endif %};
+        }
+  - type: state-label
+    entity: sensor.rotex_umwaelzpumpe
+    style:
+      top: 10.9%
+      left: 50.4%
+      unit: false
+      font-size: 1.8vw
+      color: var(--sensor-color)
+  - type: state-label
+    entity: sensor.rotex_durchfluss
+    style:
+      top: 10.9%
+      left: 61.8%
+      unit: false
+      font-size: 1.8vw
+      color: var(--sensor-color)
+  - type: state-label
+    entity: sensor.rotex_ruecklauftemperatur_heizung
+    style:
+      top: 11.1%
+      left: 72.2%
+      unit: false
+      font-size: 1.8vw
+      color: var(--sensor-color)
+  - type: state-label
+    entity: sensor.rotex_r_cklauftemperatur
+    style:
+      top: 15.1%
+      left: 72.2%
+      unit: false
+      font-size: 1.8vw
+      color: var(--sensor-color)
+  - type: state-label
+    entity: sensor.rotex_lamellenw_rmetauscher_temperatur
+    style:
+      top: 46.8%
+      left: 26.0%
+      unit: false
+      font-size: 1.8vw
+      color: var(--sensor-color)
+  - type: state-label
+    entity: sensor.rotex_heizkreis_vorlauf_tv
+    style:
+      top: 46.6%
+      left: 46.6%
+      font-size: 1.8vw
+      color: var(--sensor-color)
+  - type: state-label
+    entity: sensor.rotex_vorlauftemeratur_tv
+    style:
+      top: 50.6%
+      left: 46.6%
+      font-size: 1.8vw
+      color: var(--sensor-color)
+  - type: state-label
+    entity: sensor.rotex_vorlauf_soll
+    style:
+      top: 46.6%
+      left: 55.2%
+      font-size: 1.8vw
+      color: var(--sensor-color)
+  - type: state-label
+    entity: sensor.rotex_wasserdruck
+    style:
+      top: 37.1%
+      left: 69.0%
+      font-size: 1.8vw
+      color: var(--sensor-color)
+  - type: state-label
+    entity: sensor.rotex_vorlauftemperatur_heizung_tvbh
+    style:
+      top: 37.1%
+      left: 79.2%
+      font-size: 1.8vw
+      color: var(--sensor-color)
+  - type: state-label
+    entity: sensor.rotex_vorlauftemeratur_tvbh
+    style:
+      top: 33.1%
+      left: 79.2%
+      font-size: 1.8vw
+      color: var(--sensor-color)
+  - type: state-label
+    entity: sensor.rotex_bpv
+    style:
+      top: 45.5%
+      left: 89.3%
+      font-size: 1.6vw
+      color: var(--sensor-color)
+  - type: state-label
+    entity: binary_sensor.rotex_status_kompressor
+    style:
+      top: 58.7%
+      left: 23.9%
+      font-size: 1.2vw
+    card_mod:
+      style: |
+        :host {
+          color: {% if is_state('binary_sensor.rotex_status_kompressor', 'on') %} yellow {% else %} silver {% endif %};
+        }
+  - type: state-label
+    entity: sensor.rotex_ventilatordrehzahl
+    style:
+      top: 74.5%
+      left: 8.8%
+      unit: false
+      font-size: 1.8vw
+      color: var(--sensor-color)
+  - type: state-label
+    entity: sensor.rotex_kompressor_drehzahl
+    style:
+      top: 74.5%
+      left: 25.4%
+      unit: false
+      font-size: 1.8vw
+      color: var(--sensor-color)
+  - type: state-label
+    entity: sensor.rotex_warmwassertemperatur
+    style:
+      top: 80.2%
+      left: 41.4%
+      unit: false
+      font-size: 1.8vw
+      color: var(--sensor-color)
+  - type: state-label
+    entity: select.rotex_t_ww_soll1
+    style:
+      top: 80.2%
+      left: 49.2%
+      unit: false
+      font-size: 1.8vw
+      color: var(--sensor-color)
+  - type: state-label
+    entity: sensor.rotex_bpv
+    style:
+      top: 62.5%
+      left: 62.0%
+      font-size: 1.6vw
+      color: var(--sensor-color)
+  - type: state-label
+    entity: sensor.rotex_betriebsart
+    prefix: 'Betriebsart: '
+    style:
+      top: 62%
+      left: 77.0%
+      font-size: 1vw
+      color: var(--sensor-color)
+      transform: none
+  - type: state-label
+    entity: select.rotex_betriebsmodus
+    prefix: 'Betriebsmodus: '
+    style:
+      top: 65%
+      left: 77.0%
+      font-size: 1vw
+      color: var(--sensor-color)
+      transform: none
+  - type: state-label
+    entity: sensor.rotex_fehlercode
+    prefix: 'Fehlercode: '
+    style:
+      top: 68%
+      left: 77.0%
+      font-size: 1vw
+      color: var(--sensor-color)
+      transform: none
+  - type: state-label
+    entity: sensor.rotex_thermische_leistung
+    prefix: 'Thermische Leistung: '
+    style:
+      top: 71%
+      left: 77.0%
+      font-size: 1vw
+      color: var(--sensor-color)
+      transform: none
