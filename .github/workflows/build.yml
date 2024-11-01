@@ -27,6 +27,8 @@ jobs:
           echo "OTA_PASSWORD=${{ secrets.OTA_PASSWORD }}" >> $GITHUB_ENV
           echo "WIFI_SSID=${{ secrets.WIFI_SSID }}" >> $GITHUB_ENV
           echo "WIFI_PASSWORD=${{ secrets.WIFI_PASSWORD }}" >> $GITHUB_ENV
+          echo "BRANCH_NAME=$(echo ${GITHUB_REF#refs/heads/})" >> $GITHUB_ENV
+          echo "DATE=$(date +%Y%m%d_%H%M)" >> $GITHUB_ENV
           
       - name: Install ESPHome
         run: |
@@ -34,8 +36,6 @@ jobs:
 
       - name: Compile ESPHome binary
         run: |
-          BRANCH_NAME=$(echo ${GITHUB_REF#refs/heads/}) 
-          DATE=$(date +%Y%m%d_%H%M)
           esphome compile examples/full.yaml
           mv examples/.esphome/build/rotex/.pioenvs/rotex/firmware.factory.bin examples/.esphome/build/rotex/.pioenvs/rotex/rotex.factory-gpios-tx05-rx06_${BRANCH_NAME}_${DATE}.bin  
 
