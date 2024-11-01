@@ -120,7 +120,7 @@ Damit wird der Installations- und Konfigurationsprozess effizienter gestaltet, d
 ## Abschluss
 
 Die Installation ist nun abgeschlossen, und du kannst den ESP32 gemäß den Schaubildern mit der Rotex/Daikin-Anlage verbinden.
-- Überprüfe die CAN-ID und die Pins, die in der Konfigurationsdatei angegeben sind, und passe sie gegebenenfalls an die tatsächliche Hardware an.
+
 
 **Hinweis**: Weitere Sensoren oder Steuerungen können einfach durch das Hinzufügen neuer Einträge in der ESPHome yaml-Konfiguration ergänzt werden.
 
