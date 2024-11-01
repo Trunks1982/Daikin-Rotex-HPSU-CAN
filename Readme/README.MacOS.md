@@ -11,7 +11,7 @@ Diese Anleitung hilft dir, eine Python-virtuelle Umgebung zu erstellen, ESPHome 
 1. Du lädst dir die Datei von https://github.com/Trunks1982/Daikin-Rotex-HPSU-CAN/tree/dev/Install%20Scripte%20EspHome auf deinen MAC herunter.
 2. Du öffnest das Terminal Programm und gehst in das Verzeichnis in dem du das Script heruntergeladen hast, danach führst du den Befehl
    ```
-   sudo bash ./install_esphome_mac.sh
+   bash ./install_esphome_mac.sh
    ```
    aus.
 3. Jetzt sollte der Installationsvorgang automatisch ausgeführt werden. Es kann eine weile dauern bis alles installiert ist.
