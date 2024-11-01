@@ -91,7 +91,7 @@ Die Installation ist nun abgeschlossen, und das System kann nach den Schaubild *
 <br>  
 
 
-Wer Abtauprobleme hat, kann das neue Feature "Defrost" direkt über den ESP nutzen. So wird max 0.7 Grad Warmwasser aus dem Sepicher verbraucht.
+Wer Abtauprobleme hat, kann das neue Feature "Defrost" direkt über den ESP nutzen. So wird max 0.7 Grad Warmwasser aus dem Speicher verbraucht.
 
 
 Getestet mit: 
