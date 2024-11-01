@@ -1,0 +1,39 @@
+name: Compile ESPHome Binary
+
+on:
+  push:
+    branches:
+      - main
+      - dev
+    paths:
+      - 'examples/full.yaml'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'
+
+      - name: Install ESPHome
+        run: |
+          python -m pip install esphome
+
+      - name: Compile ESPHome binary
+        run: |
+          BRANCH_NAME=$(echo ${GITHUB_REF#refs/heads/}) 
+          DATE=$(date +%Y%m%d_%H%M)
+          esphome compile examples/full.yaml
+          mv examples/.esphome/build/rotex/.pioenvs/rotex/firmware.bin build/output/rotex.factory-gpios-tx05-rx06_${BRANCH_NAME}_${DATE}.bin 
+
+      - name: Archive compiled binary
+        uses: actions/upload-artifact@v2
+        with:
+          name: compiled-binary
+          path: build/output/rotex.factory-gpios-tx05-rx06_${BRANCH_NAME}_${DATE}.bin
