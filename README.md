@@ -24,20 +24,40 @@ Die Verwendung von Daikin-Rotex-HPSU-CAN kann potenziell Ihr Heizsystem beschäd
 Bitte beachten Sie, dass durch die Verwendung von Daikin-Rotex-HPSU-CAN möglicherweise Ihre Garantie sowie der Support durch den Hersteller erlischt!
 
 # Installationsanleitung (Standalone):
-1. Du benötigst um den ESP32 zu flashen einmal den Browser Google Chrome (Safari und Firefox werden nicht unterstützt). Dann benötigst du die Datei **rotex.factory-gpios-tx05-rx06.bin** aus dem Ordner .bin.
-2. Du öffnest dann die Website https://web.esphome.io und verbindest den ESP32 mittels USB-C mit dem PC. Nach dem verbinden klickst du auf der Website auf "Connect". Danach öffnet sich ein Fenster wo du die USB-Serial Schnitstelle auswählst.
-3. Danach öffnet sich ein neues Fenster auf der Website wo du auf "Installieren" klickst.
-4. Jetzt klickst du auf "Datei auswählen" und wählst die vorher runtergeladene Rotex-Factory.bin aus und klickst auf "Installieren". Dieser Vorgang benötigt ca 2min.
-5. Nach erfolgreicher Installation startest du den ESP neu und wartest ca 1-2 min, danach sollte sich ein "Rotex Fallback Hotspot" vom ESP32 aufbauen.
-6. Jetzt verbindest du dich mit dem ESP32 mittels WLAN und gibst das "Passwort H3jGqANSa7aL" ein.
-7. Im Browser offnest du die Seite http://192.168.4.1 oder http://rotex.local, wo du deine WLAN SSID und das Passwort für dein WLAN abgefragt wird. Hier trägst du jetzt deine Zugangsdaten für dein WLAN ein.
-8. Nach erfolgreicher Verbindung deines ESP32 mit dem WLAN sollte dieser über http://rotex.local erreichbar sein. Wenn nicht schau bitte auf deinem Router nach der richtigen IP Adresse.
-9. Wen du jetzt keine weitere Homeautomatisierungssoftware benutzt, bist du jetzt mit der Installation fertig und kannst den ESP32 nach den Schaubild **Pinbelegung GPIO 5 und 6 (Bin Datei)** mit der Rotex/Daikin-Anlage verbunden werden.
-<br><br>
+
+### Schritt 1: Vorbereitung
+
+1. **Browser:** Verwende **Google Chrome** (Safari und Firefox werden nicht unterstützt).
+2. **Firmware:** Lade die Datei `rotex.factory-tx05-rx06.bin` aus dem Ordner `.bin` herunter.
+
+### Schritt 2: ESP32 flashen
+
+1. Öffne die Webseite [https://web.esphome.io](https://web.esphome.io).
+2. Verbinde den ESP32 per USB-C-Kabel mit deinem PC.
+3. Klicke auf der Webseite auf „**Connect**“ und wähle im erscheinenden Fenster die USB-Serial-Schnittstelle aus.
+4. Klicke anschließend auf „**Installieren**“.
+5. Wähle die heruntergeladene Datei `rotex.factory-tx05-rx06.bin` aus und klicke erneut auf „**Installieren**“. Der Vorgang dauert etwa 2 Minuten.
+
+### Schritt 3: WLAN-Verbindung des ESP32 konfigurieren
+
+1. Starte den ESP32 neu und warte ca. 1–2 Minuten, bis der „Rotex Fallback Hotspot“ vom ESP32 erstellt wird.
+2. Verbinde dich mit dem Hotspot (Passwort: `H3jGqANSa7aL`).
+3. Öffne die Webseite [http://192.168.4.1](http://192.168.4.1) oder [http://rotex.local](http://rotex.local) im Browser.
+4. Gib deine WLAN-SSID und dein WLAN-Passwort ein, um den ESP32 mit deinem Netzwerk zu verbinden.
+
+### Schritt 4: Prüfung der Netzwerkverbindung
+
+- Der ESP32 sollte nun über [http://rotex.local](http://rotex.local) erreichbar sein.  
+- Falls dies nicht funktioniert, überprüfe bitte die IP-Adresse des ESP32 in deinem Router.
+
+## Abschluss
+
+Die Installation ist nun abgeschlossen, und das System kann nach den Schaubild **Pinbelegung GPIO 5 und 6 (Bin Datei)** mit der Rotex/Daikin-Anlage verbunden werden.
+
 # :sparkles: Congratulation! :sparkles:
 
 
-
+<br><br>
 
 ## Features:
 
@@ -50,7 +70,7 @@ Bitte beachten Sie, dass durch die Verwendung von Daikin-Rotex-HPSU-CAN möglich
 <br>  
 
 
-Wer Abtau-Probleme hat, kann das neue Feature "Defrost" direkt über den ESP nutzen.So wird max 0.7 Grad Warmwasser aus dem Sepicher verbraucht.
+Wer Abtauprobleme hat, kann das neue Feature "Defrost" direkt über den ESP nutzen. So wird max 0.7 Grad Warmwasser aus dem Sepicher verbraucht.
 
 
 Getestet mit: 
@@ -59,7 +79,7 @@ Getestet mit:
 - Dakin ECH2O (bis 01/2022)
 
 
-## Pinbelegung GPIO 47 und 48 (Beispiel)
+## Pinbelegung GPIO 47 und 48 (yaml)
 
 ![ESP32-S3toCAN](https://github.com/Trunks1982/Daikin-Rotex-HPSU-CAN/assets/62701386/40b1881a-b7f5-40b5-a2d7-678ee19299d2)
 
@@ -70,6 +90,7 @@ Getestet mit:
 ## Pin Belegung an der Rotex HPSU
 
 ![Rotex CAN Anschluss](https://github.com/Trunks1982/Daikin-Rotex-HPSU-CAN/assets/62701386/05c36ae7-ddc9-4a1e-8a73-4559c765f132)
+
 
 
 ## DIY Platine von (Dornieden)
