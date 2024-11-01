@@ -12,30 +12,42 @@ Diese Software wird vom Hersteller nicht unterstützt!!!!
 
 
 
-# Rotex /Daikin HPSU CAN
+# Rotex/Daikin HPSU CAN Integration
 
+Diese Lösung ermöglicht das Auslesen und Steuern der Rotex HPSU Compact über CAN-Bus, sowohl als Standalone-System als auch in Kombination mit **Home Assistant** und **ioBroker**.
 
+## Voraussetzungen
 
-Wir bieten hier eine flexible Lösung die Standalone, mit Homeassistant und Iobroker läuft,um meine Rotex HPSU Compact mittels CAN BUS auszulesen und zu steuern.
-Verwendet wird zb. ein ESP32-S3-WROOM Board (es sollte jeder ab S1 funktionieren, weil diese die 20kbits Baudrate unterstützen,
-die normalen ESP32 Wroom funktionieren nicht weil diese erst ab 50kbit funktionieren) und ein Waveshare SN65HVD230 CAN Board mit 3,3V.
-Ein ESP32 S3 mini (Zero) funktioniert auch.
+- Ein ESP32-S3-WROOM Board ab Version S1 (Modelle ab S1 unterstützen die benötigte Baudrate von 20 kbit/s; die Standard-ESP32-WROOM-Modelle unterstützen nur 50 kbit/s) oder alternativ ein ESP32-S3 Mini (Zero).
+- Ein **Waveshare SN65HVD230 CAN-Board** mit 3,3V.
 
-## Installationsanleitung:
-1. Du benötigst um den ESP32 zu flashen einmal den Browser Google Chrome (Safari und Firefox werden nicht unterstützt). Dann benötigst du die Datei Rotex-Factory.bin aus dem Ordner .bin.
-2. Du öffnest dann die Website https://web.esphome.io und verbindest den ESP32 mittels USB-C mit dem PC. Nach dem verbinden klickst du auf der Website auf "Connect". Danach öffnet sich ein Fenster wo du die USB-Serial Schnitstelle auswählst.
-3. Danach öffnet sich ein neues Fenster auf der Website wo du auf "Installieren" klickst.
-4. Jetzt klickst du auf "Datei auswählen" und wählst die vorher runtergeladene Rotex-Factory.bin aus und klickst auf "Installieren". Dieser Vorgang benötigt ca 2min.
-5. Nach erfolgreicher Installation startest du den ESP neu und wartest ca 1-2 min, danach sollte sich ein "Rotex Fallback Hotspot" vom ESP32 aufbauen.
-6. Jetzt verbindest du dich mit dem ESP32 mittels WLAN und gibst das "Passwort H3jGqANSa7aL" ein.
-7. Im Browser offnest du die Seite http://192.168.4.1 oder http://rotex.local, wo du deine WLAN SSID und das Passwort für dein WLAN abgefragt wird. Hier trägst du jetzt deine Zugangsdaten für dein WLAN ein.
-8. Nach erfolgreicher Verbindung deines ESP32 mit dem WLAN sollte dieser über http://rotex.local erreichbar sein. Wenn nicht schau bitte auf deinem Router nach der richtigen IP Adresse.
-9. Wen du jetzt keine weitere Homeautomatisierungssoftware benutzt, bist du jetzt mit der Installation fertig und kannst den ESP32 nach den Schaubildern an die Rotex / Daikin anschliessen.
-10. Für eine Benutzung mit Home Assistant sollte das Addon ESPHome installiert werden, um in der secret.yaml Datei noch:<br>
-    api_encryption_key: "IQlCgJuBZRG216PW71elFReuWeojcwsP9zUyY1xCJTg="<br>
-    einzutragen. Die Datei ist unter ESPhome zufinden. Hier für würde ich zb. den File Editor verwenden.
-13. Wenn du eine Homeautomatisierungssoftware zb. Home Assistant benutzt, kannst du jetzt den ESP32 verbinden. Dieser sollte von Home Assistant automatisch gefunden werden.
-<br><br>
+## Installationsanleitung (Standalone)
+
+### Schritt 1: Vorbereitungen
+
+1. **Browser:** Verwende **Google Chrome** (Safari und Firefox werden nicht unterstützt).
+2. **Firmware:** Lade die Datei `Rotex-Factory.bin` aus dem Ordner `.bin` herunter.
+
+### Schritt 2: ESP32 flashen
+
+1. Öffne die Webseite [https://web.esphome.io](https://web.esphome.io).
+2. Verbinde den ESP32 per USB-C-Kabel mit deinem PC.
+3. Klicke auf der Webseite auf „**Connect**“ und wähle im erscheinenden Fenster die USB-Serial-Schnittstelle aus.
+4. Klicke anschließend auf „**Installieren**“.
+5. Wähle die heruntergeladene Datei `Rotex-Factory.bin` aus und klicke erneut auf „**Installieren**“. Der Vorgang dauert etwa 2 Minuten.
+
+### Schritt 3: WLAN-Verbindung des ESP32 konfigurieren
+
+1. Starte den ESP32 neu und warte ca. 1–2 Minuten, bis der „Rotex Fallback Hotspot“ vom ESP32 erstellt wird.
+2. Verbinde dich mit dem Hotspot (Passwort: `H3jGqANSa7aL`).
+3. Öffne die Webseite [http://192.168.4.1](http://192.168.4.1) oder [http://rotex.local](http://rotex.local) im Browser.
+4. Gib deine WLAN-SSID und dein WLAN-Passwort ein, um den ESP32 mit deinem Netzwerk zu verbinden.
+
+### Schritt 4: Prüfung der Netzwerkverbindung
+
+- Der ESP32 sollte nun über [http://rotex.local](http://rotex.local) erreichbar sein.  
+- Falls dies nicht funktioniert, überprüfe bitte die IP-Adresse des ESP32 in deinem Router.
+
 # :sparkles: Congratulation! :sparkles:
 
 
