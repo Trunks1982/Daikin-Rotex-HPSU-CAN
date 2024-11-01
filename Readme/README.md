@@ -142,7 +142,7 @@ Um das ESPHome Dashboard zu starten, führe den folgenden Befehl im Terminal aus
 esphome dashboard ~/esphome_projects
 ```
 
-> **Hinweis:** Ersetze `~/esphome_projects` durch den Pfad zu dem Verzeichnis, in dem deine ESPHome YAML-Dateien gespeichert sind. 
+> **Hinweis:** Ersetze `~/esphome_projects` durch den Pfad zu dem Verzeichnis, in dem deine ESPHome YAML-Dateien gespeichert werden sollen.
 
 Nach dem Ausführen des obigen Befehls sollte das Terminal dir eine Adresse anzeigen, typischerweise `http://localhost:6052`. Öffne einen Webbrowser und gehe zu dieser URL:
 
@@ -152,100 +152,93 @@ http://localhost:6052
 
 ### 4.1 Das Dashboard verwenden
 
-Im Dashboard kannst du:
-- Neue Konfigurationen erstellen.
-- Vorhandene Konfigurationen bearbeiten.
-- Geräte flashen, die mit deinem Computer verbunden sind.
-- Statusberichte über deine Geräte einsehen.
+1. **Neues Projekt erstellen:**
+   - Klicke im Dashboard auf "New Device".
+   - Gib einen Namen für dein Gerät ein, z. B. `rotex_hpsu`.
+   - Wähle `ESP32` als Plattform aus und klicke auf "Continue".
 
-## 5. Konfigurationsdatei für den ESP32 erstellen
+2. **Konfigurationsdatei für den ESP32 erstellen:**
+   - Das Dashboard öffnet nun einen YAML-Editor, in dem du die Konfiguration für dein Gerät hinzufügen kannst.
+   - Füge den folgenden YAML-Inhalt ein, um die WLAN-Zugangsdaten, API-Schlüssel und CAN-Bus-Konfiguration zu definieren:
 
-Erstelle eine neue Datei für die ESPHome-Konfiguration, z. B. `rotex_hpsu.yaml`, mit folgendem Inhalt. Diese Datei enthält die WLAN-Zugangsdaten, API-Schlüssel und CAN-Bus-Konfiguration:
+   ```yaml
+   esphome:
+     name: rotex_hpsu
 
-```yaml
-esphome:
-  name: rotex_hpsu
+   esp32:
+     board: esp32dev
 
-esp32:
-  board: esp32dev
+   wifi:
+     ssid: "Dein_WLAN_Name"
+     password: "Dein_WLAN_Passwort"
+     manual_ip:
+       static_ip: 192.168.1.50  # Beispiel-IP für den ESP32
+       gateway: 192.168.1.1
+       subnet: 255.255.255.0
 
-wifi:
-  ssid: "Dein_WLAN_Name"
-  password: "Dein_WLAN_Passwort"
-  manual_ip:
-    static_ip: 192.168.1.50  # Beispiel-IP für den ESP32
-    gateway: 192.168.1.1
-    subnet: 255.255.255.0
+   api:
+     encryption:
+       key: "IQlCgJuBZRG216PW71elFReuWeojcwsP9zUyY1xCJTg="
 
-api:
-  encryption:
-    key: "IQlCgJuBZRG216PW71elFReuWeojcwsP9zUyY1xCJTg="
+   ota:
 
-ota:
+   # CAN-Bus Konfiguration
+   canbus:
+     - platform: sn65hvd230
+       rx_pin: GPIO3  # Passenden Pin des ESP32 eintragen
+       tx_pin: GPIO1  # Passenden Pin des ESP32 eintragen
+       baud_rate: 20000
 
-# CAN-Bus Konfiguration
-canbus:
-  - platform: sn65hvd230
-    rx_pin: GPIO3  # Passenden Pin des ESP32 eintragen
-    tx_pin: GPIO1  # Passenden Pin des ESP32 eintragen
-    baud_rate: 20000
+   sensor:
+     - platform: canbus
+       name: "Temperatur Sensor"
+       id: temp_sensor
+       can_id: 0x100  # Beispiel CAN-ID, anpassen falls nötig
+       filters:
+         - multiply: 0.1
+   ```
 
-sensor:
-  - platform: canbus
-    name: "Temperatur Sensor"
-    id: temp_sensor
-    can_id: 0x100  # Beispiel CAN-ID, anpassen falls nötig
-    filters:
-      - multiply: 0.1
-```
+   > **Hinweis:** Ersetze `"Dein_WLAN_Name"` und `"Dein_WLAN_Passwort"` durch die Zugangsdaten deines WLANs. Passe auch die `static_ip` und die GPIO-Pins für RX und TX an dein Setup an.
 
-> **Hinweis:** Ersetze `"Dein_WLAN_Name"` und `"Dein_WLAN_Passwort"` durch die Zugangsdaten deines WLANs. Passe auch die `static_ip` und die GPIO-Pins für RX und TX an dein Setup an.
+3. **secrets.yaml erstellen:**
+   - Klicke im Dashboard auf den „Editor“ und erstelle eine Datei namens `secrets.yaml`.
+   - Füge die folgenden Inhalte hinzu:
 
-## 6. secrets.yaml erstellen
+   ```yaml
+   wifi_ssid: "Dein_WLAN_Name"
+   wifi_password: "Dein_WLAN_Passwort"
+   api_encryption_key: "IQlCgJuBZRG216PW71elFReuWeojcwsP9zUyY1xCJTg="
+   ```
 
-Vor dem Flashen des ESP32 musst du auch eine `secrets.yaml`-Datei erstellen. Diese Datei enthält sensible Informationen wie WLAN-Passwörter und API-Schlüssel.
+   > **Hinweis:** Ersetze die Werte entsprechend mit deinen tatsächlichen WLAN-Zugangsdaten und dem API-Schlüssel.
 
-Erstelle eine neue Datei namens `secrets.yaml` im selben Verzeichnis wie die `rotex_hpsu.yaml`-Datei und füge folgende Inhalte hinzu:
+   - Aktualisiere die `rotex_hpsu.yaml`-Datei, um die Werte aus der `secrets.yaml`-Datei zu verwenden:
 
-```yaml
-wifi_ssid: "Dein_WLAN_Name"
-wifi_password: "Dein_WLAN_Passwort"
-api_encryption_key: "IQlCgJuBZRG216PW71elFReuWeojcwsP9zUyY1xCJTg="
-```
+   ```yaml
+   wifi:
+     ssid: !secret wifi_ssid
+     password: !secret wifi_password
 
-> **Hinweis:** Ersetze die Werte entsprechend mit deinen tatsächlichen WLAN-Zugangsdaten und dem API-Schlüssel.
+   api:
+     encryption:
+       key: !secret api_encryption_key
+   ```
 
-Aktualisiere die `rotex_hpsu.yaml`-Datei, um die Werte aus der `secrets.yaml`-Datei zu verwenden:
+4. **Gerät flashen:**
+   - Verbinde den ESP32 per USB mit deinem Mac.
+   - Klicke im Dashboard auf die Schaltfläche „Install“ neben deinem Gerät.
+   - Wähle „Plugged in via USB“ und dann den entsprechenden USB-Port für dein Gerät aus.
+   - Klicke auf „Flash“, um den ESP32 zu flashen.
 
-```yaml
-wifi:
-  ssid: !secret wifi_ssid
-  password: !secret wifi_password
+   Der Flashvorgang dauert in der Regel 1–2 Minuten. Nach dem Flashen sollte sich der ESP32 automatisch mit deinem WLAN verbinden und online gehen.
 
-api:
-  encryption:
-    key: !secret api_encryption_key
-```
-
-## 7. ESP32 flashen
-
-Verbinde den ESP32 per USB mit deinem Mac und führe im Terminal den folgenden Befehl aus, um ESPHome auf den ESP32 zu flashen:
-
-```bash
-esphome run rotex_hpsu.yaml
-```
-
-ESPHome wird den angeschlossenen ESP32 erkennen und eine Verbindung herstellen. Wähle den USB-Port deines ESP32, wenn du dazu aufgefordert wirst. Der Flashvorgang dauert in der Regel 1–2 Minuten.
-
-Nach dem Flashen sollte sich der ESP32 automatisch mit deinem WLAN verbinden und online gehen.
-
-## 8. Den ESP32 in Home Assistant einbinden
+## 5. Den ESP32 in Home Assistant einbinden
 
 1. Öffne **Home Assistant** und gehe zu **Einstellungen > Geräte & Dienste**.
 2. Der ESP32 sollte als neues Gerät (`rotex_hpsu`) erscheinen und lässt sich direkt zu Home Assistant hinzufügen.
 3. Überprüfe in Home Assistant, ob die Sensoren und Steuerungen vom ESP32 korrekt angezeigt werden und Daten empfangen.
 
-## 9. Beenden der virtuellen Umgebung
+## 6. Beenden der virtuellen Umgebung
 
 Wenn du mit der Arbeit in der virtuellen Umgebung fertig bist, kannst du sie deaktivieren:
 
@@ -257,20 +250,9 @@ Damit kehrst du zum normalen Terminal-Modus zurück.
 
 ## Zukünftige Updates und Anpassungen
 
-Um den ESP32 erneut zu flashen oder die Konfiguration zu ändern, aktiviere zuerst die virtuelle Umgebung wieder:
-
-```bash
-source ~/esphome_venv/bin/activate
-```
-
-Bearbeite die YAML-Datei für neue Anpassungen und flashe das Gerät erneut:
-
-```bash
-esphome run rotex_hpsu.yaml
-```
+Um den ESP32 erneut zu flashen oder die Konfiguration zu ändern, starte das ESPHome Dashboard erneut und lade deine Konfigurationsdatei. Nach Änderungen kannst du einfach den Flash-Vorgang erneut starten.
 
 Diese Anleitung sollte dir helfen, ESPHome in einer virtuellen Umgebung auf macOS einzurichten, das Dashboard zu nutzen, den ESP32 zu flashen und ihn mit Home Assistant zu verbinden.
-
 
 ## Abschluss
 
