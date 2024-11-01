@@ -2,7 +2,7 @@
 [![de](https://img.shields.io/badge/lang-de-blue.svg)](README.md)
 [![en](https://img.shields.io/badge/lang-en-red.svg)](README.en.md) 
 
-# Rotex /Daikin HPSU CAN
+# Rotex / Daikin HPSU CAN
 **Daikin-Rotex-HPSU-CAN** ist eine flexible Standalone-Lösung zum Auslesen und Steuern von Rotex/Daikin Luftwärmepumpen über den CAN-Bus.
 Die Steuerung und der Datenzugriff erfolgen wahlweise über den integrierten Webserver oder bequem über Home Assistant bzw. ioBroker.
 
@@ -12,11 +12,18 @@ Eine Übersicht weiterer Varianten und deren unterstützte Bitrate findest du in
 
 Zusätzlich ist ein kompatibler **CAN-Transceiver** erforderlich, wie der **Waveshare SN65HVD230** (3,3V).
 
-## WEBUI vom ESP:
-![Bildschirmfoto 2024-09-17 um 13 13 06](https://github.com/user-attachments/assets/8bb5ca8e-323f-45d1-ab4b-a30f185a6ffc)
+## Ansicht Homeassistant - Dashboard
+[![Bild 1](images/dashboard-thumb.png)](images/dashboard.png)
 
-## Ansicht Homeassistant:
-![Bildschirmfoto 2024-04-01 um 01 37 19](https://github.com/Trunks1982/Daikin-Rotex-HPSU-CAN/assets/62701386/d9c1d703-ac4a-4466-97e3-dbd6478cbed1)
+## Sensoren und Einstellungen
+[![Bild 1](images/ha-can-sensors-thumb.png)](images/ha-can-sensors.png)
+[![Bild 1](images/ha-uart-sensors-thumb.png)](images/ha-uart-sensors.png)
+[![Bild 1](images/ha-settings-thumb.png)](images/ha-settings.png)
+
+## Integrierter ESP Webserver (ehne Home Assistant nutzbar)
+
+[![Bild 1](images/esp-webserver-thumb.png)](images/esp-webserver.png)
+[![Bild 1](images/esp-webserver-settings-thumb.png)](images/esp-webserver-settings.png)
 
 ## Achtung!!
 Die Verwendung von Daikin-Rotex-HPSU-CAN kann potenziell Ihr Heizsystem beschädigen. Die Nutzung erfolgt auf eigene Verantwortung. Ich übernehme keine Haftung für entstandene Schäden.
