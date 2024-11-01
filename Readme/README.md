@@ -155,7 +155,7 @@ http://localhost:6052
 1. **Neues Projekt erstellen:**
    - Klicke im Dashboard auf "New Device".
    - Gib einen Namen für dein Gerät ein, z. B. `rotex_hpsu`.
-   - Wähle `ESP32` als Plattform aus und klicke auf "Continue".
+   - Wähle `ESP32-S3` als Plattform aus und klicke auf "Continue".
 
 2. **Konfigurationsdatei für den ESP32 erstellen:**
    - Das Dashboard öffnet nun einen YAML-Editor, in dem du die Konfiguration für dein Gerät hinzufügen kannst.
