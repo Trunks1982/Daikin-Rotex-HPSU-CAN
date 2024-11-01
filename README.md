@@ -34,7 +34,7 @@ Diese Lösung ermöglicht das Auslesen und Steuern der Rotex HPSU Compact über 
 2. Verbinde den ESP32 per USB-C-Kabel mit deinem PC.
 3. Klicke auf der Webseite auf „**Connect**“ und wähle im erscheinenden Fenster die USB-Serial-Schnittstelle aus.
 4. Klicke anschließend auf „**Installieren**“.
-5. Wähle die heruntergeladene Datei `Rotex-Factory.bin` aus und klicke erneut auf „**Installieren**“. Der Vorgang dauert etwa 2 Minuten.
+5. Wähle die heruntergeladene Datei `rotex.factory-tx05-rx06.bin` aus und klicke erneut auf „**Installieren**“. Der Vorgang dauert etwa 2 Minuten.
 
 ### Schritt 3: WLAN-Verbindung des ESP32 konfigurieren
 
@@ -48,13 +48,14 @@ Diese Lösung ermöglicht das Auslesen und Steuern der Rotex HPSU Compact über 
 - Der ESP32 sollte nun über [http://rotex.local](http://rotex.local) erreichbar sein.  
 - Falls dies nicht funktioniert, überprüfe bitte die IP-Adresse des ESP32 in deinem Router.
 
+## Abschluss
+
+Die Installation ist nun abgeschlossen, und das System kann nach den Schaubild **Pinbelegung GPIO 5 und 6 (Bin Datei)** mit der Rotex/Daikin-Anlage verbunden werden.
+
 # :sparkles: Congratulation! :sparkles:
 
 
 <br><br>
-## Updaten des ESP32:
-Die Rotex.bin Datei dient zum vereinfachten updaten über die WEB-UI Oberfläche des ESP32.Einfach OTA Update neu Datei auswählen und update klicken fertig!!! 
-
 
 ## Features:
 
@@ -67,7 +68,7 @@ Die Rotex.bin Datei dient zum vereinfachten updaten über die WEB-UI Oberfläche
 <br>  
 
 
-Wer Abtau Probleme hat kann (demnächst) das neue Feature "Defrost" direkt über den ESP nutzen.So wird max 0.7 Grad Warmwasser aus dem Sepicher verbraucht.
+Wer Abtau Probleme hat kann das neue Feature "Defrost" direkt über den ESP nutzen.So wird max 0.7 Grad Warmwasser aus dem Sepicher verbraucht.
 
 
 Getestet mit: - Rotex HSPU Compact 508 8kw mit Rocon BM1, ROTEX HPSU compact Ultra
