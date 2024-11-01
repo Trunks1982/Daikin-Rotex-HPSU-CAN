@@ -75,8 +75,6 @@ Bitte beachten Sie, dass durch die Verwendung von Daikin-Rotex-HPSU-CAN möglich
 
 Die Installation ist nun abgeschlossen, und das System kann nach den Schaubild **Pinbelegung GPIO 5 und 6 (Bin Datei)** mit der Rotex/Daikin-Anlage verbunden werden.
 
-# :sparkles: Congratulation! :sparkles:
-
 
 # Rotex/Daikin HPSU CAN Integration mit ESPHome und Home Assistant
 
@@ -84,8 +82,6 @@ Diese Anleitung beschreibt, wie du die Rotex HPSU Compact über CAN-Bus mit eine
 
 ## Voraussetzungen
 
-- **ESP32-S3-WROOM Board** (ab Version S1, da diese die benötigte Baudrate von 20 kbit/s unterstützen) oder ein ESP32-S3 Mini (Zero).
-- **Waveshare SN65HVD230 CAN-Board** mit 3,3V.
 - **Home Assistant** mit installiertem **ESPHome Addon**.
 
 ## Schritt 1: ESPHome Addon in Home Assistant installieren
