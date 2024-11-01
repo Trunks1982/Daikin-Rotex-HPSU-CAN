@@ -6,15 +6,18 @@ Die Verwendung von Daikin-Rotex-HPSU-CAN kann potenziell Ihr Heizsystem beschäd
 
 Diese Anleitung hilft dir, eine Python-virtuelle Umgebung zu erstellen, ESPHome darin zu installieren, das Dashboard zu nutzen und ein ESP32-Gerät für die Home Assistant-Steuerung deiner Rotex/Daikin HPSU Compact einzurichten.
 
-1. Du lädst dir die Datei von https://github.com/Trunks1982/Daikin-Rotex-HPSU-CAN/tree/dev/Install%20Scripte%20EspHome auf deinen MAC herunter.
+### 1. Dashboard Installation
 
-Nach dem Ausführen des obigen Befehls sollte das Terminal dir eine Adresse anzeigen, typischerweise `http://localhost:6052`. Öffne einen Webbrowser und gehe zu dieser URL:
+1. Du lädst dir die Datei von https://github.com/Trunks1982/Daikin-Rotex-HPSU-CAN/tree/dev/Install%20Scripte%20EspHome auf deinen MAC herunter.
+2. Du öffnest das Terminal Programm und gehst in das Verzeichnis in dem du das Script heruntergeladen hast, danch führst du den Befehl "sudo bash ./install_esphome_mac.sh" aus.
+3. Jetzt sollte der Installationsvorgang automatisch ausgeführt werden. Es kann eine weile dauern bis alles installiert ist.
+4. Nach dem Ausführen des obigen Befehls sollte das Terminal dir eine Adresse anzeigen, typischerweise `http://localhost:6052`. Öffne einen Webbrowser und gehe zu dieser URL:
 
 ```
 http://localhost:6052
 ```
 
-### 2.1 Das Dashboard verwenden
+### 2 Das Dashboard verwenden
 
 1. **Neues Projekt erstellen:**
    - Klicke im Dashboard auf "New Device".
@@ -25,7 +28,6 @@ http://localhost:6052
    - Das Dashboard öffnet nun einen YAML-Editor, in dem du die Konfiguration für dein Gerät hinzufügen kannst.
    - Füge den folgenden https://github.com/Trunks1982/Daikin-Rotex-HPSU-CAN/blob/main/examples/full.yaml YAML-Inhalt ein,
 
-   
 
 3. **secrets.yaml erstellen:**
    - Klicke im Dashboard auf den „Editor“ und erstelle eine Datei namens `secrets.yaml`.
