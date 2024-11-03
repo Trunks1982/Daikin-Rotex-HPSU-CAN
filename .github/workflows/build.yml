@@ -58,10 +58,10 @@ jobs:
           cp .github/workflows/resources/secrets.yaml .
           cp examples/full.yaml .
           esphome compile full.yaml
-          mv examples/.esphome/build/rotex/.pioenvs/rotex/firmware.factory.bin examples/.esphome/build/rotex/.pioenvs/rotex/rotex.factory-gpios-tx05-rx06_${BRANCH_NAME}_${DATE}.bin  
+          mv .esphome/build/rotex/.pioenvs/rotex/firmware.factory.bin .esphome/build/rotex/.pioenvs/rotex/rotex.factory-gpios-tx05-rx06_${BRANCH_NAME}_${DATE}.bin  
 
       - name: Archive compiled binary
         uses: actions/upload-artifact@v4
         with:
           name: compiled-binary
-          path: examples/.esphome/build/rotex/.pioenvs/rotex/rotex.factory-gpios-tx05-rx06_*.bin
+          path: .esphome/build/rotex/.pioenvs/rotex/rotex.factory-gpios-tx05-rx06_*.bin
