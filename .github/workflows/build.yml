@@ -55,6 +55,7 @@ jobs:
 
       - name: Compile ESPHome binary
         run: |
+          cp .github/workflows/resources/secrets.yaml .
           esphome compile examples/full.yaml
           mv examples/.esphome/build/rotex/.pioenvs/rotex/firmware.factory.bin examples/.esphome/build/rotex/.pioenvs/rotex/rotex.factory-gpios-tx05-rx06_${BRANCH_NAME}_${DATE}.bin  
 
