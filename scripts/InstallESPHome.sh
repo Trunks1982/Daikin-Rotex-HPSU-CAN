@@ -178,10 +178,10 @@ upgrade_esphome() {
     fi
     
     # Get the current version of ESPHome
-    current_version=$(pip show esphome | grep Version | awk '{print $2}')
+    current_version=$(pip show esphome | awk '/Version/ {print $2}')
     
-    # Get the latest version of ESPHome without installing
-    latest_version=$(pip install esphome --upgrade --dry-run | awk -F' ' '/from version/{print $3; exit}')
+    # Get the latest version of ESPHome
+    latest_version=$(pip index versions esphome | awk '/Available versions/{getline; print $1; exit}')
 
     # Check if an upgrade is needed
     if [ "$current_version" != "$latest_version" ]; then
