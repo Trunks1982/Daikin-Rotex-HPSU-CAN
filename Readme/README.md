@@ -9,12 +9,12 @@ Diese Anleitung hilft dir, ESPHome auf Linux/MacOS oder Windows zu installieren,
 ### 1. Verwendung ESPHome Manager
 
 1. Du lädst dir je nach Betriebssystem diese Datei auf deinen Computer herunter.
-   - Windows: https://github.com/Trunks1982/Daikin-Rotex-HPSU-CAN/tree/dev/scripts/ManageMinicondaESPHome_Win.ps1
-   - Linux/MAC: https://github.com/Trunks1982/Daikin-Rotex-HPSU-CAN/tree/dev/scripts/ManageESPHome_Linux_MacOS.sh
+   - Windows: https://github.com/Trunks1982/Daikin-Rotex-HPSU-CAN/tree/dev/scripts/manage_esphome_win.ps1
+   - Linux/MAC: https://github.com/Trunks1982/Daikin-Rotex-HPSU-CAN/tree/dev/scripts/manage_esphome_linux_mac.sh
 
 | **Windows**                                           | **Linux/MacOS**                                   |
 |------------------------------------------------------|--------------------------------------------------|
-| In einer Admin PowerShell diesen Befehl ausführen.<br>`PowerShell -ExecutionPolicy Bypass -File "X:\Path\To\InstallMinicondaESPHome.ps1"` | In einem Terminal/Console diese Befehle ausführen.<br>`chmod +x /Path/To/ManageESPHome_Linux_MacOS.sh`<br><br>`./Path/To/ManageESPHome_Linux_MacOS.sh` |
+| In einer Admin PowerShell diesen Befehl ausführen.<br>`PowerShell -ExecutionPolicy Bypass -File "X:\Path\To\manage_esphome_win.ps1"` | In einem Terminal/Console diese Befehle ausführen.<br>`chmod +x /Path/To/manage_esphome_linux_mac.sh`<br><br>`./Path/To/manage_esphome_linux_mac.sh` |
 
 ### Folgende Funktionen bieter der ESPHome Manager:
 
@@ -53,7 +53,7 @@ http://localhost:6052
    ```
 
 4. **Gerät flashen:**
-   - Verbinde den ESP32 per USB mit deinem Mac.
+   - Verbinde den ESP32 per USB-Datenkabel mit deinem Computer. Stelle sicher, dass es sich um ein Datenkabel und nicht nur um ein Ladekabel handelt.
    - Klicke im Dashboard auf die drei Punkte bei deinem neu angelegten Gerät und wähle „Install“ aus.
    - Wähle „Plug into this computer“ und dann den entsprechenden USB-Port für dein Gerät aus.
    - Klicke auf „Flash“, um den ESP32 zu flashen.

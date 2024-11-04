@@ -62,12 +62,13 @@ function Install-Miniconda {
         try {
             Start-Process -FilePath $installerFullPath -ArgumentList "/InstallationType=JustMe", "/RegisterPython=0", "/S", "/D=$installDir" -NoNewWindow -Wait
             Remove-Item $installerFullPath -Force
-            & "$installDir\Scripts\conda.exe" init
+            & "$installDir\Scripts\conda.exe" init | Out-Null
             Start-Sleep -Seconds 2
             & "$installDir\Scripts\conda.exe" update conda -y | Out-Null
             & "$installDir\Scripts\conda.exe" install pip -y | Out-Null
-            & "$installDir\Scripts\pip.exe" install esphome | Out-Null
+            & "$installDir\Scripts\pip.exe" install esphome --no-warn-script-location | Out-Null
             Write-Host "`nMiniconda and esphome package installed successfully." -ForegroundColor Green
+            Write-Host "`n!!! PLEASE RESTART POWERSHELL CONSOLE FOR PATH CHANGES TO TAKE EFFECT !!!" -ForegroundColor Red
         } catch {
             Write-Host "Installation of Miniconda failed. Please check for errors." -ForegroundColor Red
         }
@@ -78,8 +79,15 @@ function Start-ESPHomeDashboard {
     while ($true) {
         $configDir = Read-Host -Prompt "Enter the path to your ESPHome configuration directory"
         
+        # Validate input
         if ([string]::IsNullOrWhiteSpace($configDir)) {
             Write-Host "You must enter a valid directory path. Please try again." -ForegroundColor Red
+            continue
+        }
+        
+        # Check if the path format is correct
+        if ($configDir -notmatch '^[a-zA-Z]:\\.*') {
+            Write-Host "The path format is invalid. Please use the format C:\path\to\directory." -ForegroundColor Red
             continue
         }
 
@@ -135,6 +143,7 @@ function Start-ESPHomeDashboard {
         }
     }
 }
+
 
 function Uninstall-ESPHome {
     Write-Host "Uninstalling ESPHome..." -ForegroundColor Cyan
