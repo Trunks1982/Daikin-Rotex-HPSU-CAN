@@ -47,7 +47,20 @@ check_python_installed() {
     fi
 }
 
-# Function to check if venv is installed, and install it if missing
+# Function to install Homebrew on macOS if missing
+install_homebrew() {
+    if ! command -v brew &> /dev/null; then
+        echo "Homebrew is not installed. Installing Homebrew..."
+        /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+        if [ $? -ne 0 ]; then
+            echo "Failed to install Homebrew. Please install it manually."
+            return 1
+        fi
+    fi
+    return 0
+}
+
+# Function to check if venv is installed and install it if missing
 check_venv_installed() {
     if python3 -m venv --help &> /dev/null; then
         echo "venv is available."
@@ -58,16 +71,15 @@ check_venv_installed() {
         if [ "$os_type" = "Linux" ]; then
             install_python_linux
         elif [ "$os_type" = "macOS" ]; then
-            echo "On macOS, please ensure Python 3 and venv are installed via Homebrew."
-            echo "Attempting to install Python 3 with Homebrew..."
-            if command -v brew &> /dev/null; then
-                brew install python
-                if [ $? -ne 0 ]; then
-                    echo "Failed to install Python 3 with Homebrew. Please check your Homebrew setup."
-                    return 1
-                fi
-            else
-                echo "Homebrew is not installed. Please install Homebrew and try again."
+            # Ensure Homebrew is installed
+            install_homebrew
+            if [ $? -ne 0 ]; then
+                return 1
+            fi
+            echo "Installing Python 3 with Homebrew..."
+            brew install python
+            if [ $? -ne 0 ]; then
+                echo "Failed to install Python 3 with Homebrew. Please check your Homebrew setup."
                 return 1
             fi
         else
