@@ -166,6 +166,37 @@ install_esphome() {
     fi
 }
 
+# Function to upgrade ESPHome
+upgrade_esphome() {
+    echo "Upgrading ESPHome in the virtual environment..."
+    source "$install_dir/bin/activate"
+    
+    pip install --upgrade esphome
+    if [ $? -eq 0 ]; then
+        echo "ESPHome upgraded successfully."
+    else
+        echo "Failed to upgrade ESPHome."
+    fi
+}
+
+# Function to start ESPHome Dashboard
+start_esphome_dashboard() {
+    echo "Starting ESPHome Dashboard..."
+    source "$install_dir/bin/activate"
+    esphome dashboard "$1"  # Pass the configuration directory
+}
+
+# Function to uninstall ESPHome
+uninstall_esphome() {
+    echo "Uninstalling ESPHome..."
+    if [ -d "$install_dir" ]; then
+        rm -rf "$install_dir"
+        echo "ESPHome uninstalled successfully."
+    else
+        echo "ESPHome environment not found."
+    fi
+}
+
 # Main script execution
 detect_os
 clear
