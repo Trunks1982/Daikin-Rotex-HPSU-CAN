@@ -180,11 +180,12 @@ upgrade_esphome() {
     # Get the current version of ESPHome
     current_version=$(pip show esphome | awk '/Version/ {print $2}')
 
-    # Check for outdated packages
-    outdated=$(pip list --outdated --format=freeze | grep "^esphome==")
+    # Check for outdated packages without using freeze format
+    outdated=$(pip list --outdated | grep "^esphome ")
 
     if [ -n "$outdated" ]; then
-        latest_version=$(echo "$outdated" | awk -F '==' '{print $3}')
+        # Extract the latest version from the outdated list
+        latest_version=$(echo "$outdated" | awk '{print $3}')
         echo "A new version of ESPHome is available."
         echo "Current version: $current_version"
         echo "Latest version: $latest_version"
