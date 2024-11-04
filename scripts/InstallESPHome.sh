@@ -168,14 +168,34 @@ install_esphome() {
 
 # Function to upgrade ESPHome
 upgrade_esphome() {
-    echo "Upgrading ESPHome in the virtual environment..."
+    echo "Checking for ESPHome updates in the virtual environment..."
     source "$install_dir/bin/activate"
     
-    pip install --upgrade esphome
-    if [ $? -eq 0 ]; then
-        echo "ESPHome upgraded successfully."
+    # Check if ESPHome is installed
+    if ! pip show esphome &> /dev/null; then
+        echo "ESPHome is not installed. Please install it first by choosing option 1."
+        return 1
+    fi
+    
+    # Get the current and latest version of ESPHome
+    current_version=$(pip show esphome | grep Version | awk '{print $2}')
+    latest_version=$(pip install esphome --upgrade --dry-run | grep -oP '(?<=from version ).*(?= to version)' | head -n 1)
+
+    # Check if an upgrade is needed
+    if [ "$current_version" != "$latest_version" ]; then
+        echo "A new version of ESPHome is available."
+        echo "Current version: $current_version"
+        echo "Latest version: $latest_version"
+        
+        # Perform the upgrade
+        pip install --upgrade esphome
+        if [ $? -eq 0 ]; then
+            echo "ESPHome upgraded successfully from $current_version to $latest_version."
+        else
+            echo "Failed to upgrade ESPHome."
+        fi
     else
-        echo "Failed to upgrade ESPHome."
+        echo "ESPHome is up to date (version $current_version). No upgrade necessary."
     fi
 }
 
