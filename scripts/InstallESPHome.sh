@@ -179,12 +179,12 @@ upgrade_esphome() {
     
     # Get the current version of ESPHome
     current_version=$(pip show esphome | awk '/Version/ {print $2}')
-    
-    # Get the latest version of ESPHome
-    latest_version=$(pip index versions esphome | awk '/Available versions/{getline; print $1; exit}')
 
-    # Check if an upgrade is needed
-    if [ "$current_version" != "$latest_version" ]; then
+    # Check for outdated packages
+    outdated=$(pip list --outdated --format=freeze | grep "^esphome==")
+
+    if [ -n "$outdated" ]; then
+        latest_version=$(echo "$outdated" | awk -F '==' '{print $3}')
         echo "A new version of ESPHome is available."
         echo "Current version: $current_version"
         echo "Latest version: $latest_version"
@@ -287,6 +287,8 @@ case $option in
                 else
                     echo "The specified configuration directory does not exist. Please enter a valid directory."
                 fi
+            else
+                echo "ESPHome is not installed. Please install it first by choosing option 1."
             fi
         else
             echo "Please install ESPHome first by choosing option 1."
