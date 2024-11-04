@@ -7,18 +7,24 @@ $installerFileName = "Miniconda3-latest-Windows-x86_64.exe"
 $installerFullPath = Join-Path -Path $PWD.Path -ChildPath $installerFileName  # Get full path for the installer
 
 function Check-PythonInstallation {
-    # Try to detect Python version and path
-    try {
-        $pythonVersionInfo = & python --version 2>&1
-        if ($pythonVersionInfo -match 'Python (\d+\.\d+\.\d+)') {
-            Write-Host "Python is installed: $pythonVersionInfo" -ForegroundColor Green
-            return $true
-        } else {
-            Write-Host "Python is not installed properly." -ForegroundColor Red
+    # Check if Miniconda's Python is installed
+    $pythonPath = Join-Path -Path $installDir -ChildPath "python.exe"
+    if (Test-Path $pythonPath) {
+        try {
+            $pythonVersionInfo = & $pythonPath --version 2>&1
+            if ($pythonVersionInfo -match 'Python (\d+\.\d+\.\d+)') {
+                Write-Host "Miniconda Python is installed: $pythonVersionInfo" -ForegroundColor Green
+                return $true
+            } else {
+                Write-Host "Miniconda Python is not installed properly." -ForegroundColor Red
+                return $false
+            }
+        } catch {
+            Write-Host "Miniconda Python is not installed." -ForegroundColor Red
             return $false
         }
-    } catch {
-        Write-Host "Python is not installed." -ForegroundColor Red
+    } else {
+        Write-Host "Miniconda Python is not installed." -ForegroundColor Red
         return $false
     }
 }
@@ -26,7 +32,7 @@ function Check-PythonInstallation {
 function Check-ESPHomeInstallation {
     # Check if ESPHome is installed with the detected Python environment
     try {
-        $esphomeVersion = & python -m pip show esphome | Select-String "Version:" | ForEach-Object { $_.ToString().Split(":")[1].Trim() }
+        $esphomeVersion = & "$installDir\python.exe" -m pip show esphome | Select-String "Version:" | ForEach-Object { $_.ToString().Split(":")[1].Trim() }
         if ($esphomeVersion) {
             Write-Host "ESPHome is installed. Version: $esphomeVersion" -ForegroundColor Green
             return $esphomeVersion
@@ -77,9 +83,17 @@ function Start-ESPHomeDashboard {
             continue
         }
 
-        if (-Not (Test-Path $configDir)) {
-            Write-Host "The specified configuration directory does not exist. Please enter a valid directory." -ForegroundColor Red
+        # Check if the drive exists before creating the directory
+        $driveLetter = [System.IO.Path]::GetPathRoot($configDir)
+        if (-Not (Test-Path $driveLetter)) {
+            Write-Host "The specified drive '$driveLetter' does not exist. Please enter a valid drive." -ForegroundColor Red
             continue
+        }
+
+        # Create the configuration directory if it does not exist
+        if (-Not (Test-Path $configDir)) {
+            New-Item -ItemType Directory -Path $configDir -Force | Out-Null
+            Write-Host "Created configuration directory: $configDir" -ForegroundColor Green
         }
 
         # Attempt to locate the ESPHome executable
@@ -126,7 +140,7 @@ function Uninstall-ESPHome {
     Write-Host "Uninstalling ESPHome..." -ForegroundColor Cyan
     if (Check-ESPHomeInstallation) {
         try {
-            & python -m pip uninstall esphome -y
+            & "$installDir\python.exe" -m pip uninstall esphome -y
             Write-Host "ESPHome uninstalled successfully." -ForegroundColor Green
         } catch {
             Write-Host "Failed to uninstall ESPHome." -ForegroundColor Red
@@ -177,7 +191,7 @@ function Check-ForESPHomeUpdate {
 function Upgrade-ESPHome {
     Write-Host "Upgrading ESPHome..." -ForegroundColor Cyan
     try {
-        & python -m pip install --upgrade esphome | Out-Null
+        & "$installDir\python.exe" -m pip install --upgrade esphome | Out-Null
         if (Check-ESPHomeInstallation) {
             Write-Host "ESPHome upgraded successfully." -ForegroundColor Green
         } else {
@@ -207,11 +221,11 @@ switch ($option) {
         if (Check-PythonInstallation) {
             # Python is installed, now check if ESPHome is installed
             if (Check-ESPHomeInstallation) {
-                Write-Host "Both Python and ESPHome are already installed." -ForegroundColor Green
+                Write-Host "Both Miniconda Python and ESPHome are already installed." -ForegroundColor Green
             } else {
                 Write-Host "ESPHome is not installed. Proceeding to install ESPHome using existing Python." -ForegroundColor Yellow
                 # Use existing Python environment to install ESPHome
-                & python -m pip install esphome | Out-Null
+                & "$installDir\python.exe" -m pip install esphome | Out-Null
                 if (Check-ESPHomeInstallation) {
                     Write-Host "ESPHome installed successfully." -ForegroundColor Green
                 } else {
@@ -220,7 +234,7 @@ switch ($option) {
             }
         } else {
             # Python is not installed, proceed with Miniconda installation
-            Write-Host "Python is not installed. Proceeding to install Miniconda and ESPHome." -ForegroundColor Yellow
+            Write-Host "Miniconda Python is not installed. Proceeding to install Miniconda and ESPHome." -ForegroundColor Yellow
             Install-Miniconda  # Will install Miniconda and ESPHome
         }
     }
@@ -233,7 +247,7 @@ switch ($option) {
                 Write-Host "ESPHome is not installed. Please install it first." -ForegroundColor Red
             }
         } else {
-            Write-Host "Please ensure Python is installed before starting the dashboard." -ForegroundColor Red
+            Write-Host "Please ensure Miniconda Python is installed before starting the dashboard." -ForegroundColor Red
         }
     }
     "4" {

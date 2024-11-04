@@ -282,12 +282,18 @@ case $option in
         if check_virtualenv_exists; then
             # Check if ESPHome is installed
             if check_esphome_installed; then
-                read -p "Enter the path to your ESPHome configuration directory: " config_dir
-                if [ -d "$config_dir" ]; then
-                    start_esphome_dashboard "$config_dir"
-                else
-                    echo "The specified configuration directory does not exist. Please enter a valid directory."
-                fi
+                while true; do
+                    read -p "Enter the path to your ESPHome configuration directory: " config_dir
+                    # Check if the specified directory already exists
+                    if [ -d "$config_dir" ]; then
+                        echo "The specified configuration directory already exists."
+                        break
+                    else
+                        # Attempt to create the directory
+                        mkdir -p "$config_dir" && echo "Created directory: $config_dir" && break
+                    fi
+                done
+                start_esphome_dashboard "$config_dir"
             else
                 echo "ESPHome is not installed. Please install it first by choosing option 1."
             fi
