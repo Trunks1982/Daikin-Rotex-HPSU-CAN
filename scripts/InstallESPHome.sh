@@ -47,38 +47,41 @@ check_python_installed() {
     fi
 }
 
-# Function to check if venv is installed
+# Function to check if venv is installed, and install it if missing
 check_venv_installed() {
     if python3 -m venv --help &> /dev/null; then
         echo "venv is available."
         return 0
     else
-        echo "venv module is not available. Please install it to proceed."
-        return 1
-    fi
-}
-
-# Function to install python3-venv on Debian/Ubuntu
-install_python3_venv() {
-    echo "Installing python3-venv..."
-    if command -v apt &> /dev/null; then
-        sudo apt install -y python3-venv
-        return $?
-    else
-        echo "Cannot install python3-venv. Please install it manually."
-        return 1
-    fi
-}
-
-# Function to check if python3-venv is installed on Debian/Ubuntu
-check_python3_venv_installed() {
-    if dpkg -l | grep -q python3-venv; then
-        echo "python3-venv is installed."
-        return 0
-    else
-        echo "python3-venv is not installed. Installing it now..."
-        install_python3_venv
-        return $?  # Return the result of the installation attempt
+        echo "venv module is not available. Attempting to install it..."
+        # Attempt installation based on OS
+        if [ "$os_type" = "Linux" ]; then
+            install_python_linux
+        elif [ "$os_type" = "macOS" ]; then
+            echo "On macOS, please ensure Python 3 and venv are installed via Homebrew."
+            echo "Attempting to install Python 3 with Homebrew..."
+            if command -v brew &> /dev/null; then
+                brew install python
+                if [ $? -ne 0 ]; then
+                    echo "Failed to install Python 3 with Homebrew. Please check your Homebrew setup."
+                    return 1
+                fi
+            else
+                echo "Homebrew is not installed. Please install Homebrew and try again."
+                return 1
+            fi
+        else
+            echo "Unknown OS. Cannot install venv automatically."
+            return 1
+        fi
+        # Re-check venv availability after installation
+        if python3 -m venv --help &> /dev/null; then
+            echo "venv module installed successfully."
+            return 0
+        else
+            echo "Failed to install venv module. Please install it manually."
+            return 1
+        fi
     fi
 }
 
@@ -193,13 +196,6 @@ case $option in
         # Check if venv is available
         if ! check_venv_installed; then
             exit 1
-        fi
-
-        # Check if python3-venv is installed on Debian/Ubuntu systems
-        if [ "$os_type" = "Linux" ]; then
-            if ! check_python3_venv_installed; then
-                exit 1
-            fi
         fi
 
         # Check if the virtual environment exists
