@@ -30,23 +30,6 @@ install_python_linux() {
     return 0
 }
 
-# Function to check if Python 3 is installed
-check_python_installed() {
-    if command -v python3 &> /dev/null; then
-        echo "Python 3 is installed."
-        return 0
-    else
-        echo "Python 3 is not installed. Installing Python 3..."
-        if [ "$os_type" = "Linux" ]; then
-            install_python_linux
-            return $?  # Return the result of the installation attempt
-        else
-            echo "Please install Python 3 to proceed."
-            return 1
-        fi
-    fi
-}
-
 # Function to install Homebrew on macOS if missing
 install_homebrew() {
     if ! command -v brew &> /dev/null; then
@@ -60,32 +43,62 @@ install_homebrew() {
     return 0
 }
 
-# Function to check if venv is installed and install it if missing
+# Function to install Python using Homebrew on macOS
+install_python_mac() {
+    # Ensure Homebrew is installed first
+    install_homebrew
+    if [ $? -ne 0 ]; then
+        return 1
+    fi
+
+    echo "Installing Python 3 with Homebrew..."
+    brew install python
+    if [ $? -ne 0 ]; then
+        echo "Failed to install Python 3 with Homebrew. Please check your Homebrew setup."
+        return 1
+    fi
+
+    # Add Homebrew Python to PATH
+    export PATH="$(brew --prefix python)/libexec/bin:$PATH"
+    echo "Using Homebrew Python located at $(which python3)"
+}
+
+# Function to check if Python 3 is installed
+check_python_installed() {
+    if command -v python3 &> /dev/null; then
+        echo "Python 3 is installed."
+        return 0
+    else
+        echo "Python 3 is not installed. Installing Python 3..."
+        if [ "$os_type" = "Linux" ]; then
+            install_python_linux
+            return $?  # Return the result of the installation attempt
+        elif [ "$os_type" = "macOS" ]; then
+            install_python_mac
+            return $?
+        else
+            echo "Please install Python 3 to proceed."
+            return 1
+        fi
+    fi
+}
+
+# Function to check if venv is available and install it if missing
 check_venv_installed() {
     if python3 -m venv --help &> /dev/null; then
         echo "venv is available."
         return 0
     else
         echo "venv module is not available. Attempting to install it..."
-        # Attempt installation based on OS
         if [ "$os_type" = "Linux" ]; then
             install_python_linux
         elif [ "$os_type" = "macOS" ]; then
-            # Ensure Homebrew is installed
-            install_homebrew
-            if [ $? -ne 0 ]; then
-                return 1
-            fi
-            echo "Installing Python 3 with Homebrew..."
-            brew install python
-            if [ $? -ne 0 ]; then
-                echo "Failed to install Python 3 with Homebrew. Please check your Homebrew setup."
-                return 1
-            fi
+            install_python_mac
         else
             echo "Unknown OS. Cannot install venv automatically."
             return 1
         fi
+
         # Re-check venv availability after installation
         if python3 -m venv --help &> /dev/null; then
             echo "venv module installed successfully."
@@ -150,36 +163,6 @@ install_esphome() {
         echo "ESPHome installed successfully."
     else
         echo "ESPHome installation failed."
-    fi
-}
-
-# Function to upgrade ESPHome if a new version is available
-upgrade_esphome() {
-    echo "Checking for ESPHome updates..."
-    source "$install_dir/bin/activate"
-    pip install --upgrade esphome
-    if [ $? -eq 0 ]; then
-        echo "ESPHome upgraded successfully."
-    else
-        echo "Failed to upgrade ESPHome."
-    fi
-}
-
-# Function to start ESPHome Dashboard
-start_esphome_dashboard() {
-    echo "Starting ESPHome Dashboard..."
-    source "$install_dir/bin/activate"
-    esphome dashboard "$1"  # Pass the configuration directory
-}
-
-# Function to uninstall ESPHome
-uninstall_esphome() {
-    echo "Uninstalling ESPHome..."
-    if [ -d "$install_dir" ]; then
-        rm -rf "$install_dir"
-        echo "ESPHome uninstalled successfully."
-    else
-        echo "ESPHome environment not found."
     fi
 }
 
