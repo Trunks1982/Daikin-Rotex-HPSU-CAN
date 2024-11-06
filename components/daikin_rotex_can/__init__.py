@@ -463,6 +463,30 @@ sensor_configuration = [
     },
     {
         "type": "sensor",
+        "name": "energy_cooling",
+        "device_class": DEVICE_CLASS_ENERGY_STORAGE,
+        "unit_of_measurement": UNIT_KILOWATT_HOURS,
+        "accuracy_decimals": 0,
+        "state_class": STATE_CLASS_MEASUREMENT,
+        "icon": "mdi:transmission-tower",
+        "command": "31 00 FA 06 A6 00 00",
+        "data_offset": 5,
+        "data_size": 2
+    },
+    {
+        "type": "sensor",
+        "name": "total_electrical_energy",
+        "device_class": DEVICE_CLASS_ENERGY_STORAGE,
+        "unit_of_measurement": UNIT_KILOWATT_HOURS,
+        "accuracy_decimals": 0,
+        "state_class": STATE_CLASS_MEASUREMENT,
+        "icon": "mdi:transmission-tower",
+        "command": "31 00 FA C2 FA 00 00",
+        "data_offset": 5,
+        "data_size": 2
+    },
+    {
+        "type": "sensor",
         "name": "runtime_compressor",
         "unit_of_measurement": UNIT_HOUR,
         "accuracy_decimals": 0,

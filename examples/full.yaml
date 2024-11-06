@@ -158,13 +158,16 @@ daikin_rotex_can:
       name: EHS für DHW
     ehs_for_ch:
       name: EHS fuer CH
-#Energie Kühlung
+    energy_cooling:
+      name: Energie Kühlung
     qch:
       name: Energie Heizung
     total_energy_produced:
       name: Erzeugte Energie Gesamt
     qdhw:
       name: Energie für WW
+    total_electrical_energy:
+      name: Elektrische Energie Gesamt
 #WE Typ
 #SwNr B1/U1
 #SwNr Regler
