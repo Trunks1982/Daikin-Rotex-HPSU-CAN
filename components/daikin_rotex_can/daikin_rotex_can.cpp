@@ -133,11 +133,11 @@ bool DaikinRotexCanComponent::on_custom_select(std::string const& id, uint8_t va
             if (value != 0) {
                 m_entity_manager.sendSet(p_temperature_antifreeze->get_name(), p_temperature_antifreeze->getKey(TEMPERATURE_ANTIFREEZE_OFF));
             }
-            m_optimized_defrosting.save(value);
-            return true;
         } else {
             ESP_LOGE(TAG, "on_custom_select(%s, %d) => temperature_antifreeze select is missing!", id.c_str(), value);
         }
+        m_optimized_defrosting.save(value);
+        return true;
     }
     return false;
 }
