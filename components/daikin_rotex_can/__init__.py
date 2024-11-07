@@ -1011,7 +1011,15 @@ sensor_configuration = [
         "data_size": 1,
         "handle_lambda": """
             return data[6] == 0x05;
-        """,
+        """
+    },
+    {
+        "type": "binary_sensor",
+        "name": "energy_saving_mode" ,
+        "icon": "mdi:pump",
+        "command": "31 00 FA 01 76 00 00",
+        "data_offset": 6,
+        "data_size": 1
     },
     {
         "type": "select",

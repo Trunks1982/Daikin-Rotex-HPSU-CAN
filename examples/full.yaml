@@ -173,6 +173,10 @@ daikin_rotex_can:
 #SwNr Regler
 #SwNr RTXRT
 
+# ESP custom sensors
+    energy_saving_mode:
+      name: ES mode
+
 # Betriebsart
     operating_mode:
       name: Betriebsmodus
