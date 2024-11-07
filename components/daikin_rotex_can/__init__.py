@@ -1003,6 +1003,17 @@ sensor_configuration = [
         "data_size": 1
     },
     {
+        "type": "binary_sensor",
+        "name": "external_temp_sensor" ,
+        "icon": "mdi:pump",
+        "command": "31 00 FA 09 61 00 00",
+        "data_offset": 6,
+        "data_size": 1,
+        "handle_lambda": """
+            return data[6] == 0x05;
+        """,
+    },
+    {
         "type": "select",
         "name": "hk_function" ,
         "icon": "mdi:weather-partly-cloudy",

@@ -230,6 +230,10 @@ daikin_rotex_can:
 #PWM Konfig
 #...
 #Sensor Konfig
+    external_temp_sensor:
+      name: SKonfig T-Außen
+    # SKonfig T-WW
+    # SKonfig Druck
 #AF Anspassung
 #Terminal Adresse
 #Konfig System
