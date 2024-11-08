@@ -1,0 +1,44 @@
+name: Manually Triggered Workflow with Checkboxes
+
+on:
+  workflow_dispatch:
+    inputs:
+      param1:
+        description: 'Parameter 1'
+        required: true
+        default: 'default_value'
+      param2:
+        description: 'Parameter 2'
+        required: false
+        default: 'optional_value'
+      checkbox1:
+        description: 'Checkbox 1'
+        required: true
+        type: boolean
+        default: false
+      checkbox2:
+        description: 'Checkbox 2'
+        required: false
+        type: boolean
+        default: false
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Run a script
+      run: |
+        echo "Running a script with param1=${{ github.event.inputs.param1 }} and param2=${{ github.event.inputs.param2 }}"
+        if ${{ github.event.inputs.checkbox1 }}; then
+          echo "Checkbox 1 is checked"
+        else
+          echo "Checkbox 1 is not checked"
+        fi
+        if ${{ github.event.inputs.checkbox2 }}; then
+          echo "Checkbox 2 is checked"
+        else
+          echo "Checkbox 2 is not checked"
+        fi
