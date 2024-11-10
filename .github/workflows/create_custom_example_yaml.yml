@@ -54,7 +54,7 @@ jobs:
         else
           echo "Checkbox 2 is not checked"
         fi
-        cp .github/workflows/resources/extract_block_test.py .
+        cp .github/workflows/resources/extract_external_components_block.py .
         cp examples/full.yaml .
 
         # patch full.yaml to load external components from dev
