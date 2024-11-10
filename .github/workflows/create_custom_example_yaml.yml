@@ -29,6 +29,10 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v2
 
+    - name: Install cells
+      run: |
+        python -m pip install cells
+
     - name: Run a script
       run: |
         echo "Running a script with param1=${{ github.event.inputs.param1 }} and param2=${{ github.event.inputs.param2 }}"
