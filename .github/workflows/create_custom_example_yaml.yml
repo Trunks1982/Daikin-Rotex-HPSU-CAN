@@ -37,10 +37,13 @@ jobs:
     - name: Install cells into venv
       run: |
         python3 -m pip install cells
+        echo "show location of cells"
         python3 -m pip show cells
+        echo "grep evironment variables for python"
         env | grep -i python
         ls -alh /opt/hostedtoolcache/Python/3.12.7/x64/bin
-        find /opt -name 'cels'
+        echo "get site package directories"
+        ls -alhR /opt/hostedtoolcache/Python/3.12.7/x64/lib/python3.12/site-packages
         cels version
 
     - name: Run a script
