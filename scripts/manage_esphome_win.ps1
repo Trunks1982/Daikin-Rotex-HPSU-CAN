@@ -65,6 +65,7 @@ function Install-Miniconda {
             & "$installDir\Scripts\conda.exe" init | Out-Null
             Start-Sleep -Seconds 2
             & "$installDir\Scripts\conda.exe" update conda -y | Out-Null
+            & "$installDir\Scripts\conda.exe" install git -y | Out-Null            
             & "$installDir\Scripts\conda.exe" install pip -y | Out-Null
             & "$installDir\Scripts\pip.exe" install esphome --no-warn-script-location | Out-Null
             Write-Host "`nMiniconda and esphome package installed successfully." -ForegroundColor Green
