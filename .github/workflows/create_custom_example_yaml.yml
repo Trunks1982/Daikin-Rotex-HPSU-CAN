@@ -53,9 +53,9 @@ jobs:
         if [ "${{ github.ref }}" == "refs/heads/dev" ]; then 
           echo "This step runs only on the dev branch"            
           cp .github/workflows/resources/external_components_dev.yaml .
-          sed 's/!/?/g' full.yaml # make yaml pyyaml conform
+          sed -i 's/!/?/g' full.yaml # make yaml pyyaml conform
           cels patch full.yaml external_components_dev.yaml
-          sed 's/?/!/g' full.yaml # make yaml esphome conform
+          sed -i 's/?/!/g' full.yaml # make yaml esphome conform
         else 
           echo "This step does not run on the dev branch" 
         fi
