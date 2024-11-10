@@ -11,7 +11,7 @@ with open('full.yaml', 'r') as file:
     config = yaml.safe_load(file)
 
 # Gewünschten Block extrahieren
-external_components_block = config.get('external_components')
+external_components_block = {'external_components': config.get('external_components')}
 
 
 print(yaml.safe_dump(external_components_block))
