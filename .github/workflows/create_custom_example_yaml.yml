@@ -37,6 +37,7 @@ jobs:
     - name: Install cells into venv
       run: |
         pip install cells
+        env | grep -i python
         cels version
 
     - name: Run a script
