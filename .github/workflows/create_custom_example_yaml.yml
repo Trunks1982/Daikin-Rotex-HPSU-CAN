@@ -39,7 +39,7 @@ jobs:
         pip install cells
         env | grep -i python
         ls -alh /opt/hostedtoolcache/Python/3.12.7/x64/bin
-        find / -name 'cels'
+        find /opt -name 'cels'
         cels version
 
     - name: Run a script
