@@ -36,15 +36,18 @@ jobs:
 
     - name: Install cells into venv
       run: |
-        python3 -m pip install --upgrade pip
-        python3 -m pip install cells
-        echo "show location of cells"
-        python3 -m pip show cells
-        echo "grep evironment variables for python"
-        env | grep -i python
-        ls -alh /opt/hostedtoolcache/Python/3.12.7/x64/bin
-        echo "get site package directories"
-        ls -alhR /opt/hostedtoolcache/Python/3.12.7/x64/lib/python3.12/site-packages
+      
+        wget https://files.pythonhosted.org/packages/18/82/14819c1cc67c67e909abdbd9824eb756adccd47a1dee1c846f7300716646/cels-0.3.1.tar.gz
+        python3 -m pip install cels-0.3.1.tar.gz
+        #python3 -m pip install --upgrade pip
+        #python3 -m pip install cells
+        #echo "show location of cells"
+        #python3 -m pip show cells
+        #echo "grep evironment variables for python"
+        #env | grep -i python
+        #ls -alh /opt/hostedtoolcache/Python/3.12.7/x64/bin
+        #echo "get site package directories"
+        #ls -alhR /opt/hostedtoolcache/Python/3.12.7/x64/lib/python3.12/site-packages
         cels version
 
     - name: Run a script
