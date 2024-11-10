@@ -71,4 +71,4 @@ jobs:
 
         # print path used for external components
         echo "The following external components will be used for compilation: "
-        python extract_block_test.py
+        python extract_external_components_block.py
