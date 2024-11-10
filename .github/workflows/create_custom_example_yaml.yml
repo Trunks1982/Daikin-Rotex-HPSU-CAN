@@ -36,10 +36,8 @@ jobs:
 
     - name: Install cells into venv
       run: |
-        python3 -m venv venv
-        source venv/bin/activate
-        python3 -m pip install cells
-        ls -al /usr/local/python/*/bin/ | grep cel
+        pip install cells
+        cels version
 
     - name: Run a script
       run: |
@@ -69,5 +67,4 @@ jobs:
         fi
 
         # print path used for external components
-        source venv/bin/activate
         python extract_block_test.py
