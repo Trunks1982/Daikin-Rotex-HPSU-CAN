@@ -36,7 +36,8 @@ jobs:
 
     - name: Install cells into venv
       run: |
-        pip install cells
+        python3 -m pip install cells
+        python3 -m pip show cells
         env | grep -i python
         ls -alh /opt/hostedtoolcache/Python/3.12.7/x64/bin
         find /opt -name 'cels'
