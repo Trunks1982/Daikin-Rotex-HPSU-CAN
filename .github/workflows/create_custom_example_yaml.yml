@@ -42,3 +42,19 @@ jobs:
         else
           echo "Checkbox 2 is not checked"
         fi
+        cp .github/workflows/resources/extract_block_test.py .
+        cp examples/full.yaml .
+
+        # patch full.yaml to load external components from dev
+        if [ "${{ github.ref }}" == "refs/heads/dev" ]; then 
+          echo "This step runs only on the dev branch"            
+          cp .github/workflows/resources/external_components_dev.yaml .
+          sed 's/!/?/g' full.yaml # make yaml pyyaml conform
+          cels patch full.yaml external_components_dev.yaml
+          sed 's/?/!/g' full.yaml # make yaml esphome conform
+        else 
+          echo "This step does not run on the dev branch" 
+        fi
+
+        # print path used for external components
+        python extract_block_test.py
