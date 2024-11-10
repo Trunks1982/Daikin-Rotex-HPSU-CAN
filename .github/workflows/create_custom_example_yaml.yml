@@ -34,8 +34,10 @@ jobs:
       with:
         python-version: '3.x'
 
-    - name: Install cells
+    - name: Install cells into venv
       run: |
+        python3 -m venv venv
+        source venv/bin/activate
         python3 -m pip install cells
 
     - name: Run a script
@@ -66,4 +68,5 @@ jobs:
         fi
 
         # print path used for external components
+        source venv/bin/activate
         python extract_block_test.py
