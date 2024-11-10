@@ -16,13 +16,13 @@ install_dir="$HOME/esphome_env"
 install_python_linux() {
     echo "Installing Python 3 and necessary packages..."
     if command -v apt &> /dev/null; then
-        sudo apt update && sudo apt install -y python3 python3-venv python3-pip
+        sudo apt update && sudo apt install -y python3 python3-venv python3-pip git
     elif command -v yum &> /dev/null; then
-        sudo yum install -y python3 python3-venv python3-pip
+        sudo yum install -y python3 python3-venv python3-pip git
     elif command -v dnf &> /dev/null; then
-        sudo dnf install -y python3 python3-venv python3-pip
+        sudo dnf install -y python3 python3-venv python3-pip git
     elif command -v pacman &> /dev/null; then
-        sudo pacman -Syu python python-venv python-pip
+        sudo pacman -Syu python python-venv python-pip git
     else
         echo "No known package manager found. Please install Python 3 and venv manually."
         return 1
@@ -52,15 +52,24 @@ install_python_mac() {
     fi
 
     echo "Installing Python 3 with Homebrew..."
+    # Install Python 3
     brew install python
     if [ $? -ne 0 ]; then
         echo "Failed to install Python 3 with Homebrew. Please check your Homebrew setup."
+        return 1
+    fi
+    
+    # Install Git
+    brew install git
+    if [ $? -ne 0 ]; then
+        echo "Failed to install Git with Homebrew. Please check your Homebrew setup."
         return 1
     fi
 
     # Add Homebrew Python to PATH
     export PATH="$(brew --prefix python)/libexec/bin:$PATH"
     echo "Using Homebrew Python located at $(which python3)"
+    echo "Git installed at $(which git)"
 }
 
 # Function to check if Python 3 is installed
