@@ -46,12 +46,12 @@ jobs:
           python3 -m pip install esphome
           wget https://files.pythonhosted.org/packages/18/82/14819c1cc67c67e909abdbd9824eb756adccd47a1dee1c846f7300716646/cels-0.3.1.tar.gz
           python3 -m pip install cels-0.3.1.tar.gz
-
-      - name: Compile ESPHome binary
+      
+      - name: Prepare full.yaml
         run: |
           cp examples/full.yaml .
           cp .github/workflows/resources/secrets.yaml .
-                    
+
           cp .github/workflows/src/extract_external_components_block.py .
           cp .github/workflows/src/patch_full_yaml.sh .
 
@@ -65,7 +65,9 @@ jobs:
           # print path used for external components
           echo "The following external components will be used for compilation: "
           python extract_external_components_block.py
-
+          
+      - name: Compile ESPHome binary
+        run: |    
           # compile eshphome
           esphome compile full.yaml
 
