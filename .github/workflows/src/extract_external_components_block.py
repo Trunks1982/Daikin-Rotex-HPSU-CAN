@@ -6,12 +6,11 @@ def secret_constructor(loader: yaml.SafeLoader, node: yaml.nodes.ScalarNode):
 
 yaml.SafeLoader.add_constructor('!secret', secret_constructor)
 
-# YAML-Datei einlesen
+# load yaml file
 with open('full.yaml', 'r') as file:
     config = yaml.safe_load(file)
 
-# Gewünschten Block extrahieren
+# get block external components and load it into a new dict
 external_components_block = {'external_components': config.get('external_components')}
-
 
 print(yaml.safe_dump(external_components_block))

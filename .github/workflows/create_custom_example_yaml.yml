@@ -56,13 +56,12 @@ jobs:
         cp .github/workflows/src/extract_external_components_block.py .
         cp examples/full.yaml .
         cp .github/workflows/src/patch_full_yaml.sh .
-        echo "path of build script: `pwd`"
-        # patch full.yaml to load external components from dev
+        
         if [ "${{ github.ref }}" == "refs/heads/dev" ]; then 
-          echo "This step runs only on the dev branch"            
+          echo "dev branch run, take external components from dev branch"            
           source patch_full_yaml.sh
         else 
-          echo "This step does not run on the dev branch" 
+          echo "not dev branch run, take external components from main" 
         fi
 
         # print path used for external components
