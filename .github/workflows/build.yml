@@ -48,7 +48,7 @@ jobs:
           echo "WIFI_SSID=${{ secrets.WIFI_SSID }}" >> $GITHUB_ENV
           echo "WIFI_PASSWORD=${{ secrets.WIFI_PASSWORD }}" >> $GITHUB_ENV
           
-      - name: Install ESPHome and cells
+      - name: Install ESPHome and cels
         run: |
           python3 -m pip install esphome
 
