@@ -11,6 +11,7 @@ import subprocess
 import logging
 import os
 
+
 _LOGGER = logging.getLogger(__name__)
 
 daikin_rotex_can_ns = cg.esphome_ns.namespace('daikin_rotex_can')
