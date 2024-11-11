@@ -8,6 +8,7 @@ on:
     paths:
       - 'examples/full.yaml'
       - 'components/**'
+  workflow_dispatch:
 
 jobs:
   build:
@@ -47,15 +48,39 @@ jobs:
           echo "WIFI_SSID=${{ secrets.WIFI_SSID }}" >> $GITHUB_ENV
           echo "WIFI_PASSWORD=${{ secrets.WIFI_PASSWORD }}" >> $GITHUB_ENV
           
-      - name: Install ESPHome
+      - name: Install ESPHome and cels
         run: |
-          python -m pip install esphome
+          python3 -m pip install esphome
+
+          # install latest version of cels by using wget, otherwise version 0.1.0 would be installed, which is buggy
+          wget https://files.pythonhosted.org/packages/18/82/14819c1cc67c67e909abdbd9824eb756adccd47a1dee1c846f7300716646/cels-0.3.1.tar.gz
+          python3 -m pip install cels-0.3.1.tar.gz
+
+      - name: Prepare full.yaml
+        run: |
+          cp examples/full.yaml .
+          cp .github/workflows/resources/secrets.yaml .
+
+          cp .github/workflows/src/extract_external_components_block.py .
+          cp .github/workflows/src/patch_full_yaml.sh .
+
+          if [ "${{ github.ref }}" == "refs/heads/dev" ]; then 
+            echo "dev branch run, take external components from dev branch"            
+            source patch_full_yaml.sh
+          else 
+            echo "not dev branch run, take external components from main" 
+          fi
+
+          # print path used for external components
+          echo "The following external components will be used for compilation: "
+          python extract_external_components_block.py
 
       - name: Compile ESPHome binary
         run: |
-          cp .github/workflows/resources/secrets.yaml .
-          cp examples/full.yaml .
+          # compile eshphome
           esphome compile full.yaml
+
+          # rename file
           mv .esphome/build/rotex/.pioenvs/rotex/firmware.factory.bin .esphome/build/rotex/.pioenvs/rotex/rotex.factory-gpios-tx05-rx06.bin  
 
       - name: Archive compiled binary

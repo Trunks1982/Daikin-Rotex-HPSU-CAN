@@ -1,0 +1,6 @@
+external_components:   # Use this block instead to use the development branch
+  - source:
+      type: git
+      url: https://github.com/Trunks1982/Daikin-Rotex-HPSU-CAN.git
+      ref: dev
+    refresh: 0s
