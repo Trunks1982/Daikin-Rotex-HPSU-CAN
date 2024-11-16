@@ -28,6 +28,7 @@ public:
         uint8_t data_offset;
         uint8_t data_size;
         float divider;
+        bool isSigned;
         std::string update_entity;
         uint16_t update_interval;
         THandleFunc handle_lambda;
@@ -43,6 +44,7 @@ public:
         , data_offset(0)
         , data_size(0)
         , divider(1)
+        , isSigned(false)
         , update_entity({})
         , update_interval(1000)
         , handle_lambda([](TMessage const&){ return 0; })
@@ -60,6 +62,7 @@ public:
             uint8_t _data_offset,
             uint8_t _data_size,
             float _divider,
+            bool _isSigned,
             std::string const& _update_entity,
             uint16_t _update_interval,
             THandleFunc _handle_lambda,
@@ -74,6 +77,7 @@ public:
         , data_offset(_data_offset)
         , data_size(_data_size)
         , divider(_divider)
+        , isSigned(_isSigned)
         , update_entity(_update_entity)
         , update_interval(_update_interval)
         , handle_lambda(_handle_lambda)

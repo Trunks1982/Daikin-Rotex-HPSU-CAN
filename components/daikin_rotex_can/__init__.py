@@ -274,6 +274,7 @@ sensor_configuration = [
         "data_offset": 5,
         "data_size": 2,
         "divider": 10.0,
+        "signed": True,
         "range": [-30, 90]
     },
     {
@@ -1293,8 +1294,8 @@ sensor_configuration = [
     }
 ]
 
+CODEOWNERS = ["@wrfz"]
 DEPENDENCIES = []
-
 AUTO_LOAD = ['binary_sensor', 'button', 'number', 'sensor', 'select', 'text', 'text_sensor']
 
 CONF_CAN_ID = "canbus_id"
@@ -1561,6 +1562,7 @@ async def to_code(config):
                     sens_conf.get("data_offset", 5),
                     sens_conf.get("data_size", 1),
                     divider,
+                    sens_conf.get("signed", False),
                     sens_conf.get("update_entity", ""),
                     update_interval,
                     await handle_lambda(),
