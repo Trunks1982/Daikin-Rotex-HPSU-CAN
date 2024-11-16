@@ -146,11 +146,13 @@ void DaikinRotexCanComponent::on_betriebsart(TEntity::TVariant const& current, T
     CanSelect* p_betriebs_modus = m_entity_manager.get_select(BETRIEBS_MODUS);
     if (m_optimized_defrosting.value() && p_betriebs_modus != nullptr) {
         if (std::holds_alternative<std::string>(current)) {
-            if (p_betriebs_modus->state != "Sommer" && std::get<std::string>(current) == "Abtauen") {
+            if (std::get<std::string>(current) == "Abtauen" && p_betriebs_modus->state != "Sommer") {
                 m_entity_manager.sendSet(p_betriebs_modus->get_name(), 0x05); // Sommer
-            } else if (p_betriebs_modus->state != "Heizen" && std::get<std::string>(current) == "Heizen") {
+            } else if (std::get<std::string>(current) == "Heizen" && p_betriebs_modus->state != "Heizen") {
                 m_entity_manager.sendSet(p_betriebs_modus->get_name(), 0x03); // Heizen
-            } else if (p_betriebs_modus->state != "Heizen" && std::get<std::string>(current) == "Standby") {
+            } else if (std::get<std::string>(current) == "Standby" && p_betriebs_modus->state != "Heizen") {
+                m_entity_manager.sendSet(p_betriebs_modus->get_name(), 0x03); // Heizen
+            } else if (std::get<std::string>(current) == "Warmwasserbereitung" && std::get<std::string>(previous) == "Abtauen" && p_betriebs_modus->state != "Heizen") {
                 m_entity_manager.sendSet(p_betriebs_modus->get_name(), 0x03); // Heizen
             }
         } else {
