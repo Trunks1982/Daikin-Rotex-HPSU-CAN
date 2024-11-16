@@ -66,8 +66,6 @@ sensor:
       name: "Heap Free"
     block:
       name: "Heap Max Block"
-    loop_time:
-      name: "Loop Time"
   - platform: wifi_signal
     name: "WiFi Signal Sensor"
     update_interval: 60s
@@ -75,7 +73,10 @@ sensor:
 button:
   - platform: restart
     name: "Rotex ESP Restart"
-
+  - platform: template
+    name: Dump Partitions
+    on_press:
+      - lambda: dump_partitions();
 #switch:
 #  - platform: gpio
 #    name: Smart Grid
