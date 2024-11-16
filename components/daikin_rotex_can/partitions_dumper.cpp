@@ -4,11 +4,11 @@
 #include <iomanip>
 #include <esp_ota_ops.h>
 #include "esphome/core/log.h"
-#include "esp_partition.h"
 
 namespace esphome {
+namespace daikin_rotex_can {
 
-std::string to_hex(std::array<uint8_t, 16> const& data) {
+std::string PartitionsDumper::to_hex(std::array<uint8_t, 16> const& data) {
     std::stringstream str;
     str.setf(std::ios_base::hex, std::ios::basefield);
     str.setf(std::ios_base::uppercase);
@@ -27,7 +27,7 @@ std::string to_hex(std::array<uint8_t, 16> const& data) {
     return str.str();
 }
 
-void print_ota_partition(esp_partition_t const* partition, std::string const& partition_getter) {
+void PartitionsDumper::print_ota_partition(esp_partition_t const* partition, std::string const& partition_getter) {
   std::string label;
   esp_err_t err_state;
   esp_ota_img_states_t ota_state;
@@ -51,7 +51,7 @@ void print_ota_partition(esp_partition_t const* partition, std::string const& pa
     partition_getter.c_str(), label.c_str(), err_state, ota_state, data.c_str());
 }
 
-void dump_partitions() {
+void PartitionsDumper::dump() {
   ESP_LOGE("TEST", "esp_ota_get_app_partition_count: %d",
     esp_ota_get_app_partition_count());
 
@@ -61,4 +61,5 @@ void dump_partitions() {
   print_ota_partition(esp_ota_get_next_update_partition(nullptr), "esp_ota_get_next_update_partition");
 }
 
+}
 }

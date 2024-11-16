@@ -7,6 +7,8 @@ esphome:
             - "-fno-rtti"
         build_flags:
             - "-std=gnu++17"
+    includes:
+      - "components/daikin_rotex_can/partitions_dumper.h"
 
 esp32:
   board: esp32-s3-devkitc-1
@@ -76,7 +78,7 @@ button:
   - platform: template
     name: Dump Partitions
     on_press:
-      - lambda: dump_partitions();
+      - lambda: esphome::daikin_rotex_can::PartitionsDumper::dump();
 #switch:
 #  - platform: gpio
 #    name: Smart Grid
