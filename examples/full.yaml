@@ -1,14 +1,12 @@
 esphome:
-    name: rotex
-    friendly_name: Rotex
+    name: hpsu-can
+    friendly_name: HPSU.CAN
     platformio_options:
         build_unflags:
             - "-std=gnu++11"
             - "-fno-rtti"
         build_flags:
             - "-std=gnu++17"
-    includes:
-      - "components/daikin_rotex_can/partitions_dumper.h"
 
 esp32:
   board: esp32-s3-devkitc-1
@@ -75,10 +73,6 @@ sensor:
 button:
   - platform: restart
     name: "Rotex ESP Restart"
-  - platform: template
-    name: Dump Partitions
-    on_press:
-      - lambda: esphome::daikin_rotex_can::PartitionsDumper::dump();
 #switch:
 #  - platform: gpio
 #    name: Smart Grid
