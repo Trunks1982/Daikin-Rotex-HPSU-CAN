@@ -130,8 +130,33 @@ daikin_rotex_can:
 
 # Info
 
+#mode
     ext:
       name: Ext
+#RT
+#Pump
+#EHS
+#BPV
+    tv:
+      name: Heizkreis Vorlauf (TV)
+      update_interval: 5
+    tvbh:
+      name: Vorlauftemperatur Heizung (TVBH)
+      update_interval: 5
+    tr:
+      name: Ruecklauftemperatur Heizung
+      update_interval: 5
+#Tdhw
+    temperature_outside:  # ta
+      name: Aussentemperatur
+#V
+#TVBH2
+#TR2
+#Tdhw2
+#Tliq2
+    ta2:
+      name: TA
+#quiet
 
 #Übersicht
     water_pressure:
@@ -183,6 +208,7 @@ daikin_rotex_can:
 # Betriebsart
     operating_mode:
       name: Betriebsmodus
+      update_interval: 5
 
 # Raum Soll Tag
     target_room1_temperature:
@@ -376,13 +402,5 @@ daikin_rotex_can:
       name: Status Kompressor
     tdhw1:
       name: Warmwassertemperatur
-    temperature_outside:
-      name: Aussentemperatur
-    tr:
-      name: Ruecklauftemperatur Heizung
-    tv:
-      name: Heizkreis Vorlauf (TV)
-    tvbh:
-      name: Vorlauftemperatur Heizung (TVBH)
     target_supply_temperature:
       name: Vorlauf Soll
