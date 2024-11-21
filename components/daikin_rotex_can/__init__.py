@@ -289,6 +289,7 @@ sensor_configuration = [
         "data_offset": 5,
         "data_size": 2,
         "divider": 10.0,
+        "signed": True,
         "range": [-30, 90]
     },
     {
