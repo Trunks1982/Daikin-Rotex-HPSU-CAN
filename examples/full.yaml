@@ -147,7 +147,8 @@ daikin_rotex_can:
 #TVBH2
 #TR2
 #Tdhw2
-#Tliq2
+    tliq:
+      name: Tliq
     ta2:
       name: TA2
 #quiet

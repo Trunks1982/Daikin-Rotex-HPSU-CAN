@@ -291,7 +291,20 @@ sensor_configuration = [
         "signed": True,
         "range": [-30, 90]
     },
-
+    {
+        "type": "sensor",
+        "name": "tliq",
+        "device_class": DEVICE_CLASS_TEMPERATURE,
+        "unit_of_measurement": UNIT_CELSIUS,
+        "accuracy_decimals": 1,
+        "state_class": STATE_CLASS_MEASUREMENT,
+        "command": "31 00 FA C1 03 00 00",
+        "data_offset": 5,
+        "data_size": 2,
+        "divider": 10.0,
+        "signed": True,
+        "range": [-30, 90]
+    },
     {
         "type": "sensor",
         "name": "t_ext",
