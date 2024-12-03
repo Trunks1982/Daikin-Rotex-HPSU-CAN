@@ -23,6 +23,12 @@ DaikinRotexCanComponent::DaikinRotexCanComponent()
 , m_project_git_hash_sensor(nullptr)
 , m_project_git_hash()
 , m_thermal_power_sensor(nullptr)
+, m_thermal_power_sensor2(nullptr)
+, m_thermal_power_sensor3(nullptr)
+, m_thermal_power_sensor4(nullptr)
+, m_thermal_power_filter(20)
+, m_thermal_power_calculator(4.18, 3)
+, m_thermal_power_last_timestamp(0u)
 {
 }
 
@@ -69,13 +75,22 @@ void DaikinRotexCanComponent::setup() {
 
 void DaikinRotexCanComponent::on_post_handle(TEntity* pEntity, TEntity::TVariant const& current, TEntity::TVariant const& previous) {
     std::string const& update_entity = pEntity->get_update_entity();
+    const std::string id = pEntity->get_id();
+
+    if (id == "tv") {
+        m_thermal_power_calculator.updateTempIn(std::get<float>(current));
+    } else if (id == "tr") {
+        m_thermal_power_calculator.updateTempOut(std::get<float>(current));
+    } else if (id == "flow_rate") {
+        m_thermal_power_calculator.updateFlow(std::get<float>(current));
+    }
+
     if (!update_entity.empty()) {
         call_later([update_entity, this](){
             updateState(update_entity);
         });
     }
 
-    const std::string id = pEntity->get_id();
     if (id == "target_hot_water_temperature") {
         call_later([this](){
             run_dhw_lambdas();
@@ -108,18 +123,23 @@ void DaikinRotexCanComponent::update_thermal_power() {
 
     if (p_betriebs_art != nullptr && m_thermal_power_sensor != nullptr) {
         CanSensor const* flow_rate = m_entity_manager.get_sensor("flow_rate");
-        if (flow_rate != nullptr) {
-            CanSensor const* tvbh = m_entity_manager.get_sensor("tvbh");
-            CanSensor const* tv = m_entity_manager.get_sensor("tv");
-            CanSensor const* tr = m_entity_manager.get_sensor("tr");
-
-            float value = 0;
-            if (p_betriebs_art->state == "Warmwasserbereitung" && tv != nullptr && tr != nullptr) {
-                value = (tv->state - tr->state) * (4.19 * flow_rate->state) / 3600.0f;
-            } else if ((p_betriebs_art->state == "Heizen" || p_betriebs_art->state == "Kühlen") && tvbh != nullptr && tr != nullptr) {
-                value = (tvbh->state - tr->state) * (4.19 * flow_rate->state) / 3600.0f;
-            }
+        CanSensor const* tv = m_entity_manager.get_sensor("tv");
+        CanSensor const* tr = m_entity_manager.get_sensor("tr");
+        if (tv != nullptr && tr != nullptr && flow_rate != nullptr) {
+            float value = (tv->state - tr->state) * (4.19 * flow_rate->state) / 3600.0f;
+            const float value2 = m_thermal_power_filter.processValue(value);
             m_thermal_power_sensor->publish_state(value);
+            m_thermal_power_sensor2->publish_state(value2);
+
+            if (m_thermal_power_last_timestamp == 0 || millis() > (m_thermal_power_last_timestamp + 60*1000)) {
+                m_thermal_power_last_timestamp = millis();
+                m_thermal_power_sensor3->publish_state(value);
+            }
+
+            const float power4 = m_thermal_power_calculator.calculatePower();
+            m_thermal_power_sensor4->publish_state(power4);
+
+            ESP_LOGW(TAG, "update_thermal_power: %f, %f, %f", value, value2, power4);
         }
     }
 }
