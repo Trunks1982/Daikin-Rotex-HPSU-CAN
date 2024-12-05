@@ -291,16 +291,21 @@ bool DaikinRotexCanComponent::is_command_set(TMessage const& message) {
 }
 
 std::string DaikinRotexCanComponent::recalculate_state(EntityBase* pEntity, std::string const& new_state) const {
-    CanSensor const* tvbh = m_entity_manager.get_sensor("tvbh");
+    const uint32_t delay = 2*60*1000; // 2 minutes. HPSU v4 immediately changes the BPV position to 100%, which leads to false positives!
+
     CanSensor const* tv = m_entity_manager.get_sensor("tv");
+    CanSensor const* tvbh = m_entity_manager.get_sensor("tvbh");
     CanSensor const* tr = m_entity_manager.get_sensor("tr");
     CanSensor const* dhw_mixer_position = m_entity_manager.get_sensor("dhw_mixer_position");
     CanSensor const* bpv = m_entity_manager.get_sensor("bypass_valve");
     CanSensor const* flow_rate = m_entity_manager.get_sensor("flow_rate");
     CanTextSensor const* error_code = m_entity_manager.get_text_sensor("error_code");
 
-    ESP_LOGI(TAG, "tv: %f, tvbh: %f, tr: %f, TvBH-Tv: %f, Tr-TvBH: %f, dhw: %f, bpv: %f, flow: %f",
-        tv->state, tvbh->state, tr->state, m_max_spread.tvbh_tv, m_max_spread.tvbh_tr, dhw_mixer_position->state, bpv->state, flow_rate->state);
+    if (tv && tvbh && tr && dhw_mixer_position && bpv && flow_rate) {
+        ESP_LOGI(TAG, "tv: %f, tvbh: %f, tr: %f, TvBH-Tv: %f, Tr-TvBH: %f, dhw: %f, bpv: %f, flow: %f, delay: %d, millis: %d, bpv_change: %d",
+            tv->state, tvbh->state, tr->state, m_max_spread.tvbh_tv, m_max_spread.tvbh_tr, dhw_mixer_position->state, bpv->state, flow_rate->state,
+                delay, millis(), (bpv->getLastValueChange()));
+    }
 
     if (pEntity == error_code && error_code != nullptr) {
         if (tvbh != nullptr && tv != nullptr && dhw_mixer_position != nullptr && flow_rate != nullptr) {
@@ -311,7 +316,7 @@ std::string DaikinRotexCanComponent::recalculate_state(EntityBase* pEntity, std:
             }
         }
         if (tvbh != nullptr && tr != nullptr && bpv != nullptr && flow_rate != nullptr) {
-            if (tvbh->state > (tr->state + m_max_spread.tvbh_tr) && bpv->state == 100.0f && flow_rate->state > 600.0f) {
+            if (tvbh->state > (tr->state + m_max_spread.tvbh_tr) && bpv->state == 100.0f && millis() > (bpv->getLastValueChange() + delay) && flow_rate->state > 600.0f) {
                 ESP_LOGE(TAG, "3UV BPV defekt => tvbh: %f, tr: %f, max_spread: %f, dhw_mixer_pos: %f, flow_rate: %f",
                     tvbh->state, tr->state, m_max_spread.tvbh_tr, bpv->state, flow_rate->state);
                 return new_state + "|3UV BPV defekt";

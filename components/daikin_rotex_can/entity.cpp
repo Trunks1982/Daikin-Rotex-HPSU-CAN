@@ -70,6 +70,7 @@ bool TEntity::handle(uint32_t can_id, TMessage const& responseData) {
         if (valid) {
             const bool changed = current != previous;
             if (changed) {
+                m_last_value_change_timestamp = millis();
                 m_post_handle_lambda(this, current, previous);
             }
 

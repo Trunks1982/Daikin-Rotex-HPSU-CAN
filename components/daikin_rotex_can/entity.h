@@ -110,6 +110,10 @@ public:
         return m_last_handle_timestamp;
     }
 
+    uint32_t getLastValueChange() const {
+        return m_last_value_change_timestamp;
+    }
+
     void set_canbus(esphome::esp32_can::ESP32Can* pCanbus) {
         m_pCanbus = pCanbus;
     }
@@ -164,6 +168,7 @@ private:
     std::array<uint16_t, 7> m_expected_reponse;
     uint32_t m_last_handle_timestamp;
     uint32_t m_last_get_timestamp;
+    uint32_t m_last_value_change_timestamp;
     TPostHandleLabda m_post_handle_lambda;
 };
 
